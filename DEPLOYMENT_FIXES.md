@@ -1,13 +1,19 @@
-# Correctifs de Déploiement pour AÏLA
+# Correctifs de Déploiement pour AÏLA - Version 2
 
 ## Problèmes Identifiés
 
 Les logs de déploiement montraient que :
 1. Le build se terminait avec succès
 2. Les sections `[DEPLOY]`, `[HEALTH_CHECK]`, `[MANAGE_SECRETS]`, et `[MONGODB_MIGRATE]` étaient vides
-3. Cela indiquait un échec au démarrage de l'application ou lors des health checks
+3. Cela indiquait un **échec critique au démarrage** de l'application
 
-## Modifications Apportées
+### Causes Racines Identifiées
+- ❌ L'application levait une exception si la configuration MongoDB échouait
+- ❌ Le fichier `.env` n'existait pas en production, causant un crash
+- ❌ Les variables `client` et `db` n'étaient pas définies en cas d'erreur
+- ❌ Le startup event handler crashait si `client` était None
+
+## Modifications Apportées (Version 2)
 
 ### 1. Configuration MongoDB Améliorée (`backend/server.py`)
 
