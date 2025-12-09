@@ -14,8 +14,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Line, Circle, G, Text as SvgText, Rect, Defs, LinearGradient, Stop } from 'react-native-svg';
-import { useAuth } from '../../src/context/AuthContext';
-import { treeAPI, previewAPI } from '../../src/services/api';
+import { useAuth } from '@/src/context/AuthContext';
+import { treeAPI, previewAPI } from '@/src/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
