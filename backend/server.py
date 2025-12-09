@@ -1170,6 +1170,12 @@ async def root_health_check():
         "database": "unknown"
     }
     
+    # Check if client is initialized
+    if client is None:
+        health_status["database"] = "not_configured"
+        health_status["database_message"] = "MongoDB client not initialized"
+        return health_status
+    
     try:
         # Try to ping database with a shorter timeout for health checks
         await client.admin.command('ping', maxTimeMS=5000)
