@@ -18,12 +18,20 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+mongo_url = os.environ.get('MONGO_URL')
+if not mongo_url:
+    raise RuntimeError("MONGO_URL environment variable is required")
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ.get('DB_NAME', 'genealogy_db')]
+db_name = os.environ.get('DB_NAME', 'aila_db')
+db = client[db_name]
 
 # JWT Configuration
-JWT_SECRET = os.environ.get('JWT_SECRET', 'genealogy-secret-key-2025')
+JWT_SECRET = os.environ.get('JWT_SECRET')
+if not JWT_SECRET:
+    # Generate a default secret for development, but log a warning
+    import secrets
+    JWT_SECRET = secrets.token_urlsafe(32)
+    logging.warning("JWT_SECRET not set, using generated secret. Set JWT_SECRET in production!")
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_HOURS = 24 * 7  # 1 week
 
