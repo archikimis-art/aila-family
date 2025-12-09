@@ -146,6 +146,26 @@ export default function ProfileScreen() {
           )}
         </View>
 
+
+        {/* Admin Section */}
+        {user && isAdmin() && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="shield-checkmark-outline" size={20} color="#D4AF37" />
+              <Text style={styles.sectionTitle}>Administration</Text>
+            </View>
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={() => router.push('/users-management')}
+            >
+              <Ionicons name="people-outline" size={22} color="#4A90D9" />
+              <Text style={styles.menuItemText}>Gérer les utilisateurs</Text>
+              <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+            </TouchableOpacity>
+          </View>
+        )}
+
+
         {/* Account Section */}
         {!user && (
           <View style={styles.section}>
