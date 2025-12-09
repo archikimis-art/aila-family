@@ -16,20 +16,27 @@ from bson import ObjectId
 
 ROOT_DIR = Path(__file__).parent
 
-# Configure logging first before anything else
+# Configure logging first before anything else with more verbose output
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    force=True  # Force reconfiguration if already configured
 )
 logger = logging.getLogger(__name__)
+
+# Log startup
+logger.info("=" * 60)
+logger.info("AÏLA APPLICATION STARTING")
+logger.info("=" * 60)
 
 # Try to load .env file if it exists (for local development)
 env_file = ROOT_DIR / '.env'
 if env_file.exists():
     load_dotenv(env_file)
-    logger.info(f"Loaded environment variables from {env_file}")
+    logger.info(f"✓ Loaded environment variables from {env_file}")
 else:
-    logger.info("No .env file found, using environment variables from system")
+    logger.info("✓ No .env file found, using environment variables from system")
+    logger.info(f"✓ Environment variables: MONGO_URL={'SET' if os.environ.get('MONGO_URL') else 'NOT SET'}, DB_NAME={os.environ.get('DB_NAME', 'NOT SET')}")
 
 # MongoDB connection with timeout settings for Atlas
 mongo_url = os.environ.get('MONGO_URL')
