@@ -39,10 +39,15 @@ else:
     logger.info(f"✓ Environment variables: MONGO_URL={'SET' if os.environ.get('MONGO_URL') else 'NOT SET'}, DB_NAME={os.environ.get('DB_NAME', 'NOT SET')}")
 
 # MongoDB connection with timeout settings for Atlas
+logger.info("Configuring MongoDB connection...")
 mongo_url = os.environ.get('MONGO_URL')
 if not mongo_url:
-    logger.warning("MONGO_URL environment variable not set, using default")
+    logger.warning("⚠ MONGO_URL environment variable not set, using default localhost")
     mongo_url = "mongodb://localhost:27017"
+else:
+    # Log a sanitized version (hide credentials)
+    sanitized_url = mongo_url.split('@')[-1] if '@' in mongo_url else 'localhost'
+    logger.info(f"✓ MONGO_URL configured (connecting to: {sanitized_url})")
 
 # Configure MongoDB client with timeouts for production (Atlas)
 # Note: Connection is lazy - actual connection happens on first operation
@@ -51,6 +56,7 @@ client = None
 db = None
 
 try:
+    logger.info("Creating AsyncIOMotorClient...")
     client = AsyncIOMotorClient(
         mongo_url,
         serverSelectionTimeoutMS=10000,  # 10 seconds timeout for server selection
@@ -63,16 +69,19 @@ try:
     )
     db_name = os.environ.get('DB_NAME', 'aila_db')
     db = client[db_name]
-    logger.info(f"MongoDB client configured for database: {db_name}")
+    logger.info(f"✓ MongoDB client configured for database: {db_name}")
 except Exception as e:
-    logger.error(f"Failed to configure MongoDB client: {e}")
+    logger.error(f"❌ Failed to configure MongoDB client: {e}", exc_info=True)
     # Don't raise - let the app start and health check will report the issue
-    logger.warning("Continuing startup without MongoDB connection")
+    logger.warning("⚠ Continuing startup without MongoDB connection")
     # Create a dummy client that will fail gracefully
     try:
+        logger.info("Creating fallback MongoDB client...")
         client = AsyncIOMotorClient("mongodb://localhost:27017", serverSelectionTimeoutMS=1000)
         db = client['aila_db']
-    except:
+        logger.info("✓ Fallback client created")
+    except Exception as fallback_error:
+        logger.error(f"❌ Fallback client creation failed: {fallback_error}")
         pass
 
 # JWT Configuration
