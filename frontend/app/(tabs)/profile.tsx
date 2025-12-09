@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
