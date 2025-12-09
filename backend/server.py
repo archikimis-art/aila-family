@@ -612,7 +612,23 @@ async def root():
 
 @api_router.get("/health")
 async def health_check():
-    return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
+    """Health check endpoint that verifies MongoDB connection"""
+    try:
+        # Verify MongoDB connection by pinging the database
+        await client.admin.command('ping')
+        return {
+            "status": "healthy",
+            "timestamp": datetime.utcnow().isoformat(),
+            "database": "connected"
+        }
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return {
+            "status": "unhealthy",
+            "timestamp": datetime.utcnow().isoformat(),
+            "database": "disconnected",
+            "error": str(e)
+        }
 
 # Include the router in the main app
 app.include_router(api_router)
