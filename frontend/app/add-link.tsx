@@ -20,10 +20,41 @@ interface Person {
   gender: string;
 }
 
+// Extended family relationship types
 const LINK_TYPES = [
-  { value: 'parent', label: 'Parent de', icon: 'arrow-up', description: 'La première personne est parent de la seconde' },
-  { value: 'child', label: 'Enfant de', icon: 'arrow-down', description: 'La première personne est enfant de la seconde' },
-  { value: 'spouse', label: 'Époux/Épouse de', icon: 'heart', description: 'Les deux personnes sont mariées' },
+  // Relations directes
+  { value: 'parent', label: 'Parent', icon: 'arrow-up', color: '#4A90D9', category: 'direct' },
+  { value: 'child', label: 'Enfant', icon: 'arrow-down', color: '#4A90D9', category: 'direct' },
+  { value: 'spouse', label: 'Epoux/Epouse', icon: 'heart', color: '#D94A8C', category: 'direct' },
+  { value: 'sibling', label: 'Frere/Soeur', icon: 'people', color: '#4CAF50', category: 'direct' },
+  
+  // Grands-parents
+  { value: 'grandparent', label: 'Grand-parent', icon: 'arrow-up', color: '#9C27B0', category: 'extended' },
+  { value: 'grandchild', label: 'Petit-enfant', icon: 'arrow-down', color: '#9C27B0', category: 'extended' },
+  
+  // Oncles/Tantes
+  { value: 'uncle_aunt', label: 'Oncle/Tante', icon: 'person', color: '#FF9800', category: 'extended' },
+  { value: 'nephew_niece', label: 'Neveu/Niece', icon: 'person', color: '#FF9800', category: 'extended' },
+  { value: 'cousin', label: 'Cousin/Cousine', icon: 'people', color: '#00BCD4', category: 'extended' },
+  
+  // Belle-famille
+  { value: 'step_parent', label: 'Beau-parent', icon: 'arrow-up', color: '#607D8B', category: 'step' },
+  { value: 'step_child', label: 'Beau-fils/fille', icon: 'arrow-down', color: '#607D8B', category: 'step' },
+  { value: 'parent_in_law', label: 'Beau-pere/mere', icon: 'people', color: '#795548', category: 'inlaw' },
+  { value: 'child_in_law', label: 'Gendre/Belle-fille', icon: 'people', color: '#795548', category: 'inlaw' },
+  { value: 'sibling_in_law', label: 'Beau-frere/soeur', icon: 'people', color: '#795548', category: 'inlaw' },
+  
+  // Spirituel
+  { value: 'godparent', label: 'Parrain/Marraine', icon: 'star', color: '#D4AF37', category: 'spiritual' },
+  { value: 'godchild', label: 'Filleul(e)', icon: 'star-outline', color: '#D4AF37', category: 'spiritual' },
+];
+
+const CATEGORIES = [
+  { key: 'direct', label: 'Relations directes' },
+  { key: 'extended', label: 'Famille etendue' },
+  { key: 'step', label: 'Famille recomposee' },
+  { key: 'inlaw', label: 'Belle-famille' },
+  { key: 'spiritual', label: 'Liens spirituels' },
 ];
 
 export default function AddLinkScreen() {
