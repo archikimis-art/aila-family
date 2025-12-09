@@ -80,6 +80,7 @@ class UserResponse(BaseModel):
     created_at: datetime
     gdpr_consent: bool
     gdpr_consent_date: Optional[datetime] = None
+    role: str = "member"  # admin or member
 
 class TokenResponse(BaseModel):
     access_token: str
