@@ -131,15 +131,18 @@ backend:
 
   - task: "User Login"
     implemented: true
-    working: NA
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: NA
         agent: "main"
         comment: "Implemented, needs testing"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Login endpoint working correctly. User registration and login flow tested with JWT token generation and validation. Auth token properly returned and accepted for authenticated endpoints."
 
   - task: "Preview Session Creation"
     implemented: true
