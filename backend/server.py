@@ -633,6 +633,31 @@ async def health_check():
 # Include the router in the main app
 app.include_router(api_router)
 
+# Root-level health check for Kubernetes (without /api prefix)
+@app.get("/health")
+async def root_health_check():
+    """Root health check endpoint for Kubernetes"""
+    try:
+        await client.admin.command('ping')
+        return {
+            "status": "healthy",
+            "timestamp": datetime.utcnow().isoformat(),
+            "database": "connected"
+        }
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return {
+            "status": "unhealthy",
+            "timestamp": datetime.utcnow().isoformat(),
+            "database": "disconnected",
+            "error": str(e)
+        }
+
+@app.get("/")
+async def root_info():
+    """Root endpoint"""
+    return {"message": "AÏLA - Arbre Généalogique API", "version": "1.0.0"}
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
