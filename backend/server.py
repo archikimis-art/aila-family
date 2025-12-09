@@ -1206,6 +1206,10 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_db_client():
     """Initialize database connection and create indexes"""
+    if client is None or db is None:
+        logger.warning("MongoDB client not initialized, skipping startup connection")
+        return
+        
     try:
         # Test MongoDB connection first
         await client.admin.command('ping')
