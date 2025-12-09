@@ -19,7 +19,7 @@ export default function TabsLayout() {
         tabBarActiveTintColor: '#D4AF37',
         tabBarInactiveTintColor: '#6B7C93',
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '500',
         },
       }}
@@ -39,6 +39,15 @@ export default function TabsLayout() {
           title: 'Membres',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="share"
+        options={{
+          title: 'Partage',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="share-social-outline" size={size} color={color} />
           ),
         }}
       />
