@@ -101,10 +101,15 @@ export default function ProfileScreen() {
           onPress: async () => {
             await AsyncStorage.removeItem('preview_token');
             Alert.alert('Succès', 'Les données du mode aperçu ont été effacées.');
+            router.replace('/');
           },
         },
       ]
     );
+  };
+
+  const handleGoToWelcome = () => {
+    router.replace('/');
   };
 
   const getInitials = () => {
