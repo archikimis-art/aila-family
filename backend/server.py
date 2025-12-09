@@ -591,7 +591,7 @@ async def delete_account(current_user: dict = Depends(get_current_user)):
 
 @api_router.get("/")
 async def root():
-    return {"message": "Arbre Généalogique API", "version": "1.0.0"}
+    return {"message": "AÏLA - Arbre Généalogique API", "version": "1.0.0"}
 
 @api_router.get("/health")
 async def health_check():
