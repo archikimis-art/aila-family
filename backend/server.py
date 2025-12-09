@@ -373,13 +373,21 @@ async def update_person(person_id: str, person: PersonUpdate, current_user: dict
     if not update_data:
         raise HTTPException(status_code=400, detail="No data to update")
     
+    # Check if person exists
+    existing_person = await db.persons.find_one({"_id": ObjectId(person_id)})
+    if not existing_person:
+        raise HTTPException(status_code=404, detail="Person not found")
+    
+    # Check permissions: admin can edit anything, members can only edit their own
+    user_role = current_user.get('role', 'member')
+    if user_role != 'admin' and existing_person['user_id'] != str(current_user['_id']):
+        raise HTTPException(status_code=403, detail="You can only modify your own entries")
+    
     result = await db.persons.find_one_and_update(
-        {"_id": ObjectId(person_id), "user_id": str(current_user['_id'])},
+        {"_id": ObjectId(person_id)},
         {"$set": update_data},
         return_document=True
     )
-    if not result:
-        raise HTTPException(status_code=404, detail="Person not found")
     return PersonResponse(**serialize_object_id(result))
 
 @api_router.delete("/persons/{person_id}")
