@@ -326,6 +326,72 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         role=user.get('role', 'member')
     )
 
+# ===================== USER MANAGEMENT ROUTES (ADMIN ONLY) =====================
+
+@api_router.get("/users", response_model=List[UserResponse])
+async def get_all_users(current_user: dict = Depends(get_current_user)):
+    # Only admins can list all users
+    if current_user.get('role', 'member') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    users = await db.users.find({}).to_list(500)
+    return [
+        UserResponse(
+            id=str(u['_id']),
+            email=u['email'],
+            first_name=u['first_name'],
+            last_name=u['last_name'],
+            created_at=u['created_at'],
+            gdpr_consent=u.get('gdpr_consent', False),
+            gdpr_consent_date=u.get('gdpr_consent_date'),
+            role=u.get('role', 'member')
+        )
+        for u in users
+    ]
+
+@api_router.put("/users/{user_id}/promote")
+async def promote_user_to_admin(user_id: str, current_user: dict = Depends(get_current_user)):
+    # Only admins can promote users
+    if current_user.get('role', 'member') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Check if target user exists
+    target_user = await db.users.find_one({"_id": ObjectId(user_id)})
+    if not target_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Update user role
+    await db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"role": "admin"}}
+    )
+    
+    return {"message": f"User {target_user['email']} promoted to admin"}
+
+@api_router.put("/users/{user_id}/demote")
+async def demote_user_to_member(user_id: str, current_user: dict = Depends(get_current_user)):
+    # Only admins can demote users
+    if current_user.get('role', 'member') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Prevent demoting yourself
+    if str(current_user['_id']) == user_id:
+        raise HTTPException(status_code=400, detail="Cannot demote yourself")
+    
+    # Check if target user exists
+    target_user = await db.users.find_one({"_id": ObjectId(user_id)})
+    if not target_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Update user role
+    await db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"role": "member"}}
+    )
+    
+    return {"message": f"User {target_user['email']} demoted to member"}
+
+
 # ===================== PERSON ROUTES =====================
 
 @api_router.post("/persons", response_model=PersonResponse)
