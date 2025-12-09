@@ -272,11 +272,31 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#0A1628',
   },
+  userNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 16,
+  },
   userName: {
     fontSize: 24,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginTop: 16,
+  },
+  adminBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#D4AF37',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  adminBadgeText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    textTransform: 'uppercase',
   },
   userEmail: {
     fontSize: 15,
