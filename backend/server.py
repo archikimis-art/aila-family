@@ -410,8 +410,24 @@ async def create_link(link: FamilyLinkCreate, current_user: dict = Depends(get_c
     if not person1 or not person2:
         raise HTTPException(status_code=404, detail="One or both persons not found")
     
-    if link.link_type not in ['parent', 'child', 'spouse']:
-        raise HTTPException(status_code=400, detail="Invalid link type. Use: parent, child, spouse")
+    # Extended family relationship types
+    valid_link_types = [
+        'parent', 'child', 'spouse',  # Core relationships
+        'sibling',  # Frère/Sœur
+        'grandparent', 'grandchild',  # Grand-parent / Petit-enfant
+        'uncle_aunt', 'nephew_niece',  # Oncle-Tante / Neveu-Nièce
+        'cousin',  # Cousin/Cousine
+        'step_parent', 'step_child',  # Beau-parent / Beau-fils
+        'parent_in_law', 'child_in_law',  # Beau-père-mère / Gendre-Belle-fille
+        'sibling_in_law',  # Beau-frère / Belle-sœur
+        'godparent', 'godchild',  # Parrain-Marraine / Filleul(e)
+    ]
+    
+    if link.link_type not in valid_link_types:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid link type. Valid types: {', '.join(valid_link_types)}"
+        )
     
     link_doc = {
         "user_id": str(current_user['_id']),
