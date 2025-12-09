@@ -11,6 +11,26 @@ Les logs de déploiement montraient que :
 - ❌ L'application levait une exception si la configuration MongoDB échouait
 - ❌ Le fichier `.env` n'existait pas en production, causant un crash
 - ❌ Les variables `client` et `db` n'étaient pas définies en cas d'erreur
+
+
+### 0. **Gestion du Fichier .env (CRITIQUE)**
+
+**Problème** : En production Kubernetes, le fichier `.env` n'existe pas. L'application tentait de le charger avec `load_dotenv()` ce qui pouvait causer des problèmes.
+
+**Correctif** :
+```python
+# Try to load .env file if it exists (for local development)
+env_file = ROOT_DIR / '.env'
+if env_file.exists():
+    load_dotenv(env_file)
+    logger.info(f"Loaded environment variables from {env_file}")
+else:
+    logger.info("No .env file found, using environment variables from system")
+```
+
+✅ L'application utilise maintenant les variables d'environnement système en production
+✅ Le fichier .env est uniquement chargé s'il existe (développement local)
+
 - ❌ Le startup event handler crashait si `client` était None
 
 ## Modifications Apportées (Version 2)
