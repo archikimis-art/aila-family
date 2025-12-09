@@ -20,19 +20,28 @@ load_dotenv(ROOT_DIR / '.env')
 # MongoDB connection with timeout settings for Atlas
 mongo_url = os.environ.get('MONGO_URL')
 if not mongo_url:
-    raise RuntimeError("MONGO_URL environment variable is required")
+    logger.warning("MONGO_URL environment variable not set, using default")
+    mongo_url = "mongodb://localhost:27017"
 
 # Configure MongoDB client with timeouts for production (Atlas)
-client = AsyncIOMotorClient(
-    mongo_url,
-    serverSelectionTimeoutMS=5000,  # 5 seconds timeout for server selection
-    connectTimeoutMS=10000,  # 10 seconds connection timeout
-    socketTimeoutMS=30000,  # 30 seconds socket timeout
-    maxPoolSize=10,  # Connection pool size
-    retryWrites=True,  # Retry writes on network errors
-)
-db_name = os.environ.get('DB_NAME', 'aila_db')
-db = client[db_name]
+# Note: Connection is lazy - actual connection happens on first operation
+try:
+    client = AsyncIOMotorClient(
+        mongo_url,
+        serverSelectionTimeoutMS=10000,  # 10 seconds timeout for server selection
+        connectTimeoutMS=20000,  # 20 seconds connection timeout
+        socketTimeoutMS=45000,  # 45 seconds socket timeout
+        maxPoolSize=50,  # Increased connection pool size
+        minPoolSize=10,  # Minimum pool size
+        retryWrites=True,  # Retry writes on network errors
+        retryReads=True,  # Retry reads on network errors
+    )
+    db_name = os.environ.get('DB_NAME', 'aila_db')
+    db = client[db_name]
+    logger.info(f"MongoDB client configured for database: {db_name}")
+except Exception as e:
+    logger.error(f"Failed to configure MongoDB client: {e}")
+    raise
 
 # JWT Configuration
 JWT_SECRET = os.environ.get('JWT_SECRET')
