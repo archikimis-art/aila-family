@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { personsAPI, linksAPI, previewAPI } from '../src/services/api';
+import { personsAPI, linksAPI, previewAPI } from '@/src/services/api';
 
 interface Person {
   id: string;
