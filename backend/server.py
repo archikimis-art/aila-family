@@ -566,7 +566,8 @@ async def export_user_data(current_user: dict = Depends(get_current_user)):
     links = await db.family_links.find({"user_id": user_id}).to_list(1000)
     
     user_data = serialize_object_id(current_user.copy())
-    del user_data.get('password_hash', None)
+    if 'password_hash' in user_data:
+        del user_data['password_hash']
     
     return {
         "user": user_data,
