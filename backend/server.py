@@ -643,13 +643,23 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_db_client():
-    # Create indexes
-    await db.users.create_index("email", unique=True)
-    await db.persons.create_index("user_id")
-    await db.family_links.create_index("user_id")
-    await db.preview_sessions.create_index("session_token", unique=True)
-    await db.preview_sessions.create_index("expires_at", expireAfterSeconds=0)
-    logger.info("Database indexes created")
+    """Initialize database connection and create indexes"""
+    try:
+        # Test MongoDB connection first
+        await client.admin.command('ping')
+        logger.info("MongoDB connection successful")
+        
+        # Create indexes
+        await db.users.create_index("email", unique=True)
+        await db.persons.create_index("user_id")
+        await db.family_links.create_index("user_id")
+        await db.preview_sessions.create_index("session_token", unique=True)
+        await db.preview_sessions.create_index("expires_at", expireAfterSeconds=0)
+        logger.info("Database indexes created")
+    except Exception as e:
+        logger.error(f"Failed to connect to MongoDB: {e}")
+        # Don't raise - let the app start and health check will report unhealthy
+        logger.warning("Application starting without database connection")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
