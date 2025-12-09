@@ -48,7 +48,7 @@ export default function WelcomeScreen() {
         {/* Header Logo */}
         <View style={styles.logoContainer}>
           <Ionicons name="leaf" size={80} color="#D4AF37" />
-          <Text style={styles.title}>Racines</Text>
+          <Text style={styles.title}>AÏLA</Text>
           <Text style={styles.subtitle}>Arbre Généalogique Algérien</Text>
         </View>
 
