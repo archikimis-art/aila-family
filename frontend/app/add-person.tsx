@@ -14,7 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { personsAPI, previewAPI } from '@/src/services/api';
+import { personsAPI, previewAPI } from '@/services/api';
 
 const WILAYA_OPTIONS = [
   'Alger', 'Oran', 'Constantine', 'Annaba', 'Blida', 'Batna', 'Sétif', 'Djelfa',

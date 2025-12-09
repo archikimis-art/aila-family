@@ -11,6 +11,13 @@ config.cacheStores = [
   new FileStore({ root: path.join(root, 'cache') }),
 ];
 
+// Add resolver for @ path alias
+config.resolver = {
+  ...config.resolver,
+  extraNodeModules: {
+    '@': path.resolve(__dirname, 'src'),
+  },
+};
 
 // // Exclude unnecessary directories from file watching
 // config.watchFolders = [__dirname];
