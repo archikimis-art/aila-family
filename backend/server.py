@@ -153,6 +153,56 @@ class TreeResponse(BaseModel):
     persons: List[PersonResponse]
     links: List[FamilyLinkResponse]
 
+# ===================== COLLABORATION MODELS =====================
+
+class CollaboratorInvite(BaseModel):
+    email: EmailStr
+    role: str = "editor"  # viewer, editor
+
+class CollaboratorResponse(BaseModel):
+    id: str
+    tree_owner_id: str
+    user_id: Optional[str] = None
+    email: str
+    role: str
+    status: str  # pending, accepted, rejected
+    invited_at: datetime
+    accepted_at: Optional[datetime] = None
+
+class ContributionCreate(BaseModel):
+    action: str  # add, edit, delete
+    entity_type: str  # person, link
+    entity_id: Optional[str] = None
+    entity_data: Optional[dict] = None
+
+class ContributionResponse(BaseModel):
+    id: str
+    tree_owner_id: str
+    contributor_id: str
+    contributor_name: str
+    action: str
+    entity_type: str
+    entity_id: Optional[str] = None
+    entity_data: Optional[dict] = None
+    status: str  # pending, approved, rejected
+    created_at: datetime
+    reviewed_at: Optional[datetime] = None
+    review_note: Optional[str] = None
+
+class ContributionReview(BaseModel):
+    status: str  # approved, rejected
+    note: Optional[str] = None
+
+class NotificationResponse(BaseModel):
+    id: str
+    user_id: str
+    type: str
+    title: str
+    message: str
+    data: Optional[dict] = None
+    read: bool
+    created_at: datetime
+
 # ===================== HELPERS =====================
 
 def hash_password(password: str) -> str:
