@@ -278,7 +278,7 @@ async def create_person(person: PersonCreate, current_user: dict = Depends(get_c
 
 @api_router.get("/persons", response_model=List[PersonResponse])
 async def get_persons(current_user: dict = Depends(get_current_user)):
-    persons = await db.persons.find({"user_id": str(current_user['_id'])}).to_list(1000)
+    persons = await db.persons.find({"user_id": str(current_user['_id'])}).to_list(None)
     return [PersonResponse(**serialize_object_id(p)) for p in persons]
 
 @api_router.get("/persons/{person_id}", response_model=PersonResponse)
