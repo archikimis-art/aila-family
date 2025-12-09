@@ -17,11 +17,20 @@ from bson import ObjectId
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
+# MongoDB connection with timeout settings for Atlas
 mongo_url = os.environ.get('MONGO_URL')
 if not mongo_url:
     raise RuntimeError("MONGO_URL environment variable is required")
-client = AsyncIOMotorClient(mongo_url)
+
+# Configure MongoDB client with timeouts for production (Atlas)
+client = AsyncIOMotorClient(
+    mongo_url,
+    serverSelectionTimeoutMS=5000,  # 5 seconds timeout for server selection
+    connectTimeoutMS=10000,  # 10 seconds connection timeout
+    socketTimeoutMS=30000,  # 30 seconds socket timeout
+    maxPoolSize=10,  # Connection pool size
+    retryWrites=True,  # Retry writes on network errors
+)
 db_name = os.environ.get('DB_NAME', 'aila_db')
 db = client[db_name]
 
