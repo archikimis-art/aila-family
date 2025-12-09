@@ -28,6 +28,38 @@ else:
     logger.info("No .env file found, using environment variables from system")
 ```
 
+
+
+### 1.5. **Gestion des Variables Non Définies (CRITIQUE)**
+
+**Problème** : Si la configuration MongoDB échouait, l'application levait une exception et les variables `client` et `db` n'étaient jamais définies, causant des `NameError` partout.
+
+**Correctif** :
+```python
+# Initialize client and db as None first
+client = None
+db = None
+
+try:
+    client = AsyncIOMotorClient(...)
+    db = client[db_name]
+    logger.info(f"MongoDB client configured for database: {db_name}")
+except Exception as e:
+    logger.error(f"Failed to configure MongoDB client: {e}")
+    # Don't raise - let the app start
+    logger.warning("Continuing startup without MongoDB connection")
+    # Create a dummy client that will fail gracefully
+    try:
+        client = AsyncIOMotorClient("mongodb://localhost:27017", serverSelectionTimeoutMS=1000)
+        db = client['aila_db']
+    except:
+        pass
+```
+
+✅ Les variables `client` et `db` sont toujours définies
+✅ L'application ne crash plus au démarrage si MongoDB n'est pas disponible
+✅ Un client dummy est créé pour éviter les erreurs de référence
+
 ✅ L'application utilise maintenant les variables d'environnement système en production
 ✅ Le fichier .env est uniquement chargé s'il existe (développement local)
 
