@@ -392,20 +392,24 @@ async def update_person(person_id: str, person: PersonUpdate, current_user: dict
 
 @api_router.delete("/persons/{person_id}")
 async def delete_person(person_id: str, current_user: dict = Depends(get_current_user)):
-    result = await db.persons.delete_one({
-        "_id": ObjectId(person_id),
-        "user_id": str(current_user['_id'])
-    })
-    if result.deleted_count == 0:
+    # Check if person exists
+    existing_person = await db.persons.find_one({"_id": ObjectId(person_id)})
+    if not existing_person:
         raise HTTPException(status_code=404, detail="Person not found")
+    
+    # Check permissions: admin can delete anything, members can only delete their own
+    user_role = current_user.get('role', 'member')
+    if user_role != 'admin' and existing_person['user_id'] != str(current_user['_id']):
+        raise HTTPException(status_code=403, detail="You can only delete your own entries")
+    
+    result = await db.persons.delete_one({"_id": ObjectId(person_id)})
     
     # Also delete related links
     await db.family_links.delete_many({
         "$or": [
             {"person_id_1": person_id},
             {"person_id_2": person_id}
-        ],
-        "user_id": str(current_user['_id'])
+        ]
     })
     
     return {"message": "Person deleted successfully"}
