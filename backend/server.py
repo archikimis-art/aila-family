@@ -471,12 +471,17 @@ async def get_links(current_user: dict = Depends(get_current_user)):
 
 @api_router.delete("/links/{link_id}")
 async def delete_link(link_id: str, current_user: dict = Depends(get_current_user)):
-    result = await db.family_links.delete_one({
-        "_id": ObjectId(link_id),
-        "user_id": str(current_user['_id'])
-    })
-    if result.deleted_count == 0:
+    # Check if link exists
+    existing_link = await db.family_links.find_one({"_id": ObjectId(link_id)})
+    if not existing_link:
         raise HTTPException(status_code=404, detail="Link not found")
+    
+    # Check permissions: admin can delete anything, members can only delete their own
+    user_role = current_user.get('role', 'member')
+    if user_role != 'admin' and existing_link['user_id'] != str(current_user['_id']):
+        raise HTTPException(status_code=403, detail="You can only delete your own entries")
+    
+    result = await db.family_links.delete_one({"_id": ObjectId(link_id)})
     return {"message": "Link deleted successfully"}
 
 # ===================== TREE ROUTES =====================
