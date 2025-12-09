@@ -20,6 +20,7 @@ interface AuthContextType {
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  isAdmin: () => boolean;
 }
 
 interface RegisterData {
