@@ -224,6 +224,12 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         )}
 
+        {/* Back to Welcome */}
+        <TouchableOpacity style={styles.welcomeButton} onPress={handleGoToWelcome}>
+          <Ionicons name="home-outline" size={22} color="#D4AF37" />
+          <Text style={styles.welcomeButtonText}>Retour à l'accueil</Text>
+        </TouchableOpacity>
+
         {/* Version */}
         <Text style={styles.version}>Version 1.0.0</Text>
       </ScrollView>
