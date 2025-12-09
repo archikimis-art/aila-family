@@ -28,7 +28,7 @@ JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_HOURS = 24 * 7  # 1 week
 
 # Create the main app
-app = FastAPI(title="Arbre Généalogique API", version="1.0.0")
+app = FastAPI(title="AÏLA - Arbre Généalogique API", version="1.0.0")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
