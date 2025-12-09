@@ -205,7 +205,7 @@ export default function ProfileScreen() {
           <View style={styles.infoCard}>
             <Ionicons name="information-circle-outline" size={20} color="#D4AF37" />
             <Text style={styles.infoText}>
-              Racines est une application de généalogie conçue pour les familles algériennes et nord-africaines.
+              AÏLA est une application de généalogie conçue pour les familles algériennes et nord-africaines.
               Vos données sont stockées de manière sécurisée et vous en gardez le contrôle total.
             </Text>
           </View>
