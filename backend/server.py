@@ -387,8 +387,8 @@ async def delete_link(link_id: str, current_user: dict = Depends(get_current_use
 
 @api_router.get("/tree", response_model=TreeResponse)
 async def get_tree(current_user: dict = Depends(get_current_user)):
-    persons = await db.persons.find({"user_id": str(current_user['_id'])}).to_list(None)
-    links = await db.family_links.find({"user_id": str(current_user['_id'])}).to_list(None)
+    persons = await db.persons.find({"user_id": str(current_user['_id'])}).to_list(500)
+    links = await db.family_links.find({"user_id": str(current_user['_id'])}).to_list(500)
     
     return TreeResponse(
         persons=[PersonResponse(**serialize_object_id(p)) for p in persons],
