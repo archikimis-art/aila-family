@@ -362,7 +362,7 @@ async def create_link(link: FamilyLinkCreate, current_user: dict = Depends(get_c
 
 @api_router.get("/links", response_model=List[FamilyLinkResponse])
 async def get_links(current_user: dict = Depends(get_current_user)):
-    links = await db.family_links.find({"user_id": str(current_user['_id'])}).to_list(1000)
+    links = await db.family_links.find({"user_id": str(current_user['_id'])}).to_list(None)
     return [FamilyLinkResponse(**serialize_object_id(l)) for l in links]
 
 @api_router.delete("/links/{link_id}")
