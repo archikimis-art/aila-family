@@ -101,3 +101,170 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Arbre généalogique collaboratif pour familles algériennes - MVP avec mode aperçu, inscription JWT, CRUD membres, visualisation arbre, conformité RGPD"
+
+backend:
+  - task: "API Health Check"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "API returns version info correctly"
+
+  - task: "User Registration with GDPR consent"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Registration with JWT token and GDPR consent works"
+
+  - task: "User Login"
+    implemented: true
+    working: NA
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Implemented, needs testing"
+
+  - task: "Preview Session Creation"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Creates preview session with 24h expiration"
+
+  - task: "Add Person to Preview"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Adds person to preview session correctly"
+
+  - task: "Person CRUD (authenticated)"
+    implemented: true
+    working: NA
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Implemented, needs testing"
+
+  - task: "Family Link CRUD"
+    implemented: true
+    working: NA
+    file: "server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Implemented, needs testing"
+
+  - task: "GDPR Export Data"
+    implemented: true
+    working: NA
+    file: "server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Implemented, needs testing"
+
+frontend:
+  - task: "Welcome Screen"
+    implemented: true
+    working: true
+    file: "app/index.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Welcome screen displays correctly with all buttons"
+
+  - task: "Tree View (Preview Mode)"
+    implemented: true
+    working: true
+    file: "app/(tabs)/tree.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Tree view shows empty state and RGPD banner"
+
+  - task: "Add Person Form"
+    implemented: true
+    working: true
+    file: "app/add-person.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Form displays with all fields including wilaya selector"
+
+  - task: "Login/Register Screens"
+    implemented: true
+    working: NA
+    file: "app/(auth)/login.tsx, app/(auth)/register.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "Implemented, needs testing"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "User Login"
+    - "Person CRUD (authenticated)"
+    - "Family Link CRUD"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "MVP implementation complete. Backend API functional with preview mode and auth. Frontend screens created. Need to test full authentication flow and CRUD operations."
