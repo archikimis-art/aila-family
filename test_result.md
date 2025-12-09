@@ -200,15 +200,18 @@ backend:
 
   - task: "GDPR Export Data"
     implemented: true
-    working: NA
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: NA
         agent: "main"
         comment: "Implemented, needs testing"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: GDPR Export endpoint working correctly. Successfully exports user data including user profile, persons, and family links. Password hash properly excluded from export for security. Authentication required and working."
 
 frontend:
   - task: "Welcome Screen"
