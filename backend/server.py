@@ -39,6 +39,10 @@ if not mongo_url:
 
 # Configure MongoDB client with timeouts for production (Atlas)
 # Note: Connection is lazy - actual connection happens on first operation
+# Initialize client and db as None first
+client = None
+db = None
+
 try:
     client = AsyncIOMotorClient(
         mongo_url,
@@ -57,6 +61,12 @@ except Exception as e:
     logger.error(f"Failed to configure MongoDB client: {e}")
     # Don't raise - let the app start and health check will report the issue
     logger.warning("Continuing startup without MongoDB connection")
+    # Create a dummy client that will fail gracefully
+    try:
+        client = AsyncIOMotorClient("mongodb://localhost:27017", serverSelectionTimeoutMS=1000)
+        db = client['aila_db']
+    except:
+        pass
 
 # JWT Configuration
 JWT_SECRET = os.environ.get('JWT_SECRET')
