@@ -322,7 +322,8 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         last_name=user['last_name'],
         created_at=user['created_at'],
         gdpr_consent=user.get('gdpr_consent', False),
-        gdpr_consent_date=user.get('gdpr_consent_date')
+        gdpr_consent_date=user.get('gdpr_consent_date'),
+        role=user.get('role', 'member')
     )
 
 # ===================== PERSON ROUTES =====================
