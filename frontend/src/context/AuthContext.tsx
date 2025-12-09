@@ -10,6 +10,7 @@ interface User {
   created_at: string;
   gdpr_consent: boolean;
   gdpr_consent_date?: string;
+  role: string;  // 'admin' or 'member'
 }
 
 interface AuthContextType {
