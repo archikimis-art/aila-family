@@ -253,6 +253,10 @@ async def register(user_data: UserCreate):
     if not user_data.gdpr_consent:
         raise HTTPException(status_code=400, detail="GDPR consent is required")
     
+    # Check if this is the first user - make them admin
+    user_count = await db.users.count_documents({})
+    role = "admin" if user_count == 0 else "member"
+    
     # Create user
     user_doc = {
         "email": user_data.email,
@@ -261,7 +265,8 @@ async def register(user_data: UserCreate):
         "last_name": user_data.last_name,
         "gdpr_consent": user_data.gdpr_consent,
         "gdpr_consent_date": datetime.utcnow() if user_data.gdpr_consent else None,
-        "created_at": datetime.utcnow()
+        "created_at": datetime.utcnow(),
+        "role": role
     }
     
     result = await db.users.insert_one(user_doc)
@@ -279,7 +284,8 @@ async def register(user_data: UserCreate):
             last_name=user_doc['last_name'],
             created_at=user_doc['created_at'],
             gdpr_consent=user_doc['gdpr_consent'],
-            gdpr_consent_date=user_doc.get('gdpr_consent_date')
+            gdpr_consent_date=user_doc.get('gdpr_consent_date'),
+            role=user_doc['role']
         )
     )
 
