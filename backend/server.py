@@ -15,14 +15,21 @@ import bcrypt
 from bson import ObjectId
 
 ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
 
-# Configure logging first before using it
+# Configure logging first before anything else
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Try to load .env file if it exists (for local development)
+env_file = ROOT_DIR / '.env'
+if env_file.exists():
+    load_dotenv(env_file)
+    logger.info(f"Loaded environment variables from {env_file}")
+else:
+    logger.info("No .env file found, using environment variables from system")
 
 # MongoDB connection with timeout settings for Atlas
 mongo_url = os.environ.get('MONGO_URL')
@@ -48,7 +55,8 @@ try:
     logger.info(f"MongoDB client configured for database: {db_name}")
 except Exception as e:
     logger.error(f"Failed to configure MongoDB client: {e}")
-    raise
+    # Don't raise - let the app start and health check will report the issue
+    logger.warning("Continuing startup without MongoDB connection")
 
 # JWT Configuration
 JWT_SECRET = os.environ.get('JWT_SECRET')
