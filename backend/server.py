@@ -650,9 +650,346 @@ async def delete_account(current_user: dict = Depends(get_current_user)):
     
     await db.persons.delete_many({"user_id": user_id})
     await db.family_links.delete_many({"user_id": user_id})
+    await db.collaborators.delete_many({"$or": [{"tree_owner_id": user_id}, {"user_id": user_id}]})
+    await db.contributions.delete_many({"$or": [{"tree_owner_id": user_id}, {"contributor_id": user_id}]})
+    await db.notifications.delete_many({"user_id": user_id})
     await db.users.delete_one({"_id": current_user['_id']})
     
     return {"message": "Account and all data deleted successfully"}
+
+# ===================== COLLABORATION ROUTES =====================
+
+@api_router.post("/collaborators/invite", response_model=CollaboratorResponse)
+async def invite_collaborator(invite: CollaboratorInvite, current_user: dict = Depends(get_current_user)):
+    """Invite someone to collaborate on your family tree"""
+    user_id = str(current_user['_id'])
+    
+    # Check if already invited
+    existing = await db.collaborators.find_one({
+        "tree_owner_id": user_id,
+        "email": invite.email
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="This person has already been invited")
+    
+    # Check if inviting yourself
+    if invite.email == current_user['email']:
+        raise HTTPException(status_code=400, detail="You cannot invite yourself")
+    
+    # Check if the email is registered
+    invited_user = await db.users.find_one({"email": invite.email})
+    
+    # Create invitation token
+    invite_token = str(uuid.uuid4())
+    
+    collaborator_doc = {
+        "tree_owner_id": user_id,
+        "user_id": str(invited_user['_id']) if invited_user else None,
+        "email": invite.email,
+        "role": invite.role,
+        "status": "accepted" if invited_user else "pending",  # Auto-accept if user exists
+        "invite_token": invite_token,
+        "invited_at": datetime.utcnow(),
+        "accepted_at": datetime.utcnow() if invited_user else None
+    }
+    
+    result = await db.collaborators.insert_one(collaborator_doc)
+    collaborator_doc['_id'] = result.inserted_id
+    collaborator_doc = serialize_object_id(collaborator_doc)
+    
+    # Create notification for the invited user if they exist
+    if invited_user:
+        owner_name = f"{current_user['first_name']} {current_user['last_name']}"
+        await db.notifications.insert_one({
+            "user_id": str(invited_user['_id']),
+            "type": "collaboration_invite",
+            "title": "Nouvelle invitation",
+            "message": f"{owner_name} vous a invité à collaborer sur son arbre généalogique",
+            "data": {"tree_owner_id": user_id, "collaborator_id": collaborator_doc['id']},
+            "read": False,
+            "created_at": datetime.utcnow()
+        })
+    
+    return CollaboratorResponse(
+        id=collaborator_doc['id'],
+        tree_owner_id=collaborator_doc['tree_owner_id'],
+        user_id=collaborator_doc.get('user_id'),
+        email=collaborator_doc['email'],
+        role=collaborator_doc['role'],
+        status=collaborator_doc['status'],
+        invited_at=collaborator_doc['invited_at'],
+        accepted_at=collaborator_doc.get('accepted_at')
+    )
+
+@api_router.get("/collaborators", response_model=List[CollaboratorResponse])
+async def get_collaborators(current_user: dict = Depends(get_current_user)):
+    """Get all collaborators for your tree"""
+    user_id = str(current_user['_id'])
+    collaborators = await db.collaborators.find({"tree_owner_id": user_id}).to_list(100)
+    return [CollaboratorResponse(
+        id=str(c['_id']),
+        tree_owner_id=c['tree_owner_id'],
+        user_id=c.get('user_id'),
+        email=c['email'],
+        role=c['role'],
+        status=c['status'],
+        invited_at=c['invited_at'],
+        accepted_at=c.get('accepted_at')
+    ) for c in collaborators]
+
+@api_router.get("/collaborators/shared-with-me")
+async def get_trees_shared_with_me(current_user: dict = Depends(get_current_user)):
+    """Get trees that others have shared with you"""
+    user_id = str(current_user['_id'])
+    collaborations = await db.collaborators.find({
+        "user_id": user_id,
+        "status": "accepted"
+    }).to_list(100)
+    
+    result = []
+    for collab in collaborations:
+        owner = await db.users.find_one({"_id": ObjectId(collab['tree_owner_id'])})
+        if owner:
+            persons_count = await db.persons.count_documents({"user_id": collab['tree_owner_id']})
+            result.append({
+                "id": str(collab['_id']),
+                "owner_id": collab['tree_owner_id'],
+                "owner_name": f"{owner['first_name']} {owner['last_name']}",
+                "owner_email": owner['email'],
+                "role": collab['role'],
+                "persons_count": persons_count,
+                "accepted_at": collab.get('accepted_at')
+            })
+    
+    return result
+
+@api_router.delete("/collaborators/{collaborator_id}")
+async def remove_collaborator(collaborator_id: str, current_user: dict = Depends(get_current_user)):
+    """Remove a collaborator from your tree"""
+    user_id = str(current_user['_id'])
+    
+    result = await db.collaborators.delete_one({
+        "_id": ObjectId(collaborator_id),
+        "tree_owner_id": user_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Collaborator not found")
+    
+    return {"message": "Collaborator removed successfully"}
+
+@api_router.get("/tree/shared/{owner_id}", response_model=TreeResponse)
+async def get_shared_tree(owner_id: str, current_user: dict = Depends(get_current_user)):
+    """Get a shared tree that you have access to"""
+    user_id = str(current_user['_id'])
+    
+    # Check if user has access
+    collaboration = await db.collaborators.find_one({
+        "tree_owner_id": owner_id,
+        "user_id": user_id,
+        "status": "accepted"
+    })
+    
+    if not collaboration:
+        raise HTTPException(status_code=403, detail="You don't have access to this tree")
+    
+    persons = await db.persons.find({"user_id": owner_id}).to_list(500)
+    links = await db.family_links.find({"user_id": owner_id}).to_list(500)
+    
+    return TreeResponse(
+        persons=[PersonResponse(**serialize_object_id(p)) for p in persons],
+        links=[FamilyLinkResponse(**serialize_object_id(l)) for l in links]
+    )
+
+# ===================== CONTRIBUTIONS ROUTES =====================
+
+@api_router.post("/contributions", response_model=ContributionResponse)
+async def create_contribution(contribution: ContributionCreate, owner_id: str, current_user: dict = Depends(get_current_user)):
+    """Create a contribution (modification request) for a shared tree"""
+    user_id = str(current_user['_id'])
+    
+    # Check if user has editor access
+    collaboration = await db.collaborators.find_one({
+        "tree_owner_id": owner_id,
+        "user_id": user_id,
+        "status": "accepted",
+        "role": "editor"
+    })
+    
+    if not collaboration:
+        raise HTTPException(status_code=403, detail="You don't have editor access to this tree")
+    
+    contributor_name = f"{current_user['first_name']} {current_user['last_name']}"
+    
+    contribution_doc = {
+        "tree_owner_id": owner_id,
+        "contributor_id": user_id,
+        "contributor_name": contributor_name,
+        "action": contribution.action,
+        "entity_type": contribution.entity_type,
+        "entity_id": contribution.entity_id,
+        "entity_data": contribution.entity_data,
+        "status": "pending",
+        "created_at": datetime.utcnow(),
+        "reviewed_at": None,
+        "review_note": None
+    }
+    
+    result = await db.contributions.insert_one(contribution_doc)
+    contribution_doc['_id'] = result.inserted_id
+    contribution_doc = serialize_object_id(contribution_doc)
+    
+    # Notify the tree owner
+    await db.notifications.insert_one({
+        "user_id": owner_id,
+        "type": "new_contribution",
+        "title": "Nouvelle contribution",
+        "message": f"{contributor_name} a proposé une modification à votre arbre",
+        "data": {"contribution_id": contribution_doc['id']},
+        "read": False,
+        "created_at": datetime.utcnow()
+    })
+    
+    return ContributionResponse(**contribution_doc)
+
+@api_router.get("/contributions/pending", response_model=List[ContributionResponse])
+async def get_pending_contributions(current_user: dict = Depends(get_current_user)):
+    """Get all pending contributions for your tree"""
+    user_id = str(current_user['_id'])
+    
+    contributions = await db.contributions.find({
+        "tree_owner_id": user_id,
+        "status": "pending"
+    }).to_list(100)
+    
+    return [ContributionResponse(**serialize_object_id(c)) for c in contributions]
+
+@api_router.get("/contributions/my", response_model=List[ContributionResponse])
+async def get_my_contributions(current_user: dict = Depends(get_current_user)):
+    """Get all contributions you've made to other trees"""
+    user_id = str(current_user['_id'])
+    
+    contributions = await db.contributions.find({
+        "contributor_id": user_id
+    }).sort("created_at", -1).to_list(100)
+    
+    return [ContributionResponse(**serialize_object_id(c)) for c in contributions]
+
+@api_router.post("/contributions/{contribution_id}/review")
+async def review_contribution(contribution_id: str, review: ContributionReview, current_user: dict = Depends(get_current_user)):
+    """Approve or reject a contribution"""
+    user_id = str(current_user['_id'])
+    
+    contribution = await db.contributions.find_one({
+        "_id": ObjectId(contribution_id),
+        "tree_owner_id": user_id,
+        "status": "pending"
+    })
+    
+    if not contribution:
+        raise HTTPException(status_code=404, detail="Contribution not found or already reviewed")
+    
+    # If approved, apply the change
+    if review.status == "approved":
+        if contribution['action'] == "add" and contribution['entity_type'] == "person":
+            person_data = contribution['entity_data']
+            person_data['user_id'] = user_id
+            person_data['created_at'] = datetime.utcnow()
+            person_data['is_preview'] = False
+            await db.persons.insert_one(person_data)
+        
+        elif contribution['action'] == "add" and contribution['entity_type'] == "link":
+            link_data = contribution['entity_data']
+            link_data['user_id'] = user_id
+            link_data['created_at'] = datetime.utcnow()
+            await db.family_links.insert_one(link_data)
+        
+        elif contribution['action'] == "edit" and contribution['entity_type'] == "person":
+            await db.persons.update_one(
+                {"_id": ObjectId(contribution['entity_id']), "user_id": user_id},
+                {"$set": contribution['entity_data']}
+            )
+        
+        elif contribution['action'] == "delete" and contribution['entity_type'] == "person":
+            await db.persons.delete_one({"_id": ObjectId(contribution['entity_id']), "user_id": user_id})
+            await db.family_links.delete_many({
+                "$or": [
+                    {"person_id_1": contribution['entity_id']},
+                    {"person_id_2": contribution['entity_id']}
+                ],
+                "user_id": user_id
+            })
+    
+    # Update contribution status
+    await db.contributions.update_one(
+        {"_id": ObjectId(contribution_id)},
+        {"$set": {
+            "status": review.status,
+            "reviewed_at": datetime.utcnow(),
+            "review_note": review.note
+        }}
+    )
+    
+    # Notify contributor
+    status_text = "approuvée" if review.status == "approved" else "refusée"
+    await db.notifications.insert_one({
+        "user_id": contribution['contributor_id'],
+        "type": "contribution_reviewed",
+        "title": f"Contribution {status_text}",
+        "message": f"Votre contribution a été {status_text}" + (f": {review.note}" if review.note else ""),
+        "data": {"contribution_id": contribution_id, "status": review.status},
+        "read": False,
+        "created_at": datetime.utcnow()
+    })
+    
+    return {"message": f"Contribution {review.status}", "contribution_id": contribution_id}
+
+# ===================== NOTIFICATIONS ROUTES =====================
+
+@api_router.get("/notifications", response_model=List[NotificationResponse])
+async def get_notifications(current_user: dict = Depends(get_current_user)):
+    """Get all notifications for the current user"""
+    user_id = str(current_user['_id'])
+    
+    notifications = await db.notifications.find({
+        "user_id": user_id
+    }).sort("created_at", -1).to_list(50)
+    
+    return [NotificationResponse(**serialize_object_id(n)) for n in notifications]
+
+@api_router.get("/notifications/unread-count")
+async def get_unread_count(current_user: dict = Depends(get_current_user)):
+    """Get count of unread notifications"""
+    user_id = str(current_user['_id'])
+    count = await db.notifications.count_documents({"user_id": user_id, "read": False})
+    return {"unread_count": count}
+
+@api_router.put("/notifications/{notification_id}/read")
+async def mark_notification_read(notification_id: str, current_user: dict = Depends(get_current_user)):
+    """Mark a notification as read"""
+    user_id = str(current_user['_id'])
+    
+    result = await db.notifications.update_one(
+        {"_id": ObjectId(notification_id), "user_id": user_id},
+        {"$set": {"read": True}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    
+    return {"message": "Notification marked as read"}
+
+@api_router.put("/notifications/read-all")
+async def mark_all_notifications_read(current_user: dict = Depends(get_current_user)):
+    """Mark all notifications as read"""
+    user_id = str(current_user['_id'])
+    
+    await db.notifications.update_many(
+        {"user_id": user_id, "read": False},
+        {"$set": {"read": True}}
+    )
+    
+    return {"message": "All notifications marked as read"}
 
 # ===================== HEALTH CHECK =====================
 
