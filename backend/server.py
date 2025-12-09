@@ -562,8 +562,8 @@ async def export_user_data(current_user: dict = Depends(get_current_user)):
     """Export all user data for GDPR compliance"""
     user_id = str(current_user['_id'])
     
-    persons = await db.persons.find({"user_id": user_id}).to_list(1000)
-    links = await db.family_links.find({"user_id": user_id}).to_list(1000)
+    persons = await db.persons.find({"user_id": user_id}).to_list(None)
+    links = await db.family_links.find({"user_id": user_id}).to_list(None)
     
     user_data = serialize_object_id(current_user.copy())
     if 'password_hash' in user_data:
