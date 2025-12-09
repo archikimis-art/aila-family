@@ -1067,6 +1067,17 @@ async def startup_db_client():
         await db.family_links.create_index("user_id")
         await db.preview_sessions.create_index("session_token", unique=True)
         await db.preview_sessions.create_index("expires_at", expireAfterSeconds=0)
+        
+        # Collaboration indexes
+        await db.collaborators.create_index("tree_owner_id")
+        await db.collaborators.create_index("user_id")
+        await db.collaborators.create_index("email")
+        await db.contributions.create_index("tree_owner_id")
+        await db.contributions.create_index("contributor_id")
+        await db.contributions.create_index("status")
+        await db.notifications.create_index("user_id")
+        await db.notifications.create_index([("user_id", 1), ("read", 1)])
+        
         logger.info("Database indexes created")
     except Exception as e:
         logger.error(f"Failed to connect to MongoDB: {e}")
