@@ -82,3 +82,29 @@ export const gdprAPI = {
   exportData: () => api.get('/gdpr/export'),
   deleteAccount: () => api.delete('/gdpr/delete-account'),
 };
+
+// Collaboration APIs
+export const collaboratorsAPI = {
+  invite: (email: string, role: string = 'editor') => 
+    api.post('/collaborators/invite', { email, role }),
+  getAll: () => api.get('/collaborators'),
+  getSharedWithMe: () => api.get('/collaborators/shared-with-me'),
+  remove: (id: string) => api.delete(`/collaborators/${id}`),
+  getSharedTree: (ownerId: string) => api.get(`/tree/shared/${ownerId}`),
+};
+
+export const contributionsAPI = {
+  create: (ownerId: string, data: { action: string; entity_type: string; entity_id?: string; entity_data?: any }) =>
+    api.post(`/contributions?owner_id=${ownerId}`, data),
+  getPending: () => api.get('/contributions/pending'),
+  getMy: () => api.get('/contributions/my'),
+  review: (id: string, status: string, note?: string) =>
+    api.post(`/contributions/${id}/review`, { status, note }),
+};
+
+export const notificationsAPI = {
+  getAll: () => api.get('/notifications'),
+  getUnreadCount: () => api.get('/notifications/unread-count'),
+  markRead: (id: string) => api.put(`/notifications/${id}/read`),
+  markAllRead: () => api.put('/notifications/read-all'),
+};
