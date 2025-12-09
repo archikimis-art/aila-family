@@ -127,7 +127,15 @@ export default function ProfileScreen() {
           </View>
           {user ? (
             <>
-              <Text style={styles.userName}>{user.first_name} {user.last_name}</Text>
+              <View style={styles.userNameContainer}>
+                <Text style={styles.userName}>{user.first_name} {user.last_name}</Text>
+                {isAdmin() && (
+                  <View style={styles.adminBadge}>
+                    <Ionicons name="shield-checkmark" size={14} color="#FFF" />
+                    <Text style={styles.adminBadgeText}>Admin</Text>
+                  </View>
+                )}
+              </View>
               <Text style={styles.userEmail}>{user.email}</Text>
             </>
           ) : (
