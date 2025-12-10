@@ -24,7 +24,7 @@ interface Person {
   gender: string;
   birth_date?: string;
   birth_place?: string;
-  algerian_branch?: string;
+  geographic_branch?: string;
 }
 
 export default function MembersScreen() {
