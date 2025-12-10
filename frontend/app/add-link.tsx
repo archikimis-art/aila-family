@@ -255,11 +255,12 @@ export default function AddLinkScreen() {
             
             return (
               <View key={category.key} style={styles.categorySection}>
-                <View style={styles.categoryHeader}>
-                  <View style={[styles.categoryIndicator, { backgroundColor: categoryLinks[0].color }]} />
-                  <Text style={styles.categoryTitle}>{category.label}</Text>
-                </View>
-                <View style={styles.linkTypeGrid}>
+                <Text style={styles.categoryTitle}>{category.label}</Text>
+                <ScrollView 
+                  horizontal 
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.linkTypeScroll}
+                >
                   {categoryLinks.map((type) => (
                     <TouchableOpacity
                       key={type.value}
@@ -271,11 +272,11 @@ export default function AddLinkScreen() {
                     >
                       <View style={[
                         styles.linkTypeIconContainer,
-                        { backgroundColor: linkType === type.value ? type.color : '#1A2F4A' }
+                        { backgroundColor: linkType === type.value ? type.color : type.color + '20' }
                       ]}>
                         <Ionicons
                           name={type.icon as any}
-                          size={20}
+                          size={24}
                           color={linkType === type.value ? '#FFFFFF' : type.color}
                         />
                       </View>
@@ -287,14 +288,9 @@ export default function AddLinkScreen() {
                       >
                         {type.label}
                       </Text>
-                      {linkType === type.value && (
-                        <View style={styles.checkmark}>
-                          <Ionicons name="checkmark-circle" size={20} color="#D4AF37" />
-                        </View>
-                      )}
                     </TouchableOpacity>
                   ))}
-                </View>
+                </ScrollView>
               </View>
             );
           })}
