@@ -1155,6 +1155,77 @@ async def mark_all_notifications_read(current_user: dict = Depends(get_current_u
     
     return {"message": "All notifications marked as read"}
 
+# ===================== CHAT ROUTES =====================
+
+@api_router.post("/chat/messages", response_model=ChatMessageResponse)
+async def send_message(
+    message_data: ChatMessageCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Send a chat message to all collaborators"""
+    user_id = str(current_user['_id'])
+    user_name = f"{current_user['first_name']} {current_user['last_name']}"
+    
+    # Prepare message document
+    message_doc = {
+        "user_id": user_id,
+        "user_name": user_name,
+        "message": message_data.message,
+        "mentioned_person_id": message_data.mentioned_person_id,
+        "mentioned_person_name": None,
+        "created_at": datetime.utcnow()
+    }
+    
+    # If a person is mentioned, get their name
+    if message_data.mentioned_person_id:
+        try:
+            person = await db.persons.find_one({"_id": ObjectId(message_data.mentioned_person_id)})
+            if person:
+                message_doc["mentioned_person_name"] = f"{person['first_name']} {person['last_name']}"
+        except:
+            pass
+    
+    # Insert message
+    result = await db.chat_messages.insert_one(message_doc)
+    message_doc['_id'] = result.inserted_id
+    
+    return ChatMessageResponse(**serialize_object_id(message_doc))
+
+@api_router.get("/chat/messages", response_model=List[ChatMessageResponse])
+async def get_messages(
+    limit: int = 50,
+    skip: int = 0,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get chat messages (latest first)"""
+    messages = await db.chat_messages.find().sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    
+    # Reverse to show oldest first
+    messages.reverse()
+    
+    return [ChatMessageResponse(**serialize_object_id(m)) for m in messages]
+
+@api_router.delete("/chat/messages/{message_id}")
+async def delete_message(
+    message_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Delete a chat message (only your own messages or if admin)"""
+    user_id = str(current_user['_id'])
+    is_admin = current_user.get('role') == 'admin'
+    
+    message = await db.chat_messages.find_one({"_id": ObjectId(message_id)})
+    if not message:
+        raise HTTPException(status_code=404, detail="Message not found")
+    
+    # Check permissions
+    if not is_admin and message['user_id'] != user_id:
+        raise HTTPException(status_code=403, detail="You can only delete your own messages")
+    
+    await db.chat_messages.delete_one({"_id": ObjectId(message_id)})
+    
+    return {"message": "Message deleted successfully"}
+
 # ===================== HEALTH CHECK =====================
 
 @api_router.get("/")
