@@ -651,7 +651,7 @@ async def get_preview_session(session_token: str):
         death_place=p.get('death_place'),
         photo=p.get('photo'),
         notes=p.get('notes'),
-        algerian_branch=p.get('algerian_branch'),
+        geographic_branch=p.get('geographic_branch'),
         created_at=p.get('created_at', datetime.utcnow()),
         is_preview=True
     ) for p in session.get('persons', [])]
