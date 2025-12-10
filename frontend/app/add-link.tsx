@@ -504,17 +504,13 @@ const styles = StyleSheet.create({
   },
   linkTypeText: {
     color: '#B8C5D6',
-    fontSize: 14,
-    flex: 1,
+    fontSize: 12,
+    fontWeight: '500',
+    textAlign: 'center',
   },
   linkTypeTextActive: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  checkmark: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
+    color: '#D4AF37',
+    fontWeight: '700',
   },
   linkDescription: {
     color: '#6B7C93',
