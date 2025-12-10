@@ -58,7 +58,7 @@ export default function AddPersonScreen() {
         birth_place: birthPlace || null,
         death_date: deathDate || null,
         death_place: deathPlace || null,
-        algerian_branch: algerianBranch || null,
+        geographic_branch: geographicBranch || null,
         notes: notes || null,
       };
 
