@@ -57,6 +57,30 @@ const CATEGORIES = [
   { key: 'spiritual', label: 'Liens spirituels' },
 ];
 
+// Helper function to get relationship description for preview
+const getRelationshipDescription = (linkType: string): string => {
+  const relationMap: { [key: string]: string } = {
+    'parent': 'parent de',
+    'child': 'enfant de',
+    'spouse': 'époux/épouse de',
+    'sibling': 'frère/sœur de',
+    'grandparent': 'grand-parent de',
+    'grandchild': 'petit-enfant de',
+    'uncle_aunt': 'oncle/tante de',
+    'nephew_niece': 'neveu/nièce de',
+    'cousin': 'cousin/cousine de',
+    'step_parent': 'beau-parent de',
+    'step_child': 'beau-fils/fille de',
+    'parent_in_law': 'beau-père/mère de',
+    'child_in_law': 'gendre/belle-fille de',
+    'sibling_in_law': 'beau-frère/sœur de',
+    'godparent': 'parrain/marraine de',
+    'godchild': 'filleul(e) de',
+  };
+  
+  return relationMap[linkType] || 'lié(e) à';
+};
+
 export default function AddLinkScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
