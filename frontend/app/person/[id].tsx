@@ -23,7 +23,7 @@ interface Person {
   birth_place?: string;
   death_date?: string;
   death_place?: string;
-  algerian_branch?: string;
+  geographic_branch?: string;
   notes?: string;
 }
 
