@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   sloganLine1: {
     fontSize: 19,
-    color: '#B8C5D6',
+    color: '#D4AF37',
     fontWeight: '400',
     fontStyle: 'italic',
     letterSpacing: 0.5,
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   sloganLine2: {
     fontSize: 19,
-    color: '#B8C5D6',
+    color: '#D4AF37',
     fontWeight: '400',
     fontStyle: 'italic',
     letterSpacing: 0.5,
