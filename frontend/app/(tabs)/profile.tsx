@@ -232,6 +232,25 @@ export default function ProfileScreen() {
           )}
         </View>
 
+        {/* Support Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Support & Contact</Text>
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => {
+              Alert.alert(
+                'Nous contacter',
+                'Pour toute question, suggestion ou problème :\n\ncontact@aila.family\n\nNous vous répondrons dans les plus brefs délais.',
+                [{ text: 'OK' }]
+              );
+            }}
+          >
+            <Ionicons name="mail-outline" size={22} color="#4A90D9" />
+            <Text style={styles.menuItemText}>Nous contacter</Text>
+            <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+          </TouchableOpacity>
+        </View>
+
         {/* Info Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Informations</Text>
@@ -240,6 +259,12 @@ export default function ProfileScreen() {
             <Text style={styles.infoText}>
               AÏLA est une application de généalogie pour préserver et partager l'histoire de votre famille.
               Vos données sont stockées de manière sécurisée et vous en gardez le contrôle total.
+            </Text>
+          </View>
+          <View style={[styles.infoCard, { marginTop: 12 }]}>
+            <Ionicons name="at-outline" size={20} color="#D4AF37" />
+            <Text style={styles.infoText}>
+              Contact : contact@aila.family
             </Text>
           </View>
         </View>
