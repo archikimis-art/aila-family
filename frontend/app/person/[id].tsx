@@ -278,7 +278,7 @@ export default function PersonDetailScreen() {
               {person.geographic_branch && (
                 <View style={styles.branchBadge}>
                   <Ionicons name="location" size={14} color="#D4AF37" />
-                  <Text style={styles.branchText}>{person.algerian_branch}</Text>
+                  <Text style={styles.branchText}>{person.geographic_branch}</Text>
                 </View>
               )}
             </>
