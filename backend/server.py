@@ -140,7 +140,7 @@ class PersonCreate(BaseModel):
     death_place: Optional[str] = None
     photo: Optional[str] = None  # base64
     notes: Optional[str] = None
-    algerian_branch: Optional[str] = None  # wilaya/region
+    geographic_branch: Optional[str] = None  # région/zone géographique
 
 class PersonUpdate(BaseModel):
     first_name: Optional[str] = None
