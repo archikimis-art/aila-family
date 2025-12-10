@@ -49,7 +49,11 @@ export default function WelcomeScreen() {
         <View style={styles.logoContainer}>
           <Ionicons name="leaf" size={80} color="#D4AF37" />
           <Text style={styles.title}>AÏLA</Text>
-          <Text style={styles.subtitle}>L'arbre généalogique qui connecte votre famille</Text>
+          <View style={styles.sloganContainer}>
+            <Text style={styles.sloganLine1}>L'arbre généalogique</Text>
+            <Text style={styles.sloganLine2}>qui connecte</Text>
+            <Text style={styles.sloganLine3}>votre famille</Text>
+          </View>
         </View>
 
         {/* Features */}
