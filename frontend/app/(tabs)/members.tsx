@@ -127,9 +127,9 @@ export default function MembersScreen() {
               <Ionicons name="calendar-outline" size={12} color="#6B7C93" /> {item.birth_date}
             </Text>
           )}
-          {item.algerian_branch && (
+          {item.geographic_branch && (
             <Text style={styles.personBranch}>
-              <Ionicons name="location-outline" size={12} color="#D4AF37" /> {item.algerian_branch}
+              <Ionicons name="location-outline" size={12} color="#D4AF37" /> {item.geographic_branch}
             </Text>
           )}
         </View>
