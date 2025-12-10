@@ -20,41 +20,11 @@ interface Person {
   gender: string;
 }
 
-// Extended family relationship types
+// Simple family relationship types
 const LINK_TYPES = [
-  // Relations directes
-  { value: 'parent', label: 'Parent', icon: 'arrow-up', color: '#4A90D9', category: 'direct' },
-  { value: 'child', label: 'Enfant', icon: 'arrow-down', color: '#4A90D9', category: 'direct' },
-  { value: 'spouse', label: 'Époux/Épouse', icon: 'heart', color: '#D94A8C', category: 'direct' },
-  { value: 'sibling', label: 'Frère/Sœur', icon: 'people', color: '#4CAF50', category: 'direct' },
-  
-  // Grands-parents
-  { value: 'grandparent', label: 'Grand-parent', icon: 'arrow-up', color: '#9C27B0', category: 'extended' },
-  { value: 'grandchild', label: 'Petit-enfant', icon: 'arrow-down', color: '#9C27B0', category: 'extended' },
-  
-  // Oncles/Tantes
-  { value: 'uncle_aunt', label: 'Oncle/Tante', icon: 'person', color: '#FF9800', category: 'extended' },
-  { value: 'nephew_niece', label: 'Neveu/Nièce', icon: 'person', color: '#FF9800', category: 'extended' },
-  { value: 'cousin', label: 'Cousin/Cousine', icon: 'people', color: '#00BCD4', category: 'extended' },
-  
-  // Belle-famille
-  { value: 'step_parent', label: 'Beau-parent', icon: 'arrow-up', color: '#607D8B', category: 'step' },
-  { value: 'step_child', label: 'Beau-fils/fille', icon: 'arrow-down', color: '#607D8B', category: 'step' },
-  { value: 'parent_in_law', label: 'Beau-père/mère', icon: 'people', color: '#795548', category: 'inlaw' },
-  { value: 'child_in_law', label: 'Gendre/Belle-fille', icon: 'people', color: '#795548', category: 'inlaw' },
-  { value: 'sibling_in_law', label: 'Beau-frère/sœur', icon: 'people', color: '#795548', category: 'inlaw' },
-  
-  // Spirituel
-  { value: 'godparent', label: 'Parrain/Marraine', icon: 'star', color: '#D4AF37', category: 'spiritual' },
-  { value: 'godchild', label: 'Filleul(e)', icon: 'star-outline', color: '#D4AF37', category: 'spiritual' },
-];
-
-const CATEGORIES = [
-  { key: 'direct', label: 'Relations directes' },
-  { key: 'extended', label: 'Famille étendue' },
-  { key: 'step', label: 'Famille recomposée' },
-  { key: 'inlaw', label: 'Belle-famille' },
-  { key: 'spiritual', label: 'Liens spirituels' },
+  { value: 'parent', label: 'Parent', icon: 'arrow-up', color: '#4A90D9' },
+  { value: 'child', label: 'Enfant', icon: 'arrow-down', color: '#4A90D9' },
+  { value: 'spouse', label: 'Époux / Épouse', icon: 'heart', color: '#D94A8C' },
 ];
 
 // Helper function to get relationship description for preview
@@ -63,19 +33,6 @@ const getRelationshipDescription = (linkType: string): string => {
     'parent': 'parent de',
     'child': 'enfant de',
     'spouse': 'époux/épouse de',
-    'sibling': 'frère/sœur de',
-    'grandparent': 'grand-parent de',
-    'grandchild': 'petit-enfant de',
-    'uncle_aunt': 'oncle/tante de',
-    'nephew_niece': 'neveu/nièce de',
-    'cousin': 'cousin/cousine de',
-    'step_parent': 'beau-parent de',
-    'step_child': 'beau-fils/fille de',
-    'parent_in_law': 'beau-père/mère de',
-    'child_in_law': 'gendre/belle-fille de',
-    'sibling_in_law': 'beau-frère/sœur de',
-    'godparent': 'parrain/marraine de',
-    'godchild': 'filleul(e) de',
   };
   
   return relationMap[linkType] || 'lié(e) à';
