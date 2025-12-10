@@ -245,8 +245,8 @@ export default function AddPersonScreen() {
               onPress={() => setShowWilayaList(!showWilayaList)}
             >
               <Ionicons name="location-outline" size={20} color="#D4AF37" />
-              <Text style={[styles.selectText, algerianBranch && { color: '#FFFFFF' }]}>
-                {algerianBranch || 'Sélectionner une wilaya'}
+              <Text style={[styles.selectText, geographicBranch && { color: '#FFFFFF' }]}>
+                {geographicBranch || 'Sélectionner une wilaya'}
               </Text>
               <Ionicons
                 name={showWilayaList ? 'chevron-up' : 'chevron-down'}
@@ -262,7 +262,7 @@ export default function AddPersonScreen() {
                       key={wilaya}
                       style={[
                         styles.wilayaItem,
-                        algerianBranch === wilaya && styles.wilayaItemActive,
+                        geographicBranch === wilaya && styles.wilayaItemActive,
                       ]}
                       onPress={() => {
                         setAlgerianBranch(wilaya);
@@ -272,7 +272,7 @@ export default function AddPersonScreen() {
                       <Text
                         style={[
                           styles.wilayaText,
-                          algerianBranch === wilaya && styles.wilayaTextActive,
+                          geographicBranch === wilaya && styles.wilayaTextActive,
                         ]}
                       >
                         {wilaya}
