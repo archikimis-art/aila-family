@@ -247,6 +247,19 @@ class NotificationResponse(BaseModel):
     read: bool
     created_at: datetime
 
+class ChatMessageCreate(BaseModel):
+    message: str
+    mentioned_person_id: Optional[str] = None  # ID d'une personne de l'arbre mentionnée
+
+class ChatMessageResponse(BaseModel):
+    id: str
+    user_id: str
+    user_name: str  # Prénom + Nom de l'expéditeur
+    message: str
+    mentioned_person_id: Optional[str] = None
+    mentioned_person_name: Optional[str] = None
+    created_at: datetime
+
 # ===================== HELPERS =====================
 
 def hash_password(password: str) -> str:
