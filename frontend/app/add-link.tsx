@@ -226,55 +226,44 @@ export default function AddLinkScreen() {
           person2?.id
         )}
 
-        {/* Link Type */}
+        {/* Link Type - Horizontal Simple */}
         <View style={styles.section}>
           <Text style={styles.label}>Type de relation</Text>
-          
-          {CATEGORIES.map((category) => {
-            const categoryLinks = LINK_TYPES.filter((link) => link.category === category.key);
-            if (categoryLinks.length === 0) return null;
-            
-            return (
-              <View key={category.key} style={styles.categorySection}>
-                <Text style={styles.categoryTitle}>{category.label}</Text>
-                <ScrollView 
-                  horizontal 
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.linkTypeScroll}
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.linkTypeScrollHorizontal}
+          >
+            {LINK_TYPES.map((type) => (
+              <TouchableOpacity
+                key={type.value}
+                style={[
+                  styles.linkTypeCard,
+                  linkType === type.value && styles.linkTypeCardActive,
+                ]}
+                onPress={() => setLinkType(type.value)}
+              >
+                <View style={[
+                  styles.linkTypeIconContainer,
+                  { backgroundColor: linkType === type.value ? type.color : type.color + '20' }
+                ]}>
+                  <Ionicons
+                    name={type.icon as any}
+                    size={28}
+                    color={linkType === type.value ? '#FFFFFF' : type.color}
+                  />
+                </View>
+                <Text
+                  style={[
+                    styles.linkTypeText,
+                    linkType === type.value && styles.linkTypeTextActive,
+                  ]}
                 >
-                  {categoryLinks.map((type) => (
-                    <TouchableOpacity
-                      key={type.value}
-                      style={[
-                        styles.linkTypeCard,
-                        linkType === type.value && styles.linkTypeCardActive,
-                      ]}
-                      onPress={() => setLinkType(type.value)}
-                    >
-                      <View style={[
-                        styles.linkTypeIconContainer,
-                        { backgroundColor: linkType === type.value ? type.color : type.color + '20' }
-                      ]}>
-                        <Ionicons
-                          name={type.icon as any}
-                          size={24}
-                          color={linkType === type.value ? '#FFFFFF' : type.color}
-                        />
-                      </View>
-                      <Text
-                        style={[
-                          styles.linkTypeText,
-                          linkType === type.value && styles.linkTypeTextActive,
-                        ]}
-                      >
-                        {type.label}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            );
-          })}
+                  {type.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </View>
 
         {/* Person 2 */}
