@@ -37,7 +37,7 @@ export default function AddPersonScreen() {
   const [birthPlace, setBirthPlace] = useState('');
   const [deathDate, setDeathDate] = useState('');
   const [deathPlace, setDeathPlace] = useState('');
-  const [algerianBranch, setAlgerianBranch] = useState('');
+  const [geographicBranch, setGeographicBranch] = useState('');
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [showWilayaList, setShowWilayaList] = useState(false);
