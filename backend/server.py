@@ -821,6 +821,129 @@ async def delete_account(current_user: dict = Depends(get_current_user)):
     
     return {"message": "Account and all data deleted successfully"}
 
+# ===================== TREE EXPORT ROUTES =====================
+
+@api_router.get("/tree/export/json")
+async def export_tree_json(current_user: dict = Depends(get_current_user)):
+    """Export family tree as JSON file (downloadable)"""
+    from fastapi.responses import Response
+    import json
+    
+    user_id = str(current_user['_id'])
+    
+    # Get all tree data
+    persons = await db.persons.find({"user_id": user_id}).to_list(500)
+    links = await db.family_links.find({"user_id": user_id}).to_list(500)
+    
+    tree_data = {
+        "app": "AÏLA Family Tree",
+        "version": "1.0",
+        "exported_at": datetime.utcnow().isoformat(),
+        "exported_by": f"{current_user['first_name']} {current_user['last_name']}",
+        "persons": [serialize_object_id(p) for p in persons],
+        "family_links": [serialize_object_id(l) for l in links],
+        "stats": {
+            "total_persons": len(persons),
+            "total_links": len(links)
+        }
+    }
+    
+    json_content = json.dumps(tree_data, indent=2, ensure_ascii=False)
+    
+    return Response(
+        content=json_content,
+        media_type="application/json",
+        headers={
+            "Content-Disposition": f"attachment; filename=aila_tree_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+        }
+    )
+
+@api_router.get("/tree/export/gedcom")
+async def export_tree_gedcom(current_user: dict = Depends(get_current_user)):
+    """Export family tree as GEDCOM file (genealogy standard format)"""
+    from fastapi.responses import Response
+    
+    user_id = str(current_user['_id'])
+    
+    # Get all tree data
+    persons = await db.persons.find({"user_id": user_id}).to_list(500)
+    links = await db.family_links.find({"user_id": user_id}).to_list(500)
+    
+    # Generate GEDCOM format
+    gedcom_lines = [
+        "0 HEAD",
+        "1 SOUR AÏLA",
+        "2 VERS 1.0",
+        "2 NAME AÏLA Family Tree",
+        "1 DEST ANY",
+        "1 DATE " + datetime.utcnow().strftime("%d %b %Y").upper(),
+        "1 CHAR UTF-8",
+        "1 GEDC",
+        "2 VERS 5.5.1",
+        "2 FORM LINEAGE-LINKED",
+    ]
+    
+    # Add persons as individuals
+    person_id_map = {}
+    for idx, person in enumerate(persons, start=1):
+        person_id_map[str(person['_id'])] = f"I{idx}"
+        
+        gedcom_lines.append(f"0 @I{idx}@ INDI")
+        gedcom_lines.append(f"1 NAME {person['first_name']} /{person['last_name']}/")
+        
+        if person.get('gender'):
+            gender_code = 'M' if person['gender'] == 'male' else 'F'
+            gedcom_lines.append(f"1 SEX {gender_code}")
+        
+        if person.get('birth_date'):
+            gedcom_lines.append(f"1 BIRT")
+            gedcom_lines.append(f"2 DATE {person['birth_date']}")
+        
+        if person.get('birth_place'):
+            if not person.get('birth_date'):
+                gedcom_lines.append(f"1 BIRT")
+            gedcom_lines.append(f"2 PLAC {person['birth_place']}")
+        
+        if person.get('death_date'):
+            gedcom_lines.append(f"1 DEAT")
+            gedcom_lines.append(f"2 DATE {person['death_date']}")
+    
+    # Add family links
+    family_idx = 1
+    for link in links:
+        person1_id = person_id_map.get(str(link['person1_id']))
+        person2_id = person_id_map.get(str(link['person2_id']))
+        
+        if not person1_id or not person2_id:
+            continue
+        
+        if link['link_type'] == 'spouse':
+            gedcom_lines.append(f"0 @F{family_idx}@ FAM")
+            gedcom_lines.append(f"1 HUSB @{person1_id}@")
+            gedcom_lines.append(f"1 WIFE @{person2_id}@")
+            family_idx += 1
+        elif link['link_type'] in ['parent', 'child']:
+            gedcom_lines.append(f"0 @F{family_idx}@ FAM")
+            if link['link_type'] == 'parent':
+                gedcom_lines.append(f"1 HUSB @{person1_id}@")
+                gedcom_lines.append(f"1 CHIL @{person2_id}@")
+            else:  # child
+                gedcom_lines.append(f"1 CHIL @{person1_id}@")
+                gedcom_lines.append(f"1 HUSB @{person2_id}@")
+            family_idx += 1
+    
+    gedcom_lines.append("0 TRLR")
+    
+    gedcom_content = "\n".join(gedcom_lines)
+    
+    return Response(
+        content=gedcom_content,
+        media_type="text/x-gedcom",
+        headers={
+            "Content-Disposition": f"attachment; filename=aila_tree_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.ged"
+        }
+    )
+
 # ===================== COLLABORATION ROUTES =====================
 
 @api_router.post("/collaborators/invite", response_model=CollaboratorResponse)
