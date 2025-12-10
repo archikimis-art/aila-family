@@ -108,3 +108,9 @@ export const notificationsAPI = {
   markRead: (id: string) => api.put(`/notifications/${id}/read`),
   markAllRead: () => api.put('/notifications/read-all'),
 };
+
+export const chatAPI = {
+  getMessages: (limit = 50, skip = 0) => api.get(`/chat/messages?limit=${limit}&skip=${skip}`),
+  sendMessage: (data: { message: string; mentioned_person_id?: string }) => api.post('/chat/messages', data),
+  deleteMessage: (id: string) => api.delete(`/chat/messages/${id}`),
+};
