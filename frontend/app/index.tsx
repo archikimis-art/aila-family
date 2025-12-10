@@ -139,6 +139,33 @@ const styles = StyleSheet.create({
     marginTop: 8,
     letterSpacing: 1,
   },
+  sloganContainer: {
+    alignItems: 'center',
+    marginTop: 16,
+    paddingHorizontal: 20,
+  },
+  sloganLine1: {
+    fontSize: 18,
+    color: '#B8C5D6',
+    fontWeight: '400',
+    letterSpacing: 0.5,
+    textAlign: 'center',
+  },
+  sloganLine2: {
+    fontSize: 20,
+    color: '#D4AF37',
+    fontWeight: '600',
+    marginVertical: 4,
+    letterSpacing: 1,
+    textAlign: 'center',
+  },
+  sloganLine3: {
+    fontSize: 18,
+    color: '#B8C5D6',
+    fontWeight: '400',
+    letterSpacing: 0.5,
+    textAlign: 'center',
+  },
   featuresContainer: {
     marginBottom: 40,
   },
