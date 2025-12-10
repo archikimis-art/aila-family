@@ -450,7 +450,7 @@ async def create_person(person: PersonCreate, current_user: dict = Depends(get_c
         "death_place": person.death_place,
         "photo": person.photo,
         "notes": person.notes,
-        "algerian_branch": person.algerian_branch,
+        "geographic_branch": person.geographic_branch,
         "created_at": datetime.utcnow(),
         "is_preview": False
     }
@@ -692,7 +692,7 @@ async def add_preview_person(session_token: str, person: PersonCreate):
         "death_place": person.death_place,
         "photo": person.photo,
         "notes": person.notes,
-        "algerian_branch": person.algerian_branch,
+        "geographic_branch": person.geographic_branch,
         "created_at": datetime.utcnow().isoformat()
     }
     
