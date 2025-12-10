@@ -248,37 +248,56 @@ export default function AddLinkScreen() {
         {/* Link Type */}
         <View style={styles.section}>
           <Text style={styles.label}>Type de relation</Text>
-          <View style={styles.linkTypeContainer}>
-            {LINK_TYPES.map((type) => (
-              <TouchableOpacity
-                key={type.value}
-                style={[
-                  styles.linkTypeButton,
-                  linkType === type.value && styles.linkTypeButtonActive,
-                ]}
-                onPress={() => setLinkType(type.value)}
-              >
-                <Ionicons
-                  name={type.icon as any}
-                  size={24}
-                  color={linkType === type.value ? '#D4AF37' : '#6B7C93'}
-                />
-                <Text
-                  style={[
-                    styles.linkTypeText,
-                    linkType === type.value && styles.linkTypeTextActive,
-                  ]}
-                >
-                  {type.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          {LINK_TYPES.find((t) => t.value === linkType) && (
-            <Text style={styles.linkDescription}>
-              {LINK_TYPES.find((t) => t.value === linkType)?.description}
-            </Text>
-          )}
+          
+          {CATEGORIES.map((category) => {
+            const categoryLinks = LINK_TYPES.filter((link) => link.category === category.key);
+            if (categoryLinks.length === 0) return null;
+            
+            return (
+              <View key={category.key} style={styles.categorySection}>
+                <View style={styles.categoryHeader}>
+                  <View style={[styles.categoryIndicator, { backgroundColor: categoryLinks[0].color }]} />
+                  <Text style={styles.categoryTitle}>{category.label}</Text>
+                </View>
+                <View style={styles.linkTypeGrid}>
+                  {categoryLinks.map((type) => (
+                    <TouchableOpacity
+                      key={type.value}
+                      style={[
+                        styles.linkTypeCard,
+                        linkType === type.value && styles.linkTypeCardActive,
+                      ]}
+                      onPress={() => setLinkType(type.value)}
+                    >
+                      <View style={[
+                        styles.linkTypeIconContainer,
+                        { backgroundColor: linkType === type.value ? type.color : '#1A2F4A' }
+                      ]}>
+                        <Ionicons
+                          name={type.icon as any}
+                          size={20}
+                          color={linkType === type.value ? '#FFFFFF' : type.color}
+                        />
+                      </View>
+                      <Text
+                        style={[
+                          styles.linkTypeText,
+                          linkType === type.value && styles.linkTypeTextActive,
+                        ]}
+                      >
+                        {type.label}
+                      </Text>
+                      {linkType === type.value && (
+                        <View style={styles.checkmark}>
+                          <Ionicons name="checkmark-circle" size={20} color="#D4AF37" />
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            );
+          })}
         </View>
 
         {/* Person 2 */}
