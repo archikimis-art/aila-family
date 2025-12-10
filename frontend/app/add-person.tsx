@@ -239,7 +239,7 @@ export default function AddPersonScreen() {
 
           {/* Algerian Branch */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Branche algérienne</Text>
+            <Text style={styles.sectionTitle}>Branche géographique</Text>
             <TouchableOpacity
               style={styles.selectInput}
               onPress={() => setShowWilayaList(!showWilayaList)}
