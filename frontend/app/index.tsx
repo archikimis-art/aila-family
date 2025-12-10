@@ -49,7 +49,7 @@ export default function WelcomeScreen() {
         <View style={styles.logoContainer}>
           <Ionicons name="leaf" size={80} color="#D4AF37" />
           <Text style={styles.title}>AÏLA</Text>
-          <Text style={styles.subtitle}>Arbre Généalogique Algérien</Text>
+          <Text style={styles.subtitle}>Votre Arbre Généalogique</Text>
         </View>
 
         {/* Features */}
