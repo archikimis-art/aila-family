@@ -52,6 +52,11 @@ JWT_SECRET=<votre_secret>
 EXPO_PUBLIC_BACKEND_URL=<url_backend>
 ```
 
+## 📧 Contact
+
+Pour toute question, suggestion ou problème :
+**contact@aila.family**
+
 ## 📄 Licence
 
 Propriétaire - AÏLA Family Tree App
