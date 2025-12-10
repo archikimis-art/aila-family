@@ -265,7 +265,7 @@ export default function AddPersonScreen() {
                         geographicBranch === wilaya && styles.wilayaItemActive,
                       ]}
                       onPress={() => {
-                        setAlgerianBranch(wilaya);
+                        setGeographicBranch(wilaya);
                         setShowWilayaList(false);
                       }}
                     >
