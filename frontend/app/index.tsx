@@ -49,22 +49,22 @@ export default function WelcomeScreen() {
         <View style={styles.logoContainer}>
           <Ionicons name="leaf" size={80} color="#D4AF37" />
           <Text style={styles.title}>AÏLA</Text>
-          <Text style={styles.subtitle}>Votre Arbre Généalogique</Text>
+          <Text style={styles.subtitle}>L'arbre généalogique qui connecte votre famille</Text>
         </View>
 
         {/* Features */}
         <View style={styles.featuresContainer}>
           <View style={styles.featureItem}>
             <Ionicons name="git-branch-outline" size={28} color="#D4AF37" />
-            <Text style={styles.featureText}>Construisez votre arbre familial</Text>
+            <Text style={styles.featureText}>Créez votre arbre ensemble</Text>
           </View>
           <View style={styles.featureItem}>
-            <Ionicons name="people-outline" size={28} color="#D4AF37" />
-            <Text style={styles.featureText}>Collaborez avec votre famille</Text>
+            <Ionicons name="chatbubbles-outline" size={28} color="#D4AF37" />
+            <Text style={styles.featureText}>Discutez en famille</Text>
           </View>
           <View style={styles.featureItem}>
-            <Ionicons name="shield-checkmark-outline" size={28} color="#D4AF37" />
-            <Text style={styles.featureText}>Conforme RGPD</Text>
+            <Ionicons name="calendar-outline" size={28} color="#D4AF37" />
+            <Text style={styles.featureText}>Partagez vos souvenirs</Text>
           </View>
         </View>
 
