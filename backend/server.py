@@ -152,7 +152,7 @@ class PersonUpdate(BaseModel):
     death_place: Optional[str] = None
     photo: Optional[str] = None
     notes: Optional[str] = None
-    algerian_branch: Optional[str] = None
+    geographic_branch: Optional[str] = None
 
 class PersonResponse(BaseModel):
     id: str
@@ -166,7 +166,7 @@ class PersonResponse(BaseModel):
     death_place: Optional[str] = None
     photo: Optional[str] = None
     notes: Optional[str] = None
-    algerian_branch: Optional[str] = None
+    geographic_branch: Optional[str] = None
     created_at: datetime
     is_preview: bool = False
 
