@@ -59,7 +59,7 @@ export default function WelcomeScreen() {
         <View style={styles.featuresContainer}>
           <View style={styles.featureItem}>
             <Ionicons name="git-branch-outline" size={28} color="#D4AF37" />
-            <Text style={styles.featureText}>Créez votre arbre ensemble</Text>
+            <Text style={styles.featureText}>Créez votre arbre généalogique</Text>
           </View>
           <View style={styles.featureItem}>
             <Ionicons name="chatbubbles-outline" size={28} color="#D4AF37" />
