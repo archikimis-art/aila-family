@@ -1,34 +1,61 @@
-# 🌳 AÏLA - Application de Généalogie Collaborative
+# AÏLA - Arbre Généalogique Familial
 
-AÏLA est une application moderne de généalogie qui permet aux familles de créer, gérer et partager leurs arbres généalogiques de manière collaborative.
+Application collaborative de création et gestion d'arbres généalogiques.
 
-## ✨ Fonctionnalités
+## 🌳 Fonctionnalités
 
-- ✅ **Mode Aperçu** : Tester l'application sans création de compte
-- ✅ **Authentification** : Inscription et connexion sécurisées (JWT)
-- ✅ **Gestion des Membres** : Ajouter, modifier, supprimer des membres de la famille
-- ✅ **Liens Familiaux** : Relations variées (parent, enfant, époux, frère/sœur, etc.)
-- ✅ **Collaboration** : Inviter d'autres membres de la famille par email
-- ✅ **Permissions** : Système admin/membre
-- ✅ **RGPD** : Export de données personnelles conforme
+- 👥 Création et gestion de membres de la famille
+- 🔗 Relations familiales (Parent, Enfant, Époux/Épouse, Frère/Sœur)
+- 📊 Visualisation d'arbre généalogique interactif
+- 👁️ Mode aperçu sans inscription
+- 🔐 Authentification sécurisée (JWT)
+- 📱 Application mobile et web
 
-## 🏗️ Stack Technique
+## 🚀 Architecture
 
-- **Frontend** : Expo (React Native)
-- **Backend** : FastAPI (Python)
-- **Base de données** : MongoDB Atlas
-- **Déploiement** : Render + Vercel
+- **Frontend**: Expo (React Native)
+- **Backend**: FastAPI (Python)
+- **Base de données**: MongoDB
+- **Déploiement**: 
+  - Frontend: Vercel
+  - Backend: Render
+  - Database: MongoDB Atlas
 
-## 🚀 Déploiement
+## 🛠️ Installation Locale
 
-Voir [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) pour les instructions complètes.
+### Backend
 
-**URL Production** : https://aila.family
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn server:app --reload --port 8001
+```
 
-## 👨‍💻 Auteur
+### Frontend
 
-archikimis-art
+```bash
+cd frontend
+yarn install
+yarn start
+```
+
+## 🌍 Variables d'Environnement
+
+### Backend (.env)
+```
+MONGO_URL=<votre_url_mongodb>
+JWT_SECRET=<votre_secret>
+```
+
+### Frontend (.env)
+```
+EXPO_PUBLIC_BACKEND_URL=<url_backend>
+```
+
+## 📄 Licence
+
+Propriétaire - AÏLA Family Tree App
 
 ---
 
-AÏLA - Préservez et partagez l'histoire de votre famille 🌳
+Développé avec ❤️ pour préserver l'histoire familiale
