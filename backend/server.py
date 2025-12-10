@@ -747,7 +747,7 @@ async def convert_preview_to_permanent(session_token: str, current_user: dict = 
             "death_place": p.get('death_place'),
             "photo": p.get('photo'),
             "notes": p.get('notes'),
-            "algerian_branch": p.get('algerian_branch'),
+            "geographic_branch": p.get('geographic_branch'),
             "created_at": datetime.utcnow(),
             "is_preview": False
         }
