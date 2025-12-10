@@ -25,6 +25,7 @@ const LINK_TYPES = [
   { value: 'parent', label: 'Parent', icon: 'arrow-up', color: '#4A90D9' },
   { value: 'child', label: 'Enfant', icon: 'arrow-down', color: '#4A90D9' },
   { value: 'spouse', label: 'Époux / Épouse', icon: 'heart', color: '#D94A8C' },
+  { value: 'sibling', label: 'Frère / Sœur', icon: 'people', color: '#4CAF50' },
 ];
 
 // Helper function to get relationship description for preview
@@ -33,6 +34,7 @@ const getRelationshipDescription = (linkType: string): string => {
     'parent': 'parent de',
     'child': 'enfant de',
     'spouse': 'époux/épouse de',
+    'sibling': 'frère/sœur de',
   };
   
   return relationMap[linkType] || 'lié(e) à';
