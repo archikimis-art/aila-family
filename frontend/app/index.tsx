@@ -51,8 +51,7 @@ export default function WelcomeScreen() {
           <Text style={styles.title}>AÏLA</Text>
           <View style={styles.sloganContainer}>
             <Text style={styles.sloganLine1}>L'arbre généalogique</Text>
-            <Text style={styles.sloganLine2}>qui connecte</Text>
-            <Text style={styles.sloganLine3}>votre famille</Text>
+            <Text style={styles.sloganLine2}>qui connecte votre famille</Text>
           </View>
         </View>
 
