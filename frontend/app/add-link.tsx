@@ -51,8 +51,8 @@ const LINK_TYPES = [
 
 const CATEGORIES = [
   { key: 'direct', label: 'Relations directes' },
-  { key: 'extended', label: 'Famille etendue' },
-  { key: 'step', label: 'Famille recomposee' },
+  { key: 'extended', label: 'Famille étendue' },
+  { key: 'step', label: 'Famille recomposée' },
   { key: 'inlaw', label: 'Belle-famille' },
   { key: 'spiritual', label: 'Liens spirituels' },
 ];
