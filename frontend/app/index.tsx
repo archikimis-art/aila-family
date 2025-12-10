@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   featuresContainer: {
-    marginBottom: 40,
+    marginBottom: 60,
   },
   featureItem: {
     flexDirection: 'row',
