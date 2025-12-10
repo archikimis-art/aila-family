@@ -83,6 +83,11 @@ export const gdprAPI = {
   deleteAccount: () => api.delete('/gdpr/delete-account'),
 };
 
+export const exportAPI = {
+  downloadJSON: () => api.get('/tree/export/json', { responseType: 'blob' }),
+  downloadGEDCOM: () => api.get('/tree/export/gedcom', { responseType: 'blob' }),
+};
+
 // Collaboration APIs
 export const collaboratorsAPI = {
   invite: (email: string, role: string = 'editor') => 
