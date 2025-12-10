@@ -338,7 +338,7 @@ export default function AddLinkScreen() {
               <Text style={styles.previewName}>{person1.first_name} {person1.last_name}</Text>
               {' est '}
               <Text style={styles.previewRelation}>
-                {linkType === 'parent' ? 'parent de' : linkType === 'child' ? 'enfant de' : 'époux/épouse de'}
+                {getRelationshipDescription(linkType)}
               </Text>
               {' '}
               <Text style={styles.previewName}>{person2.first_name} {person2.last_name}</Text>
