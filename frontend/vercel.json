@@ -1,9 +1,20 @@
 {
-  "buildCommand": "npx expo export -p web",
+  "buildCommand": "rm -rf .expo dist node_modules/.cache && npx expo export -p web",
   "outputDirectory": "dist",
   "devCommand": "npx expo start --web",
   "installCommand": "yarn install",
   "framework": null,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
