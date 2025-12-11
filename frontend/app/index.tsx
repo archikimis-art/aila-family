@@ -261,9 +261,9 @@ const styles = StyleSheet.create({
   primaryButton: {
     backgroundColor: '#D4AF37',
     borderRadius: 16,
-    paddingVertical: 18,
+    paddingVertical: 14,
     paddingHorizontal: 24,
-    marginBottom: 16,
+    marginBottom: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
