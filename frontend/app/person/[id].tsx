@@ -418,22 +418,20 @@ export default function PersonDetailScreen() {
         </View>
 
         {/* Delete Button */}
-        {!isPreviewMode && (
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={handleDelete}
-            disabled={deleting}
-          >
-            {deleting ? (
-              <ActivityIndicator size="small" color="#FF6B6B" />
-            ) : (
-              <>
-                <Ionicons name="trash-outline" size={20} color="#FF6B6B" />
-                <Text style={styles.deleteButtonText}>Supprimer cette personne</Text>
-              </>
-            )}
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={handleDelete}
+          disabled={deleting}
+        >
+          {deleting ? (
+            <ActivityIndicator size="small" color="#FF6B6B" />
+          ) : (
+            <>
+              <Ionicons name="trash-outline" size={20} color="#FF6B6B" />
+              <Text style={styles.deleteButtonText}>Supprimer cette personne</Text>
+            </>
+          )}
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
