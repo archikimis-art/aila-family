@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#D4AF37',
     borderRadius: 16,
-    paddingVertical: 18,
+    paddingVertical: 16,
     paddingHorizontal: 24,
     marginBottom: 24,
     flexDirection: 'row',
@@ -278,11 +278,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 10,
   },
+  loginTextContainer: {
+    marginLeft: 12,
+    alignItems: 'flex-start',
+  },
+  loginSubText: {
+    color: '#8B9AAF',
+    fontSize: 12,
+  },
   loginButtonText: {
     color: '#D4AF37',
     fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 10,
+    fontWeight: '700',
+    letterSpacing: 1,
   },
   footerInline: {
     alignItems: 'center',
