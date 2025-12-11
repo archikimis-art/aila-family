@@ -206,6 +206,9 @@ const styles = StyleSheet.create({
   secondaryButton: {
     paddingVertical: 16,
     alignItems: 'center',
+    marginBottom: 16,
+    backgroundColor: 'transparent',
+    zIndex: 10,
   },
   secondaryButtonText: {
     color: '#B8C5D6',
