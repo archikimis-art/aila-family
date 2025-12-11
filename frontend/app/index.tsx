@@ -286,11 +286,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  loginTextRow: {
+    flexDirection: 'row',
+    marginLeft: 10,
+  },
   loginButtonText: {
     color: '#D4AF37',
     fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 10,
+  },
+  loginButtonTextBold: {
+    color: '#D4AF37',
+    fontSize: 16,
+    fontWeight: '700',
   },
   footerInline: {
     alignItems: 'center',
