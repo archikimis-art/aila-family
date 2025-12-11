@@ -286,6 +286,21 @@ const styles = StyleSheet.create({
   form: {
     gap: 16,
   },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 107, 107, 0.15)',
+    borderWidth: 1,
+    borderColor: '#FF6B6B',
+    borderRadius: 12,
+    padding: 14,
+    gap: 10,
+  },
+  errorText: {
+    color: '#FF6B6B',
+    fontSize: 14,
+    flex: 1,
+  },
   row: {
     flexDirection: 'row',
     gap: 12,
