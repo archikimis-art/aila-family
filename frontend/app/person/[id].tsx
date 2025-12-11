@@ -144,10 +144,17 @@ export default function PersonDetailScreen() {
           onPress: async () => {
             setDeleting(true);
             try {
-              await personsAPI.delete(personId);
+              if (isPreviewMode && previewToken) {
+                // Delete from preview session
+                await previewAPI.deletePerson(previewToken, personId);
+              } else {
+                // Delete from authenticated user's data
+                await personsAPI.delete(personId);
+              }
               Alert.alert('Succès', 'La personne a été supprimée.');
               router.back();
             } catch (error) {
+              console.error('Delete error:', error);
               Alert.alert('Erreur', 'Impossible de supprimer la personne.');
             } finally {
               setDeleting(false);
