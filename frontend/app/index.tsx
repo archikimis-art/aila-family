@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   sloganContainer: {
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 8,
     paddingHorizontal: 20,
   },
   sloganLine1: {
