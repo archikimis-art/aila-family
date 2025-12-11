@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   featuresContainer: {
-    marginBottom: isLargeScreen ? 50 : 30,
+    marginBottom: isLargeScreen ? 20 : 30,
   },
   featureItem: {
     flexDirection: 'row',
