@@ -12,11 +12,8 @@ export default function WelcomeScreen() {
   const router = useRouter();
   const { user, loading } = useAuth();
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.replace('/(tabs)/tree');
-    }
-  }, [user, loading]);
+  // Removed auto-redirect - users should explicitly navigate
+  // This prevents unwanted redirects when opening the app
 
   const handlePreviewMode = () => {
     router.push('/(tabs)/tree?preview=true');
