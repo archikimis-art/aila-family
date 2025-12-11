@@ -133,36 +133,38 @@ export default function PersonDetailScreen() {
   };
 
   const handleDelete = async () => {
-    Alert.alert(
-      'Supprimer',
-      `Êtes-vous sûr de vouloir supprimer ${person?.first_name} ${person?.last_name} ?\n\nCette action supprimera également tous les liens familiaux associés.`,
-      [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Supprimer',
-          style: 'destructive',
-          onPress: async () => {
-            setDeleting(true);
-            try {
-              if (isPreviewMode && previewToken) {
-                // Delete from preview session
-                await previewAPI.deletePerson(previewToken, personId);
-              } else {
-                // Delete from authenticated user's data
-                await personsAPI.delete(personId);
-              }
-              Alert.alert('Succès', 'La personne a été supprimée.');
-              router.back();
-            } catch (error) {
-              console.error('Delete error:', error);
-              Alert.alert('Erreur', 'Impossible de supprimer la personne.');
-            } finally {
-              setDeleting(false);
-            }
-          },
-        },
-      ]
-    );
+    // Use window.confirm for web compatibility
+    const confirmDelete = typeof window !== 'undefined' 
+      ? window.confirm(`Êtes-vous sûr de vouloir supprimer ${person?.first_name} ${person?.last_name} ?\n\nCette action supprimera également tous les liens familiaux associés.`)
+      : true;
+    
+    if (!confirmDelete) return;
+    
+    setDeleting(true);
+    try {
+      if (isPreviewMode && previewToken) {
+        // Delete from preview session
+        console.log('Deleting from preview:', previewToken, personId);
+        await previewAPI.deletePerson(previewToken, personId);
+      } else {
+        // Delete from authenticated user's data
+        console.log('Deleting from authenticated:', personId);
+        await personsAPI.delete(personId);
+      }
+      
+      // Show success and navigate back
+      if (typeof window !== 'undefined') {
+        window.alert('La personne a été supprimée avec succès.');
+      }
+      router.back();
+    } catch (error) {
+      console.error('Delete error:', error);
+      if (typeof window !== 'undefined') {
+        window.alert('Erreur: Impossible de supprimer la personne.');
+      }
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const getRelatedPersons = () => {
