@@ -286,6 +286,20 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 20,
   },
+  shareButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  shareButtonText: {
+    color: '#D4AF37',
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 8,
+  },
   footer: {
     alignItems: 'center',
     paddingBottom: 20,
