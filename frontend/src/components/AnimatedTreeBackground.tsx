@@ -336,20 +336,24 @@ const GlowParticle: React.FC<ParticleProps> = ({ x, y, delay }) => {
 const MATRIX_CHARS = '01家族樹葉根枝愛絆命';
 
 export const AnimatedTreeBackground: React.FC = () => {
-  // Tree positioned on the right side
-  const treeX = width * 0.75;
+  // Tree positioned on the right side for PC, centered for mobile
+  const treeX = isLargeScreen ? width * 0.85 : width * 0.75;
   const treeBottom = height * 0.08;
 
+  // Reduce number of elements on mobile for performance
+  const numMatrixChars = isLargeScreen ? 25 : 15;
+  const numFallingLeaves = isLargeScreen ? 20 : 12;
+
   // Matrix characters falling
-  const matrixChars = Array.from({ length: 25 }, (_, i) => ({
-    left: (i * (width / 25)) + Math.random() * 15,
+  const matrixChars = Array.from({ length: numMatrixChars }, (_, i) => ({
+    left: (i * (width / numMatrixChars)) + Math.random() * 15,
     delay: Math.random() * 6000,
     duration: 5000 + Math.random() * 4000,
     char: MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)],
   }));
 
   // Falling leaves
-  const fallingLeaves = Array.from({ length: 20 }, (_, i) => ({
+  const fallingLeaves = Array.from({ length: numFallingLeaves }, (_, i) => ({
     left: Math.random() * width,
     delay: Math.random() * 8000,
     duration: 6000 + Math.random() * 5000,
