@@ -234,17 +234,17 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flex: 1,
     justifyContent: 'flex-start',
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   previewButton: {
     backgroundColor: 'rgba(212, 175, 55, 0.1)',
     borderWidth: 2,
     borderColor: '#D4AF37',
     borderRadius: 16,
-    paddingVertical: 18,
+    paddingVertical: 14,
     paddingHorizontal: 24,
-    marginBottom: 16,
+    marginBottom: 12,
     alignItems: 'center',
   },
   previewButtonText: {
