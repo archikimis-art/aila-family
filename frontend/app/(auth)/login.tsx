@@ -23,10 +23,20 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const showError = (message: string) => {
+    setErrorMessage(message);
+    if (Platform.OS !== 'web') {
+      Alert.alert('Erreur', message);
+    }
+  };
 
   const handleLogin = async () => {
+    setErrorMessage('');
+    
     if (!email || !password) {
-      Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      showError('Veuillez remplir tous les champs');
       return;
     }
 
@@ -35,8 +45,20 @@ export default function LoginScreen() {
       await login(email, password);
       router.replace('/(tabs)/tree');
     } catch (error: any) {
-      const message = error.response?.data?.detail || 'Erreur de connexion';
-      Alert.alert('Erreur', message);
+      const detail = error.response?.data?.detail || '';
+      
+      // Messages d'erreur personnalisés
+      if (detail.includes('Invalid credentials') || detail.includes('Incorrect')) {
+        showError('Email ou mot de passe incorrect. Veuillez vérifier vos identifiants.');
+      } else if (detail.includes('not found') || detail.includes('User not found')) {
+        showError('Aucun compte trouvé avec cette adresse email. Veuillez vous inscrire.');
+      } else if (detail.includes('Invalid email')) {
+        showError('Format d\'email invalide.');
+      } else if (detail) {
+        showError(detail);
+      } else {
+        showError('Erreur de connexion. Veuillez réessayer.');
+      }
     } finally {
       setLoading(false);
     }
