@@ -301,8 +301,8 @@ const styles = StyleSheet.create({
   },
   footerInline: {
     alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 20,
+    paddingTop: 8,
+    paddingBottom: 10,
   },
   shareButton: {
     flexDirection: 'row',
