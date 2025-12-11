@@ -69,10 +69,8 @@ export default function WelcomeScreen() {
             </Pressable>
           </Link>
 
-          <Link href={'/login' as Href} asChild>
-            <Pressable style={styles.secondaryButton}>
-              <Text style={styles.secondaryButtonText}>Déjà inscrit ? Se connecter</Text>
-            </Pressable>
+          <Link href={'/login' as Href} style={styles.secondaryButton}>
+            <Text style={styles.secondaryButtonText}>Déjà inscrit ? Se connecter</Text>
           </Link>
         </View>
 
