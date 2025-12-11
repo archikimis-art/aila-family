@@ -1,15 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Dimensions } from 'react-native';
-import { Link, Href } from 'expo-router';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 export default function WelcomeScreen() {
   const { loading } = useAuth();
+  const router = useRouter();
 
   if (loading) {
     return (
@@ -19,6 +20,19 @@ export default function WelcomeScreen() {
       </View>
     );
   }
+
+  // Simple navigation functions using router
+  const goToPreview = () => {
+    router.push('/(tabs)/tree?preview=true');
+  };
+
+  const goToRegister = () => {
+    router.push('/(auth)/register');
+  };
+
+  const goToLogin = () => {
+    router.push('/(auth)/login');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,26 +68,36 @@ export default function WelcomeScreen() {
 
         {/* Buttons */}
         <View style={styles.buttonsContainer}>
-          <Link href={'/(tabs)/tree?preview=true' as Href} asChild>
-            <Pressable style={styles.previewButton}>
-              <Ionicons name="eye-outline" size={22} color="#D4AF37" />
-              <Text style={styles.previewButtonText}>Mode Aperçu</Text>
-              <Text style={styles.previewNote}>Testez sans inscription (max 10 membres)</Text>
-            </Pressable>
-          </Link>
+          {/* Preview Button */}
+          <TouchableOpacity 
+            style={styles.previewButton} 
+            onPress={goToPreview}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="eye-outline" size={22} color="#D4AF37" />
+            <Text style={styles.previewButtonText}>Mode Aperçu</Text>
+            <Text style={styles.previewNote}>Testez sans inscription (max 10 membres)</Text>
+          </TouchableOpacity>
 
-          <Link href={'/register' as Href} asChild>
-            <Pressable style={styles.primaryButton}>
-              <Ionicons name="person-add-outline" size={22} color="#0A1628" />
-              <Text style={styles.primaryButtonText}>Créer un compte</Text>
-            </Pressable>
-          </Link>
+          {/* Register Button */}
+          <TouchableOpacity 
+            style={styles.primaryButton} 
+            onPress={goToRegister}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="person-add-outline" size={22} color="#0A1628" />
+            <Text style={styles.primaryButtonText}>Créer un compte</Text>
+          </TouchableOpacity>
 
-          <Link href={'/login' as Href} asChild>
-            <Pressable style={styles.loginLinkButton}>
-              <Text style={styles.secondaryButtonText}>Déjà inscrit ? Se connecter</Text>
-            </Pressable>
-          </Link>
+          {/* Login Button - Big and clear */}
+          <TouchableOpacity 
+            style={styles.loginButton} 
+            onPress={goToLogin}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="log-in-outline" size={22} color="#D4AF37" />
+            <Text style={styles.loginButtonText}>Déjà inscrit ? Se connecter</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Footer */}
@@ -109,8 +133,8 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: height * 0.08,
-    marginBottom: 40,
+    marginTop: height * 0.06,
+    marginBottom: 30,
   },
   title: {
     fontSize: 42,
@@ -118,12 +142,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginTop: 16,
     letterSpacing: 2,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#B8C5D6',
-    marginTop: 8,
-    letterSpacing: 1,
   },
   sloganContainer: {
     alignItems: 'center',
@@ -148,12 +166,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   featuresContainer: {
-    marginBottom: 60,
+    marginBottom: 40,
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 18,
     paddingHorizontal: 16,
   },
   featureText: {
@@ -165,6 +183,7 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flex: 1,
     justifyContent: 'center',
+    paddingBottom: 20,
   },
   previewButton: {
     backgroundColor: 'rgba(212, 175, 55, 0.1)',
@@ -203,31 +222,27 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 10,
   },
-  secondaryButton: {
-    paddingVertical: 16,
-    alignItems: 'center',
+  loginButton: {
+    backgroundColor: '#1A2F4A',
+    borderWidth: 1,
+    borderColor: '#D4AF37',
+    borderRadius: 16,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
     marginBottom: 16,
-    backgroundColor: 'transparent',
-    zIndex: 10,
-  },
-  loginLinkButton: {
-    paddingVertical: 20,
-    paddingHorizontal: 40,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
-    marginTop: 8,
-    backgroundColor: 'rgba(26, 47, 74, 0.5)',
-    borderRadius: 12,
-    minHeight: 56,
   },
-  secondaryButtonText: {
-    color: '#B8C5D6',
+  loginButtonText: {
+    color: '#D4AF37',
     fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 10,
   },
   footer: {
     alignItems: 'center',
-    paddingBottom: 30,
+    paddingBottom: 20,
   },
   footerText: {
     color: '#6B7C93',
