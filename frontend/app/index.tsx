@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   featuresContainer: {
-    marginBottom: 100,
+    marginBottom: isLargeScreen ? 50 : 30,
   },
   featureItem: {
     flexDirection: 'row',
