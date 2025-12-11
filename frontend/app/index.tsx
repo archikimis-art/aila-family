@@ -210,6 +210,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     zIndex: 10,
   },
+  loginLinkButton: {
+    paddingVertical: 20,
+    paddingHorizontal: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    marginTop: 8,
+    backgroundColor: 'rgba(26, 47, 74, 0.5)',
+    borderRadius: 12,
+    minHeight: 56,
+  },
   secondaryButtonText: {
     color: '#B8C5D6',
     fontSize: 16,
