@@ -9,10 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const { width, height } = Dimensions.get('window');
 
 export default function WelcomeScreen() {
-  const { user, loading } = useAuth();
-
-  // Removed auto-redirect - users should explicitly navigate
-  // This prevents unwanted redirects when opening the app
+  const { loading } = useAuth();
 
   if (loading) {
     return (
