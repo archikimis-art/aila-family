@@ -184,8 +184,8 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: isLargeScreen ? height * 0.03 : height * 0.06,
-    marginBottom: isLargeScreen ? 20 : 30,
+    marginTop: isLargeScreen ? 10 : height * 0.02,
+    marginBottom: isLargeScreen ? 10 : 15,
   },
   title: {
     fontSize: isLargeScreen ? 52 : 42,
