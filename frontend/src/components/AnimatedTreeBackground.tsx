@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Dimensions, Platform } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, Dimensions, Platform, Text } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,33 +7,30 @@ import Animated, {
   withTiming,
   withDelay,
   withSequence,
-  Easing,
   interpolate,
 } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');
 
-// Matrix-style falling characters
-const MATRIX_CHARS = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-const NUM_COLUMNS = Math.floor(width / 20);
-const NUM_PARTICLES = 30;
+// Matrix-style characters
+const MATRIX_CHARS = '01アイウエオカキクケコ家族樹木葉根枝絆愛';
 
 interface FallingCharProps {
   delay: number;
-  column: number;
-  speed: number;
+  left: number;
+  duration: number;
+  char: string;
 }
 
-const FallingChar: React.FC<FallingCharProps> = ({ delay, column, speed }) => {
-  const translateY = useSharedValue(-50);
+const FallingChar: React.FC<FallingCharProps> = ({ delay, left, duration, char }) => {
+  const translateY = useSharedValue(-30);
   const opacity = useSharedValue(0);
-  const char = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
 
   useEffect(() => {
     translateY.value = withDelay(
       delay,
       withRepeat(
-        withTiming(height + 50, { duration: speed, easing: Easing.linear }),
+        withTiming(height + 30, { duration }),
         -1,
         false
       )
@@ -42,9 +39,9 @@ const FallingChar: React.FC<FallingCharProps> = ({ delay, column, speed }) => {
       delay,
       withRepeat(
         withSequence(
-          withTiming(0.8, { duration: speed * 0.1 }),
-          withTiming(0.3, { duration: speed * 0.8 }),
-          withTiming(0, { duration: speed * 0.1 })
+          withTiming(0.7, { duration: duration * 0.1 }),
+          withTiming(0.2, { duration: duration * 0.8 }),
+          withTiming(0, { duration: duration * 0.1 })
         ),
         -1,
         false
@@ -58,41 +55,34 @@ const FallingChar: React.FC<FallingCharProps> = ({ delay, column, speed }) => {
   }));
 
   return (
-    <Animated.Text
-      style={[
-        styles.matrixChar,
-        { left: column * 20 },
-        animatedStyle,
-      ]}
-    >
+    <Animated.Text style={[styles.matrixChar, { left }, animatedStyle]}>
       {char}
     </Animated.Text>
   );
 };
 
-// Growing branch/leaf particle
-interface LeafParticleProps {
+// Glowing particle/leaf
+interface ParticleProps {
   startX: number;
   startY: number;
   delay: number;
-  direction: 'left' | 'right';
+  moveX: number;
+  moveY: number;
 }
 
-const LeafParticle: React.FC<LeafParticleProps> = ({ startX, startY, delay, direction }) => {
+const GlowingParticle: React.FC<ParticleProps> = ({ startX, startY, delay, moveX, moveY }) => {
   const scale = useSharedValue(0);
   const opacity = useSharedValue(0);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
 
   useEffect(() => {
-    const xOffset = direction === 'left' ? -30 : 30;
-    
     scale.value = withDelay(
       delay,
       withRepeat(
         withSequence(
-          withTiming(1.2, { duration: 2000, easing: Easing.out(Easing.cubic) }),
-          withTiming(0.8, { duration: 1000 }),
+          withTiming(1, { duration: 1500 }),
+          withTiming(0.5, { duration: 1500 }),
           withTiming(0, { duration: 500 })
         ),
         -1,
@@ -104,9 +94,9 @@ const LeafParticle: React.FC<LeafParticleProps> = ({ startX, startY, delay, dire
       delay,
       withRepeat(
         withSequence(
-          withTiming(1, { duration: 1000 }),
-          withTiming(0.6, { duration: 2000 }),
-          withTiming(0, { duration: 500 })
+          withTiming(1, { duration: 800 }),
+          withTiming(0.5, { duration: 2000 }),
+          withTiming(0, { duration: 700 })
         ),
         -1,
         false
@@ -116,7 +106,10 @@ const LeafParticle: React.FC<LeafParticleProps> = ({ startX, startY, delay, dire
     translateX.value = withDelay(
       delay,
       withRepeat(
-        withTiming(xOffset, { duration: 3500, easing: Easing.out(Easing.cubic) }),
+        withSequence(
+          withTiming(moveX, { duration: 3000 }),
+          withTiming(0, { duration: 0 })
+        ),
         -1,
         false
       )
@@ -125,7 +118,10 @@ const LeafParticle: React.FC<LeafParticleProps> = ({ startX, startY, delay, dire
     translateY.value = withDelay(
       delay,
       withRepeat(
-        withTiming(-40, { duration: 3500, easing: Easing.out(Easing.cubic) }),
+        withSequence(
+          withTiming(moveY, { duration: 3000 }),
+          withTiming(0, { duration: 0 })
+        ),
         -1,
         false
       )
@@ -142,40 +138,31 @@ const LeafParticle: React.FC<LeafParticleProps> = ({ startX, startY, delay, dire
   }));
 
   return (
-    <Animated.View
-      style={[
-        styles.leaf,
-        { left: startX, top: startY },
-        animatedStyle,
-      ]}
-    />
+    <Animated.View style={[styles.particle, { left: startX, top: startY }, animatedStyle]} />
   );
 };
 
-// Glowing connection line
-interface ConnectionLineProps {
+// Pulsing glow line
+interface GlowLineProps {
   startX: number;
   startY: number;
-  endX: number;
-  endY: number;
+  length: number;
+  angle: number;
   delay: number;
 }
 
-const ConnectionLine: React.FC<ConnectionLineProps> = ({ startX, startY, endX, endY, delay }) => {
-  const progress = useSharedValue(0);
+const GlowLine: React.FC<GlowLineProps> = ({ startX, startY, length, angle, delay }) => {
+  const scaleX = useSharedValue(0);
   const opacity = useSharedValue(0);
 
-  const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
-  const angle = Math.atan2(endY - startY, endX - startX) * (180 / Math.PI);
-
   useEffect(() => {
-    progress.value = withDelay(
+    scaleX.value = withDelay(
       delay,
       withRepeat(
         withSequence(
-          withTiming(1, { duration: 1500, easing: Easing.out(Easing.cubic) }),
-          withTiming(1, { duration: 2000 }),
-          withTiming(0, { duration: 500 })
+          withTiming(1, { duration: 1200 }),
+          withTiming(1, { duration: 1500 }),
+          withTiming(0, { duration: 800 })
         ),
         -1,
         false
@@ -186,9 +173,9 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({ startX, startY, endX, e
       delay,
       withRepeat(
         withSequence(
-          withTiming(0.8, { duration: 500 }),
-          withTiming(0.4, { duration: 2500 }),
-          withTiming(0, { duration: 500 })
+          withTiming(0.8, { duration: 600 }),
+          withTiming(0.4, { duration: 2100 }),
+          withTiming(0, { duration: 800 })
         ),
         -1,
         false
@@ -197,105 +184,101 @@ const ConnectionLine: React.FC<ConnectionLineProps> = ({ startX, startY, endX, e
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    width: interpolate(progress.value, [0, 1], [0, length]),
+    transform: [
+      { rotate: `${angle}deg` },
+      { scaleX: scaleX.value },
+    ],
     opacity: opacity.value,
   }));
 
   return (
     <Animated.View
       style={[
-        styles.connectionLine,
-        {
-          left: startX,
-          top: startY,
-          transform: [{ rotate: `${angle}deg` }],
-        },
+        styles.glowLine,
+        { left: startX, top: startY, width: length },
         animatedStyle,
       ]}
     />
   );
 };
 
-// Main tree trunk that pulses
-const TreeTrunk: React.FC = () => {
-  const glowOpacity = useSharedValue(0.3);
+// Central pulsing trunk
+const PulsingTrunk: React.FC = () => {
+  const opacity = useSharedValue(0.3);
 
   useEffect(() => {
-    glowOpacity.value = withRepeat(
+    opacity.value = withRepeat(
       withSequence(
         withTiming(0.8, { duration: 2000 }),
         withTiming(0.3, { duration: 2000 })
       ),
       -1,
-      true
+      false
     );
   }, []);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    opacity: glowOpacity.value,
+    opacity: opacity.value,
   }));
 
   return (
-    <Animated.View style={[styles.treeTrunk, animatedStyle]}>
-      <View style={styles.trunkLine} />
-      <View style={[styles.trunkLine, styles.trunkLine2]} />
-      <View style={[styles.trunkLine, styles.trunkLine3]} />
+    <Animated.View style={[styles.trunk, animatedStyle]}>
+      <View style={styles.trunkMain} />
+      <View style={[styles.trunkBranch, styles.branchLeft]} />
+      <View style={[styles.trunkBranch, styles.branchRight]} />
     </Animated.View>
   );
 };
 
 export const AnimatedTreeBackground: React.FC = () => {
-  // Generate matrix rain columns
-  const matrixColumns = Array.from({ length: NUM_COLUMNS }, (_, i) => ({
-    column: i,
-    delay: Math.random() * 5000,
-    speed: 3000 + Math.random() * 4000,
-  }));
-
-  // Generate leaf particles around center
   const centerX = width / 2;
   const centerY = height / 2;
-  
-  const leafParticles = Array.from({ length: NUM_PARTICLES }, (_, i) => ({
-    startX: centerX + (Math.random() - 0.5) * 200,
-    startY: centerY + (Math.random() - 0.5) * 300 + 100,
-    delay: i * 200 + Math.random() * 1000,
-    direction: (Math.random() > 0.5 ? 'left' : 'right') as 'left' | 'right',
+
+  // Generate falling matrix characters
+  const matrixChars = Array.from({ length: 20 }, (_, i) => ({
+    left: (i * (width / 20)) + Math.random() * 30,
+    delay: Math.random() * 4000,
+    duration: 4000 + Math.random() * 3000,
+    char: MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)],
   }));
 
-  // Generate connection lines
-  const connections = Array.from({ length: 15 }, (_, i) => ({
-    startX: centerX + (Math.random() - 0.5) * 100,
-    startY: centerY + Math.random() * 200,
-    endX: centerX + (Math.random() - 0.5) * 300,
-    endY: centerY + Math.random() * 200 - 100,
-    delay: i * 400 + Math.random() * 2000,
+  // Generate glowing particles around tree
+  const particles = Array.from({ length: 25 }, (_, i) => ({
+    startX: centerX + (Math.random() - 0.5) * 250,
+    startY: centerY + (Math.random() - 0.5) * 200 + 50,
+    delay: i * 150 + Math.random() * 800,
+    moveX: (Math.random() - 0.5) * 60,
+    moveY: -20 - Math.random() * 40,
+  }));
+
+  // Generate glow lines (branches)
+  const lines = Array.from({ length: 12 }, (_, i) => ({
+    startX: centerX + (Math.random() - 0.5) * 80,
+    startY: centerY + Math.random() * 150,
+    length: 40 + Math.random() * 80,
+    angle: -90 + (Math.random() - 0.5) * 120,
+    delay: i * 300 + Math.random() * 1000,
   }));
 
   return (
     <View style={styles.container}>
-      {/* Matrix rain effect - subtle */}
-      <View style={styles.matrixContainer}>
-        {matrixColumns.slice(0, 15).map((col, i) => (
-          <FallingChar key={i} {...col} />
-        ))}
-      </View>
-
-      {/* Central tree structure */}
-      <TreeTrunk />
-
-      {/* Growing connections */}
-      {connections.map((conn, i) => (
-        <ConnectionLine key={`conn-${i}`} {...conn} />
+      {/* Matrix rain */}
+      {matrixChars.map((props, i) => (
+        <FallingChar key={`char-${i}`} {...props} />
       ))}
 
-      {/* Leaf particles */}
-      {leafParticles.map((leaf, i) => (
-        <LeafParticle key={`leaf-${i}`} {...leaf} />
+      {/* Central trunk */}
+      <PulsingTrunk />
+
+      {/* Glow lines (branches) */}
+      {lines.map((props, i) => (
+        <GlowLine key={`line-${i}`} {...props} />
       ))}
 
-      {/* Gradient overlay */}
-      <View style={styles.gradientOverlay} />
+      {/* Particles (leaves) */}
+      {particles.map((props, i) => (
+        <GlowingParticle key={`particle-${i}`} {...props} />
+      ))}
     </View>
   );
 };
@@ -305,74 +288,56 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     overflow: 'hidden',
   },
-  matrixContainer: {
-    ...StyleSheet.absoluteFillObject,
-  },
   matrixChar: {
     position: 'absolute',
-    fontSize: 14,
+    fontSize: 16,
     color: '#D4AF37',
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-    textShadowColor: '#D4AF37',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 8,
+    opacity: 0.5,
   },
-  treeTrunk: {
+  particle: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#D4AF37',
+  },
+  glowLine: {
+    position: 'absolute',
+    height: 2,
+    backgroundColor: '#D4AF37',
+    transformOrigin: 'left center',
+  },
+  trunk: {
     position: 'absolute',
     left: '50%',
-    bottom: '20%',
+    bottom: '25%',
     width: 4,
-    height: '40%',
+    height: '35%',
     marginLeft: -2,
   },
-  trunkLine: {
+  trunkMain: {
     position: 'absolute',
-    width: 2,
+    width: 3,
     height: '100%',
     backgroundColor: '#D4AF37',
     left: '50%',
+    marginLeft: -1.5,
+  },
+  trunkBranch: {
+    position: 'absolute',
+    width: 2,
+    height: '50%',
+    backgroundColor: '#D4AF37',
+    bottom: '40%',
+    left: '50%',
     marginLeft: -1,
-    shadowColor: '#D4AF37',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
-    shadowRadius: 10,
   },
-  trunkLine2: {
-    height: '60%',
-    transform: [{ rotate: '-30deg' }],
-    transformOrigin: 'bottom',
-    bottom: '30%',
+  branchLeft: {
+    transform: [{ rotate: '-35deg' }],
   },
-  trunkLine3: {
-    height: '60%',
-    transform: [{ rotate: '30deg' }],
-    transformOrigin: 'bottom',
-    bottom: '30%',
-  },
-  leaf: {
-    position: 'absolute',
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#D4AF37',
-    shadowColor: '#D4AF37',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-  },
-  connectionLine: {
-    position: 'absolute',
-    height: 1,
-    backgroundColor: '#D4AF37',
-    transformOrigin: 'left center',
-    shadowColor: '#D4AF37',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
-    shadowRadius: 4,
-  },
-  gradientOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'transparent',
+  branchRight: {
+    transform: [{ rotate: '35deg' }],
   },
 });
 
