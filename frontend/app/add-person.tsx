@@ -110,6 +110,8 @@ export default function AddPersonScreen() {
             style={[styles.saveButton, loading && styles.saveButtonDisabled]}
             onPress={handleSave}
             disabled={loading}
+            testID="save-button"
+            accessibilityLabel="Ajouter une personne"
           >
             {loading ? (
               <ActivityIndicator size="small" color="#0A1628" />
