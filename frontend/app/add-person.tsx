@@ -76,7 +76,13 @@ export default function AddPersonScreen() {
       if (typeof window !== 'undefined') {
         window.alert(`${firstName} ${lastName} a été ajouté(e) à votre arbre.`);
       }
-      router.back();
+      
+      // Navigate to tree with proper parameters
+      if (isPreviewMode && previewToken) {
+        router.replace(`/(tabs)/tree?preview=true&token=${previewToken}`);
+      } else {
+        router.replace('/(tabs)/tree');
+      }
     } catch (error: any) {
       console.error('Add person error:', error);
       const message = error.response?.data?.detail || 'Erreur lors de l\'ajout.';
