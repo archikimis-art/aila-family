@@ -737,6 +737,36 @@ async def add_preview_link(session_token: str, link: FamilyLinkCreate):
     
     return await get_preview_session(session_token)
 
+@api_router.delete("/preview/{session_token}/person/{person_id}", response_model=PreviewSessionResponse)
+async def delete_preview_person(session_token: str, person_id: str):
+    """Delete a person from preview session"""
+    session = await db.preview_sessions.find_one({"session_token": session_token})
+    if not session:
+        raise HTTPException(status_code=404, detail="Preview session not found")
+    
+    if session['expires_at'] < datetime.utcnow():
+        await db.preview_sessions.delete_one({"session_token": session_token})
+        raise HTTPException(status_code=410, detail="Preview session expired")
+    
+    # Remove person from persons list
+    persons = session.get('persons', [])
+    original_count = len(persons)
+    persons = [p for p in persons if p.get('id') != person_id]
+    
+    if len(persons) == original_count:
+        raise HTTPException(status_code=404, detail="Person not found in preview session")
+    
+    # Also remove any links involving this person
+    links = session.get('links', [])
+    links = [l for l in links if l.get('person_id_1') != person_id and l.get('person_id_2') != person_id]
+    
+    await db.preview_sessions.update_one(
+        {"session_token": session_token},
+        {"$set": {"persons": persons, "links": links}}
+    )
+    
+    return await get_preview_session(session_token)
+
 @api_router.post("/preview/{session_token}/convert")
 async def convert_preview_to_permanent(session_token: str, current_user: dict = Depends(get_current_user)):
     session = await db.preview_sessions.find_one({"session_token": session_token})
