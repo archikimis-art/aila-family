@@ -102,12 +102,12 @@ export default function WelcomeScreen() {
             <Ionicons name="log-in-outline" size={22} color="#D4AF37" />
             <Text style={styles.loginButtonText}>Déjà inscrit ? Se connecter</Text>
           </TouchableOpacity>
-        </View>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Préservez votre héritage familial</Text>
-          <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
+          {/* Footer inside buttons container */}
+          <View style={styles.footerInline}>
+            <Text style={styles.footerText}>Préservez votre héritage familial</Text>
+            <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
+          </View>
         </View>
       </LinearGradient>
     </SafeAreaView>
