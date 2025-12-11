@@ -31,8 +31,21 @@ export default function ProfileScreen() {
           text: 'Déconnexion',
           style: 'destructive',
           onPress: async () => {
-            await logout();
-            router.replace('/');
+            try {
+              // Clear all local storage
+              await AsyncStorage.clear();
+              // Call logout from context
+              await logout();
+              // Force navigation to home with replace
+              router.replace('/');
+              // Force a hard reload by pushing again
+              setTimeout(() => {
+                router.replace('/');
+              }, 100);
+            } catch (error) {
+              console.error('Logout error:', error);
+              Alert.alert('Erreur', 'Problème lors de la déconnexion');
+            }
           },
         },
       ]
