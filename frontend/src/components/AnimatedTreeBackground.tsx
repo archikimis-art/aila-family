@@ -223,8 +223,8 @@ const TreeTrunk: React.FC = () => {
   useEffect(() => {
     glowOpacity.value = withRepeat(
       withSequence(
-        withTiming(0.8, { duration: 2000, easing: Easing.inOut(Easing.sine) }),
-        withTiming(0.3, { duration: 2000, easing: Easing.inOut(Easing.sine) })
+        withTiming(0.8, { duration: 2000 }),
+        withTiming(0.3, { duration: 2000 })
       ),
       -1,
       true
