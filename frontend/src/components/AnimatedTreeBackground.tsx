@@ -244,7 +244,7 @@ const FloatingParticle: React.FC<ParticleProps> = ({ x, y, delay }) => {
 
 export const AnimatedTreeBackground: React.FC = () => {
   const centerX = width / 2;
-  const treeBottom = height * 0.12;
+  const treeBottom = height * 0.25; // Move tree higher
 
   // Tree trunk segments (growing from bottom)
   const trunkSegments = [
