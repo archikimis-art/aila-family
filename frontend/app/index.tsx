@@ -233,16 +233,22 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingVertical: 18,
     paddingHorizontal: 24,
-    marginBottom: 16,
+    marginBottom: 24,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 10,
   },
   loginButtonText: {
     color: '#D4AF37',
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 10,
+  },
+  footerInline: {
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 20,
   },
   footer: {
     alignItems: 'center',
