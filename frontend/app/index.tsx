@@ -217,12 +217,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   featuresContainer: {
-    marginBottom: isLargeScreen ? 20 : 30,
+    marginBottom: isLargeScreen ? 10 : 15,
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 18,
+    marginBottom: 12,
     paddingHorizontal: 16,
   },
   featureText: {
