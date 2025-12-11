@@ -497,6 +497,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#1A2F4A',
   },
+  homeButton: {
+    padding: 8,
+    borderRadius: 8,
+  },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
