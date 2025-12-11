@@ -289,7 +289,10 @@ export default function TreeScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.replace('/')} style={styles.homeButton}>
+        <TouchableOpacity onPress={() => {
+          // Clear any preview mode params and go to root
+          router.replace('/');
+        }} style={styles.homeButton}>
           <Ionicons name="home-outline" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <View style={styles.headerLeft}>
