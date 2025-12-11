@@ -20,11 +20,13 @@ export default function WelcomeScreen() {
   };
 
   const handleLogin = () => {
-    router.push('/(auth)/login');
+    console.log('[NAV] Navigating to login');
+    router.push('/login');
   };
 
   const handleRegister = () => {
-    router.push('/(auth)/register');
+    console.log('[NAV] Navigating to register');
+    router.push('/register');
   };
 
   if (loading) {
