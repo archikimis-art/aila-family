@@ -37,8 +37,11 @@ export default function WelcomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Animated Background */}
+      <AnimatedTreeBackground />
+      
       <LinearGradient
-        colors={['#0A1628', '#1A2F4A', '#0A1628']}
+        colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
         style={styles.gradient}
       >
         {/* Header Logo */}
