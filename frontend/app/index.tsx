@@ -72,20 +72,26 @@ export default function WelcomeScreen() {
 
         {/* Buttons */}
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.previewButton} onPress={handlePreviewMode}>
-            <Ionicons name="eye-outline" size={22} color="#D4AF37" />
-            <Text style={styles.previewButtonText}>Mode Aperçu</Text>
-            <Text style={styles.previewNote}>Testez sans inscription (max 10 membres)</Text>
-          </TouchableOpacity>
+          <Link href={'/(tabs)/tree?preview=true' as Href} asChild>
+            <Pressable style={styles.previewButton}>
+              <Ionicons name="eye-outline" size={22} color="#D4AF37" />
+              <Text style={styles.previewButtonText}>Mode Aperçu</Text>
+              <Text style={styles.previewNote}>Testez sans inscription (max 10 membres)</Text>
+            </Pressable>
+          </Link>
 
-          <TouchableOpacity style={styles.primaryButton} onPress={handleRegister}>
-            <Ionicons name="person-add-outline" size={22} color="#0A1628" />
-            <Text style={styles.primaryButtonText}>Créer un compte</Text>
-          </TouchableOpacity>
+          <Link href={'/register' as Href} asChild>
+            <Pressable style={styles.primaryButton}>
+              <Ionicons name="person-add-outline" size={22} color="#0A1628" />
+              <Text style={styles.primaryButtonText}>Créer un compte</Text>
+            </Pressable>
+          </Link>
 
-          <TouchableOpacity style={styles.secondaryButton} onPress={handleLogin}>
-            <Text style={styles.secondaryButtonText}>Déjà inscrit ? Se connecter</Text>
-          </TouchableOpacity>
+          <Link href={'/login' as Href} asChild>
+            <Pressable style={styles.secondaryButton}>
+              <Text style={styles.secondaryButtonText}>Déjà inscrit ? Se connecter</Text>
+            </Pressable>
+          </Link>
         </View>
 
         {/* Footer */}
