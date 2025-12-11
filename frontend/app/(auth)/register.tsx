@@ -114,6 +114,14 @@ export default function RegisterScreen() {
 
           {/* Form */}
           <View style={styles.form}>
+            {/* Error Message */}
+            {errorMessage ? (
+              <View style={styles.errorContainer}>
+                <Ionicons name="alert-circle" size={20} color="#FF6B6B" />
+                <Text style={styles.errorText}>{errorMessage}</Text>
+              </View>
+            ) : null}
+
             <View style={styles.row}>
               <View style={[styles.inputContainer, styles.halfInput]}>
                 <Ionicons name="person-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
