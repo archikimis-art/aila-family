@@ -10,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');
+const isLargeScreen = width > 768;
 
 // Falling leaf (Matrix style)
 interface FallingLeafProps {
