@@ -7,7 +7,9 @@ import { useAuth } from '@/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AnimatedTreeBackground } from '@/components/AnimatedTreeBackground';
 
-const { height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+const isWeb = Platform.OS === 'web';
+const isLargeScreen = width > 768;
 
 export default function WelcomeScreen() {
   const { loading } = useAuth();
