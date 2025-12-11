@@ -159,7 +159,10 @@ const styles = StyleSheet.create({
   },
   gradient: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: isLargeScreen ? 48 : 24,
+    maxWidth: isLargeScreen ? 600 : '100%',
+    alignSelf: 'center',
+    width: '100%',
   },
   loadingContainer: {
     flex: 1,
@@ -175,11 +178,11 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: height * 0.06,
-    marginBottom: 30,
+    marginTop: isLargeScreen ? height * 0.08 : height * 0.06,
+    marginBottom: isLargeScreen ? 40 : 30,
   },
   title: {
-    fontSize: 42,
+    fontSize: isLargeScreen ? 52 : 42,
     fontWeight: '700',
     color: '#FFFFFF',
     marginTop: 16,
