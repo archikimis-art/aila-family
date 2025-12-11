@@ -44,7 +44,9 @@ export default function AddPersonScreen() {
 
   const handleSave = async () => {
     if (!firstName.trim() || !lastName.trim()) {
-      Alert.alert('Erreur', 'Le prénom et le nom sont requis.');
+      if (typeof window !== 'undefined') {
+        window.alert('Erreur: Le prénom et le nom sont requis.');
+      }
       return;
     }
 
@@ -62,18 +64,25 @@ export default function AddPersonScreen() {
         notes: notes || null,
       };
 
+      console.log('Saving person:', personData);
+      console.log('Preview mode:', isPreviewMode, 'Token:', previewToken);
+
       if (isPreviewMode && previewToken) {
         await previewAPI.addPerson(previewToken, personData);
       } else {
         await personsAPI.create(personData);
       }
 
-      Alert.alert('Succès', `${firstName} ${lastName} a été ajouté(e) à votre arbre.`, [
-        { text: 'OK', onPress: () => router.back() },
-      ]);
+      if (typeof window !== 'undefined') {
+        window.alert(`${firstName} ${lastName} a été ajouté(e) à votre arbre.`);
+      }
+      router.back();
     } catch (error: any) {
+      console.error('Add person error:', error);
       const message = error.response?.data?.detail || 'Erreur lors de l\'ajout.';
-      Alert.alert('Erreur', message);
+      if (typeof window !== 'undefined') {
+        window.alert('Erreur: ' + message);
+      }
     } finally {
       setLoading(false);
     }
