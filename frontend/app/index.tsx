@@ -282,13 +282,10 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: '#D4AF37',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: '600',
     marginLeft: 12,
-  },
-  loginButtonTextBold: {
-    color: '#D4AF37',
-    fontSize: 16,
-    fontWeight: '700',
+    letterSpacing: 2,
   },
   footerInline: {
     alignItems: 'center',
