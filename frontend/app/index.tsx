@@ -35,6 +35,35 @@ export default function WelcomeScreen() {
     router.push('/(auth)/login');
   };
 
+  const shareApp = async () => {
+    const shareMessage = "🌳 Découvrez AÏLA - L'arbre généalogique qui connecte votre famille ! Créez, partagez et préservez votre histoire familiale. 👉 https://www.aila.family";
+    
+    try {
+      if (Platform.OS === 'web') {
+        // Web Share API
+        if (navigator.share) {
+          await navigator.share({
+            title: 'AÏLA - Arbre Généalogique Familial',
+            text: shareMessage,
+            url: 'https://www.aila.family',
+          });
+        } else {
+          // Fallback: copy to clipboard
+          await navigator.clipboard.writeText(shareMessage);
+          window.alert('Lien copié ! Partagez-le avec votre famille 🌳');
+        }
+      } else {
+        // Mobile Share
+        await Share.share({
+          message: shareMessage,
+          title: 'AÏLA - Arbre Généalogique Familial',
+        });
+      }
+    } catch (error) {
+      console.log('Share error:', error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Animated Background */}
