@@ -129,10 +129,7 @@ export default function WelcomeScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="log-in-outline" size={22} color="#D4AF37" />
-            <View style={styles.loginTextContainer}>
-              <Text style={styles.loginSubText}>Déjà inscrit ?</Text>
-              <Text style={styles.loginButtonText}>SE CONNECTER</Text>
-            </View>
+            <Text style={styles.loginButtonText}>{"Connexion"}</Text>
           </TouchableOpacity>
 
           {/* Footer inside buttons container */}
