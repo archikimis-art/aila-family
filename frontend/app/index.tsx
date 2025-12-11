@@ -15,20 +15,6 @@ export default function WelcomeScreen() {
   // Removed auto-redirect - users should explicitly navigate
   // This prevents unwanted redirects when opening the app
 
-  const handlePreviewMode = () => {
-    router.push('/(tabs)/tree?preview=true');
-  };
-
-  const handleLogin = () => {
-    console.log('[NAV] Navigating to login');
-    router.push('/login');
-  };
-
-  const handleRegister = () => {
-    console.log('[NAV] Navigating to register');
-    router.push('/register');
-  };
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
