@@ -11,7 +11,7 @@ from datetime import datetime
 import time
 
 # Configuration
-BASE_URL = "https://livefamily-tree.preview.emergentagent.com/api"
+BASE_URL = "https://familytree-7.preview.emergentagent.com/api"
 TIMEOUT = 30
 
 class GenealogyAPITester:
