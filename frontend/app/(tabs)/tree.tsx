@@ -289,6 +289,9 @@ export default function TreeScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.push('/')} style={styles.homeButton}>
+          <Ionicons name="home-outline" size={24} color="#D4AF37" />
+        </TouchableOpacity>
         <View style={styles.headerLeft}>
           <Ionicons name="leaf" size={28} color="#D4AF37" />
           <Text style={styles.headerTitle}>
