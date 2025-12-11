@@ -134,7 +134,14 @@ export default function WelcomeScreen() {
 
           {/* Footer inside buttons container */}
           <View style={styles.footerInline}>
-            <Text style={styles.footerText}>Préservez votre héritage familial</Text>
+            <TouchableOpacity 
+              style={styles.shareButton}
+              onPress={shareApp}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="share-social-outline" size={20} color="#D4AF37" />
+              <Text style={styles.shareButtonText}>Partager l'application</Text>
+            </TouchableOpacity>
             <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
           </View>
         </View>
