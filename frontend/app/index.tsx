@@ -228,7 +228,8 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 20,
     paddingBottom: 20,
   },
   previewButton: {
