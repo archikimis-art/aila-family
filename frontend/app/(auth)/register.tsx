@@ -28,28 +28,37 @@ export default function RegisterScreen() {
   const [gdprConsent, setGdprConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const showError = (message: string) => {
+    setErrorMessage(message);
+    if (Platform.OS === 'web') {
+      // Keep error visible on screen for web
+    } else {
+      Alert.alert('Erreur', message);
+    }
+  };
 
   const handleRegister = async () => {
+    setErrorMessage('');
+    
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      showError('Veuillez remplir tous les champs');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Erreur', 'Les mots de passe ne correspondent pas');
+      showError('Les mots de passe ne correspondent pas');
       return;
     }
 
     if (password.length < 6) {
-      Alert.alert('Erreur', 'Le mot de passe doit contenir au moins 6 caractères');
+      showError('Le mot de passe doit contenir au moins 6 caractères');
       return;
     }
 
     if (!gdprConsent) {
-      Alert.alert(
-        'Consentement requis',
-        'Vous devez accepter la politique de confidentialité et le traitement de vos données pour créer un compte.'
-      );
+      showError('Vous devez accepter la politique de confidentialité pour créer un compte');
       return;
     }
 
@@ -64,8 +73,18 @@ export default function RegisterScreen() {
       });
       router.replace('/(tabs)/tree');
     } catch (error: any) {
-      const message = error.response?.data?.detail || 'Erreur lors de l\'inscription';
-      Alert.alert('Erreur', message);
+      const detail = error.response?.data?.detail || '';
+      
+      // Messages d'erreur personnalisés
+      if (detail.includes('already registered') || detail.includes('existe déjà')) {
+        showError('Cette adresse email est déjà utilisée. Veuillez vous connecter ou utiliser une autre adresse.');
+      } else if (detail.includes('Invalid email')) {
+        showError('Adresse email invalide. Veuillez vérifier le format.');
+      } else if (detail) {
+        showError(detail);
+      } else {
+        showError('Erreur lors de l\'inscription. Veuillez réessayer.');
+      }
     } finally {
       setLoading(false);
     }
