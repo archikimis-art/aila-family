@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
+import { AnimatedTreeBackground } from '@/components/AnimatedTreeBackground';
 
 const { height } = Dimensions.get('window');
 
