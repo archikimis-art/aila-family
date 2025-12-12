@@ -1,10 +1,36 @@
 {
-  "buildCommand": "rm -rf .expo dist node_modules/.cache && npx expo export -p web",
+  "buildCommand": "rm -rf .expo dist node_modules/.cache .next && npx expo export -p web",
   "outputDirectory": "dist",
   "devCommand": "npx expo start --web",
-  "installCommand": "yarn install",
+  "installCommand": "yarn install --force",
   "framework": null,
   "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate, max-age=0"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        },
+        {
+          "key": "Expires",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "source": "/(.*).js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate, max-age=0"
+        }
+      ]
+    },
     {
       "source": "/(.*)",
       "headers": [
