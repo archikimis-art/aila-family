@@ -452,6 +452,9 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 10,
   },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
   logoutButtonText: {
     fontSize: 16,
     fontWeight: '600',
