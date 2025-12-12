@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -20,36 +21,51 @@ export default function ProfileScreen() {
   const { user, logout, isAdmin } = useAuth();
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const performLogout = async () => {
+    setLoggingOut(true);
+    try {
+      // Clear all local storage
+      await AsyncStorage.clear();
+      // Call logout from context
+      await logout();
+      // Navigate to home
+      router.replace('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      if (Platform.OS === 'web') {
+        window.alert('Problème lors de la déconnexion');
+      } else {
+        Alert.alert('Erreur', 'Problème lors de la déconnexion');
+      }
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   const handleLogout = async () => {
-    Alert.alert(
-      'Déconnexion',
-      'Êtes-vous sûr de vouloir vous déconnecter ?',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Déconnexion',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              // Clear all local storage
-              await AsyncStorage.clear();
-              // Call logout from context
-              await logout();
-              // Force navigation to home with replace
-              router.replace('/');
-              // Force a hard reload by pushing again
-              setTimeout(() => {
-                router.replace('/');
-              }, 100);
-            } catch (error) {
-              console.error('Logout error:', error);
-              Alert.alert('Erreur', 'Problème lors de la déconnexion');
-            }
+    if (Platform.OS === 'web') {
+      // On web, use window.confirm instead of Alert
+      const confirmed = window.confirm('Êtes-vous sûr de vouloir vous déconnecter ?');
+      if (confirmed) {
+        await performLogout();
+      }
+    } else {
+      // On mobile, use Alert
+      Alert.alert(
+        'Déconnexion',
+        'Êtes-vous sûr de vouloir vous déconnecter ?',
+        [
+          { text: 'Annuler', style: 'cancel' },
+          {
+            text: 'Déconnexion',
+            style: 'destructive',
+            onPress: performLogout,
           },
-        },
-      ]
-    );
+        ]
+      );
+    }
   };
 
   const handleExportData = async () => {
