@@ -62,6 +62,29 @@ export default function ShareScreen() {
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'viewer' | 'editor'>('editor');
   const [inviting, setInviting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Helper function for alerts that works on web
+  const showAlert = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}\n\n${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    if (Platform.OS === 'web') {
+      if (window.confirm(`${title}\n\n${message}`)) {
+        onConfirm();
+      }
+    } else {
+      Alert.alert(title, message, [
+        { text: 'Annuler', style: 'cancel' },
+        { text: 'Confirmer', style: 'destructive', onPress: onConfirm },
+      ]);
+    }
+  };
 
   useEffect(() => {
     if (user) {
