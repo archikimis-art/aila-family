@@ -368,6 +368,30 @@ async def login(credentials: UserLogin):
         )
     )
 
+# Temporary admin endpoint to reset password - REMOVE AFTER USE
+class PasswordReset(BaseModel):
+    email: EmailStr
+    new_password: str
+    admin_key: str
+
+@api_router.post("/auth/admin-reset-password")
+async def admin_reset_password(data: PasswordReset):
+    # Simple admin key protection
+    if data.admin_key != "AILA_TEMP_RESET_2024":
+        raise HTTPException(status_code=403, detail="Invalid admin key")
+    
+    user = await db.users.find_one({"email": data.email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    new_hash = hash_password(data.new_password)
+    await db.users.update_one(
+        {"email": data.email},
+        {"$set": {"password_hash": new_hash}}
+    )
+    
+    return {"message": "Password reset successfully"}
+
 @api_router.get("/auth/me", response_model=UserResponse)
 async def get_me(current_user: dict = Depends(get_current_user)):
     user = serialize_object_id(current_user.copy())
