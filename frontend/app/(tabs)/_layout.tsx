@@ -54,9 +54,9 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="share"
         options={{
-          title: 'Partage',
+          title: 'Liens',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="share-social-outline" size={size} color={color} />
+            <Ionicons name="link-outline" size={size} color={color} />
           ),
         }}
       />
