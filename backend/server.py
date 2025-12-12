@@ -39,6 +39,57 @@ else:
     logger.info("✓ No .env file found, using environment variables from system")
     logger.info(f"✓ Environment variables: MONGO_URL={'SET' if os.environ.get('MONGO_URL') else 'NOT SET'}, DB_NAME={os.environ.get('DB_NAME', 'NOT SET')}")
 
+# Configure Resend for email sending
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY', 're_ZVuwLNzR_ER7hfFTBQi6LqZTZuWEQa7Sr')
+resend.api_key = RESEND_API_KEY
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://www.aila.family')
+
+async def send_invitation_email(to_email: str, inviter_name: str, role: str, invite_token: str):
+    """Send invitation email via Resend"""
+    try:
+        role_fr = "lecteur" if role == "viewer" else "éditeur"
+        invite_url = f"{FRONTEND_URL}/(tabs)/tree?invite={invite_token}"
+        
+        html_content = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #0A1628; color: #FFFFFF;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #D4AF37; margin: 0;">🌳 AÏLA</h1>
+                <p style="color: #B8C5D6; margin-top: 5px;">L'arbre qui connecte les générations</p>
+            </div>
+            
+            <div style="background-color: #1A2F4A; border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+                <h2 style="color: #FFFFFF; margin-top: 0;">Vous êtes invité(e) !</h2>
+                <p style="color: #B8C5D6; line-height: 1.6;">
+                    <strong style="color: #D4AF37;">{inviter_name}</strong> vous invite à rejoindre son arbre généalogique familial en tant que <strong style="color: #D4AF37;">{role_fr}</strong>.
+                </p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{invite_url}" style="display: inline-block; background-color: #D4AF37; color: #0A1628; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 16px;">
+                    Accepter l'invitation
+                </a>
+            </div>
+            
+            <p style="color: #6B7C93; font-size: 12px; text-align: center;">
+                Si vous ne connaissez pas {inviter_name}, vous pouvez ignorer cet email.
+            </p>
+        </div>
+        """
+        
+        params = {
+            "from": "AÏLA <noreply@aila.family>",
+            "to": [to_email],
+            "subject": f"🌳 {inviter_name} vous invite à rejoindre son arbre généalogique",
+            "html": html_content
+        }
+        
+        email = resend.Emails.send(params)
+        logger.info(f"✓ Invitation email sent to {to_email}")
+        return True
+    except Exception as e:
+        logger.error(f"✗ Failed to send invitation email to {to_email}: {e}")
+        return False
+
 # MongoDB connection with timeout settings for Atlas
 logger.info("Configuring MongoDB connection...")
 mongo_url = os.environ.get('MONGO_URL')
