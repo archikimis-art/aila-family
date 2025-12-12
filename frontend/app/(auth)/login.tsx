@@ -50,12 +50,12 @@ export default function LoginScreen() {
     } catch (error: any) {
       const detail = error.response?.data?.detail || '';
       
-      // Messages d'erreur personnalisés
-      if (detail.includes('Invalid credentials') || detail.includes('Incorrect')) {
+      // Messages d'erreur personnalisés - ORDRE IMPORTANT
+      if (detail.includes('Invalid email or password') || detail.includes('Invalid credentials') || detail.includes('Incorrect')) {
         showError('Email ou mot de passe incorrect. Veuillez vérifier vos identifiants.');
       } else if (detail.includes('not found') || detail.includes('User not found')) {
         showError('Aucun compte trouvé avec cette adresse email. Veuillez vous inscrire.');
-      } else if (detail.includes('Invalid email')) {
+      } else if (detail.includes('Invalid email format')) {
         showError('Format d\'email invalide.');
       } else if (detail) {
         showError(detail);
