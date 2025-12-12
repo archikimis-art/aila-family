@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 import jwt
 import bcrypt
 from bson import ObjectId
+import resend
 
 ROOT_DIR = Path(__file__).parent
 
