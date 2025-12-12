@@ -1090,9 +1090,17 @@ async def invite_collaborator(invite: CollaboratorInvite, current_user: dict = D
     collaborator_doc['_id'] = result.inserted_id
     collaborator_doc = serialize_object_id(collaborator_doc)
     
+    # Send invitation email
+    owner_name = f"{current_user['first_name']} {current_user['last_name']}"
+    await send_invitation_email(
+        to_email=invite.email,
+        inviter_name=owner_name,
+        role=invite.role,
+        invite_token=invite_token
+    )
+    
     # Create notification for the invited user if they exist
     if invited_user:
-        owner_name = f"{current_user['first_name']} {current_user['last_name']}"
         await db.notifications.insert_one({
             "user_id": str(invited_user['_id']),
             "type": "collaboration_invite",
