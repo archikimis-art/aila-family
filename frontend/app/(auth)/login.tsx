@@ -35,14 +35,17 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     setErrorMessage('');
     
-    if (!email || !password) {
+    // Nettoyer l'email (enlever espaces)
+    const cleanEmail = email.trim().toLowerCase();
+    
+    if (!cleanEmail || !password) {
       showError('Veuillez remplir tous les champs');
       return;
     }
 
     setLoading(true);
     try {
-      await login(email, password);
+      await login(cleanEmail, password);
       router.replace('/(tabs)/tree');
     } catch (error: any) {
       const detail = error.response?.data?.detail || '';
