@@ -297,6 +297,13 @@ export default function ShareScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Success message banner */}
+      {successMessage && (
+        <View style={styles.successBanner}>
+          <Text style={styles.successText}>{successMessage}</Text>
+        </View>
+      )}
+
       <View style={styles.tabs}>
         <TouchableOpacity 
           style={[styles.tab, activeTab === 'collaborators' && styles.tabActive]}
