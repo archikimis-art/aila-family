@@ -77,7 +77,7 @@ async def send_invitation_email(to_email: str, inviter_name: str, role: str, inv
         """
         
         params = {
-            "from": "AÏLA <noreply@aila.family>",
+            "from": "AÏLA <onboarding@resend.dev>",
             "to": [to_email],
             "subject": f"🌳 {inviter_name} vous invite à rejoindre son arbre généalogique",
             "html": html_content
