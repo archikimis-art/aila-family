@@ -119,44 +119,42 @@ export default function ShareScreen() {
 
   const handleInvite = async () => {
     if (!inviteEmail.trim()) {
-      Alert.alert('Erreur', 'Veuillez entrer une adresse email');
+      showAlert('Erreur', 'Veuillez entrer une adresse email');
       return;
     }
 
     setInviting(true);
     try {
       await collaboratorsAPI.invite(inviteEmail.trim(), inviteRole);
-      Alert.alert('Succes', 'Invitation envoyee a ' + inviteEmail);
       setShowInviteModal(false);
       setInviteEmail('');
+      setSuccessMessage(`✅ Invitation envoyée à ${inviteEmail} !`);
+      setTimeout(() => setSuccessMessage(null), 5000);
       loadData();
     } catch (error: any) {
       const message = error.response?.data?.detail || 'Erreur lors de l\'invitation';
-      Alert.alert('Erreur', message);
+      showAlert('Erreur', message);
     } finally {
       setInviting(false);
     }
   };
 
   const handleRemoveCollaborator = async (id: string, email: string) => {
-    Alert.alert(
+    const doRemove = async () => {
+      try {
+        await collaboratorsAPI.remove(id);
+        setSuccessMessage(`✅ ${email} a été retiré de votre arbre`);
+        setTimeout(() => setSuccessMessage(null), 3000);
+        loadData();
+      } catch (error) {
+        showAlert('Erreur', 'Impossible de retirer le collaborateur');
+      }
+    };
+
+    showConfirm(
       'Retirer le collaborateur',
-      'Voulez-vous retirer ' + email + ' de votre arbre ?',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Retirer',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await collaboratorsAPI.remove(id);
-              loadData();
-            } catch (error) {
-              Alert.alert('Erreur', 'Impossible de retirer le collaborateur');
-            }
-          },
-        },
-      ]
+      `Voulez-vous retirer ${email} de votre arbre ?`,
+      doRemove
     );
   };
 
