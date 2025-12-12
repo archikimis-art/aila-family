@@ -300,9 +300,19 @@ export default function ProfileScreen() {
 
         {/* Logout */}
         {user && (
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={22} color="#FFFFFF" />
-            <Text style={styles.logoutButtonText}>Déconnexion</Text>
+          <TouchableOpacity 
+            style={[styles.logoutButton, loggingOut && styles.buttonDisabled]} 
+            onPress={handleLogout}
+            disabled={loggingOut}
+          >
+            {loggingOut ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Ionicons name="log-out-outline" size={22} color="#FFFFFF" />
+            )}
+            <Text style={styles.logoutButtonText}>
+              {loggingOut ? 'Déconnexion...' : 'Déconnexion'}
+            </Text>
           </TouchableOpacity>
         )}
 
