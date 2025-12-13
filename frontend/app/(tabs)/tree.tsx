@@ -867,6 +867,37 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  debugButton: {
+    padding: 8,
+    borderRadius: 8,
+  },
+  debugPanel: {
+    backgroundColor: '#1A2F4A',
+    padding: 12,
+    margin: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+    maxHeight: 300,
+  },
+  debugTitle: {
+    color: '#4CAF50',
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  debugSubtitle: {
+    color: '#D4AF37',
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  debugText: {
+    color: '#B8C5D6',
+    fontSize: 11,
+    fontFamily: 'monospace',
+  },
   previewBanner: {
     flexDirection: 'row',
     alignItems: 'center',
