@@ -312,6 +312,37 @@ class ChatMessageResponse(BaseModel):
     mentioned_person_name: Optional[str] = None
     created_at: datetime
 
+# ===================== FAMILY EVENTS MODELS =====================
+
+class FamilyEventCreate(BaseModel):
+    event_type: str  # birthday, birth, graduation, wedding, newyear, holiday, custom
+    title: str
+    description: Optional[str] = None
+    event_date: str  # ISO date string
+    person_id: Optional[str] = None  # Related person if applicable
+    recipients: List[str] = []  # List of collaborator emails to notify
+    send_email: bool = False
+
+class FamilyEventResponse(BaseModel):
+    id: str
+    user_id: str
+    event_type: str
+    title: str
+    description: Optional[str] = None
+    event_date: str
+    person_id: Optional[str] = None
+    person_name: Optional[str] = None
+    recipients: List[str] = []
+    send_email: bool
+    created_at: datetime
+
+class UpcomingBirthdayResponse(BaseModel):
+    person_id: str
+    person_name: str
+    birth_date: str
+    days_until: int
+    age: Optional[int] = None
+
 # ===================== HELPERS =====================
 
 def hash_password(password: str) -> str:
