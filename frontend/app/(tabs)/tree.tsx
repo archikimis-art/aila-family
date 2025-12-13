@@ -57,6 +57,8 @@ export default function TreeScreen() {
   const { user } = useAuth();
   const isPreviewMode = params.preview === 'true';
   const inviteToken = params.invite as string | undefined;
+  const sharedOwnerId = params.sharedOwnerId as string | undefined;
+  const sharedOwnerName = params.sharedOwnerName as string | undefined;
 
   const [persons, setPersons] = useState<Person[]>([]);
   const [links, setLinks] = useState<FamilyLink[]>([]);
@@ -66,6 +68,38 @@ export default function TreeScreen() {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   const [sharedTreeOwner, setSharedTreeOwner] = useState<{id: string, name: string, role: string} | null>(null);
   const [inviteMessage, setInviteMessage] = useState<string | null>(null);
+
+  // Handle shared tree viewing (from share tab)
+  useEffect(() => {
+    const loadSharedTree = async () => {
+      if (sharedOwnerId && sharedOwnerName && user) {
+        setLoading(true);
+        try {
+          const { collaboratorsAPI } = await import('@/services/api');
+          const treeResponse = await collaboratorsAPI.getSharedTree(sharedOwnerId);
+          setPersons(treeResponse.data.persons || []);
+          setLinks(treeResponse.data.links || []);
+          setSharedTreeOwner({
+            id: sharedOwnerId,
+            name: sharedOwnerName,
+            role: 'viewer' // Default, could be fetched from API
+          });
+          console.log('Loaded shared tree:', sharedOwnerName, 'Persons:', treeResponse.data.persons?.length, 'Links:', treeResponse.data.links?.length);
+        } catch (error: any) {
+          console.error('Error loading shared tree:', error);
+          const message = error.response?.data?.detail || 'Erreur lors du chargement de l\'arbre partagé';
+          setInviteMessage(`❌ ${message}`);
+          setTimeout(() => setInviteMessage(null), 5000);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    
+    if (sharedOwnerId) {
+      loadSharedTree();
+    }
+  }, [sharedOwnerId, sharedOwnerName, user]);
 
   // Handle invitation acceptance
   useEffect(() => {
