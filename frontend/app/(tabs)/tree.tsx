@@ -1077,10 +1077,7 @@ export default function TreeScreen() {
                     const borderColor = getGenderColor(node.person.gender);
 
                     return (
-                      <G
-                        key={node.person.id}
-                        onPress={() => handlePersonPress(node.person)}
-                      >
+                      <G key={node.person.id}>
                         <Rect
                           x={node.x}
                           y={node.y}
@@ -1090,6 +1087,7 @@ export default function TreeScreen() {
                           fill={gradId}
                           stroke={borderColor}
                           strokeWidth="2"
+                          onPress={() => handlePersonPress(node.person)}
                         />
                         <SvgText
                           x={node.x + NODE_WIDTH / 2}
@@ -1098,6 +1096,7 @@ export default function TreeScreen() {
                           fontSize="12"
                           fontWeight="600"
                           textAnchor="middle"
+                          onPress={() => handlePersonPress(node.person)}
                         >
                           {node.person.first_name}
                         </SvgText>
@@ -1107,6 +1106,7 @@ export default function TreeScreen() {
                           fill="#B8C5D6"
                           fontSize="10"
                           textAnchor="middle"
+                          onPress={() => handlePersonPress(node.person)}
                         >
                           {node.person.last_name}
                         </SvgText>
