@@ -128,3 +128,20 @@ export const chatAPI = {
   sendMessage: (data: { message: string; mentioned_person_id?: string }) => api.post('/chat/messages', data),
   deleteMessage: (id: string) => api.delete(`/chat/messages/${id}`),
 };
+
+// Family Events API
+export const eventsAPI = {
+  getUpcomingBirthdays: () => api.get('/events/birthdays'),
+  getTodaysEvents: () => api.get('/events/today'),
+  getEvents: () => api.get('/events'),
+  createEvent: (data: {
+    event_type: string;
+    title: string;
+    description?: string;
+    event_date: string;
+    person_id?: string;
+    recipients?: string[];
+    send_email?: boolean;
+  }) => api.post('/events', data),
+  deleteEvent: (id: string) => api.delete(`/events/${id}`),
+};
