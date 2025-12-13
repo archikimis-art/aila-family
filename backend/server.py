@@ -1179,6 +1179,58 @@ async def remove_collaborator(collaborator_id: str, current_user: dict = Depends
     
     return {"message": "Collaborator removed successfully"}
 
+@api_router.post("/collaborators/accept/{invite_token}")
+async def accept_invitation(invite_token: str, current_user: dict = Depends(get_current_user)):
+    """Accept a collaboration invitation using the token"""
+    user_email = current_user['email']
+    user_id = str(current_user['_id'])
+    
+    # Find the invitation by token
+    invitation = await db.collaborators.find_one({
+        "invite_token": invite_token,
+        "email": user_email
+    })
+    
+    if not invitation:
+        # Maybe the invitation is for a different email, check by token only
+        invitation = await db.collaborators.find_one({"invite_token": invite_token})
+        if not invitation:
+            raise HTTPException(status_code=404, detail="Invitation not found")
+        if invitation['email'] != user_email:
+            raise HTTPException(status_code=403, detail="This invitation was sent to a different email address")
+    
+    if invitation['status'] == 'accepted':
+        # Already accepted, return the tree owner info
+        owner = await db.users.find_one({"_id": ObjectId(invitation['tree_owner_id'])})
+        return {
+            "message": "Invitation already accepted",
+            "tree_owner_id": invitation['tree_owner_id'],
+            "tree_owner_name": f"{owner['first_name']} {owner['last_name']}" if owner else "Unknown",
+            "role": invitation['role']
+        }
+    
+    # Accept the invitation
+    await db.collaborators.update_one(
+        {"_id": invitation['_id']},
+        {
+            "$set": {
+                "status": "accepted",
+                "user_id": user_id,
+                "accepted_at": datetime.utcnow()
+            }
+        }
+    )
+    
+    # Get tree owner info
+    owner = await db.users.find_one({"_id": ObjectId(invitation['tree_owner_id'])})
+    
+    return {
+        "message": "Invitation accepted successfully",
+        "tree_owner_id": invitation['tree_owner_id'],
+        "tree_owner_name": f"{owner['first_name']} {owner['last_name']}" if owner else "Unknown",
+        "role": invitation['role']
+    }
+
 @api_router.get("/tree/shared/{owner_id}", response_model=TreeResponse)
 async def get_shared_tree(owner_id: str, current_user: dict = Depends(get_current_user)):
     """Get a shared tree that you have access to"""
