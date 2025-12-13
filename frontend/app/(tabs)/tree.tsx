@@ -344,7 +344,7 @@ export default function TreeScreen() {
         <View style={styles.headerLeft}>
           <Ionicons name="leaf" size={28} color="#D4AF37" />
           <Text style={styles.headerTitle}>
-            {isPreviewMode ? 'Mode Aperçu' : 'Mon Arbre'}
+            {sharedTreeOwner ? `Arbre de ${sharedTreeOwner.name}` : (isPreviewMode ? 'Mode Aperçu' : 'Mon Arbre')}
           </Text>
         </View>
         {isPreviewMode && (
@@ -354,6 +354,22 @@ export default function TreeScreen() {
           </TouchableOpacity>
         )}
       </View>
+
+      {/* Invite Success Banner */}
+      {inviteMessage && (
+        <View style={[styles.previewBanner, { backgroundColor: inviteMessage.startsWith('✅') ? '#4CAF50' : '#F44336' }]}>
+          <Text style={styles.previewBannerText}>{inviteMessage}</Text>
+        </View>
+      )}
+
+      {/* Shared Tree Banner */}
+      {sharedTreeOwner && !inviteMessage && (
+        <View style={[styles.previewBanner, { backgroundColor: '#2196F3' }]}>
+          <Text style={styles.previewBannerText}>
+            Vous consultez l'arbre de {sharedTreeOwner.name} ({sharedTreeOwner.role === 'editor' ? 'Éditeur' : 'Lecteur'})
+          </Text>
+        </View>
+      )}
 
       {/* Preview Banner */}
       {isPreviewMode && (
