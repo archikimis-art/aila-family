@@ -616,12 +616,20 @@ export default function TreeScreen() {
             {sharedTreeOwner ? `Arbre de ${sharedTreeOwner.name}` : (isPreviewMode ? 'Mode Aperçu' : 'Mon Arbre')}
           </Text>
         </View>
-        <TouchableOpacity 
-          style={styles.debugButton} 
-          onPress={() => setShowDebug(!showDebug)}
-        >
-          <Ionicons name="bug-outline" size={20} color={showDebug ? '#4CAF50' : '#6B7C93'} />
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity 
+            style={styles.helpButton} 
+            onPress={() => setShowGuide(true)}
+          >
+            <Ionicons name="help-circle-outline" size={22} color="#D4AF37" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.debugButton} 
+            onPress={() => setShowDebug(!showDebug)}
+          >
+            <Ionicons name="bug-outline" size={20} color={showDebug ? '#4CAF50' : '#6B7C93'} />
+          </TouchableOpacity>
+        </View>
         {isPreviewMode && (
           <TouchableOpacity style={styles.convertButton} onPress={handleConvertToAccount}>
             <Ionicons name="save-outline" size={18} color="#0A1628" />
