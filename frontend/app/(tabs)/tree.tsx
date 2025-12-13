@@ -283,39 +283,7 @@ export default function TreeScreen() {
       personLevels.set(spouseId, minLevel);
     });
 
-    // REMOVED: getDepthFromAncestors - was causing issues
-    const getDepthFromAncestors = (personId: string, visited: Set<string> = new Set()): number => {
-      return 0; // Not used anymore
-    };
-
-    // Placeholder to avoid breaking the rest of the code
-    let maxParentDepth = 0;
-      parents.forEach((parentId) => {
-        const parentDepth = getDepthFromAncestors(parentId, new Set(visited));
-        maxParentDepth = Math.max(maxParentDepth, parentDepth + 1);
-      });
-      
-      return maxParentDepth;
-    };
-
-    // Calculate level for each person based on depth FROM ancestors
-    // Level 0 = people with no parents (roots/ancestors)
-    // Higher levels = descendants
-    persons.forEach((p) => {
-      const level = getDepthFromAncestors(p.id);
-      personLevels.set(p.id, level);
-    });
-
-    // Ensure spouses are at the same level (use the maximum)
-    spouseMap.forEach((spouseId, personId) => {
-      const level1 = personLevels.get(personId) || 0;
-      const level2 = personLevels.get(spouseId) || 0;
-      const maxLevel = Math.max(level1, level2);
-      personLevels.set(personId, maxLevel);
-      personLevels.set(spouseId, maxLevel);
-    });
-
-    console.log('Person levels:', Object.fromEntries(personLevels));
+    console.log('Final person levels:', Object.fromEntries(personLevels));
 
     // STEP 3: Group persons by level
     const levelGroups = new Map<number, Person[]>();
