@@ -781,143 +781,155 @@ export default function TreeScreen() {
         </View>
       )}
 
-      {/* Tree View */}
-      <ScrollView
-        style={styles.treeContainer}
-        contentContainerStyle={styles.treeContent}
-        horizontal
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#D4AF37" />
-        }
-      >
-        <ScrollView
-          nestedScrollEnabled
-          contentContainerStyle={{ minHeight: svgHeight }}
-        >
-          {persons.length === 0 ? (
-            <View style={styles.emptyState}>
-              <Ionicons name="git-branch-outline" size={80} color="#2A3F5A" />
-              <Text style={styles.emptyTitle}>Votre arbre est vide</Text>
-              <Text style={styles.emptySubtitle}>
-                Commencez par ajouter le premier membre de votre famille
-              </Text>
-              <TouchableOpacity style={styles.emptyButton} onPress={handleAddPerson}>
-                <Ionicons name="add" size={24} color="#0A1628" />
-                <Text style={styles.emptyButtonText}>Ajouter une personne</Text>
+      {/* Tree View with Zoom & Pan */}
+      <GestureHandlerRootView style={styles.treeContainer}>
+        {persons.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Ionicons name="git-branch-outline" size={80} color="#2A3F5A" />
+            <Text style={styles.emptyTitle}>Votre arbre est vide</Text>
+            <Text style={styles.emptySubtitle}>
+              Commencez par ajouter le premier membre de votre famille
+            </Text>
+            <TouchableOpacity style={styles.emptyButton} onPress={handleAddPerson}>
+              <Ionicons name="add" size={24} color="#0A1628" />
+              <Text style={styles.emptyButtonText}>Ajouter une personne</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <GestureDetector gesture={composedGesture}>
+              <Animated.View style={[styles.treeContent, animatedTreeStyle]}>
+                <Svg width={svgWidth} height={svgHeight}>
+                  <Defs>
+                    <LinearGradient id="maleGrad" x1="0" y1="0" x2="0" y2="1">
+                      <Stop offset="0" stopColor="#4A90D9" stopOpacity="0.3" />
+                      <Stop offset="1" stopColor="#4A90D9" stopOpacity="0.1" />
+                    </LinearGradient>
+                    <LinearGradient id="femaleGrad" x1="0" y1="0" x2="0" y2="1">
+                      <Stop offset="0" stopColor="#D94A8C" stopOpacity="0.3" />
+                      <Stop offset="1" stopColor="#D94A8C" stopOpacity="0.1" />
+                    </LinearGradient>
+                    <LinearGradient id="unknownGrad" x1="0" y1="0" x2="0" y2="1">
+                      <Stop offset="0" stopColor="#6B7C93" stopOpacity="0.3" />
+                      <Stop offset="1" stopColor="#6B7C93" stopOpacity="0.1" />
+                    </LinearGradient>
+                  </Defs>
+
+                  {/* Connections */}
+                  {connections.map((conn, index) => (
+                    <G key={`conn-${index}`}>
+                      {conn.type === 'spouse' ? (
+                        <Line
+                          x1={conn.from.x}
+                          y1={conn.from.y}
+                          x2={conn.to.x}
+                          y2={conn.to.y}
+                          stroke="#D4AF37"
+                          strokeWidth="2"
+                          strokeDasharray="5,5"
+                        />
+                      ) : (
+                        <>
+                          <Line
+                            x1={conn.from.x}
+                            y1={conn.from.y}
+                            x2={conn.from.x}
+                            y2={(conn.from.y + conn.to.y) / 2}
+                            stroke="#3A5070"
+                            strokeWidth="2"
+                          />
+                          <Line
+                            x1={conn.from.x}
+                            y1={(conn.from.y + conn.to.y) / 2}
+                            x2={conn.to.x}
+                            y2={(conn.from.y + conn.to.y) / 2}
+                            stroke="#3A5070"
+                            strokeWidth="2"
+                          />
+                          <Line
+                            x1={conn.to.x}
+                            y1={(conn.from.y + conn.to.y) / 2}
+                            x2={conn.to.x}
+                            y2={conn.to.y}
+                            stroke="#3A5070"
+                            strokeWidth="2"
+                          />
+                        </>
+                      )}
+                    </G>
+                  ))}
+
+                  {/* Nodes */}
+                  {nodes.map((node) => {
+                    const gradId =
+                      node.person.gender === 'male'
+                        ? 'url(#maleGrad)'
+                        : node.person.gender === 'female'
+                        ? 'url(#femaleGrad)'
+                        : 'url(#unknownGrad)';
+                    const borderColor = getGenderColor(node.person.gender);
+
+                    return (
+                      <G
+                        key={node.person.id}
+                        onPress={() => handlePersonPress(node.person)}
+                      >
+                        <Rect
+                          x={node.x}
+                          y={node.y}
+                          width={NODE_WIDTH}
+                          height={NODE_HEIGHT}
+                          rx={12}
+                          fill={gradId}
+                          stroke={borderColor}
+                          strokeWidth="2"
+                        />
+                        <SvgText
+                          x={node.x + NODE_WIDTH / 2}
+                          y={node.y + 25}
+                          fill="#FFFFFF"
+                          fontSize="12"
+                          fontWeight="600"
+                          textAnchor="middle"
+                        >
+                          {node.person.first_name}
+                        </SvgText>
+                        <SvgText
+                          x={node.x + NODE_WIDTH / 2}
+                          y={node.y + 42}
+                          fill="#B8C5D6"
+                          fontSize="10"
+                          textAnchor="middle"
+                        >
+                          {node.person.last_name}
+                        </SvgText>
+                      </G>
+                    );
+                  })}
+                </Svg>
+              </Animated.View>
+            </GestureDetector>
+
+            {/* Zoom Controls */}
+            <View style={styles.zoomControls}>
+              <TouchableOpacity style={styles.zoomButton} onPress={zoomIn}>
+                <Ionicons name="add" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.zoomButton} onPress={zoomOut}>
+                <Ionicons name="remove" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.zoomButton} onPress={() => resetToCenter()}>
+                <Ionicons name="scan-outline" size={22} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
-          ) : (
-            <Svg width={svgWidth} height={svgHeight}>
-              <Defs>
-                <LinearGradient id="maleGrad" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="0" stopColor="#4A90D9" stopOpacity="0.3" />
-                  <Stop offset="1" stopColor="#4A90D9" stopOpacity="0.1" />
-                </LinearGradient>
-                <LinearGradient id="femaleGrad" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="0" stopColor="#D94A8C" stopOpacity="0.3" />
-                  <Stop offset="1" stopColor="#D94A8C" stopOpacity="0.1" />
-                </LinearGradient>
-                <LinearGradient id="unknownGrad" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="0" stopColor="#6B7C93" stopOpacity="0.3" />
-                  <Stop offset="1" stopColor="#6B7C93" stopOpacity="0.1" />
-                </LinearGradient>
-              </Defs>
 
-              {/* Connections */}
-              {connections.map((conn, index) => (
-                <G key={`conn-${index}`}>
-                  {conn.type === 'spouse' ? (
-                    <Line
-                      x1={conn.from.x}
-                      y1={conn.from.y}
-                      x2={conn.to.x}
-                      y2={conn.to.y}
-                      stroke="#D4AF37"
-                      strokeWidth="2"
-                      strokeDasharray="5,5"
-                    />
-                  ) : (
-                    <>
-                      <Line
-                        x1={conn.from.x}
-                        y1={conn.from.y}
-                        x2={conn.from.x}
-                        y2={(conn.from.y + conn.to.y) / 2}
-                        stroke="#3A5070"
-                        strokeWidth="2"
-                      />
-                      <Line
-                        x1={conn.from.x}
-                        y1={(conn.from.y + conn.to.y) / 2}
-                        x2={conn.to.x}
-                        y2={(conn.from.y + conn.to.y) / 2}
-                        stroke="#3A5070"
-                        strokeWidth="2"
-                      />
-                      <Line
-                        x1={conn.to.x}
-                        y1={(conn.from.y + conn.to.y) / 2}
-                        x2={conn.to.x}
-                        y2={conn.to.y}
-                        stroke="#3A5070"
-                        strokeWidth="2"
-                      />
-                    </>
-                  )}
-                </G>
-              ))}
-
-              {/* Nodes */}
-              {nodes.map((node) => {
-                const gradId =
-                  node.person.gender === 'male'
-                    ? 'url(#maleGrad)'
-                    : node.person.gender === 'female'
-                    ? 'url(#femaleGrad)'
-                    : 'url(#unknownGrad)';
-                const borderColor = getGenderColor(node.person.gender);
-
-                return (
-                  <G
-                    key={node.person.id}
-                    onPress={() => handlePersonPress(node.person)}
-                  >
-                    <Rect
-                      x={node.x}
-                      y={node.y}
-                      width={NODE_WIDTH}
-                      height={NODE_HEIGHT}
-                      rx={12}
-                      fill={gradId}
-                      stroke={borderColor}
-                      strokeWidth="2"
-                    />
-                    <SvgText
-                      x={node.x + NODE_WIDTH / 2}
-                      y={node.y + 25}
-                      fill="#FFFFFF"
-                      fontSize="12"
-                      fontWeight="600"
-                      textAnchor="middle"
-                    >
-                      {node.person.first_name}
-                    </SvgText>
-                    <SvgText
-                      x={node.x + NODE_WIDTH / 2}
-                      y={node.y + 42}
-                      fill="#B8C5D6"
-                      fontSize="10"
-                      textAnchor="middle"
-                    >
-                      {node.person.last_name}
-                    </SvgText>
-                  </G>
-                );
-              })}
-            </Svg>
-          )}
-        </ScrollView>
-      </ScrollView>
+            {/* Zoom hint */}
+            <View style={styles.zoomHint}>
+              <Text style={styles.zoomHintText}>Double-tap pour recentrer • Pincez pour zoomer</Text>
+            </View>
+          </>
+        )}
+      </GestureHandlerRootView>
 
       {/* Action Buttons */}
       <View style={styles.actionsContainer}>
