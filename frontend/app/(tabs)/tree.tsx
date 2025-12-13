@@ -590,6 +590,65 @@ export default function TreeScreen() {
   const [showGuide, setShowGuide] = useState(false);
 
   // ============================================================================
+  // EVENTS STATE
+  // ============================================================================
+  const [showEventsPanel, setShowEventsPanel] = useState(false);
+  const [showEventAnimation, setShowEventAnimation] = useState(false);
+  const [currentEvent, setCurrentEvent] = useState<any>(null);
+  const [upcomingBirthdays, setUpcomingBirthdays] = useState<any[]>([]);
+  const [todaysEvents, setTodaysEvents] = useState<any[]>([]);
+  const [showCreateEvent, setShowCreateEvent] = useState(false);
+  const [newEventType, setNewEventType] = useState('custom');
+  const [newEventTitle, setNewEventTitle] = useState('');
+  const [newEventDescription, setNewEventDescription] = useState('');
+
+  // Load events on mount (only for authenticated users)
+  useEffect(() => {
+    if (user && !isPreviewMode) {
+      loadEvents();
+    }
+  }, [user, isPreviewMode]);
+
+  const loadEvents = async () => {
+    try {
+      const [birthdaysRes, todayRes] = await Promise.all([
+        eventsAPI.getUpcomingBirthdays(),
+        eventsAPI.getTodaysEvents()
+      ]);
+      setUpcomingBirthdays(birthdaysRes.data || []);
+      setTodaysEvents(todayRes.data?.events || []);
+      
+      // Show animation for today's events
+      if (todayRes.data?.has_events && todayRes.data.events.length > 0) {
+        const firstEvent = todayRes.data.events[0];
+        setCurrentEvent(firstEvent);
+        setShowEventAnimation(true);
+      }
+    } catch (error) {
+      console.log('Events not loaded (may be preview mode)');
+    }
+  };
+
+  const handleCreateEvent = async () => {
+    if (!newEventTitle.trim()) return;
+    
+    try {
+      await eventsAPI.createEvent({
+        event_type: newEventType,
+        title: newEventTitle,
+        description: newEventDescription,
+        event_date: new Date().toISOString(),
+      });
+      setNewEventTitle('');
+      setNewEventDescription('');
+      setShowCreateEvent(false);
+      loadEvents();
+    } catch (error) {
+      console.error('Failed to create event:', error);
+    }
+  };
+
+  // ============================================================================
   // ZOOM & PAN STATE
   // ============================================================================
   const scale = useSharedValue(1);
