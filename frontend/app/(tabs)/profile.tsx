@@ -334,16 +334,48 @@ export default function ProfileScreen() {
             {exporting ? (
               <ActivityIndicator size="small" color="#D4AF37" />
             ) : (
-              <Ionicons name="download-outline" size={22} color="#4A90D9" />
+              <Ionicons name="cloud-download-outline" size={22} color="#4A90D9" />
             )}
-            <Text style={styles.menuItemText}>Exporter mes données</Text>
+            <Text style={styles.menuItemText}>Voir mes données</Text>
             <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
           </TouchableOpacity>
+
+          {user && (
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={handleDownloadJSON}
+              disabled={downloadingJSON}
+            >
+              {downloadingJSON ? (
+                <ActivityIndicator size="small" color="#D4AF37" />
+              ) : (
+                <Ionicons name="download-outline" size={22} color="#4CAF50" />
+              )}
+              <Text style={styles.menuItemText}>Télécharger l'arbre (JSON)</Text>
+              <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+            </TouchableOpacity>
+          )}
 
           {!user && (
             <TouchableOpacity style={styles.menuItem} onPress={handleClearPreview}>
               <Ionicons name="trash-outline" size={22} color="#FF6B6B" />
               <Text style={[styles.menuItemText, { color: '#FF6B6B' }]}>Effacer données aperçu</Text>
+              <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+            </TouchableOpacity>
+          )}
+
+          {user && (
+            <TouchableOpacity
+              style={[styles.menuItem, styles.dangerItem]}
+              onPress={handleClearTree}
+              disabled={clearingTree}
+            >
+              {clearingTree ? (
+                <ActivityIndicator size="small" color="#FF9800" />
+              ) : (
+                <Ionicons name="git-branch-outline" size={22} color="#FF9800" />
+              )}
+              <Text style={[styles.menuItemText, { color: '#FF9800' }]}>Supprimer l'arbre</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           )}
