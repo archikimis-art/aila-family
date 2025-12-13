@@ -204,7 +204,11 @@ export default function TreeScreen() {
     }
     router.push({
       pathname: '/add-person',
-      params: { preview: isPreviewMode ? 'true' : 'false', token: previewToken || '' },
+      params: { 
+        preview: isPreviewMode ? 'true' : 'false', 
+        token: previewToken || '',
+        sharedOwnerId: sharedTreeOwner?.id || '',
+      },
     });
   };
 
@@ -215,7 +219,11 @@ export default function TreeScreen() {
     }
     router.push({
       pathname: '/add-link',
-      params: { preview: isPreviewMode ? 'true' : 'false', token: previewToken || '' },
+      params: { 
+        preview: isPreviewMode ? 'true' : 'false', 
+        token: previewToken || '',
+        sharedOwnerId: sharedTreeOwner?.id || '',
+      },
     });
   };
 
@@ -223,7 +231,12 @@ export default function TreeScreen() {
     setSelectedPerson(person);
     router.push({
       pathname: '/person/[id]',
-      params: { id: person.id, preview: isPreviewMode ? 'true' : 'false', token: previewToken || '' },
+      params: { 
+        id: person.id, 
+        preview: isPreviewMode ? 'true' : 'false', 
+        token: previewToken || '',
+        sharedOwnerId: sharedTreeOwner?.id || '',
+      },
     });
   };
 
