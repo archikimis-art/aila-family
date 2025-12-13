@@ -106,6 +106,43 @@ export default function AddPersonScreen() {
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [showWilayaList, setShowWilayaList] = useState(false);
+  
+  // États pour la sélection géographique
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
+  const [locationPickerMode, setLocationPickerMode] = useState<'birth' | 'death'>('birth');
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [manualLocationInput, setManualLocationInput] = useState(false);
+
+  // Ouvrir le sélecteur de lieu
+  const openLocationPicker = (mode: 'birth' | 'death') => {
+    setLocationPickerMode(mode);
+    setSelectedRegion(null);
+    setSelectedCountry(null);
+    setManualLocationInput(false);
+    setShowLocationPicker(true);
+  };
+
+  // Sélectionner une ville
+  const selectCity = (city: string, country: string) => {
+    const fullLocation = `${city}, ${country}`;
+    if (locationPickerMode === 'birth') {
+      setBirthPlace(fullLocation);
+    } else {
+      setDeathPlace(fullLocation);
+    }
+    setShowLocationPicker(false);
+  };
+
+  // Sauvegarder un lieu manuel
+  const saveManualLocation = (location: string) => {
+    if (locationPickerMode === 'birth') {
+      setBirthPlace(location);
+    } else {
+      setDeathPlace(location);
+    }
+    setShowLocationPicker(false);
+  };
 
   const handleSave = async () => {
     if (!firstName.trim() || !lastName.trim()) {
