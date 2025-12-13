@@ -55,6 +55,7 @@ export default function TreeScreen() {
   const params = useLocalSearchParams();
   const { user } = useAuth();
   const isPreviewMode = params.preview === 'true';
+  const inviteToken = params.invite as string | undefined;
 
   const [persons, setPersons] = useState<Person[]>([]);
   const [links, setLinks] = useState<FamilyLink[]>([]);
@@ -62,9 +63,53 @@ export default function TreeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [previewToken, setPreviewToken] = useState<string | null>(null);
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  const [sharedTreeOwner, setSharedTreeOwner] = useState<{id: string, name: string, role: string} | null>(null);
+  const [inviteMessage, setInviteMessage] = useState<string | null>(null);
+
+  // Handle invitation acceptance
+  useEffect(() => {
+    const handleInvite = async () => {
+      if (inviteToken && user) {
+        try {
+          const { collaboratorsAPI } = await import('@/services/api');
+          const response = await collaboratorsAPI.acceptInvitation(inviteToken);
+          const data = response.data;
+          
+          setInviteMessage(`✅ Invitation acceptée ! Vous pouvez maintenant voir l'arbre de ${data.tree_owner_name}`);
+          setSharedTreeOwner({
+            id: data.tree_owner_id,
+            name: data.tree_owner_name,
+            role: data.role
+          });
+          
+          // Load the shared tree
+          const treeResponse = await collaboratorsAPI.getSharedTree(data.tree_owner_id);
+          setPersons(treeResponse.data.persons || []);
+          setLinks(treeResponse.data.links || []);
+          setLoading(false);
+          
+          // Clear the invite message after 5 seconds
+          setTimeout(() => setInviteMessage(null), 5000);
+        } catch (error: any) {
+          console.error('Error accepting invite:', error);
+          const message = error.response?.data?.detail || 'Erreur lors de l\'acceptation de l\'invitation';
+          setInviteMessage(`❌ ${message}`);
+          setTimeout(() => setInviteMessage(null), 5000);
+          // Load normal data
+          loadData();
+        }
+      } else {
+        loadData();
+      }
+    };
+    
+    handleInvite();
+  }, [inviteToken, user]);
 
   useEffect(() => {
-    loadData();
+    if (!inviteToken) {
+      loadData();
+    }
   }, [isPreviewMode]);
 
   const loadData = async () => {
