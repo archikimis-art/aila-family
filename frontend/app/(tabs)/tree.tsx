@@ -817,20 +817,18 @@ export default function TreeScreen() {
           </Text>
         </View>
         <View style={styles.headerButtons}>
-          {/* Events button - only for authenticated users */}
-          {!isPreviewMode && (
-            <TouchableOpacity 
-              style={[styles.helpButton, upcomingBirthdays.length > 0 && styles.eventButtonActive]} 
-              onPress={() => setShowEventsPanel(true)}
-            >
-              <Text style={{ fontSize: 18 }}>🎉</Text>
-              {upcomingBirthdays.length > 0 && (
-                <View style={styles.eventBadge}>
-                  <Text style={styles.eventBadgeText}>{upcomingBirthdays.length}</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          )}
+          {/* Events button - visible for all users */}
+          <TouchableOpacity 
+            style={[styles.helpButton, upcomingBirthdays.length > 0 && styles.eventButtonActive]} 
+            onPress={() => setShowEventsPanel(true)}
+          >
+            <Text style={{ fontSize: 18 }}>🎉</Text>
+            {upcomingBirthdays.length > 0 && (
+              <View style={styles.eventBadge}>
+                <Text style={styles.eventBadgeText}>{upcomingBirthdays.length}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
           <TouchableOpacity 
             style={styles.helpButton} 
             onPress={() => setShowGuide(true)}
