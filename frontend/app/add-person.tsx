@@ -600,9 +600,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#D4AF37',
-    marginBottom: 12,
+    marginBottom: 8,
     textTransform: 'uppercase',
     letterSpacing: 1,
+  },
+  sectionDescription: {
+    fontSize: 12,
+    color: '#6B7C93',
+    marginBottom: 12,
   },
   row: {
     flexDirection: 'row',
