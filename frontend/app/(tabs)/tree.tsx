@@ -476,45 +476,6 @@ export default function TreeScreen() {
     console.log('========== END DEBUG ==========');
     return { nodes, connections };
   };
-        
-        connections.push({
-          from: { x: leftPos.x + NODE_WIDTH, y: leftPos.y + NODE_HEIGHT / 2 },
-          to: { x: rightPos.x, y: rightPos.y + NODE_HEIGHT / 2 },
-          type: 'spouse',
-        });
-      }
-    });
-
-    // Parent-child connections
-    links.forEach((link) => {
-      if (link.link_type === 'parent') {
-        const parentPos = personPositions.get(link.person_id_1);
-        const childPos = personPositions.get(link.person_id_2);
-        
-        if (parentPos && childPos) {
-          const spouseId = spouseMap.get(link.person_id_1);
-          const spousePos = spouseId ? personPositions.get(spouseId) : null;
-          
-          let fromX = parentPos.x + NODE_WIDTH / 2;
-          if (spousePos && Math.abs(spousePos.y - parentPos.y) < 10) {
-            const minX = Math.min(parentPos.x, spousePos.x);
-            const maxX = Math.max(parentPos.x, spousePos.x) + NODE_WIDTH;
-            fromX = (minX + maxX) / 2;
-          }
-          
-          connections.push({
-            from: { x: fromX, y: parentPos.y + NODE_HEIGHT },
-            to: { x: childPos.x + NODE_WIDTH / 2, y: childPos.y },
-            type: 'parent',
-          });
-        }
-      }
-    });
-
-    console.log('Nodes:', nodes.map(n => ({ name: n.person.first_name, level: personLevels.get(n.person.id), y: n.y })));
-
-    return { nodes, connections };
-  };
 
   const { nodes, connections } = buildTreeLayout();
   const svgWidth = Math.max(SCREEN_WIDTH, nodes.reduce((max, n) => Math.max(max, n.x + NODE_WIDTH + 40), 0));
