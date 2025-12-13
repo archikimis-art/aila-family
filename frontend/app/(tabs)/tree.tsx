@@ -507,77 +507,8 @@ export default function TreeScreen() {
   };
 
   const { nodes, connections } = buildTreeLayout();
-      });
-    });
-
-    // STEP 6: Fix overlapping
-    const topDownLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
-    topDownLevels.forEach(level => {
-      const nodesAtLevel = nodes.filter(n => personLevels.get(n.person.id) === level);
-      nodesAtLevel.sort((a, b) => a.x - b.x);
-      
-      let minX = 40;
-      nodesAtLevel.forEach(node => {
-        if (node.x < minX) {
-          node.x = minX;
-          personPositions.set(node.person.id, { x: node.x, y: node.y });
-        }
-        minX = node.x + NODE_WIDTH + NODE_SPACING;
-      });
-    });
-
-    // STEP 7: Create connections
-    const connections: { from: { x: number; y: number }; to: { x: number; y: number }; type: string }[] = [];
-    
-    // Spouse connections - draw between adjacent spouses
-    const drawnSpouseConnections = new Set<string>();
-    spouseMap.forEach((spouses, personId) => {
-      spouses.forEach(spouseId => {
-        const key = [personId, spouseId].sort().join('-');
-        if (drawnSpouseConnections.has(key)) return;
-        drawnSpouseConnections.add(key);
-        
-        const pos1 = personPositions.get(personId);
-        const pos2 = personPositions.get(spouseId);
-        
-        if (pos1 && pos2) {
-          const leftPos = pos1.x < pos2.x ? pos1 : pos2;
-          const rightPos = pos1.x < pos2.x ? pos2 : pos1;
-          
-          // Draw horizontal line between spouses
-          connections.push({
-            from: { x: leftPos.x + NODE_WIDTH, y: leftPos.y + NODE_HEIGHT / 2 },
-            to: { x: rightPos.x, y: rightPos.y + NODE_HEIGHT / 2 },
-            type: 'spouse',
-          });
-        }
-      });
-    });
-
-    // Parent-child connections - EACH parent connects individually to child
-    // This supports: single parents, remarriage, different fathers/mothers
-    const drawnParentChildConnections = new Set<string>();
-    
-    links.forEach(link => {
-      if (link.link_type === 'parent') {
-        const parentId = link.person_id_1;
-        const childId = link.person_id_2;
-        const connectionKey = `${parentId}->${childId}`;
-        
-        // Avoid duplicate connections
-        if (drawnParentChildConnections.has(connectionKey)) return;
-        drawnParentChildConnections.add(connectionKey);
-        
-        const parentPos = personPositions.get(parentId);
-        const childPos = personPositions.get(childId);
-        
-        if (parentPos && childPos) {
-          // Check if this parent has a spouse who is ALSO a parent of this same child
-          const spouses = spouseMap.get(parentId);
-          let fromX = parentPos.x + NODE_WIDTH / 2;
-          let sharedParentSpouse: { x: number; y: number } | null = null;
-          
-          if (spouses && spouses.size > 0) {
+  const svgWidth = Math.max(SCREEN_WIDTH, nodes.reduce((max, n) => Math.max(max, n.x + NODE_WIDTH + 60), 0));
+  const svgHeight = Math.max(400, nodes.reduce((max, n) => Math.max(max, n.y + NODE_HEIGHT + 80), 0));
             // Find if any spouse is also a parent of this child
             spouses.forEach(spouseId => {
               const isSpouseAlsoParent = links.some(l => 
