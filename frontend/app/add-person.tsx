@@ -10,19 +10,84 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { personsAPI, previewAPI } from '@/services/api';
 
-const WILAYA_OPTIONS = [
-  'Alger', 'Oran', 'Constantine', 'Annaba', 'Blida', 'Batna', 'Sétif', 'Djelfa',
-  'Sidi Bel Abbès', 'Biskra', 'Tébessa', 'El Oued', 'Skikda', 'Tiaret', 'Béjaïa',
-  'Tlemcen', 'Bechar', 'Mostaganem', 'Bordj Bou Arréridj', 'Chlef', 'Médéa', 'Tizi Ouzou',
-  'Bouira', 'Khenchela', 'Mascara', 'Oum El Bouaghi', 'Ouargla', 'Ghardaïa', 'Relizane',
-  'Autre',
-];
+// ===================== DONNÉES GÉOGRAPHIQUES MONDIALES =====================
+const WORLD_LOCATIONS: Record<string, Record<string, string[]>> = {
+  'Afrique': {
+    'Algérie': ['Alger', 'Oran', 'Constantine', 'Annaba', 'Blida', 'Batna', 'Sétif', 'Djelfa', 'Sidi Bel Abbès', 'Biskra', 'Tébessa', 'El Oued', 'Skikda', 'Tiaret', 'Béjaïa', 'Tlemcen', 'Bechar', 'Mostaganem', 'Tizi Ouzou', 'Bouira', 'Ghardaïa'],
+    'Maroc': ['Casablanca', 'Rabat', 'Fès', 'Marrakech', 'Tanger', 'Agadir', 'Meknès', 'Oujda', 'Tétouan', 'Salé'],
+    'Tunisie': ['Tunis', 'Sfax', 'Sousse', 'Kairouan', 'Bizerte', 'Gabès', 'Ariana', 'Gafsa', 'Monastir'],
+    'Égypte': ['Le Caire', 'Alexandrie', 'Gizeh', 'Louxor', 'Assouan', 'Port-Saïd', 'Suez'],
+    'Sénégal': ['Dakar', 'Saint-Louis', 'Thiès', 'Rufisque', 'Kaolack', 'Ziguinchor'],
+    'Côte d\'Ivoire': ['Abidjan', 'Yamoussoukro', 'Bouaké', 'Daloa', 'San-Pédro'],
+    'Mali': ['Bamako', 'Sikasso', 'Mopti', 'Ségou', 'Kayes', 'Tombouctou'],
+    'Cameroun': ['Yaoundé', 'Douala', 'Garoua', 'Bamenda', 'Maroua', 'Bafoussam'],
+    'Afrique du Sud': ['Johannesburg', 'Le Cap', 'Durban', 'Pretoria', 'Port Elizabeth'],
+    'Nigeria': ['Lagos', 'Abuja', 'Kano', 'Ibadan', 'Port Harcourt'],
+    'Libye': ['Tripoli', 'Benghazi', 'Misrata', 'Zawiya', 'Zliten'],
+    'Mauritanie': ['Nouakchott', 'Nouadhibou', 'Kaédi', 'Zouerate'],
+  },
+  'Europe': {
+    'France': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier', 'Bordeaux', 'Lille', 'Rennes', 'Reims', 'Saint-Étienne', 'Toulon', 'Le Havre', 'Grenoble', 'Dijon', 'Angers', 'Nîmes', 'Villeurbanne'],
+    'Allemagne': ['Berlin', 'Hambourg', 'Munich', 'Cologne', 'Francfort', 'Stuttgart', 'Düsseldorf', 'Leipzig', 'Dortmund', 'Essen'],
+    'Espagne': ['Madrid', 'Barcelone', 'Valence', 'Séville', 'Saragosse', 'Malaga', 'Murcie', 'Palma', 'Bilbao'],
+    'Italie': ['Rome', 'Milan', 'Naples', 'Turin', 'Palerme', 'Gênes', 'Bologne', 'Florence', 'Venise', 'Vérone'],
+    'Royaume-Uni': ['Londres', 'Birmingham', 'Manchester', 'Leeds', 'Glasgow', 'Liverpool', 'Bristol', 'Sheffield', 'Édimbourg', 'Cardiff'],
+    'Belgique': ['Bruxelles', 'Anvers', 'Gand', 'Charleroi', 'Liège', 'Bruges', 'Namur'],
+    'Suisse': ['Zurich', 'Genève', 'Bâle', 'Lausanne', 'Berne', 'Winterthour', 'Lucerne'],
+    'Pays-Bas': ['Amsterdam', 'Rotterdam', 'La Haye', 'Utrecht', 'Eindhoven', 'Tilburg'],
+    'Portugal': ['Lisbonne', 'Porto', 'Braga', 'Coimbra', 'Funchal', 'Faro'],
+    'Pologne': ['Varsovie', 'Cracovie', 'Łódź', 'Wrocław', 'Poznań', 'Gdańsk'],
+    'Suède': ['Stockholm', 'Göteborg', 'Malmö', 'Uppsala', 'Västerås'],
+    'Autriche': ['Vienne', 'Graz', 'Linz', 'Salzbourg', 'Innsbruck'],
+    'Grèce': ['Athènes', 'Thessalonique', 'Patras', 'Héraklion', 'Larissa'],
+    'Russie': ['Moscou', 'Saint-Pétersbourg', 'Novossibirsk', 'Ekaterinbourg', 'Kazan'],
+  },
+  'Amérique du Nord': {
+    'Canada': ['Toronto', 'Montréal', 'Vancouver', 'Calgary', 'Edmonton', 'Ottawa', 'Winnipeg', 'Québec', 'Hamilton', 'Halifax'],
+    'États-Unis': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphie', 'San Antonio', 'San Diego', 'Dallas', 'San Francisco', 'Washington D.C.', 'Boston', 'Seattle', 'Miami', 'Atlanta'],
+    'Mexique': ['Mexico', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana', 'León', 'Cancún'],
+  },
+  'Amérique du Sud': {
+    'Brésil': ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador', 'Fortaleza', 'Belo Horizonte'],
+    'Argentine': ['Buenos Aires', 'Córdoba', 'Rosario', 'Mendoza', 'La Plata'],
+    'Colombie': ['Bogotá', 'Medellín', 'Cali', 'Barranquilla', 'Carthagène'],
+    'Chili': ['Santiago', 'Valparaíso', 'Concepción', 'La Serena', 'Antofagasta'],
+    'Pérou': ['Lima', 'Arequipa', 'Trujillo', 'Chiclayo', 'Cusco'],
+  },
+  'Asie': {
+    'Chine': ['Pékin', 'Shanghai', 'Canton', 'Shenzhen', 'Chengdu', 'Hangzhou', 'Xi\'an', 'Wuhan'],
+    'Japon': ['Tokyo', 'Yokohama', 'Osaka', 'Nagoya', 'Sapporo', 'Kobe', 'Kyoto', 'Fukuoka'],
+    'Inde': ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad'],
+    'Turquie': ['Istanbul', 'Ankara', 'Izmir', 'Bursa', 'Antalya', 'Adana', 'Konya'],
+    'Arabie Saoudite': ['Riyad', 'Djeddah', 'La Mecque', 'Médine', 'Dammam'],
+    'Émirats Arabes Unis': ['Dubaï', 'Abou Dhabi', 'Sharjah', 'Ajman', 'Al Ain'],
+    'Liban': ['Beyrouth', 'Tripoli', 'Sidon', 'Tyr', 'Jounieh', 'Zahlé'],
+    'Syrie': ['Damas', 'Alep', 'Homs', 'Lattaquié', 'Hama'],
+    'Jordanie': ['Amman', 'Zarqa', 'Irbid', 'Aqaba', 'Salt'],
+    'Irak': ['Bagdad', 'Bassora', 'Mossoul', 'Erbil', 'Kirkouk'],
+    'Iran': ['Téhéran', 'Mashhad', 'Ispahan', 'Karaj', 'Tabriz', 'Chiraz'],
+    'Pakistan': ['Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad'],
+    'Corée du Sud': ['Séoul', 'Busan', 'Incheon', 'Daegu', 'Daejeon'],
+    'Vietnam': ['Hô Chi Minh-Ville', 'Hanoï', 'Da Nang', 'Haiphong', 'Can Tho'],
+    'Thaïlande': ['Bangkok', 'Chiang Mai', 'Phuket', 'Pattaya', 'Nonthaburi'],
+    'Indonésie': ['Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Semarang', 'Bali'],
+    'Malaisie': ['Kuala Lumpur', 'George Town', 'Johor Bahru', 'Ipoh', 'Shah Alam'],
+    'Philippines': ['Manille', 'Quezon City', 'Davao', 'Cebu', 'Zamboanga'],
+  },
+  'Océanie': {
+    'Australie': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adélaïde', 'Canberra'],
+    'Nouvelle-Zélande': ['Auckland', 'Wellington', 'Christchurch', 'Hamilton', 'Dunedin'],
+  },
+};
+
+const REGIONS = Object.keys(WORLD_LOCATIONS);
 
 export default function AddPersonScreen() {
   const router = useRouter();
