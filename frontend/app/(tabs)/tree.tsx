@@ -555,67 +555,11 @@ export default function TreeScreen() {
   };
 
   const { nodes, connections, debugInfo } = buildTreeLayout();
-      nodesAtLevel.forEach(node => {
-        if (node.x < minX) {
-          node.x = minX;
-          personPositions.set(node.person.id, { x: node.x, y: node.y });
-        }
-        minX = node.x + NODE_WIDTH + NODE_SPACING;
-      });
-    });
-
-    // ==================== STEP 7: CREATE CONNECTIONS ====================
-    const connections: { from: { x: number; y: number }; to: { x: number; y: number }; type: string; isMultipleSpouse?: boolean }[] = [];
-    
-    // --- SPOUSE CONNECTIONS ---
-    const drawnSpouseConnections = new Set<string>();
-    spouseMap.forEach((spouses, personId) => {
-      spouses.forEach(spouseId => {
-        const key = [personId, spouseId].sort().join('-');
-        if (drawnSpouseConnections.has(key)) return;
-        drawnSpouseConnections.add(key);
-        
-        const pos1 = personPositions.get(personId);
-        const pos2 = personPositions.get(spouseId);
-        
-        if (pos1 && pos2) {
-          const leftPos = pos1.x < pos2.x ? pos1 : pos2;
-          const rightPos = pos1.x < pos2.x ? pos2 : pos1;
-          
-          // Check if this is a multiple spouse situation
-          const isMultipleSpouse = spouses.size > 1 || (spouseMap.get(spouseId)?.size || 0) > 1;
-          
-          connections.push({
-            from: { x: leftPos.x + NODE_WIDTH, y: leftPos.y + NODE_HEIGHT / 2 },
-            to: { x: rightPos.x, y: rightPos.y + NODE_HEIGHT / 2 },
-            type: 'spouse',
-            isMultipleSpouse,
-          });
-        }
-      });
-    });
-
-    // --- PARENT-CHILD CONNECTIONS ---
-    // Group children by their parent pairs to draw clean lines
-    const drawnParentChildLines = new Set<string>();
-    
-    links.forEach(link => {
-      if (link.link_type === 'parent') {
-        const parentId = link.person_id_1;
-        const childId = link.person_id_2;
-        const lineKey = `${parentId}->${childId}`;
-        
-        if (drawnParentChildLines.has(lineKey)) return;
-        drawnParentChildLines.add(lineKey);
-        
-        const parentPos = personPositions.get(parentId);
-        const childPos = personPositions.get(childId);
-        
-        if (!parentPos || !childPos) return;
-        
-        // Find other parent of this child (if exists)
-        const otherParents = childToParents.get(childId);
-        let fromX = parentPos.x + NODE_WIDTH / 2;
+  const svgWidth = Math.max(SCREEN_WIDTH, nodes.reduce((max, n) => Math.max(max, n.x + NODE_WIDTH + 60), 0));
+  const svgHeight = Math.max(400, nodes.reduce((max, n) => Math.max(max, n.y + NODE_HEIGHT + 80), 0));
+  
+  // State to show/hide debug panel
+  const [showDebug, setShowDebug] = useState(false);
         
         if (otherParents && otherParents.size > 1) {
           // Find if any other parent is a spouse of this parent
