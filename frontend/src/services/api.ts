@@ -100,6 +100,11 @@ export const collaboratorsAPI = {
   remove: (id: string) => api.delete(`/collaborators/${id}`),
   getSharedTree: (ownerId: string) => api.get(`/tree/shared/${ownerId}`),
   acceptInvitation: (inviteToken: string) => api.post(`/collaborators/accept/${inviteToken}`),
+  // NEW: Create person/link in shared tree (for editors)
+  createPersonInSharedTree: (ownerId: string, data: any) => 
+    api.post(`/tree/shared/${ownerId}/persons`, data),
+  createLinkInSharedTree: (ownerId: string, data: { person_id_1: string; person_id_2: string; link_type: string }) => 
+    api.post(`/tree/shared/${ownerId}/links`, data),
 };
 
 export const contributionsAPI = {
