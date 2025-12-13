@@ -587,6 +587,88 @@ export default function TreeScreen() {
   // State to show/hide user guide
   const [showGuide, setShowGuide] = useState(false);
 
+  // ============================================================================
+  // ZOOM & PAN STATE
+  // ============================================================================
+  const scale = useSharedValue(1);
+  const savedScale = useSharedValue(1);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const savedTranslateX = useSharedValue(0);
+  const savedTranslateY = useSharedValue(0);
+
+  const MIN_SCALE = 0.3;
+  const MAX_SCALE = 3;
+
+  // Reset to center
+  const resetToCenter = useCallback(() => {
+    'worklet';
+    scale.value = withSpring(1, { damping: 15 });
+    savedScale.value = 1;
+    translateX.value = withSpring(0, { damping: 15 });
+    translateY.value = withSpring(0, { damping: 15 });
+    savedTranslateX.value = 0;
+    savedTranslateY.value = 0;
+  }, []);
+
+  // Zoom in/out functions for buttons
+  const zoomIn = useCallback(() => {
+    const newScale = Math.min(savedScale.value * 1.3, MAX_SCALE);
+    scale.value = withSpring(newScale, { damping: 15 });
+    savedScale.value = newScale;
+  }, []);
+
+  const zoomOut = useCallback(() => {
+    const newScale = Math.max(savedScale.value / 1.3, MIN_SCALE);
+    scale.value = withSpring(newScale, { damping: 15 });
+    savedScale.value = newScale;
+  }, []);
+
+  // Pinch gesture for zoom
+  const pinchGesture = Gesture.Pinch()
+    .onUpdate((e) => {
+      scale.value = Math.min(Math.max(savedScale.value * e.scale, MIN_SCALE), MAX_SCALE);
+    })
+    .onEnd(() => {
+      savedScale.value = scale.value;
+    });
+
+  // Pan gesture for dragging
+  const panGesture = Gesture.Pan()
+    .onUpdate((e) => {
+      translateX.value = savedTranslateX.value + e.translationX;
+      translateY.value = savedTranslateY.value + e.translationY;
+    })
+    .onEnd(() => {
+      savedTranslateX.value = translateX.value;
+      savedTranslateY.value = translateY.value;
+    });
+
+  // Double tap gesture to reset/center
+  const doubleTapGesture = Gesture.Tap()
+    .numberOfTaps(2)
+    .onEnd(() => {
+      resetToCenter();
+    });
+
+  // Combine gestures
+  const composedGesture = Gesture.Simultaneous(
+    pinchGesture,
+    panGesture,
+    doubleTapGesture
+  );
+
+  // Animated style for the tree container
+  const animatedTreeStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value },
+        { scale: scale.value },
+      ],
+    };
+  });
+
   const getGenderColor = (gender: string) => {
     switch (gender) {
       case 'male':
