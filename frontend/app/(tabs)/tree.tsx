@@ -209,9 +209,15 @@ export default function TreeScreen() {
   // 4. Birth dates considered when available
   // ============================================================================
   const buildTreeLayout = () => {
-    if (persons.length === 0) return { nodes: [], connections: [] };
+    if (persons.length === 0) return { nodes: [], connections: [], debugInfo: null };
 
     console.log('========== DEFINITIVE TREE LAYOUT v6 ==========');
+    console.log('RAW PERSONS:', JSON.stringify(persons.map(p => ({ id: p.id, name: `${p.first_name} ${p.last_name}` })), null, 2));
+    console.log('RAW LINKS:', JSON.stringify(links.map(l => ({ 
+      type: l.link_type, 
+      person_1: l.person_id_1, 
+      person_2: l.person_id_2 
+    })), null, 2));
     
     // ==================== STEP 1: BUILD RELATIONSHIP MAPS ====================
     const childToParents = new Map<string, Set<string>>();
@@ -221,10 +227,25 @@ export default function TreeScreen() {
     
     persons.forEach(p => personById.set(p.id, p));
     
+    // DEBUG: Track all parent links
+    const parentLinksList: { parent: string; child: string; parentName: string; childName: string }[] = [];
+    
     links.forEach(link => {
       if (link.link_type === 'parent') {
         const parentId = link.person_id_1;
         const childId = link.person_id_2;
+        
+        const parentPerson = personById.get(parentId);
+        const childPerson = personById.get(childId);
+        
+        parentLinksList.push({
+          parent: parentId,
+          child: childId,
+          parentName: parentPerson ? `${parentPerson.first_name} ${parentPerson.last_name}` : 'UNKNOWN',
+          childName: childPerson ? `${childPerson.first_name} ${childPerson.last_name}` : 'UNKNOWN',
+        });
+        
+        console.log(`PARENT LINK FOUND: "${parentPerson?.first_name} ${parentPerson?.last_name}" est PARENT de "${childPerson?.first_name} ${childPerson?.last_name}"`);
         
         if (!childToParents.has(childId)) childToParents.set(childId, new Set());
         childToParents.get(childId)!.add(parentId);
@@ -236,8 +257,15 @@ export default function TreeScreen() {
         if (!spouseMap.has(link.person_id_2)) spouseMap.set(link.person_id_2, new Set());
         spouseMap.get(link.person_id_1)!.add(link.person_id_2);
         spouseMap.get(link.person_id_2)!.add(link.person_id_1);
+        
+        const p1 = personById.get(link.person_id_1);
+        const p2 = personById.get(link.person_id_2);
+        console.log(`SPOUSE LINK FOUND: "${p1?.first_name} ${p1?.last_name}" <-> "${p2?.first_name} ${p2?.last_name}"`);
       }
     });
+
+    console.log(`Total parent links: ${parentLinksList.length}`);
+    console.log('Parent links details:', parentLinksList);
 
     // ==================== STEP 2: CALCULATE GENERATION LEVELS ====================
     // Use DEPTH-FIRST approach to find the longest path to each person
