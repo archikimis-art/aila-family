@@ -97,6 +97,7 @@ export const collaboratorsAPI = {
   getSharedWithMe: () => api.get('/collaborators/shared-with-me'),
   remove: (id: string) => api.delete(`/collaborators/${id}`),
   getSharedTree: (ownerId: string) => api.get(`/tree/shared/${ownerId}`),
+  acceptInvitation: (inviteToken: string) => api.post(`/collaborators/accept/${inviteToken}`),
 };
 
 export const contributionsAPI = {
