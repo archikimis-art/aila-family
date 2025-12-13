@@ -1,4 +1,4 @@
-// Build: 2025010601 - ZOOM & PAN TREE LAYOUT
+// Build: 2025010602 - ZOOM & PAN TREE + EVENTS
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
@@ -12,13 +12,14 @@ import {
   ActivityIndicator,
   Modal,
   Platform,
+  TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Line, Circle, G, Text as SvgText, Rect, Defs, LinearGradient, Stop, Path } from 'react-native-svg';
 import { useAuth } from '@/context/AuthContext';
-import { treeAPI, previewAPI } from '@/services/api';
+import { treeAPI, previewAPI, eventsAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GestureHandlerRootView, GestureDetector, Gesture, PinchGestureHandler, PanGestureHandler, TapGestureHandler, State } from 'react-native-gesture-handler';
 import Animated, { 
@@ -28,6 +29,7 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
+import EventAnimation from '@/components/EventAnimation';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
