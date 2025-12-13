@@ -94,6 +94,7 @@ export default function AddPersonScreen() {
   const params = useLocalSearchParams();
   const isPreviewMode = params.preview === 'true';
   const previewToken = params.token as string;
+  const sharedOwnerId = params.sharedOwnerId as string | undefined;
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
