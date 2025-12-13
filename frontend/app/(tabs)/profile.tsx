@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
-import { gdprAPI } from '@/services/api';
+import { gdprAPI, treeAPI, exportAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileScreen() {
@@ -22,6 +22,8 @@ export default function ProfileScreen() {
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [clearingTree, setClearingTree] = useState(false);
+  const [downloadingJSON, setDownloadingJSON] = useState(false);
 
   const performLogout = async () => {
     setLoggingOut(true);
