@@ -1152,4 +1152,138 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
   },
+  // Styles pour les boutons du header
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  helpButton: {
+    padding: 8,
+    borderRadius: 8,
+  },
+  // Styles pour le Guide d'utilisation
+  guideOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  guideContent: {
+    backgroundColor: '#0A1628',
+    borderRadius: 20,
+    maxHeight: '90%',
+    borderWidth: 1,
+    borderColor: '#D4AF37',
+  },
+  guideHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1A2F4A',
+  },
+  guideTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  guideScroll: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  guideStep: {
+    flexDirection: 'row',
+    marginBottom: 24,
+  },
+  guideStepNumber: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#D4AF37',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  guideStepNumberText: {
+    color: '#0A1628',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  guideStepContent: {
+    flex: 1,
+  },
+  guideStepTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 6,
+  },
+  guideStepText: {
+    fontSize: 14,
+    color: '#B8C5D6',
+    lineHeight: 20,
+  },
+  guideHighlight: {
+    color: '#D4AF37',
+    fontWeight: '600',
+  },
+  guideStepDetails: {
+    marginTop: 10,
+    paddingLeft: 8,
+    borderLeftWidth: 2,
+    borderLeftColor: '#1A2F4A',
+  },
+  guideStepDetail: {
+    fontSize: 13,
+    color: '#8A9BAD',
+    marginBottom: 4,
+    lineHeight: 18,
+  },
+  guideNote: {
+    fontSize: 13,
+    color: '#4CAF50',
+    marginTop: 10,
+    fontStyle: 'italic',
+  },
+  guideTip: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+    borderRadius: 12,
+    padding: 14,
+    marginTop: 8,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.3)',
+  },
+  guideTipContent: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  guideTipTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#D4AF37',
+    marginBottom: 4,
+  },
+  guideTipText: {
+    fontSize: 13,
+    color: '#B8C5D6',
+    lineHeight: 18,
+  },
+  guideCloseButton: {
+    backgroundColor: '#D4AF37',
+    marginHorizontal: 20,
+    marginBottom: 20,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  guideCloseButtonText: {
+    color: '#0A1628',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
