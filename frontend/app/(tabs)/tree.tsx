@@ -553,71 +553,8 @@ export default function TreeScreen() {
     console.log('========== END TREE LAYOUT v7 ==========');
     return { nodes, connections, debugInfo };
   };
-      
-      personsAtLevel.forEach(person => {
-        if (processedIds.has(person.id)) return;
-        
-        const unit: Person[] = [person];
-        processedIds.add(person.id);
-        
-        // Add spouses at same level
-        const spouses = spouseMap.get(person.id);
-        if (spouses) {
-          spouses.forEach(spouseId => {
-            const spouse = personsAtLevel.find(p => p.id === spouseId);
-            if (spouse && !processedIds.has(spouse.id)) {
-              unit.push(spouse);
-              processedIds.add(spouse.id);
-            }
-          });
-        }
-        
-        familyUnits.push(unit);
-      });
 
-      // Position each family unit
-      let currentX = 50;
-      
-      familyUnits.forEach(unit => {
-        // Try to center above children
-        const allChildrenIds: string[] = [];
-        unit.forEach(person => {
-          const children = parentToChildren.get(person.id);
-          if (children) children.forEach(cId => allChildrenIds.push(cId));
-        });
-
-        let unitX = currentX;
-        if (allChildrenIds.length > 0) {
-          const childPositions = allChildrenIds
-            .map(cId => personPositions.get(cId))
-            .filter(pos => pos !== undefined);
-          
-          if (childPositions.length > 0) {
-            const avgChildX = childPositions.reduce((sum, p) => sum + p!.x + NODE_WIDTH / 2, 0) / childPositions.length;
-            const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
-            unitX = Math.max(currentX, avgChildX - unitWidth / 2);
-          }
-        }
-
-        // Position each person in unit
-        let x = unitX;
-        unit.forEach(person => {
-          nodes.push({ person, x, y });
-          personPositions.set(person.id, { x, y });
-          x += NODE_WIDTH + COUPLE_SPACING;
-        });
-        
-        currentX = x + NODE_SPACING;
-      });
-    });
-
-    // ==================== STEP 6: FIX OVERLAPPING ====================
-    const topDownLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
-    topDownLevels.forEach(level => {
-      const nodesAtLevel = nodes.filter(n => personLevels.get(n.person.id) === level);
-      nodesAtLevel.sort((a, b) => a.x - b.x);
-      
-      let minX = 50;
+  const { nodes, connections, debugInfo } = buildTreeLayout();
       nodesAtLevel.forEach(node => {
         if (node.x < minX) {
           node.x = minX;
