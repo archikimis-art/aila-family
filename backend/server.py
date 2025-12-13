@@ -927,6 +927,64 @@ async def delete_account(current_user: dict = Depends(get_current_user)):
     
     return {"message": "Account and all data deleted successfully"}
 
+# ===================== TREE MANAGEMENT ROUTES =====================
+
+@api_router.delete("/tree/clear")
+async def clear_tree(current_user: dict = Depends(get_current_user)):
+    """Delete all persons and links in the user's tree (keeps account)"""
+    user_id = str(current_user['_id'])
+    
+    # Delete all persons and links
+    deleted_persons = await db.persons.delete_many({"user_id": user_id})
+    deleted_links = await db.family_links.delete_many({"user_id": user_id})
+    
+    return {
+        "message": "Arbre supprimé avec succès",
+        "deleted_persons": deleted_persons.deleted_count,
+        "deleted_links": deleted_links.deleted_count
+    }
+
+# ===================== DEBUG ROUTES =====================
+
+@api_router.get("/tree/debug")
+async def debug_tree(current_user: dict = Depends(get_current_user)):
+    """Get detailed tree data for debugging"""
+    user_id = str(current_user['_id'])
+    
+    persons = await db.persons.find({"user_id": user_id}).to_list(500)
+    links = await db.family_links.find({"user_id": user_id}).to_list(500)
+    
+    # Build person map
+    person_map = {str(p['_id']): f"{p['first_name']} {p['last_name']}" for p in persons}
+    
+    # Annotate links with names
+    annotated_links = []
+    for link in links:
+        annotated_links.append({
+            "id": str(link['_id']),
+            "type": link['link_type'],
+            "person_1": {
+                "id": link['person_id_1'],
+                "name": person_map.get(link['person_id_1'], "UNKNOWN")
+            },
+            "person_2": {
+                "id": link['person_id_2'],
+                "name": person_map.get(link['person_id_2'], "UNKNOWN")
+            },
+            "description": f"{person_map.get(link['person_id_1'], '?')} est {link['link_type']} de {person_map.get(link['person_id_2'], '?')}"
+        })
+    
+    return {
+        "persons": [{"id": str(p['_id']), "name": f"{p['first_name']} {p['last_name']}"} for p in persons],
+        "links": annotated_links,
+        "summary": {
+            "total_persons": len(persons),
+            "total_links": len(links),
+            "parent_links": len([l for l in links if l['link_type'] == 'parent']),
+            "spouse_links": len([l for l in links if l['link_type'] == 'spouse']),
+        }
+    }
+
 # ===================== TREE EXPORT ROUTES =====================
 
 @api_router.get("/tree/export/json")
