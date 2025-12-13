@@ -437,31 +437,57 @@ export default function TreeScreen() {
       });
     });
 
-    // Parent-child connections
+    // Parent-child connections - EACH parent connects individually to child
+    // This supports: single parents, remarriage, different fathers/mothers
+    const drawnParentChildConnections = new Set<string>();
+    
     links.forEach(link => {
       if (link.link_type === 'parent') {
-        const parentPos = personPositions.get(link.person_id_1);
-        const childPos = personPositions.get(link.person_id_2);
+        const parentId = link.person_id_1;
+        const childId = link.person_id_2;
+        const connectionKey = `${parentId}->${childId}`;
+        
+        // Avoid duplicate connections
+        if (drawnParentChildConnections.has(connectionKey)) return;
+        drawnParentChildConnections.add(connectionKey);
+        
+        const parentPos = personPositions.get(parentId);
+        const childPos = personPositions.get(childId);
         
         if (parentPos && childPos) {
-          // Find all spouses of parent to center the connection
-          const spouses = spouseMap.get(link.person_id_1);
+          // Check if this parent has a spouse who is ALSO a parent of this same child
+          const spouses = spouseMap.get(parentId);
           let fromX = parentPos.x + NODE_WIDTH / 2;
+          let sharedParentSpouse: { x: number; y: number } | null = null;
           
           if (spouses && spouses.size > 0) {
-            const allParentPositions = [parentPos];
-            spouses.forEach(sId => {
-              const sPos = personPositions.get(sId);
-              if (sPos && Math.abs(sPos.y - parentPos.y) < 10) {
-                allParentPositions.push(sPos);
+            // Find if any spouse is also a parent of this child
+            spouses.forEach(spouseId => {
+              const isSpouseAlsoParent = links.some(l => 
+                l.link_type === 'parent' && 
+                l.person_id_1 === spouseId && 
+                l.person_id_2 === childId
+              );
+              
+              if (isSpouseAlsoParent) {
+                const spousePos = personPositions.get(spouseId);
+                if (spousePos && Math.abs(spousePos.y - parentPos.y) < 10) {
+                  sharedParentSpouse = spousePos;
+                }
               }
             });
+          }
+          
+          // If both parents of this child are married, draw line from center
+          if (sharedParentSpouse) {
+            const minX = Math.min(parentPos.x, sharedParentSpouse.x);
+            const maxX = Math.max(parentPos.x, sharedParentSpouse.x) + NODE_WIDTH;
+            fromX = (minX + maxX) / 2;
             
-            if (allParentPositions.length > 1) {
-              const minX = Math.min(...allParentPositions.map(p => p.x));
-              const maxX = Math.max(...allParentPositions.map(p => p.x + NODE_WIDTH));
-              fromX = (minX + maxX) / 2;
-            }
+            // Mark this connection as drawn to avoid drawing from both parents
+            spouses?.forEach(spouseId => {
+              drawnParentChildConnections.add(`${spouseId}->${childId}`);
+            });
           }
           
           connections.push({
