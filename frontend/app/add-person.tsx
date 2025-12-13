@@ -110,13 +110,13 @@ export default function AddPersonScreen() {
   
   // États pour la sélection géographique
   const [showLocationPicker, setShowLocationPicker] = useState(false);
-  const [locationPickerMode, setLocationPickerMode] = useState<'birth' | 'death'>('birth');
+  const [locationPickerMode, setLocationPickerMode] = useState<'birth' | 'death' | 'branch'>('birth');
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [manualLocationInput, setManualLocationInput] = useState(false);
 
   // Ouvrir le sélecteur de lieu
-  const openLocationPicker = (mode: 'birth' | 'death') => {
+  const openLocationPicker = (mode: 'birth' | 'death' | 'branch') => {
     setLocationPickerMode(mode);
     setSelectedRegion(null);
     setSelectedCountry(null);
@@ -129,8 +129,10 @@ export default function AddPersonScreen() {
     const fullLocation = `${city}, ${country}`;
     if (locationPickerMode === 'birth') {
       setBirthPlace(fullLocation);
-    } else {
+    } else if (locationPickerMode === 'death') {
       setDeathPlace(fullLocation);
+    } else if (locationPickerMode === 'branch') {
+      setGeographicBranch(fullLocation);
     }
     setShowLocationPicker(false);
   };
@@ -139,10 +141,39 @@ export default function AddPersonScreen() {
   const saveManualLocation = (location: string) => {
     if (locationPickerMode === 'birth') {
       setBirthPlace(location);
-    } else {
+    } else if (locationPickerMode === 'death') {
       setDeathPlace(location);
+    } else if (locationPickerMode === 'branch') {
+      setGeographicBranch(location);
     }
     setShowLocationPicker(false);
+  };
+  
+  // Obtenir la valeur actuelle selon le mode
+  const getCurrentLocationValue = () => {
+    switch (locationPickerMode) {
+      case 'birth': return birthPlace;
+      case 'death': return deathPlace;
+      case 'branch': return geographicBranch;
+    }
+  };
+  
+  // Mettre à jour la valeur selon le mode
+  const setCurrentLocationValue = (value: string) => {
+    switch (locationPickerMode) {
+      case 'birth': setBirthPlace(value); break;
+      case 'death': setDeathPlace(value); break;
+      case 'branch': setGeographicBranch(value); break;
+    }
+  };
+  
+  // Obtenir le titre du modal selon le mode
+  const getLocationPickerTitle = () => {
+    switch (locationPickerMode) {
+      case 'birth': return 'Lieu de naissance';
+      case 'death': return 'Lieu de décès';
+      case 'branch': return 'Branche géographique';
+    }
   };
 
   const handleSave = async () => {
