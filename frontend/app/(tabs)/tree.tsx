@@ -691,15 +691,6 @@ export default function TreeScreen() {
       console.error('Failed to create event:', error);
     }
   };
-      });
-      setNewEventTitle('');
-      setNewEventDescription('');
-      setShowCreateEvent(false);
-      loadEvents();
-    } catch (error) {
-      console.error('Failed to create event:', error);
-    }
-  };
 
   // ============================================================================
   // ZOOM & PAN STATE
