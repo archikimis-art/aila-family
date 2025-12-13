@@ -364,6 +364,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#FF6B6B',
   },
+  disabledButton: {
+    opacity: 0.6,
+  },
   emptyContainer: {
     alignItems: 'center',
     paddingTop: 60,
