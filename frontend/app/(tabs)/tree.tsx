@@ -601,13 +601,27 @@ export default function TreeScreen() {
   const [newEventType, setNewEventType] = useState('custom');
   const [newEventTitle, setNewEventTitle] = useState('');
   const [newEventDescription, setNewEventDescription] = useState('');
+  const [collaborators, setCollaborators] = useState<any[]>([]);
+  const [selectedRecipients, setSelectedRecipients] = useState<string[]>([]);
+  const [sendByEmail, setSendByEmail] = useState(true);
+  const [sendInApp, setSendInApp] = useState(true);
 
-  // Load events on mount (only for authenticated users)
+  // Load events and collaborators on mount (only for authenticated users)
   useEffect(() => {
     if (user && !isPreviewMode) {
       loadEvents();
+      loadCollaborators();
     }
   }, [user, isPreviewMode]);
+
+  const loadCollaborators = async () => {
+    try {
+      const response = await api.get('/collaborators');
+      setCollaborators(response.data || []);
+    } catch (error) {
+      console.log('Collaborators not loaded');
+    }
+  };
 
   const loadEvents = async () => {
     try {
@@ -629,6 +643,19 @@ export default function TreeScreen() {
     }
   };
 
+  const toggleRecipient = (email: string) => {
+    setSelectedRecipients(prev => 
+      prev.includes(email) 
+        ? prev.filter(e => e !== email)
+        : [...prev, email]
+    );
+  };
+
+  const selectAllRecipients = () => {
+    const allEmails = collaborators.filter(c => c.status === 'accepted').map(c => c.email);
+    setSelectedRecipients(allEmails);
+  };
+
   const handleCreateEvent = async () => {
     if (!newEventTitle.trim()) return;
     
@@ -638,6 +665,31 @@ export default function TreeScreen() {
         title: newEventTitle,
         description: newEventDescription,
         event_date: new Date().toISOString(),
+        recipients: selectedRecipients,
+        send_email: sendByEmail,
+      });
+      
+      // Reset form
+      setNewEventTitle('');
+      setNewEventDescription('');
+      setSelectedRecipients([]);
+      setShowCreateEvent(false);
+      loadEvents();
+      
+      // Show success animation
+      setCurrentEvent({
+        type: newEventType,
+        title: `✅ Événement créé et envoyé!`,
+        subtitle: sendByEmail && selectedRecipients.length > 0 
+          ? `Email envoyé à ${selectedRecipients.length} personne(s)` 
+          : 'Événement enregistré'
+      });
+      setShowEventsPanel(false);
+      setShowEventAnimation(true);
+    } catch (error) {
+      console.error('Failed to create event:', error);
+    }
+  };
       });
       setNewEventTitle('');
       setNewEventDescription('');
