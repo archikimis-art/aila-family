@@ -202,51 +202,81 @@ export default function TreeScreen() {
   const buildTreeLayout = () => {
     if (persons.length === 0) return { nodes: [], connections: [] };
 
-    // Find root nodes (people without parents)
-    const childIds = new Set(
-      links
-        .filter((l) => l.link_type === 'parent')
-        .map((l) => l.person_id_2)
-    );
-    const parentIds = new Set(
-      links
-        .filter((l) => l.link_type === 'parent')
-        .map((l) => l.person_id_1)
-    );
+    // Get all parent-child relationships
+    const parentLinks = links.filter((l) => l.link_type === 'parent');
+    
+    // Build maps for quick lookup
+    const childToParents = new Map<string, string[]>(); // child_id -> [parent_ids]
+    const parentToChildren = new Map<string, string[]>(); // parent_id -> [child_ids]
+    
+    parentLinks.forEach((l) => {
+      // l.person_id_1 is parent, l.person_id_2 is child
+      const parentId = l.person_id_1;
+      const childId = l.person_id_2;
+      
+      if (!childToParents.has(childId)) childToParents.set(childId, []);
+      childToParents.get(childId)!.push(parentId);
+      
+      if (!parentToChildren.has(parentId)) parentToChildren.set(parentId, []);
+      parentToChildren.get(parentId)!.push(childId);
+    });
 
-    let roots = persons.filter((p) => !childIds.has(p.id));
-    if (roots.length === 0) roots = [persons[0]];
+    // Find true roots: people who have no parents (not in childToParents as keys)
+    // A person is a root if they are not anyone's child
+    const allChildIds = new Set(childToParents.keys());
+    let roots = persons.filter((p) => !allChildIds.has(p.id));
+    
+    // If no roots found (circular reference or error), use first person
+    if (roots.length === 0) {
+      roots = [persons[0]];
+    }
+
+    // Find spouse relationships
+    const spouseLinks = links.filter((l) => l.link_type === 'spouse');
+    const getSpouse = (personId: string): Person | undefined => {
+      const spouseLink = spouseLinks.find(
+        (l) => l.person_id_1 === personId || l.person_id_2 === personId
+      );
+      if (!spouseLink) return undefined;
+      const spouseId = spouseLink.person_id_1 === personId ? spouseLink.person_id_2 : spouseLink.person_id_1;
+      return persons.find((p) => p.id === spouseId);
+    };
 
     const nodes: { person: Person; x: number; y: number }[] = [];
     const connections: { from: { x: number; y: number }; to: { x: number; y: number }; type: string }[] = [];
     const visited = new Set<string>();
 
+    // Recursive function to layout a person and their descendants
     const layoutNode = (person: Person, level: number, xOffset: number): number => {
       if (visited.has(person.id)) return xOffset;
       visited.add(person.id);
 
-      // Find children
-      const childLinks = links.filter(
-        (l) => l.link_type === 'parent' && l.person_id_1 === person.id
-      );
-      const childPersons = childLinks
-        .map((l) => persons.find((p) => p.id === l.person_id_2))
-        .filter((p): p is Person => p !== undefined);
+      // Get children of this person
+      const childIds = parentToChildren.get(person.id) || [];
+      const childPersons = childIds
+        .map((cid) => persons.find((p) => p.id === cid))
+        .filter((p): p is Person => p !== undefined && !visited.has(p.id));
 
-      // Find spouse
-      const spouseLink = links.find(
-        (l) => l.link_type === 'spouse' && (l.person_id_1 === person.id || l.person_id_2 === person.id)
-      );
-      const spouse = spouseLink
-        ? persons.find((p) => p.id === (spouseLink.person_id_1 === person.id ? spouseLink.person_id_2 : spouseLink.person_id_1))
-        : undefined;
+      // Get spouse
+      const spouse = getSpouse(person.id);
+      if (spouse && !visited.has(spouse.id)) {
+        // Also get children from spouse
+        const spouseChildIds = parentToChildren.get(spouse.id) || [];
+        spouseChildIds.forEach((cid) => {
+          if (!childIds.includes(cid)) {
+            const child = persons.find((p) => p.id === cid);
+            if (child && !visited.has(child.id) && !childPersons.includes(child)) {
+              childPersons.push(child);
+            }
+          }
+        });
+      }
 
       let childrenWidth = 0;
-      const childXPositions: number[] = [];
+      const childStartX = xOffset;
 
       // Layout children first to determine width
       childPersons.forEach((child) => {
-        childXPositions.push(xOffset + childrenWidth);
         childrenWidth = layoutNode(child, level + 1, xOffset + childrenWidth);
         childrenWidth += NODE_SPACING;
       });
