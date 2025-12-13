@@ -164,25 +164,29 @@ export default function TreeScreen() {
   const loadData = async () => {
     try {
       if (isPreviewMode) {
-        let token = await AsyncStorage.getItem('preview_token');
+        let token: string | null = await AsyncStorage.getItem('preview_token');
         if (!token) {
           const response = await previewAPI.createSession();
           token = response.data.session_token;
-          await AsyncStorage.setItem('preview_token', token);
+          if (token) await AsyncStorage.setItem('preview_token', token);
         }
-        setPreviewToken(token);
-        try {
-          const sessionData = await previewAPI.getSession(token);
-          setPersons(sessionData.data.persons || []);
-          setLinks(sessionData.data.links || []);
-        } catch (e: any) {
-          if (e.response?.status === 404 || e.response?.status === 410) {
-            const response = await previewAPI.createSession();
-            token = response.data.session_token;
-            await AsyncStorage.setItem('preview_token', token);
-            setPreviewToken(token);
-            setPersons([]);
-            setLinks([]);
+        if (token) {
+          setPreviewToken(token);
+          try {
+            const sessionData = await previewAPI.getSession(token);
+            setPersons(sessionData.data.persons || []);
+            setLinks(sessionData.data.links || []);
+          } catch (e: any) {
+            if (e.response?.status === 404 || e.response?.status === 410) {
+              const response = await previewAPI.createSession();
+              token = response.data.session_token;
+              if (token) {
+                await AsyncStorage.setItem('preview_token', token);
+                setPreviewToken(token);
+              }
+              setPersons([]);
+              setLinks([]);
+            }
           }
         }
       } else if (user) {
