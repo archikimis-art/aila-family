@@ -142,10 +142,11 @@ export default function TreeScreen() {
   }, [inviteToken, user]);
 
   useEffect(() => {
-    if (!inviteToken) {
+    // Don't load user's own data if viewing a shared tree
+    if (!inviteToken && !sharedOwnerId) {
       loadData();
     }
-  }, [isPreviewMode]);
+  }, [isPreviewMode, sharedOwnerId]);
 
   const loadData = async () => {
     try {
