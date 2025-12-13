@@ -235,24 +235,17 @@ export default function TreeScreen() {
   };
 
   // ============================================================================
-  // DEFINITIVE TREE LAYOUT ALGORITHM v6
+  // DEFINITIVE TREE LAYOUT ALGORITHM v7 - ROBUST SPOUSE SYNCHRONIZATION
   // ============================================================================
-  // GUARANTEES:
-  // 1. Ancestors ALWAYS appear above descendants (regardless of creation order)
-  // 2. Multiple spouses are handled with distinct visual branches
-  // 3. Each generation on a distinct horizontal line
-  // 4. Birth dates considered when available
+  // RÈGLES FONDAMENTALES:
+  // 1. Les parents sont TOUJOURS au-dessus de leurs enfants
+  // 2. Les époux sont TOUJOURS sur la même ligne (même niveau)
+  // 3. Le repositionnement est automatique peu importe l'ordre de création
   // ============================================================================
   const buildTreeLayout = () => {
     if (persons.length === 0) return { nodes: [], connections: [], debugInfo: null };
 
-    console.log('========== DEFINITIVE TREE LAYOUT v6 ==========');
-    console.log('RAW PERSONS:', JSON.stringify(persons.map(p => ({ id: p.id, name: `${p.first_name} ${p.last_name}` })), null, 2));
-    console.log('RAW LINKS:', JSON.stringify(links.map(l => ({ 
-      type: l.link_type, 
-      person_1: l.person_id_1, 
-      person_2: l.person_id_2 
-    })), null, 2));
+    console.log('========== TREE LAYOUT v7 - ROBUST ==========');
     
     // ==================== STEP 1: BUILD RELATIONSHIP MAPS ====================
     const childToParents = new Map<string, Set<string>>();
@@ -262,25 +255,10 @@ export default function TreeScreen() {
     
     persons.forEach(p => personById.set(p.id, p));
     
-    // DEBUG: Track all parent links
-    const parentLinksList: { parent: string; child: string; parentName: string; childName: string }[] = [];
-    
     links.forEach(link => {
       if (link.link_type === 'parent') {
         const parentId = link.person_id_1;
         const childId = link.person_id_2;
-        
-        const parentPerson = personById.get(parentId);
-        const childPerson = personById.get(childId);
-        
-        parentLinksList.push({
-          parent: parentId,
-          child: childId,
-          parentName: parentPerson ? `${parentPerson.first_name} ${parentPerson.last_name}` : 'UNKNOWN',
-          childName: childPerson ? `${childPerson.first_name} ${childPerson.last_name}` : 'UNKNOWN',
-        });
-        
-        console.log(`PARENT LINK FOUND: "${parentPerson?.first_name} ${parentPerson?.last_name}" est PARENT de "${childPerson?.first_name} ${childPerson?.last_name}"`);
         
         if (!childToParents.has(childId)) childToParents.set(childId, new Set());
         childToParents.get(childId)!.add(parentId);
@@ -292,29 +270,20 @@ export default function TreeScreen() {
         if (!spouseMap.has(link.person_id_2)) spouseMap.set(link.person_id_2, new Set());
         spouseMap.get(link.person_id_1)!.add(link.person_id_2);
         spouseMap.get(link.person_id_2)!.add(link.person_id_1);
-        
-        const p1 = personById.get(link.person_id_1);
-        const p2 = personById.get(link.person_id_2);
-        console.log(`SPOUSE LINK FOUND: "${p1?.first_name} ${p1?.last_name}" <-> "${p2?.first_name} ${p2?.last_name}"`);
       }
     });
 
-    console.log(`Total parent links: ${parentLinksList.length}`);
-    console.log('Parent links details:', parentLinksList);
-
-    // ==================== STEP 2: CALCULATE GENERATION LEVELS ====================
-    // Use DEPTH-FIRST approach to find the longest path to each person
+    // ==================== STEP 2: CALCULATE BASE LEVELS ====================
+    // Level = distance from furthest ancestor (0 = root with no parents)
     const personLevels = new Map<string, number>();
     
-    // Helper: Get the maximum generation level for a person
-    // (recursively finds the longest path from any ancestor)
     const calculateLevel = (personId: string, visited: Set<string>): number => {
       if (visited.has(personId)) return personLevels.get(personId) || 0;
+      if (personLevels.has(personId)) return personLevels.get(personId)!;
       
       const parents = childToParents.get(personId);
       if (!parents || parents.size === 0) {
-        // No parents = root/ancestor = level 0
-        return 0;
+        return 0; // Root = level 0
       }
       
       visited.add(personId);
@@ -328,21 +297,29 @@ export default function TreeScreen() {
       return maxParentLevel + 1;
     };
     
-    // Calculate level for each person
+    // Calculate initial levels
     persons.forEach(p => {
       const level = calculateLevel(p.id, new Set());
       personLevels.set(p.id, level);
     });
-    
+
+    console.log('Initial levels:', [...personLevels.entries()].map(([id, level]) => {
+      const p = personById.get(id);
+      return `${p?.first_name} ${p?.last_name}: ${level}`;
+    }));
+
     // ==================== STEP 3: SYNCHRONIZE SPOUSE LEVELS ====================
-    // Spouses must be on the same generation line
-    // If one spouse has children but the other doesn't, use the parent's level
-    let stabilized = false;
-    let maxIterations = 20;
+    // RÈGLE CRITIQUE: Les époux doivent TOUJOURS être au même niveau
+    // On prend le niveau le plus ÉLEVÉ (le plus bas dans l'arbre) pour que
+    // l'époux sans parents descende au niveau de l'époux avec parents
     
-    while (!stabilized && maxIterations > 0) {
-      stabilized = true;
-      maxIterations--;
+    let changed = true;
+    let iterations = 0;
+    const MAX_ITERATIONS = 50;
+    
+    while (changed && iterations < MAX_ITERATIONS) {
+      changed = false;
+      iterations++;
       
       spouseMap.forEach((spouses, personId) => {
         const personLevel = personLevels.get(personId)!;
@@ -350,32 +327,48 @@ export default function TreeScreen() {
         spouses.forEach(spouseId => {
           const spouseLevel = personLevels.get(spouseId)!;
           
-          // Check if they share children
-          const personChildren = parentToChildren.get(personId) || new Set();
-          const spouseChildren = parentToChildren.get(spouseId) || new Set();
-          const sharedChildren = [...personChildren].filter(c => spouseChildren.has(c));
-          
-          if (sharedChildren.length > 0) {
-            // They have shared children - must be at same level
-            // Use the LOWER level (closer to ancestors)
-            const targetLevel = Math.min(personLevel, spouseLevel);
+          // Les époux doivent être au MÊME niveau
+          // Prendre le niveau le plus ÉLEVÉ (plus bas dans l'arbre)
+          // car un époux peut avoir des parents qui le placent plus bas
+          if (personLevel !== spouseLevel) {
+            const targetLevel = Math.max(personLevel, spouseLevel);
             
-            if (personLevel !== targetLevel) {
+            if (personLevels.get(personId) !== targetLevel) {
               personLevels.set(personId, targetLevel);
-              stabilized = false;
+              changed = true;
             }
-            if (spouseLevel !== targetLevel) {
+            if (personLevels.get(spouseId) !== targetLevel) {
               personLevels.set(spouseId, targetLevel);
-              stabilized = false;
+              changed = true;
             }
           }
         });
       });
+      
+      // Après synchronisation des époux, recalculer les enfants
+      // car si un parent a bougé, ses enfants doivent bouger aussi
+      if (changed) {
+        persons.forEach(p => {
+          const parents = childToParents.get(p.id);
+          if (parents && parents.size > 0) {
+            let maxParentLevel = -1;
+            parents.forEach(parentId => {
+              maxParentLevel = Math.max(maxParentLevel, personLevels.get(parentId) || 0);
+            });
+            const newLevel = maxParentLevel + 1;
+            if (personLevels.get(p.id) !== newLevel) {
+              personLevels.set(p.id, newLevel);
+              changed = true;
+            }
+          }
+        });
+      }
     }
 
-    console.log('Person levels:', [...personLevels.entries()].map(([id, level]) => {
+    console.log(`Synchronization completed in ${iterations} iterations`);
+    console.log('Final levels:', [...personLevels.entries()].map(([id, level]) => {
       const p = personById.get(id);
-      return `${p?.first_name} ${p?.last_name}: Level ${level}`;
+      return `${p?.first_name} ${p?.last_name}: ${level}`;
     }));
 
     // ==================== STEP 4: GROUP BY LEVEL ====================
@@ -386,30 +379,180 @@ export default function TreeScreen() {
       levelGroups.get(level)!.push(p);
     });
 
-    // Sort persons within each level by birth date if available
-    levelGroups.forEach((personsInLevel, level) => {
-      personsInLevel.sort((a, b) => {
-        if (a.birth_date && b.birth_date) {
-          return a.birth_date.localeCompare(b.birth_date);
-        }
-        return 0;
-      });
-    });
-
     // ==================== STEP 5: POSITION NODES ====================
     const nodes: { person: Person; x: number; y: number }[] = [];
     const personPositions = new Map<string, { x: number; y: number }>();
     
-    // Process levels from BOTTOM to TOP for proper centering
     const sortedLevels = Array.from(levelGroups.keys()).sort((a, b) => b - a);
     
     sortedLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
       const y = level * LEVEL_HEIGHT + 80;
       
-      // Create family units (person + spouses at same level)
+      // Group spouses together
       const processedIds = new Set<string>();
       const familyUnits: Person[][] = [];
+      
+      personsAtLevel.forEach(person => {
+        if (processedIds.has(person.id)) return;
+        
+        const unit: Person[] = [person];
+        processedIds.add(person.id);
+        
+        // Add all spouses at this level
+        const spouses = spouseMap.get(person.id);
+        if (spouses) {
+          spouses.forEach(spouseId => {
+            const spouse = personsAtLevel.find(p => p.id === spouseId);
+            if (spouse && !processedIds.has(spouse.id)) {
+              unit.push(spouse);
+              processedIds.add(spouse.id);
+            }
+          });
+        }
+        
+        familyUnits.push(unit);
+      });
+
+      // Position each family unit
+      let currentX = 50;
+      
+      familyUnits.forEach(unit => {
+        // Try to center above children
+        const allChildrenIds: string[] = [];
+        unit.forEach(person => {
+          const children = parentToChildren.get(person.id);
+          if (children) children.forEach(cId => allChildrenIds.push(cId));
+        });
+
+        let unitX = currentX;
+        if (allChildrenIds.length > 0) {
+          const childPositions = allChildrenIds
+            .map(cId => personPositions.get(cId))
+            .filter(pos => pos !== undefined);
+          
+          if (childPositions.length > 0) {
+            const avgChildX = childPositions.reduce((sum, p) => sum + p!.x + NODE_WIDTH / 2, 0) / childPositions.length;
+            const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
+            unitX = Math.max(currentX, avgChildX - unitWidth / 2);
+          }
+        }
+
+        // Position each person in unit
+        let x = unitX;
+        unit.forEach(person => {
+          nodes.push({ person, x, y });
+          personPositions.set(person.id, { x, y });
+          x += NODE_WIDTH + COUPLE_SPACING;
+        });
+        
+        currentX = x + NODE_SPACING;
+      });
+    });
+
+    // ==================== STEP 6: FIX OVERLAPPING ====================
+    const topDownLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
+    topDownLevels.forEach(level => {
+      const nodesAtLevel = nodes.filter(n => personLevels.get(n.person.id) === level);
+      nodesAtLevel.sort((a, b) => a.x - b.x);
+      
+      let minX = 50;
+      nodesAtLevel.forEach(node => {
+        if (node.x < minX) {
+          node.x = minX;
+          personPositions.set(node.person.id, { x: node.x, y: node.y });
+        }
+        minX = node.x + NODE_WIDTH + NODE_SPACING;
+      });
+    });
+
+    // ==================== STEP 7: CREATE CONNECTIONS ====================
+    const connections: { from: { x: number; y: number }; to: { x: number; y: number }; type: string; isMultipleSpouse?: boolean }[] = [];
+    
+    // Spouse connections
+    const drawnSpouseConnections = new Set<string>();
+    spouseMap.forEach((spouses, personId) => {
+      spouses.forEach(spouseId => {
+        const key = [personId, spouseId].sort().join('-');
+        if (drawnSpouseConnections.has(key)) return;
+        drawnSpouseConnections.add(key);
+        
+        const pos1 = personPositions.get(personId);
+        const pos2 = personPositions.get(spouseId);
+        
+        if (pos1 && pos2) {
+          const leftPos = pos1.x < pos2.x ? pos1 : pos2;
+          const rightPos = pos1.x < pos2.x ? pos2 : pos1;
+          
+          connections.push({
+            from: { x: leftPos.x + NODE_WIDTH, y: leftPos.y + NODE_HEIGHT / 2 },
+            to: { x: rightPos.x, y: rightPos.y + NODE_HEIGHT / 2 },
+            type: 'spouse',
+          });
+        }
+      });
+    });
+
+    // Parent-child connections
+    const drawnParentChildLines = new Set<string>();
+    
+    links.forEach(link => {
+      if (link.link_type === 'parent') {
+        const parentId = link.person_id_1;
+        const childId = link.person_id_2;
+        const lineKey = `${parentId}->${childId}`;
+        
+        if (drawnParentChildLines.has(lineKey)) return;
+        drawnParentChildLines.add(lineKey);
+        
+        const parentPos = personPositions.get(parentId);
+        const childPos = personPositions.get(childId);
+        
+        if (!parentPos || !childPos) return;
+        
+        // Check if other parent exists
+        const otherParents = childToParents.get(childId);
+        let fromX = parentPos.x + NODE_WIDTH / 2;
+        
+        if (otherParents && otherParents.size > 1) {
+          const mySpouses = spouseMap.get(parentId) || new Set();
+          
+          otherParents.forEach(otherParentId => {
+            if (otherParentId !== parentId && mySpouses.has(otherParentId)) {
+              const otherParentPos = personPositions.get(otherParentId);
+              if (otherParentPos && Math.abs(otherParentPos.y - parentPos.y) < 10) {
+                const minX = Math.min(parentPos.x, otherParentPos.x);
+                const maxX = Math.max(parentPos.x, otherParentPos.x) + NODE_WIDTH;
+                fromX = (minX + maxX) / 2;
+                drawnParentChildLines.add(`${otherParentId}->${childId}`);
+              }
+            }
+          });
+        }
+        
+        connections.push({
+          from: { x: fromX, y: parentPos.y + NODE_HEIGHT },
+          to: { x: childPos.x + NODE_WIDTH / 2, y: childPos.y },
+          type: 'parent',
+        });
+      }
+    });
+
+    // Create debug info
+    const debugInfo = {
+      totalPersons: persons.length,
+      totalLinks: links.length,
+      parentLinks: links.filter(l => l.link_type === 'parent').length,
+      spouseLinks: links.filter(l => l.link_type === 'spouse').length,
+      personLevelsMap: [...personLevels.entries()].map(([id, level]) => {
+        const p = personById.get(id);
+        return { name: p ? `${p.first_name} ${p.last_name}` : 'UNKNOWN', level };
+      }),
+    };
+
+    console.log('========== END TREE LAYOUT v7 ==========');
+    return { nodes, connections, debugInfo };
+  };
       
       personsAtLevel.forEach(person => {
         if (processedIds.has(person.id)) return;
