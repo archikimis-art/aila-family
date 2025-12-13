@@ -1,5 +1,5 @@
-// Build: 2024121401 - DEFINITIVE TREE LAYOUT
-import React, { useState, useEffect, useCallback } from 'react';
+// Build: 2025010601 - ZOOM & PAN TREE LAYOUT
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Modal,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -19,6 +20,14 @@ import Svg, { Line, Circle, G, Text as SvgText, Rect, Defs, LinearGradient, Stop
 import { useAuth } from '@/context/AuthContext';
 import { treeAPI, previewAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GestureHandlerRootView, GestureDetector, Gesture, PinchGestureHandler, PanGestureHandler, TapGestureHandler, State } from 'react-native-gesture-handler';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring, 
+  withTiming,
+  runOnJS,
+} from 'react-native-reanimated';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
