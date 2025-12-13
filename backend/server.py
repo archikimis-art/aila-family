@@ -1695,6 +1695,213 @@ async def delete_message(
     
     return {"message": "Message deleted successfully"}
 
+# ===================== FAMILY EVENTS =====================
+
+@api_router.get("/events/birthdays", response_model=List[UpcomingBirthdayResponse])
+async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user)):
+    """Get upcoming birthdays from tree members (next 30 days)"""
+    user_id = current_user["user_id"]
+    
+    # Get all persons with birth dates
+    persons = await db.persons.find({
+        "user_id": user_id,
+        "birth_date": {"$ne": None, "$exists": True}
+    }).to_list(None)
+    
+    upcoming = []
+    today = datetime.now()
+    
+    for person in persons:
+        birth_date_str = person.get("birth_date")
+        if not birth_date_str:
+            continue
+        
+        try:
+            # Parse birth date
+            birth_date = datetime.strptime(birth_date_str.split("T")[0], "%Y-%m-%d")
+            
+            # Calculate this year's birthday
+            this_year_birthday = birth_date.replace(year=today.year)
+            if this_year_birthday < today:
+                this_year_birthday = this_year_birthday.replace(year=today.year + 1)
+            
+            days_until = (this_year_birthday - today).days
+            
+            # Only include birthdays in the next 30 days
+            if 0 <= days_until <= 30:
+                age = today.year - birth_date.year
+                if this_year_birthday.year > today.year:
+                    age = today.year - birth_date.year + 1
+                
+                upcoming.append(UpcomingBirthdayResponse(
+                    person_id=str(person["_id"]),
+                    person_name=f"{person['first_name']} {person['last_name']}",
+                    birth_date=birth_date_str,
+                    days_until=days_until,
+                    age=age
+                ))
+        except (ValueError, TypeError):
+            continue
+    
+    # Sort by days until birthday
+    upcoming.sort(key=lambda x: x.days_until)
+    return upcoming
+
+@api_router.get("/events/today")
+async def get_todays_events(current_user: dict = Depends(get_current_user)):
+    """Get today's birthdays and events for animation display"""
+    user_id = current_user["user_id"]
+    today = datetime.now()
+    today_str = today.strftime("%m-%d")
+    
+    events = []
+    
+    # Check for birthdays today
+    persons = await db.persons.find({
+        "user_id": user_id,
+        "birth_date": {"$ne": None, "$exists": True}
+    }).to_list(None)
+    
+    for person in persons:
+        birth_date_str = person.get("birth_date")
+        if birth_date_str:
+            try:
+                birth_date = datetime.strptime(birth_date_str.split("T")[0], "%Y-%m-%d")
+                if birth_date.strftime("%m-%d") == today_str:
+                    age = today.year - birth_date.year
+                    events.append({
+                        "type": "birthday",
+                        "person_id": str(person["_id"]),
+                        "person_name": f"{person['first_name']} {person['last_name']}",
+                        "title": f"🎂 Anniversaire de {person['first_name']}!",
+                        "age": age
+                    })
+            except (ValueError, TypeError):
+                continue
+    
+    # Check for custom events today
+    custom_events = await db.family_events.find({
+        "user_id": user_id,
+        "event_date": {"$regex": f"^{today.strftime('%Y-%m-%d')}"}
+    }).to_list(None)
+    
+    for event in custom_events:
+        events.append({
+            "type": event["event_type"],
+            "event_id": str(event["_id"]),
+            "title": event["title"],
+            "description": event.get("description"),
+            "person_name": event.get("person_name")
+        })
+    
+    # Check for New Year
+    if today.strftime("%m-%d") == "01-01":
+        events.append({
+            "type": "newyear",
+            "title": "🎆 Bonne Année!",
+            "description": f"Bonne année {today.year} à toute la famille!"
+        })
+    
+    return {"events": events, "has_events": len(events) > 0}
+
+@api_router.post("/events", response_model=FamilyEventResponse)
+async def create_family_event(event: FamilyEventCreate, current_user: dict = Depends(get_current_user)):
+    """Create a new family event"""
+    user_id = current_user["user_id"]
+    
+    person_name = None
+    if event.person_id:
+        person = await db.persons.find_one({"_id": ObjectId(event.person_id), "user_id": user_id})
+        if person:
+            person_name = f"{person['first_name']} {person['last_name']}"
+    
+    event_doc = {
+        "user_id": user_id,
+        "event_type": event.event_type,
+        "title": event.title,
+        "description": event.description,
+        "event_date": event.event_date,
+        "person_id": event.person_id,
+        "person_name": person_name,
+        "recipients": event.recipients,
+        "send_email": event.send_email,
+        "created_at": datetime.utcnow()
+    }
+    
+    result = await db.family_events.insert_one(event_doc)
+    event_doc["_id"] = result.inserted_id
+    
+    # Send email notifications if requested
+    if event.send_email and event.recipients:
+        user = await db.users.find_one({"_id": ObjectId(user_id)})
+        sender_name = f"{user.get('first_name', '')} {user.get('last_name', '')}".strip() or user.get('email', 'Un membre')
+        
+        for recipient_email in event.recipients:
+            try:
+                await send_event_notification_email(
+                    to_email=recipient_email,
+                    sender_name=sender_name,
+                    event_type=event.event_type,
+                    event_title=event.title,
+                    event_description=event.description,
+                    event_date=event.event_date
+                )
+            except Exception as e:
+                logger.error(f"Failed to send event email to {recipient_email}: {e}")
+    
+    return FamilyEventResponse(
+        id=str(event_doc["_id"]),
+        user_id=user_id,
+        event_type=event_doc["event_type"],
+        title=event_doc["title"],
+        description=event_doc.get("description"),
+        event_date=event_doc["event_date"],
+        person_id=event_doc.get("person_id"),
+        person_name=person_name,
+        recipients=event_doc["recipients"],
+        send_email=event_doc["send_email"],
+        created_at=event_doc["created_at"]
+    )
+
+@api_router.get("/events", response_model=List[FamilyEventResponse])
+async def get_family_events(current_user: dict = Depends(get_current_user)):
+    """Get all family events for the user"""
+    user_id = current_user["user_id"]
+    
+    events = await db.family_events.find({"user_id": user_id}).sort("event_date", 1).to_list(None)
+    
+    return [
+        FamilyEventResponse(
+            id=str(event["_id"]),
+            user_id=event["user_id"],
+            event_type=event["event_type"],
+            title=event["title"],
+            description=event.get("description"),
+            event_date=event["event_date"],
+            person_id=event.get("person_id"),
+            person_name=event.get("person_name"),
+            recipients=event.get("recipients", []),
+            send_email=event.get("send_email", False),
+            created_at=event["created_at"]
+        )
+        for event in events
+    ]
+
+@api_router.delete("/events/{event_id}")
+async def delete_family_event(event_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a family event"""
+    user_id = current_user["user_id"]
+    
+    result = await db.family_events.delete_one({
+        "_id": ObjectId(event_id),
+        "user_id": user_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Event not found")
+    
+    return {"message": "Event deleted successfully"}
+
 # ===================== HEALTH CHECK =====================
 
 @api_router.get("/")
