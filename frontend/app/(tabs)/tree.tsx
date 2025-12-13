@@ -843,6 +843,134 @@ export default function TreeScreen() {
           <Text style={styles.actionButtonTextSecondary}>Actualiser</Text>
         </TouchableOpacity>
       </View>
+
+      {/* User Guide Modal */}
+      <Modal
+        visible={showGuide}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowGuide(false)}
+      >
+        <View style={styles.guideOverlay}>
+          <View style={styles.guideContent}>
+            <View style={styles.guideHeader}>
+              <Text style={styles.guideTitle}>📖 Guide d'utilisation</Text>
+              <TouchableOpacity onPress={() => setShowGuide(false)}>
+                <Ionicons name="close-circle" size={28} color="#D4AF37" />
+              </TouchableOpacity>
+            </View>
+            
+            <ScrollView style={styles.guideScroll} showsVerticalScrollIndicator={false}>
+              {/* Étape 1 */}
+              <View style={styles.guideStep}>
+                <View style={styles.guideStepNumber}>
+                  <Text style={styles.guideStepNumberText}>1</Text>
+                </View>
+                <View style={styles.guideStepContent}>
+                  <Text style={styles.guideStepTitle}>Créer des personnes</Text>
+                  <Text style={styles.guideStepText}>
+                    Cliquez sur le bouton <Text style={styles.guideHighlight}>"Ajouter"</Text> en bas de l'écran pour créer une nouvelle personne dans votre arbre.
+                  </Text>
+                  <View style={styles.guideStepDetails}>
+                    <Text style={styles.guideStepDetail}>• Renseignez le prénom et le nom (obligatoires)</Text>
+                    <Text style={styles.guideStepDetail}>• Choisissez le genre</Text>
+                    <Text style={styles.guideStepDetail}>• Ajoutez la date et le lieu de naissance</Text>
+                    <Text style={styles.guideStepDetail}>• Indiquez la branche géographique</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Étape 2 */}
+              <View style={styles.guideStep}>
+                <View style={styles.guideStepNumber}>
+                  <Text style={styles.guideStepNumberText}>2</Text>
+                </View>
+                <View style={styles.guideStepContent}>
+                  <Text style={styles.guideStepTitle}>Créer les liens familiaux</Text>
+                  <Text style={styles.guideStepText}>
+                    Une fois au moins 2 personnes créées, cliquez sur <Text style={styles.guideHighlight}>"Lien"</Text> pour établir les relations.
+                  </Text>
+                  <View style={styles.guideStepDetails}>
+                    <Text style={styles.guideStepDetail}>• <Text style={styles.guideHighlight}>Parent</Text> : X est parent de Y</Text>
+                    <Text style={styles.guideStepDetail}>• <Text style={styles.guideHighlight}>Enfant</Text> : X est enfant de Y</Text>
+                    <Text style={styles.guideStepDetail}>• <Text style={styles.guideHighlight}>Époux/Épouse</Text> : X est marié(e) à Y</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Étape 3 */}
+              <View style={styles.guideStep}>
+                <View style={styles.guideStepNumber}>
+                  <Text style={styles.guideStepNumberText}>3</Text>
+                </View>
+                <View style={styles.guideStepContent}>
+                  <Text style={styles.guideStepTitle}>Actualiser la visualisation</Text>
+                  <Text style={styles.guideStepText}>
+                    Après avoir créé des personnes ou des liens, cliquez sur <Text style={styles.guideHighlight}>"Actualiser"</Text> pour mettre à jour l'affichage de l'arbre.
+                  </Text>
+                </View>
+              </View>
+
+              {/* Étape 4 */}
+              <View style={styles.guideStep}>
+                <View style={styles.guideStepNumber}>
+                  <Text style={styles.guideStepNumberText}>4</Text>
+                </View>
+                <View style={styles.guideStepContent}>
+                  <Text style={styles.guideStepTitle}>Ordre de création recommandé</Text>
+                  <Text style={styles.guideStepText}>
+                    Pour un arbre bien organisé :
+                  </Text>
+                  <View style={styles.guideStepDetails}>
+                    <Text style={styles.guideStepDetail}>1. Commencez par les grands-parents</Text>
+                    <Text style={styles.guideStepDetail}>2. Créez leurs enfants (vos parents)</Text>
+                    <Text style={styles.guideStepDetail}>3. Ajoutez les liens "parent" entre eux</Text>
+                    <Text style={styles.guideStepDetail}>4. Continuez avec votre génération</Text>
+                  </View>
+                  <Text style={styles.guideNote}>
+                    💡 L'arbre se réorganise automatiquement même si vous ajoutez des ancêtres après coup !
+                  </Text>
+                </View>
+              </View>
+
+              {/* Étape 5 */}
+              <View style={styles.guideStep}>
+                <View style={styles.guideStepNumber}>
+                  <Text style={styles.guideStepNumberText}>5</Text>
+                </View>
+                <View style={styles.guideStepContent}>
+                  <Text style={styles.guideStepTitle}>Partager votre arbre</Text>
+                  <Text style={styles.guideStepText}>
+                    Allez dans l'onglet <Text style={styles.guideHighlight}>"Partage"</Text> pour inviter des membres de votre famille à collaborer sur l'arbre.
+                  </Text>
+                  <View style={styles.guideStepDetails}>
+                    <Text style={styles.guideStepDetail}>• <Text style={styles.guideHighlight}>Éditeur</Text> : peut ajouter des personnes et liens</Text>
+                    <Text style={styles.guideStepDetail}>• <Text style={styles.guideHighlight}>Lecteur</Text> : peut uniquement visualiser</Text>
+                  </View>
+                </View>
+              </View>
+
+              {/* Astuce */}
+              <View style={styles.guideTip}>
+                <Ionicons name="bulb" size={24} color="#D4AF37" />
+                <View style={styles.guideTipContent}>
+                  <Text style={styles.guideTipTitle}>Astuce</Text>
+                  <Text style={styles.guideTipText}>
+                    Cliquez sur une personne dans l'arbre pour voir ses détails et modifier ses informations.
+                  </Text>
+                </View>
+              </View>
+            </ScrollView>
+
+            <TouchableOpacity 
+              style={styles.guideCloseButton}
+              onPress={() => setShowGuide(false)}
+            >
+              <Text style={styles.guideCloseButtonText}>J'ai compris !</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
