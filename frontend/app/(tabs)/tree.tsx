@@ -509,51 +509,6 @@ export default function TreeScreen() {
   const { nodes, connections } = buildTreeLayout();
   const svgWidth = Math.max(SCREEN_WIDTH, nodes.reduce((max, n) => Math.max(max, n.x + NODE_WIDTH + 60), 0));
   const svgHeight = Math.max(400, nodes.reduce((max, n) => Math.max(max, n.y + NODE_HEIGHT + 80), 0));
-            // Find if any spouse is also a parent of this child
-            spouses.forEach(spouseId => {
-              const isSpouseAlsoParent = links.some(l => 
-                l.link_type === 'parent' && 
-                l.person_id_1 === spouseId && 
-                l.person_id_2 === childId
-              );
-              
-              if (isSpouseAlsoParent) {
-                const spousePos = personPositions.get(spouseId);
-                if (spousePos && Math.abs(spousePos.y - parentPos.y) < 10) {
-                  sharedParentSpouse = spousePos;
-                }
-              }
-            });
-          }
-          
-          // If both parents of this child are married, draw line from center
-          if (sharedParentSpouse) {
-            const minX = Math.min(parentPos.x, sharedParentSpouse.x);
-            const maxX = Math.max(parentPos.x, sharedParentSpouse.x) + NODE_WIDTH;
-            fromX = (minX + maxX) / 2;
-            
-            // Mark this connection as drawn to avoid drawing from both parents
-            spouses?.forEach(spouseId => {
-              drawnParentChildConnections.add(`${spouseId}->${childId}`);
-            });
-          }
-          
-          connections.push({
-            from: { x: fromX, y: parentPos.y + NODE_HEIGHT },
-            to: { x: childPos.x + NODE_WIDTH / 2, y: childPos.y },
-            type: 'parent',
-          });
-        }
-      }
-    });
-
-    console.log('========== END DEBUG ==========');
-    return { nodes, connections };
-  };
-
-  const { nodes, connections } = buildTreeLayout();
-  const svgWidth = Math.max(SCREEN_WIDTH, nodes.reduce((max, n) => Math.max(max, n.x + NODE_WIDTH + 40), 0));
-  const svgHeight = Math.max(400, nodes.reduce((max, n) => Math.max(max, n.y + NODE_HEIGHT + 60), 0));
 
   const getGenderColor = (gender: string) => {
     switch (gender) {
