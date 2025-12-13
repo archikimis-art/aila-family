@@ -423,6 +423,126 @@ export default function AddPersonScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Modal de sélection de lieu */}
+      <Modal
+        visible={showLocationPicker}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowLocationPicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {locationPickerMode === 'birth' ? 'Lieu de naissance' : 'Lieu de décès'}
+              </Text>
+              <TouchableOpacity onPress={() => setShowLocationPicker(false)}>
+                <Ionicons name="close" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Option pour saisie manuelle */}
+            <TouchableOpacity
+              style={[styles.manualInputButton, manualLocationInput && styles.manualInputButtonActive]}
+              onPress={() => setManualLocationInput(!manualLocationInput)}
+            >
+              <Ionicons name="create-outline" size={20} color="#D4AF37" />
+              <Text style={styles.manualInputButtonText}>Saisir manuellement</Text>
+            </TouchableOpacity>
+
+            {manualLocationInput ? (
+              <View style={styles.manualInputContainer}>
+                <TextInput
+                  style={styles.manualInput}
+                  placeholder="Ex: Paris, France"
+                  placeholderTextColor="#6B7C93"
+                  value={locationPickerMode === 'birth' ? birthPlace : deathPlace}
+                  onChangeText={(text) => {
+                    if (locationPickerMode === 'birth') {
+                      setBirthPlace(text);
+                    } else {
+                      setDeathPlace(text);
+                    }
+                  }}
+                  autoFocus
+                />
+                <TouchableOpacity
+                  style={styles.manualSaveButton}
+                  onPress={() => setShowLocationPicker(false)}
+                >
+                  <Text style={styles.manualSaveButtonText}>Valider</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <ScrollView style={styles.locationScroll}>
+                {!selectedRegion ? (
+                  // Sélection de région
+                  <>
+                    <Text style={styles.locationSectionTitle}>Sélectionnez une région</Text>
+                    {REGIONS.map((region) => (
+                      <TouchableOpacity
+                        key={region}
+                        style={styles.locationItem}
+                        onPress={() => setSelectedRegion(region)}
+                      >
+                        <Ionicons name="globe-outline" size={20} color="#D4AF37" />
+                        <Text style={styles.locationItemText}>{region}</Text>
+                        <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                ) : !selectedCountry ? (
+                  // Sélection de pays
+                  <>
+                    <TouchableOpacity
+                      style={styles.backButton}
+                      onPress={() => setSelectedRegion(null)}
+                    >
+                      <Ionicons name="arrow-back" size={20} color="#D4AF37" />
+                      <Text style={styles.backButtonText}>Retour aux régions</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.locationSectionTitle}>{selectedRegion}</Text>
+                    {Object.keys(WORLD_LOCATIONS[selectedRegion] || {}).map((country) => (
+                      <TouchableOpacity
+                        key={country}
+                        style={styles.locationItem}
+                        onPress={() => setSelectedCountry(country)}
+                      >
+                        <Ionicons name="flag-outline" size={20} color="#4A90D9" />
+                        <Text style={styles.locationItemText}>{country}</Text>
+                        <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                ) : (
+                  // Sélection de ville
+                  <>
+                    <TouchableOpacity
+                      style={styles.backButton}
+                      onPress={() => setSelectedCountry(null)}
+                    >
+                      <Ionicons name="arrow-back" size={20} color="#D4AF37" />
+                      <Text style={styles.backButtonText}>Retour à {selectedRegion}</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.locationSectionTitle}>{selectedCountry}</Text>
+                    {(WORLD_LOCATIONS[selectedRegion]?.[selectedCountry] || []).map((city) => (
+                      <TouchableOpacity
+                        key={city}
+                        style={styles.locationItem}
+                        onPress={() => selectCity(city, selectedCountry)}
+                      >
+                        <Ionicons name="location" size={20} color="#4CAF50" />
+                        <Text style={styles.locationItemText}>{city}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </>
+                )}
+              </ScrollView>
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
