@@ -560,58 +560,6 @@ export default function TreeScreen() {
   
   // State to show/hide debug panel
   const [showDebug, setShowDebug] = useState(false);
-        
-        if (otherParents && otherParents.size > 1) {
-          // Find if any other parent is a spouse of this parent
-          const mySpouses = spouseMap.get(parentId) || new Set();
-          
-          otherParents.forEach(otherParentId => {
-            if (otherParentId !== parentId && mySpouses.has(otherParentId)) {
-              // Both parents are spouses - draw from center
-              const otherParentPos = personPositions.get(otherParentId);
-              if (otherParentPos && Math.abs(otherParentPos.y - parentPos.y) < 10) {
-                const minX = Math.min(parentPos.x, otherParentPos.x);
-                const maxX = Math.max(parentPos.x, otherParentPos.x) + NODE_WIDTH;
-                fromX = (minX + maxX) / 2;
-                
-                // Mark the other parent's line as drawn too
-                drawnParentChildLines.add(`${otherParentId}->${childId}`);
-              }
-            }
-          });
-        }
-        
-        connections.push({
-          from: { x: fromX, y: parentPos.y + NODE_HEIGHT },
-          to: { x: childPos.x + NODE_WIDTH / 2, y: childPos.y },
-          type: 'parent',
-        });
-      }
-    });
-
-    console.log('========== END DEFINITIVE LAYOUT ==========');
-    
-    // Create debug info object
-    const debugInfo = {
-      totalPersons: persons.length,
-      totalLinks: links.length,
-      parentLinks: links.filter(l => l.link_type === 'parent').length,
-      spouseLinks: links.filter(l => l.link_type === 'spouse').length,
-      personLevelsMap: [...personLevels.entries()].map(([id, level]) => {
-        const p = personById.get(id);
-        return { name: p ? `${p.first_name} ${p.last_name}` : 'UNKNOWN', level };
-      }),
-    };
-    
-    return { nodes, connections, debugInfo };
-  };
-
-  const { nodes, connections, debugInfo } = buildTreeLayout();
-  const svgWidth = Math.max(SCREEN_WIDTH, nodes.reduce((max, n) => Math.max(max, n.x + NODE_WIDTH + 60), 0));
-  const svgHeight = Math.max(400, nodes.reduce((max, n) => Math.max(max, n.y + NODE_HEIGHT + 80), 0));
-  
-  // State to show/hide debug panel
-  const [showDebug, setShowDebug] = useState(false);
 
   const getGenderColor = (gender: string) => {
     switch (gender) {
