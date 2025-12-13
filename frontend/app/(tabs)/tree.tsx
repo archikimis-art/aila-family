@@ -592,6 +592,12 @@ export default function TreeScreen() {
             {sharedTreeOwner ? `Arbre de ${sharedTreeOwner.name}` : (isPreviewMode ? 'Mode Aperçu' : 'Mon Arbre')}
           </Text>
         </View>
+        <TouchableOpacity 
+          style={styles.debugButton} 
+          onPress={() => setShowDebug(!showDebug)}
+        >
+          <Ionicons name="bug-outline" size={20} color={showDebug ? '#4CAF50' : '#6B7C93'} />
+        </TouchableOpacity>
         {isPreviewMode && (
           <TouchableOpacity style={styles.convertButton} onPress={handleConvertToAccount}>
             <Ionicons name="save-outline" size={18} color="#0A1628" />
@@ -599,6 +605,32 @@ export default function TreeScreen() {
           </TouchableOpacity>
         )}
       </View>
+
+      {/* Debug Panel */}
+      {showDebug && debugInfo && (
+        <View style={styles.debugPanel}>
+          <Text style={styles.debugTitle}>🔍 DEBUG - Liens et Niveaux</Text>
+          <Text style={styles.debugText}>Personnes: {debugInfo.totalPersons}</Text>
+          <Text style={styles.debugText}>Liens parent: {debugInfo.parentLinks}</Text>
+          <Text style={styles.debugText}>Liens époux: {debugInfo.spouseLinks}</Text>
+          <Text style={styles.debugSubtitle}>Niveaux calculés:</Text>
+          {debugInfo.personLevelsMap.map((item, idx) => (
+            <Text key={idx} style={styles.debugText}>
+              • {item.name}: Niveau {item.level}
+            </Text>
+          ))}
+          <Text style={styles.debugSubtitle}>Liens bruts:</Text>
+          {links.map((link, idx) => {
+            const p1 = persons.find(p => p.id === link.person_id_1);
+            const p2 = persons.find(p => p.id === link.person_id_2);
+            return (
+              <Text key={idx} style={styles.debugText}>
+                • [{link.link_type}] {p1?.first_name} → {p2?.first_name}
+              </Text>
+            );
+          })}
+        </View>
+      )}
 
       {/* Invite Success Banner */}
       {inviteMessage && (
