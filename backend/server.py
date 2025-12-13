@@ -1312,6 +1312,97 @@ async def get_shared_tree(owner_id: str, current_user: dict = Depends(get_curren
         links=[FamilyLinkResponse(**serialize_object_id(l)) for l in links]
     )
 
+# ===================== SHARED TREE EDITOR ROUTES =====================
+
+@api_router.post("/tree/shared/{owner_id}/persons", response_model=PersonResponse)
+async def create_person_in_shared_tree(owner_id: str, person: PersonCreate, current_user: dict = Depends(get_current_user)):
+    """Create a person in a shared tree (editor only)"""
+    user_id = str(current_user['_id'])
+    
+    # Check if user has editor access
+    collaboration = await db.collaborators.find_one({
+        "tree_owner_id": owner_id,
+        "user_id": user_id,
+        "status": "accepted",
+        "role": "editor"
+    })
+    
+    if not collaboration:
+        raise HTTPException(status_code=403, detail="Vous n'avez pas les droits d'éditeur sur cet arbre")
+    
+    # Create person in the owner's tree
+    person_doc = {
+        "user_id": owner_id,  # Important: use owner_id, not current user
+        "first_name": person.first_name,
+        "last_name": person.last_name,
+        "gender": person.gender,
+        "birth_date": person.birth_date,
+        "birth_place": person.birth_place,
+        "death_date": person.death_date,
+        "death_place": person.death_place,
+        "geographic_branch": person.geographic_branch,
+        "notes": person.notes,
+        "created_by": user_id,  # Track who created it
+        "created_at": datetime.now().isoformat()
+    }
+    
+    result = await db.persons.insert_one(person_doc)
+    person_doc['_id'] = result.inserted_id
+    person_doc = serialize_object_id(person_doc)
+    
+    return PersonResponse(**person_doc)
+
+@api_router.post("/tree/shared/{owner_id}/links", response_model=FamilyLinkResponse)
+async def create_link_in_shared_tree(owner_id: str, link: FamilyLinkCreate, current_user: dict = Depends(get_current_user)):
+    """Create a family link in a shared tree (editor only)"""
+    user_id = str(current_user['_id'])
+    
+    # Check if user has editor access
+    collaboration = await db.collaborators.find_one({
+        "tree_owner_id": owner_id,
+        "user_id": user_id,
+        "status": "accepted",
+        "role": "editor"
+    })
+    
+    if not collaboration:
+        raise HTTPException(status_code=403, detail="Vous n'avez pas les droits d'éditeur sur cet arbre")
+    
+    # Verify both persons exist in the owner's tree
+    person1 = await db.persons.find_one({"_id": ObjectId(link.person_id_1), "user_id": owner_id})
+    person2 = await db.persons.find_one({"_id": ObjectId(link.person_id_2), "user_id": owner_id})
+    
+    if not person1 or not person2:
+        raise HTTPException(status_code=404, detail="Une ou plusieurs personnes n'existent pas dans cet arbre")
+    
+    # Check for existing link
+    existing = await db.family_links.find_one({
+        "user_id": owner_id,
+        "$or": [
+            {"person_id_1": link.person_id_1, "person_id_2": link.person_id_2, "link_type": link.link_type},
+            {"person_id_1": link.person_id_2, "person_id_2": link.person_id_1, "link_type": link.link_type}
+        ]
+    })
+    
+    if existing:
+        raise HTTPException(status_code=400, detail="Ce lien existe déjà")
+    
+    # Create link in the owner's tree
+    link_doc = {
+        "user_id": owner_id,  # Important: use owner_id
+        "person_id_1": link.person_id_1,
+        "person_id_2": link.person_id_2,
+        "link_type": link.link_type,
+        "created_by": user_id,  # Track who created it
+        "created_at": datetime.now().isoformat()
+    }
+    
+    result = await db.family_links.insert_one(link_doc)
+    link_doc['_id'] = result.inserted_id
+    link_doc = serialize_object_id(link_doc)
+    
+    return FamilyLinkResponse(**link_doc)
+
 # ===================== CONTRIBUTIONS ROUTES =====================
 
 @api_router.post("/contributions", response_model=ContributionResponse)
