@@ -441,7 +441,7 @@ export default function AddPersonScreen() {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>
-                {locationPickerMode === 'birth' ? 'Lieu de naissance' : 'Lieu de décès'}
+                {getLocationPickerTitle()}
               </Text>
               <TouchableOpacity onPress={() => setShowLocationPicker(false)}>
                 <Ionicons name="close" size={24} color="#FFFFFF" />
@@ -463,14 +463,8 @@ export default function AddPersonScreen() {
                   style={styles.manualInput}
                   placeholder="Ex: Paris, France"
                   placeholderTextColor="#6B7C93"
-                  value={locationPickerMode === 'birth' ? birthPlace : deathPlace}
-                  onChangeText={(text) => {
-                    if (locationPickerMode === 'birth') {
-                      setBirthPlace(text);
-                    } else {
-                      setDeathPlace(text);
-                    }
-                  }}
+                  value={getCurrentLocationValue()}
+                  onChangeText={setCurrentLocationValue}
                   autoFocus
                 />
                 <TouchableOpacity
