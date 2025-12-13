@@ -361,22 +361,6 @@ export default function TreeScreen() {
     return { nodes, connections };
   };
 
-    let currentX = 40;
-    roots.forEach((root) => {
-      currentX = layoutNode(root, 0, currentX) + 60;
-    });
-
-    // Handle unconnected persons
-    persons.forEach((p) => {
-      if (!visited.has(p.id)) {
-        nodes.push({ person: p, x: currentX, y: 60 });
-        currentX += NODE_WIDTH + NODE_SPACING;
-      }
-    });
-
-    return { nodes, connections };
-  };
-
   const { nodes, connections } = buildTreeLayout();
   const svgWidth = Math.max(SCREEN_WIDTH, nodes.reduce((max, n) => Math.max(max, n.x + NODE_WIDTH + 40), 0));
   const svgHeight = Math.max(400, nodes.reduce((max, n) => Math.max(max, n.y + NODE_HEIGHT + 60), 0));
