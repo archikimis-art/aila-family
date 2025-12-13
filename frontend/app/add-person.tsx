@@ -318,13 +318,15 @@ export default function AddPersonScreen() {
               </View>
               <View style={styles.halfField}>
                 <Text style={styles.label}>Lieu</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ville"
-                  placeholderTextColor="#6B7C93"
-                  value={birthPlace}
-                  onChangeText={setBirthPlace}
-                />
+                <TouchableOpacity
+                  style={styles.locationButton}
+                  onPress={() => openLocationPicker('birth')}
+                >
+                  <Ionicons name="location-outline" size={18} color="#D4AF37" />
+                  <Text style={[styles.locationButtonText, birthPlace && { color: '#FFFFFF' }]} numberOfLines={1}>
+                    {birthPlace || 'Choisir un lieu'}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -345,13 +347,15 @@ export default function AddPersonScreen() {
               </View>
               <View style={styles.halfField}>
                 <Text style={styles.label}>Lieu</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Ville"
-                  placeholderTextColor="#6B7C93"
-                  value={deathPlace}
-                  onChangeText={setDeathPlace}
-                />
+                <TouchableOpacity
+                  style={styles.locationButton}
+                  onPress={() => openLocationPicker('death')}
+                >
+                  <Ionicons name="location-outline" size={18} color="#D4AF37" />
+                  <Text style={[styles.locationButtonText, deathPlace && { color: '#FFFFFF' }]} numberOfLines={1}>
+                    {deathPlace || 'Choisir un lieu'}
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
