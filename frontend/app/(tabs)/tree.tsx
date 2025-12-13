@@ -1949,10 +1949,13 @@ const styles = StyleSheet.create({
   },
   createEventSubmit: {
     flex: 1,
+    flexDirection: 'row',
     backgroundColor: '#D4AF37',
     borderRadius: 10,
     padding: 12,
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
   },
   createEventSubmitText: {
     color: '#0A1628',
