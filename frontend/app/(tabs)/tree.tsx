@@ -574,6 +574,9 @@ export default function TreeScreen() {
   
   // State to show/hide debug panel
   const [showDebug, setShowDebug] = useState(false);
+  
+  // State to show/hide user guide
+  const [showGuide, setShowGuide] = useState(false);
 
   const getGenderColor = (gender: string) => {
     switch (gender) {
