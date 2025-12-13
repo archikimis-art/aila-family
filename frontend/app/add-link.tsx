@@ -45,6 +45,7 @@ export default function AddLinkScreen() {
   const params = useLocalSearchParams();
   const isPreviewMode = params.preview === 'true';
   const previewToken = params.token as string;
+  const sharedOwnerId = params.sharedOwnerId as string | undefined;
 
   const [persons, setPersons] = useState<Person[]>([]);
   const [person1, setPerson1] = useState<Person | null>(null);
@@ -62,9 +63,17 @@ export default function AddLinkScreen() {
   const loadPersons = async () => {
     try {
       if (isPreviewMode && previewToken) {
+        // Mode aperçu
         const response = await previewAPI.getSession(previewToken);
         setPersons(response.data.persons || []);
+      } else if (sharedOwnerId) {
+        // Arbre partagé - charger les personnes de l'arbre du propriétaire
+        const { collaboratorsAPI } = await import('@/services/api');
+        const response = await collaboratorsAPI.getSharedTree(sharedOwnerId);
+        setPersons(response.data.persons || []);
+        console.log('Loaded shared tree persons:', response.data.persons?.length);
       } else {
+        // Mon propre arbre
         const response = await personsAPI.getAll();
         setPersons(response.data || []);
       }
