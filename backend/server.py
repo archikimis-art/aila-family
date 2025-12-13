@@ -90,6 +90,74 @@ async def send_invitation_email(to_email: str, inviter_name: str, role: str, inv
         logger.error(f"✗ Failed to send invitation email to {to_email}: {e}")
         return False
 
+async def send_event_notification_email(to_email: str, sender_name: str, event_type: str, event_title: str, event_description: str = None, event_date: str = None):
+    """Send event notification email via Resend"""
+    try:
+        # Emoji based on event type
+        event_emojis = {
+            "birthday": "🎂",
+            "birth": "👶",
+            "graduation": "🎓",
+            "wedding": "💍",
+            "newyear": "🎆",
+            "holiday": "🎄",
+            "custom": "🎉"
+        }
+        emoji = event_emojis.get(event_type, "🎉")
+        
+        # Event type label in French
+        event_labels = {
+            "birthday": "Anniversaire",
+            "birth": "Naissance",
+            "graduation": "Diplôme",
+            "wedding": "Mariage",
+            "newyear": "Nouvel An",
+            "holiday": "Fête",
+            "custom": "Événement"
+        }
+        event_label = event_labels.get(event_type, "Événement")
+        
+        html_content = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #0A1628; color: #FFFFFF;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #D4AF37; margin: 0;">🌳 AÏLA</h1>
+                <p style="color: #B8C5D6; margin-top: 5px;">Événement familial</p>
+            </div>
+            
+            <div style="background-color: #1A2F4A; border-radius: 12px; padding: 24px; margin-bottom: 20px; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 16px;">{emoji}</div>
+                <h2 style="color: #D4AF37; margin: 0 0 16px 0;">{event_title}</h2>
+                <p style="color: #B8C5D6; margin: 0;">
+                    <strong>{sender_name}</strong> vous partage cet événement
+                </p>
+            </div>
+            
+            {f'<div style="background-color: #2A3F5A; border-radius: 8px; padding: 16px; margin-bottom: 20px;"><p style="color: #FFFFFF; margin: 0;">{event_description}</p></div>' if event_description else ''}
+            
+            {f'<p style="color: #6B7C93; text-align: center;">📅 {event_date}</p>' if event_date else ''}
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{FRONTEND_URL}" style="display: inline-block; background-color: #D4AF37; color: #0A1628; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 16px;">
+                    Voir l'arbre familial
+                </a>
+            </div>
+        </div>
+        """
+        
+        params = {
+            "from": "AÏLA <noreply@aila.family>",
+            "to": [to_email],
+            "subject": f"{emoji} {event_label} - {event_title}",
+            "html": html_content
+        }
+        
+        email = resend.Emails.send(params)
+        logger.info(f"✓ Event notification email sent to {to_email}")
+        return True
+    except Exception as e:
+        logger.error(f"✗ Failed to send event notification email to {to_email}: {e}")
+        return False
+
 # MongoDB connection with timeout settings for Atlas
 logger.info("Configuring MongoDB connection...")
 mongo_url = os.environ.get('MONGO_URL')
