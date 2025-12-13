@@ -1,4 +1,4 @@
-// Build: 1765552905
+// Build: 2024121401 - DEFINITIVE TREE LAYOUT
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
@@ -14,7 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import Svg, { Line, Circle, G, Text as SvgText, Rect, Defs, LinearGradient, Stop } from 'react-native-svg';
+import Svg, { Line, Circle, G, Text as SvgText, Rect, Defs, LinearGradient, Stop, Path } from 'react-native-svg';
 import { useAuth } from '@/context/AuthContext';
 import { treeAPI, previewAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -45,10 +45,11 @@ interface TreeNode {
   spouse?: Person;
 }
 
-const NODE_WIDTH = 120;
-const NODE_HEIGHT = 60;
-const LEVEL_HEIGHT = 120;
-const NODE_SPACING = 20;
+const NODE_WIDTH = 130;
+const NODE_HEIGHT = 65;
+const LEVEL_HEIGHT = 140;
+const NODE_SPACING = 30;
+const COUPLE_SPACING = 15;
 
 export default function TreeScreen() {
   const router = useRouter();
