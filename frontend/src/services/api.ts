@@ -68,6 +68,8 @@ export const linksAPI = {
 
 export const treeAPI = {
   getTree: () => api.get('/tree'),
+  clearTree: () => api.delete('/tree/clear'),
+  debugTree: () => api.get('/tree/debug'),
 };
 
 export const previewAPI = {
