@@ -1301,6 +1301,74 @@ export default function TreeScreen() {
                     multiline
                     numberOfLines={3}
                   />
+
+                  {/* Recipients Selection */}
+                  <View style={styles.recipientsSection}>
+                    <View style={styles.recipientsSectionHeader}>
+                      <Text style={styles.recipientsSectionTitle}>📨 Envoyer à :</Text>
+                      {collaborators.filter(c => c.status === 'accepted').length > 0 && (
+                        <TouchableOpacity onPress={selectAllRecipients}>
+                          <Text style={styles.selectAllText}>Tout sélectionner</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                    
+                    {collaborators.filter(c => c.status === 'accepted').length === 0 ? (
+                      <Text style={styles.noRecipientsText}>
+                        Aucun collaborateur invité. Allez dans l'onglet "Partage" pour inviter des membres de votre famille.
+                      </Text>
+                    ) : (
+                      <View style={styles.recipientsList}>
+                        {collaborators.filter(c => c.status === 'accepted').map((collab, idx) => (
+                          <TouchableOpacity 
+                            key={idx}
+                            style={[
+                              styles.recipientItem,
+                              selectedRecipients.includes(collab.email) && styles.recipientItemSelected
+                            ]}
+                            onPress={() => toggleRecipient(collab.email)}
+                          >
+                            <Ionicons 
+                              name={selectedRecipients.includes(collab.email) ? "checkbox" : "square-outline"} 
+                              size={20} 
+                              color={selectedRecipients.includes(collab.email) ? "#D4AF37" : "#6B7C93"} 
+                            />
+                            <Text style={styles.recipientEmail}>{collab.email}</Text>
+                            <Text style={styles.recipientRole}>
+                              {collab.role === 'editor' ? '✏️' : '👁️'}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+
+                  {/* Notification Options */}
+                  <View style={styles.notificationOptions}>
+                    <TouchableOpacity 
+                      style={styles.notificationOption}
+                      onPress={() => setSendByEmail(!sendByEmail)}
+                    >
+                      <Ionicons 
+                        name={sendByEmail ? "checkbox" : "square-outline"} 
+                        size={22} 
+                        color={sendByEmail ? "#D4AF37" : "#6B7C93"} 
+                      />
+                      <Text style={styles.notificationOptionText}>📧 Envoyer par email</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      style={styles.notificationOption}
+                      onPress={() => setSendInApp(!sendInApp)}
+                    >
+                      <Ionicons 
+                        name={sendInApp ? "checkbox" : "square-outline"} 
+                        size={22} 
+                        color={sendInApp ? "#D4AF37" : "#6B7C93"} 
+                      />
+                      <Text style={styles.notificationOptionText}>📱 Notification in-app</Text>
+                    </TouchableOpacity>
+                  </View>
+
                   <View style={styles.createEventButtons}>
                     <TouchableOpacity 
                       style={styles.createEventCancel}
@@ -1308,15 +1376,23 @@ export default function TreeScreen() {
                         setShowCreateEvent(false);
                         setNewEventTitle('');
                         setNewEventDescription('');
+                        setSelectedRecipients([]);
                       }}
                     >
                       <Text style={styles.createEventCancelText}>Annuler</Text>
                     </TouchableOpacity>
                     <TouchableOpacity 
-                      style={styles.createEventSubmit}
+                      style={[
+                        styles.createEventSubmit,
+                        (!newEventTitle.trim()) && styles.createEventSubmitDisabled
+                      ]}
                       onPress={handleCreateEvent}
+                      disabled={!newEventTitle.trim()}
                     >
-                      <Text style={styles.createEventSubmitText}>Créer</Text>
+                      <Ionicons name="send" size={16} color="#0A1628" />
+                      <Text style={styles.createEventSubmitText}>
+                        Envoyer{selectedRecipients.length > 0 ? ` (${selectedRecipients.length})` : ''}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
