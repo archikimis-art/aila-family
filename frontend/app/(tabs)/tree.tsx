@@ -198,8 +198,8 @@ export default function TreeScreen() {
     router.push('/(auth)/register');
   };
 
-  // Build tree structure - ROBUST TREE LAYOUT ALGORITHM v3
-  // Key fix: Calculate levels by finding the MAXIMUM depth from any root to each person
+  // Build tree structure - ROBUST TREE LAYOUT ALGORITHM v4
+  // CRITICAL FIX: Use depth TO descendants to ensure ancestors are always at top
   const buildTreeLayout = () => {
     if (persons.length === 0) return { nodes: [], connections: [] };
 
@@ -208,13 +208,17 @@ export default function TreeScreen() {
     const parentToChildren = new Map<string, Set<string>>();
     const spouseMap = new Map<string, string>();
     
-    console.log('=== TREE DEBUG ===');
-    console.log('Links:', links);
+    console.log('=== TREE DEBUG v4 ===');
+    console.log('All persons:', persons.map(p => ({ id: p.id, name: p.first_name + ' ' + p.last_name })));
+    console.log('All links:', links);
     
     links.forEach((link) => {
       if (link.link_type === 'parent') {
+        // person_id_1 is the PARENT, person_id_2 is the CHILD
         const parentId = link.person_id_1;
         const childId = link.person_id_2;
+        
+        console.log(`Link: ${parentId} is PARENT of ${childId}`);
         
         if (!childToParents.has(childId)) childToParents.set(childId, new Set());
         childToParents.get(childId)!.add(parentId);
@@ -227,12 +231,12 @@ export default function TreeScreen() {
       }
     });
 
-    // STEP 2: Calculate generation level using RECURSIVE approach
-    // Level = number of generations from the person to their furthest descendant
-    // This ensures ancestors are ALWAYS above descendants
+    // STEP 2: Calculate levels using DEPTH TO DESCENDANTS approach
+    // A person's level = max tree depth - their depth to furthest descendant
+    // This ensures: ancestors at top, descendants below
     const personLevels = new Map<string, number>();
     
-    // Helper: Calculate depth TO descendants (how many levels below this person)
+    // Helper: Calculate depth TO descendants (how many generations BELOW this person)
     const getDepthToDescendants = (personId: string, visited: Set<string> = new Set()): number => {
       if (visited.has(personId)) return 0;
       visited.add(personId);
@@ -249,15 +253,43 @@ export default function TreeScreen() {
       return maxChildDepth;
     };
 
-    // Helper: Calculate depth FROM ancestors (how many generations above this person)
+    // Calculate depth to descendants for each person
+    const depthToDescendants = new Map<string, number>();
+    persons.forEach((p) => {
+      const depth = getDepthToDescendants(p.id);
+      depthToDescendants.set(p.id, depth);
+      console.log(`${p.first_name} ${p.last_name}: depth to descendants = ${depth}`);
+    });
+
+    // Find max depth in the tree
+    const maxDepth = Math.max(...Array.from(depthToDescendants.values()), 0);
+    console.log('Max tree depth:', maxDepth);
+
+    // Assign levels: person with most descendants = level 0 (top)
+    // Level = maxDepth - depthToDescendants
+    persons.forEach((p) => {
+      const depth = depthToDescendants.get(p.id) || 0;
+      const level = maxDepth - depth;
+      personLevels.set(p.id, level);
+      console.log(`${p.first_name} ${p.last_name}: level = ${level}`);
+    });
+
+    // Ensure spouses are at the same level (use the MINIMUM to keep ancestors high)
+    spouseMap.forEach((spouseId, personId) => {
+      const level1 = personLevels.get(personId) || 0;
+      const level2 = personLevels.get(spouseId) || 0;
+      const minLevel = Math.min(level1, level2);
+      personLevels.set(personId, minLevel);
+      personLevels.set(spouseId, minLevel);
+    });
+
+    // REMOVED: getDepthFromAncestors - was causing issues
     const getDepthFromAncestors = (personId: string, visited: Set<string> = new Set()): number => {
-      if (visited.has(personId)) return 0;
-      visited.add(personId);
-      
-      const parents = childToParents.get(personId);
-      if (!parents || parents.size === 0) return 0;
-      
-      let maxParentDepth = 0;
+      return 0; // Not used anymore
+    };
+
+    // Placeholder to avoid breaking the rest of the code
+    let maxParentDepth = 0;
       parents.forEach((parentId) => {
         const parentDepth = getDepthFromAncestors(parentId, new Set(visited));
         maxParentDepth = Math.max(maxParentDepth, parentDepth + 1);
