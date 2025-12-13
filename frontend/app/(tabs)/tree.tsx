@@ -910,22 +910,22 @@ export default function TreeScreen() {
               </Animated.View>
             </GestureDetector>
 
-            {/* Zoom Controls */}
+            {/* Zoom Controls - Compact for mobile */}
             <View style={styles.zoomControls}>
               <TouchableOpacity style={styles.zoomButton} onPress={zoomIn}>
-                <Ionicons name="add" size={24} color="#FFFFFF" />
+                <Ionicons name="add" size={18} color="#FFFFFF" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.zoomButton} onPress={zoomOut}>
-                <Ionicons name="remove" size={24} color="#FFFFFF" />
+                <Ionicons name="remove" size={18} color="#FFFFFF" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.zoomButton} onPress={() => resetToCenter()}>
-                <Ionicons name="scan-outline" size={22} color="#FFFFFF" />
+                <Ionicons name="scan-outline" size={16} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
 
-            {/* Zoom hint */}
+            {/* Zoom hint - Hidden on very small screens */}
             <View style={styles.zoomHint}>
-              <Text style={styles.zoomHintText}>Double-tap pour recentrer • Pincez pour zoomer</Text>
+              <Text style={styles.zoomHintText}>Double-tap: recentrer • Pincer: zoom</Text>
             </View>
           </>
         )}
