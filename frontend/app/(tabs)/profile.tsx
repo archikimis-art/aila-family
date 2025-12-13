@@ -139,6 +139,108 @@ export default function ProfileScreen() {
     );
   };
 
+  // Clear entire tree (keep account)
+  const handleClearTree = async () => {
+    if (!user) {
+      Alert.alert('Information', 'Connectez-vous pour gérer votre arbre.');
+      return;
+    }
+
+    const confirmClear = () => {
+      setClearingTree(true);
+      treeAPI.clearTree()
+        .then((response) => {
+          const data = response.data;
+          if (Platform.OS === 'web') {
+            window.alert(`Arbre supprimé avec succès!\n\n${data.deleted_persons} personnes supprimées\n${data.deleted_links} liens supprimés`);
+          } else {
+            Alert.alert(
+              'Arbre supprimé',
+              `${data.deleted_persons} personnes et ${data.deleted_links} liens ont été supprimés.`,
+              [{ text: 'OK' }]
+            );
+          }
+        })
+        .catch((error) => {
+          console.error('Clear tree error:', error);
+          if (Platform.OS === 'web') {
+            window.alert('Erreur lors de la suppression de l\'arbre.');
+          } else {
+            Alert.alert('Erreur', 'Impossible de supprimer l\'arbre.');
+          }
+        })
+        .finally(() => {
+          setClearingTree(false);
+        });
+    };
+
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm(
+        'ATTENTION: Cette action est irréversible!\n\nToutes les personnes et liens de votre arbre seront supprimés.\n\nVotre compte restera actif.\n\nVoulez-vous continuer?'
+      );
+      if (confirmed) {
+        confirmClear();
+      }
+    } else {
+      Alert.alert(
+        'Supprimer l\'arbre',
+        'ATTENTION: Cette action est irréversible!\n\nToutes les personnes et liens de votre arbre seront supprimés.\n\nVotre compte restera actif.',
+        [
+          { text: 'Annuler', style: 'cancel' },
+          {
+            text: 'Supprimer tout',
+            style: 'destructive',
+            onPress: confirmClear,
+          },
+        ]
+      );
+    }
+  };
+
+  // Download tree as JSON file
+  const handleDownloadJSON = async () => {
+    if (!user) {
+      Alert.alert('Information', 'Connectez-vous pour télécharger votre arbre.');
+      return;
+    }
+
+    setDownloadingJSON(true);
+    try {
+      const response = await exportAPI.downloadJSON();
+      
+      if (Platform.OS === 'web') {
+        // Create blob and download
+        const blob = new Blob([response.data], { type: 'application/json' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `aila_tree_${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        window.alert('Fichier téléchargé avec succès!');
+      } else {
+        // On mobile, show the data for now
+        Alert.alert(
+          'Export réussi',
+          'Le fichier JSON a été généré. Sur mobile, utilisez le partage pour sauvegarder.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error('Download error:', error);
+      if (Platform.OS === 'web') {
+        window.alert('Erreur lors du téléchargement.');
+      } else {
+        Alert.alert('Erreur', 'Impossible de télécharger le fichier.');
+      }
+    } finally {
+      setDownloadingJSON(false);
+    }
+  };
+
   const handleGoToWelcome = () => {
     router.replace('/');
   };
