@@ -168,16 +168,22 @@ export default function AddPersonScreen() {
       };
 
       console.log('Saving person:', personData);
-      console.log('Preview mode:', isPreviewMode, 'Token:', previewToken);
+      console.log('Preview mode:', isPreviewMode, 'Token:', previewToken, 'Shared owner:', sharedOwnerId);
 
       if (isPreviewMode && previewToken) {
+        // Mode aperçu
         await previewAPI.addPerson(previewToken, personData);
+      } else if (sharedOwnerId) {
+        // Arbre partagé - utiliser l'endpoint spécifique pour les éditeurs
+        const { collaboratorsAPI } = await import('@/services/api');
+        await collaboratorsAPI.createPersonInSharedTree(sharedOwnerId, personData);
       } else {
+        // Mon propre arbre
         await personsAPI.create(personData);
       }
 
       if (typeof window !== 'undefined') {
-        window.alert(`${firstName} ${lastName} a été ajouté(e) à votre arbre.`);
+        window.alert(`${firstName} ${lastName} a été ajouté(e) à l'arbre.`);
       }
       
       // Navigate to tree with proper parameters
