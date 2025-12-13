@@ -243,6 +243,8 @@ export default function AddLinkScreen() {
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         {/* Person 1 */}
         {renderPersonSelector(
+          linkType === 'parent' ? 'Le parent' : 
+          linkType === 'child' ? 'L\'enfant' : 
           'Première personne',
           person1,
           setPerson1,
@@ -293,6 +295,8 @@ export default function AddLinkScreen() {
 
         {/* Person 2 */}
         {renderPersonSelector(
+          linkType === 'parent' ? 'de (l\'enfant)' : 
+          linkType === 'child' ? 'de (le parent)' : 
           'Deuxième personne',
           person2,
           setPerson2,
