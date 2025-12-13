@@ -127,17 +127,32 @@ export default function AddLinkScreen() {
       }
 
       if (isPreviewMode && previewToken) {
+        // Mode aperçu
         await previewAPI.addLink(previewToken, linkData);
+      } else if (sharedOwnerId) {
+        // Arbre partagé - utiliser l'endpoint spécifique
+        const { collaboratorsAPI } = await import('@/services/api');
+        await collaboratorsAPI.createLinkInSharedTree(sharedOwnerId, linkData);
       } else {
+        // Mon propre arbre
         await linksAPI.create(linkData);
       }
 
-      Alert.alert('Succès', 'Le lien familial a été créé.', [
-        { text: 'OK', onPress: () => router.back() },
-      ]);
+      if (Platform.OS === 'web') {
+        window.alert('Le lien familial a été créé.');
+        router.back();
+      } else {
+        Alert.alert('Succès', 'Le lien familial a été créé.', [
+          { text: 'OK', onPress: () => router.back() },
+        ]);
+      }
     } catch (error: any) {
       const message = error.response?.data?.detail || 'Erreur lors de la création du lien.';
-      Alert.alert('Erreur', message);
+      if (Platform.OS === 'web') {
+        window.alert(`Erreur: ${message}`);
+      } else {
+        Alert.alert('Erreur', message);
+      }
     } finally {
       setLoading(false);
     }
