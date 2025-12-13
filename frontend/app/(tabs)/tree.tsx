@@ -1149,6 +1149,171 @@ export default function TreeScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Events Panel Modal */}
+      <Modal
+        visible={showEventsPanel}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowEventsPanel(false)}
+      >
+        <View style={styles.eventsOverlay}>
+          <View style={styles.eventsContent}>
+            <View style={styles.eventsHeader}>
+              <Text style={styles.eventsTitle}>🎉 Événements Familiaux</Text>
+              <TouchableOpacity onPress={() => setShowEventsPanel(false)}>
+                <Ionicons name="close-circle" size={28} color="#D4AF37" />
+              </TouchableOpacity>
+            </View>
+            
+            <ScrollView style={styles.eventsScroll} showsVerticalScrollIndicator={false}>
+              {/* Upcoming Birthdays */}
+              <Text style={styles.eventsSectionTitle}>🎂 Anniversaires à venir</Text>
+              {upcomingBirthdays.length === 0 ? (
+                <Text style={styles.eventsEmpty}>Aucun anniversaire dans les 30 prochains jours</Text>
+              ) : (
+                upcomingBirthdays.map((birthday, index) => (
+                  <TouchableOpacity 
+                    key={index} 
+                    style={styles.eventCard}
+                    onPress={() => {
+                      setCurrentEvent({
+                        type: 'birthday',
+                        title: `🎂 Anniversaire de ${birthday.person_name}!`,
+                        person_name: birthday.person_name,
+                        subtitle: birthday.days_until === 0 
+                          ? `Aujourd'hui - ${birthday.age} ans!` 
+                          : `Dans ${birthday.days_until} jour${birthday.days_until > 1 ? 's' : ''} - ${birthday.age} ans`
+                      });
+                      setShowEventsPanel(false);
+                      setShowEventAnimation(true);
+                    }}
+                  >
+                    <Text style={styles.eventCardEmoji}>🎂</Text>
+                    <View style={styles.eventCardContent}>
+                      <Text style={styles.eventCardTitle}>{birthday.person_name}</Text>
+                      <Text style={styles.eventCardSubtitle}>
+                        {birthday.days_until === 0 
+                          ? `🎉 Aujourd'hui! - ${birthday.age} ans` 
+                          : `Dans ${birthday.days_until} jour${birthday.days_until > 1 ? 's' : ''} - ${birthday.age} ans`}
+                      </Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+                  </TouchableOpacity>
+                ))
+              )}
+
+              {/* Create Event Section */}
+              <Text style={styles.eventsSectionTitle}>✨ Créer un événement</Text>
+              
+              {!showCreateEvent ? (
+                <View style={styles.eventTypeGrid}>
+                  {[
+                    { type: 'birthday', emoji: '🎂', label: 'Anniversaire' },
+                    { type: 'birth', emoji: '👶', label: 'Naissance' },
+                    { type: 'graduation', emoji: '🎓', label: 'Diplôme' },
+                    { type: 'wedding', emoji: '💍', label: 'Mariage' },
+                    { type: 'newyear', emoji: '🎆', label: 'Nouvel An' },
+                    { type: 'holiday', emoji: '🎄', label: 'Fête' },
+                  ].map((item) => (
+                    <TouchableOpacity 
+                      key={item.type}
+                      style={styles.eventTypeButton}
+                      onPress={() => {
+                        setNewEventType(item.type);
+                        setNewEventTitle(`${item.emoji} ${item.label}`);
+                        setShowCreateEvent(true);
+                      }}
+                    >
+                      <Text style={styles.eventTypeEmoji}>{item.emoji}</Text>
+                      <Text style={styles.eventTypeLabel}>{item.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ) : (
+                <View style={styles.createEventForm}>
+                  <TextInput
+                    style={styles.eventInput}
+                    placeholder="Titre de l'événement"
+                    placeholderTextColor="#6B7C93"
+                    value={newEventTitle}
+                    onChangeText={setNewEventTitle}
+                  />
+                  <TextInput
+                    style={[styles.eventInput, styles.eventInputMultiline]}
+                    placeholder="Description (optionnel)"
+                    placeholderTextColor="#6B7C93"
+                    value={newEventDescription}
+                    onChangeText={setNewEventDescription}
+                    multiline
+                    numberOfLines={3}
+                  />
+                  <View style={styles.createEventButtons}>
+                    <TouchableOpacity 
+                      style={styles.createEventCancel}
+                      onPress={() => {
+                        setShowCreateEvent(false);
+                        setNewEventTitle('');
+                        setNewEventDescription('');
+                      }}
+                    >
+                      <Text style={styles.createEventCancelText}>Annuler</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      style={styles.createEventSubmit}
+                      onPress={handleCreateEvent}
+                    >
+                      <Text style={styles.createEventSubmitText}>Créer</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+
+              {/* Test animations */}
+              <Text style={styles.eventsSectionTitle}>🎬 Tester les animations</Text>
+              <View style={styles.testAnimGrid}>
+                {[
+                  { type: 'birthday', emoji: '🎂', title: '🎂 Joyeux Anniversaire!' },
+                  { type: 'birth', emoji: '👶', title: '👶 Bienvenue au nouveau-né!' },
+                  { type: 'graduation', emoji: '🎓', title: '🎓 Félicitations Diplômé!' },
+                  { type: 'wedding', emoji: '💍', title: '💍 Vive les Mariés!' },
+                  { type: 'newyear', emoji: '🎆', title: '🎆 Bonne Année!' },
+                ].map((item) => (
+                  <TouchableOpacity 
+                    key={item.type}
+                    style={styles.testAnimButton}
+                    onPress={() => {
+                      setCurrentEvent({
+                        type: item.type,
+                        title: item.title,
+                      });
+                      setShowEventsPanel(false);
+                      setShowEventAnimation(true);
+                    }}
+                  >
+                    <Text style={{ fontSize: 24 }}>{item.emoji}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Event Animation */}
+      {currentEvent && (
+        <EventAnimation
+          visible={showEventAnimation}
+          eventType={currentEvent.type}
+          title={currentEvent.title}
+          subtitle={currentEvent.subtitle}
+          personName={currentEvent.person_name}
+          onClose={() => {
+            setShowEventAnimation(false);
+            setCurrentEvent(null);
+          }}
+        />
+      )}
     </SafeAreaView>
   );
 }
