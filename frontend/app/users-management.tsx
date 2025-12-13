@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -29,11 +30,16 @@ export default function UsersManagementScreen() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [processingUserId, setProcessingUserId] = useState<string | null>(null);
 
   useEffect(() => {
     // Check if user is admin
     if (!isAdmin()) {
-      Alert.alert('Accès refusé', 'Seuls les administrateurs peuvent accéder à cette page.');
+      if (Platform.OS === 'web') {
+        window.alert('Accès refusé: Seuls les administrateurs peuvent accéder à cette page.');
+      } else {
+        Alert.alert('Accès refusé', 'Seuls les administrateurs peuvent accéder à cette page.');
+      }
       router.back();
       return;
     }
@@ -45,7 +51,11 @@ export default function UsersManagementScreen() {
       const response = await api.get('/users');
       setUsers(response.data);
     } catch (error) {
-      Alert.alert('Erreur', 'Impossible de charger la liste des utilisateurs.');
+      if (Platform.OS === 'web') {
+        window.alert('Erreur: Impossible de charger la liste des utilisateurs.');
+      } else {
+        Alert.alert('Erreur', 'Impossible de charger la liste des utilisateurs.');
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -53,49 +63,83 @@ export default function UsersManagementScreen() {
   };
 
   const handlePromoteUser = async (userId: string, userName: string) => {
-    Alert.alert(
-      'Promouvoir en Admin',
-      `Voulez-vous promouvoir ${userName} en administrateur ?`,
-      [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Promouvoir',
-          onPress: async () => {
-            try {
-              await api.put(`/users/${userId}/promote`);
-              Alert.alert('Succès', `${userName} est maintenant administrateur.`);
-              fetchUsers();
-            } catch (error) {
-              Alert.alert('Erreur', 'Impossible de promouvoir l\'utilisateur.');
-            }
-          },
-        },
-      ]
-    );
+    const doPromote = async () => {
+      setProcessingUserId(userId);
+      try {
+        await api.put(`/users/${userId}/promote`);
+        if (Platform.OS === 'web') {
+          window.alert(`Succès: ${userName} est maintenant administrateur.`);
+        } else {
+          Alert.alert('Succès', `${userName} est maintenant administrateur.`);
+        }
+        fetchUsers();
+      } catch (error: any) {
+        const message = error.response?.data?.detail || 'Impossible de promouvoir l\'utilisateur.';
+        if (Platform.OS === 'web') {
+          window.alert(`Erreur: ${message}`);
+        } else {
+          Alert.alert('Erreur', message);
+        }
+      } finally {
+        setProcessingUserId(null);
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm(`Voulez-vous promouvoir ${userName} en administrateur ?`);
+      if (confirmed) {
+        await doPromote();
+      }
+    } else {
+      Alert.alert(
+        'Promouvoir en Admin',
+        `Voulez-vous promouvoir ${userName} en administrateur ?`,
+        [
+          { text: 'Annuler', style: 'cancel' },
+          { text: 'Promouvoir', onPress: doPromote },
+        ]
+      );
+    }
   };
 
   const handleDemoteUser = async (userId: string, userName: string) => {
-    Alert.alert(
-      'Rétrograder en Membre',
-      `Voulez-vous rétrograder ${userName} en membre ?`,
-      [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Rétrograder',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await api.put(`/users/${userId}/demote`);
-              Alert.alert('Succès', `${userName} est maintenant membre.`);
-              fetchUsers();
-            } catch (error: any) {
-              const message = error.response?.data?.detail || 'Impossible de rétrograder l\'utilisateur.';
-              Alert.alert('Erreur', message);
-            }
-          },
-        },
-      ]
-    );
+    const doDemote = async () => {
+      setProcessingUserId(userId);
+      try {
+        await api.put(`/users/${userId}/demote`);
+        if (Platform.OS === 'web') {
+          window.alert(`Succès: ${userName} est maintenant membre.`);
+        } else {
+          Alert.alert('Succès', `${userName} est maintenant membre.`);
+        }
+        fetchUsers();
+      } catch (error: any) {
+        const message = error.response?.data?.detail || 'Impossible de rétrograder l\'utilisateur.';
+        if (Platform.OS === 'web') {
+          window.alert(`Erreur: ${message}`);
+        } else {
+          Alert.alert('Erreur', message);
+        }
+      } finally {
+        setProcessingUserId(null);
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      const confirmed = window.confirm(`Voulez-vous rétrograder ${userName} en membre ?`);
+      if (confirmed) {
+        await doDemote();
+      }
+    } else {
+      Alert.alert(
+        'Rétrograder en Membre',
+        `Voulez-vous rétrograder ${userName} en membre ?`,
+        [
+          { text: 'Annuler', style: 'cancel' },
+          { text: 'Rétrograder', style: 'destructive', onPress: doDemote },
+        ]
+      );
+    }
   };
 
   const onRefresh = () => {
