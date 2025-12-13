@@ -1971,4 +1971,71 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'center',
   },
+  // Recipients styles
+  recipientsSection: {
+    marginBottom: 16,
+  },
+  recipientsSectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  recipientsSectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  selectAllText: {
+    fontSize: 12,
+    color: '#D4AF37',
+    textDecorationLine: 'underline',
+  },
+  noRecipientsText: {
+    fontSize: 13,
+    color: '#6B7C93',
+    fontStyle: 'italic',
+    lineHeight: 18,
+  },
+  recipientsList: {
+    gap: 8,
+  },
+  recipientItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(10, 22, 40, 0.5)',
+    borderRadius: 10,
+    padding: 12,
+    gap: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(107, 124, 147, 0.3)',
+  },
+  recipientItemSelected: {
+    borderColor: '#D4AF37',
+    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+  },
+  recipientEmail: {
+    flex: 1,
+    fontSize: 14,
+    color: '#B8C5D6',
+  },
+  recipientRole: {
+    fontSize: 14,
+  },
+  notificationOptions: {
+    marginBottom: 16,
+    gap: 10,
+  },
+  notificationOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  notificationOptionText: {
+    fontSize: 14,
+    color: '#B8C5D6',
+  },
+  createEventSubmitDisabled: {
+    opacity: 0.5,
+  },
 });
