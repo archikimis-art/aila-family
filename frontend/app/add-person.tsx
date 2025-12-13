@@ -367,51 +367,19 @@ export default function AddPersonScreen() {
             </View>
           </View>
 
-          {/* Algerian Branch */}
+          {/* Geographic Branch */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Branche géographique</Text>
+            <Text style={styles.sectionDescription}>Région d'origine de la famille</Text>
             <TouchableOpacity
-              style={styles.selectInput}
-              onPress={() => setShowWilayaList(!showWilayaList)}
+              style={styles.locationButton}
+              onPress={() => openLocationPicker('branch')}
             >
-              <Ionicons name="location-outline" size={20} color="#D4AF37" />
-              <Text style={[styles.selectText, geographicBranch && { color: '#FFFFFF' }]}>
-                {geographicBranch || 'Sélectionner une wilaya'}
+              <Ionicons name="globe-outline" size={18} color="#D4AF37" />
+              <Text style={[styles.locationButtonText, geographicBranch && { color: '#FFFFFF' }]} numberOfLines={1}>
+                {geographicBranch || 'Choisir une région'}
               </Text>
-              <Ionicons
-                name={showWilayaList ? 'chevron-up' : 'chevron-down'}
-                size={20}
-                color="#6B7C93"
-              />
             </TouchableOpacity>
-            {showWilayaList && (
-              <View style={styles.wilayaList}>
-                <ScrollView style={styles.wilayaScroll} nestedScrollEnabled>
-                  {WILAYA_OPTIONS.map((wilaya) => (
-                    <TouchableOpacity
-                      key={wilaya}
-                      style={[
-                        styles.wilayaItem,
-                        geographicBranch === wilaya && styles.wilayaItemActive,
-                      ]}
-                      onPress={() => {
-                        setGeographicBranch(wilaya);
-                        setShowWilayaList(false);
-                      }}
-                    >
-                      <Text
-                        style={[
-                          styles.wilayaText,
-                          geographicBranch === wilaya && styles.wilayaTextActive,
-                        ]}
-                      >
-                        {wilaya}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            )}
           </View>
 
           {/* Notes */}
