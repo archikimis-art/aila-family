@@ -147,43 +147,61 @@ export default function UsersManagementScreen() {
     fetchUsers();
   };
 
-  const renderUser = ({ item }: { item: User }) => (
-    <View style={styles.userCard}>
-      <View style={styles.userInfo}>
-        <View style={styles.userHeader}>
-          <Text style={styles.userName}>{item.first_name} {item.last_name}</Text>
-          <View style={[
-            styles.roleBadge,
-            item.role === 'admin' ? styles.adminBadge : styles.memberBadge
-          ]}>
-            <Text style={styles.roleBadgeText}>{item.role === 'admin' ? 'Admin' : 'Membre'}</Text>
+  const renderUser = ({ item }: { item: User }) => {
+    const isProcessing = processingUserId === item.id;
+    
+    return (
+      <View style={styles.userCard}>
+        <View style={styles.userInfo}>
+          <View style={styles.userHeader}>
+            <Text style={styles.userName}>{item.first_name} {item.last_name}</Text>
+            <View style={[
+              styles.roleBadge,
+              item.role === 'admin' ? styles.adminBadge : styles.memberBadge
+            ]}>
+              <Text style={styles.roleBadgeText}>{item.role === 'admin' ? 'Admin' : 'Membre'}</Text>
+            </View>
           </View>
+          <Text style={styles.userEmail}>{item.email}</Text>
+          <Text style={styles.userDate}>
+            Inscrit le {new Date(item.created_at).toLocaleDateString('fr-FR')}
+          </Text>
         </View>
-        <Text style={styles.userEmail}>{item.email}</Text>
-        <Text style={styles.userDate}>
-          Inscrit le {new Date(item.created_at).toLocaleDateString('fr-FR')}
-        </Text>
-      </View>
 
-      {item.role === 'admin' ? (
-        <TouchableOpacity
-          style={styles.demoteButton}
-          onPress={() => handleDemoteUser(item.id, `${item.first_name} ${item.last_name}`)}
-        >
-          <Ionicons name="arrow-down-circle-outline" size={20} color="#FF6B6B" />
-          <Text style={styles.demoteButtonText}>Rétrograder</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity
-          style={styles.promoteButton}
-          onPress={() => handlePromoteUser(item.id, `${item.first_name} ${item.last_name}`)}
-        >
-          <Ionicons name="arrow-up-circle-outline" size={20} color="#4CAF50" />
-          <Text style={styles.promoteButtonText}>Promouvoir</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
+        {item.role === 'admin' ? (
+          <TouchableOpacity
+            style={[styles.demoteButton, isProcessing && styles.disabledButton]}
+            onPress={() => handleDemoteUser(item.id, `${item.first_name} ${item.last_name}`)}
+            disabled={isProcessing}
+          >
+            {isProcessing ? (
+              <ActivityIndicator size="small" color="#FF6B6B" />
+            ) : (
+              <>
+                <Ionicons name="arrow-down-circle-outline" size={20} color="#FF6B6B" />
+                <Text style={styles.demoteButtonText}>Rétrograder</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={[styles.promoteButton, isProcessing && styles.disabledButton]}
+            onPress={() => handlePromoteUser(item.id, `${item.first_name} ${item.last_name}`)}
+            disabled={isProcessing}
+          >
+            {isProcessing ? (
+              <ActivityIndicator size="small" color="#4CAF50" />
+            ) : (
+              <>
+                <Ionicons name="arrow-up-circle-outline" size={20} color="#4CAF50" />
+                <Text style={styles.promoteButtonText}>Promouvoir</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
 
   if (loading) {
     return (
