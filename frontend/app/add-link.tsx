@@ -88,11 +88,34 @@ export default function AddLinkScreen() {
 
     setLoading(true);
     try {
-      const linkData = {
-        person_id_1: person1.id,
-        person_id_2: person2.id,
-        link_type: linkType,
-      };
+      let linkData;
+      
+      // Normalize link data based on type
+      // For 'parent' type: person_id_1 is ALWAYS the parent, person_id_2 is the child
+      // For 'child' type: we swap them so parent is always person_id_1
+      if (linkType === 'child') {
+        // User selected "Enfant" - person1 is child OF person2
+        // So person2 is the parent
+        linkData = {
+          person_id_1: person2.id,  // parent
+          person_id_2: person1.id,  // child
+          link_type: 'parent',  // Store as parent type
+        };
+      } else if (linkType === 'parent') {
+        // User selected "Parent" - person1 is parent OF person2
+        linkData = {
+          person_id_1: person1.id,  // parent
+          person_id_2: person2.id,  // child
+          link_type: 'parent',
+        };
+      } else {
+        // spouse or sibling - order doesn't matter
+        linkData = {
+          person_id_1: person1.id,
+          person_id_2: person2.id,
+          link_type: linkType,
+        };
+      }
 
       if (isPreviewMode && previewToken) {
         await previewAPI.addLink(previewToken, linkData);
