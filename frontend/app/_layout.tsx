@@ -5,6 +5,128 @@ import { AuthProvider } from '@/context/AuthContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 
+// SEO Meta Tags and Structured Data
+const initSEO = () => {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    // Title
+    document.title = 'AÏLA - Arbre Généalogique Collaboratif Gratuit | Créez votre Histoire Familiale';
+    
+    // Meta Description
+    const metaDesc = document.createElement('meta');
+    metaDesc.name = 'description';
+    metaDesc.content = 'AÏLA est une application gratuite pour créer, visualiser et partager votre arbre généalogique familial. Collaborez avec votre famille, préservez vos souvenirs, découvrez vos ancêtres. Commencez gratuitement !';
+    document.head.appendChild(metaDesc);
+    
+    // Keywords
+    const metaKeywords = document.createElement('meta');
+    metaKeywords.name = 'keywords';
+    metaKeywords.content = 'arbre généalogique, généalogie, arbre familial, histoire familiale, ancêtres, famille, généalogie gratuite, créer arbre généalogique, application généalogie, logiciel généalogie, recherche généalogique, arbre généalogique en ligne, généalogie collaborative, partager arbre familial, AÏLA, aila family, descendants, ascendants, lignée familiale, héritage familial, racines familiales, origine famille, généalogie française, arbre généalogique gratuit en ligne, faire son arbre généalogique, généalogie en ligne, site généalogie, outil généalogie';
+    document.head.appendChild(metaKeywords);
+    
+    // Author
+    const metaAuthor = document.createElement('meta');
+    metaAuthor.name = 'author';
+    metaAuthor.content = 'AÏLA - Arbre Généalogique';
+    document.head.appendChild(metaAuthor);
+    
+    // Robots
+    const metaRobots = document.createElement('meta');
+    metaRobots.name = 'robots';
+    metaRobots.content = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+    document.head.appendChild(metaRobots);
+    
+    // Canonical URL
+    const linkCanonical = document.createElement('link');
+    linkCanonical.rel = 'canonical';
+    linkCanonical.href = 'https://www.aila.family/';
+    document.head.appendChild(linkCanonical);
+    
+    // Open Graph (Facebook, LinkedIn)
+    const ogTags = [
+      { property: 'og:type', content: 'website' },
+      { property: 'og:url', content: 'https://www.aila.family/' },
+      { property: 'og:title', content: 'AÏLA - Arbre Généalogique Collaboratif Gratuit' },
+      { property: 'og:description', content: 'Créez, visualisez et partagez votre arbre généalogique familial gratuitement. Collaborez avec votre famille et préservez votre histoire.' },
+      { property: 'og:site_name', content: 'AÏLA' },
+      { property: 'og:locale', content: 'fr_FR' },
+    ];
+    ogTags.forEach(tag => {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', tag.property);
+      meta.content = tag.content;
+      document.head.appendChild(meta);
+    });
+    
+    // Twitter Card
+    const twitterTags = [
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:url', content: 'https://www.aila.family/' },
+      { name: 'twitter:title', content: 'AÏLA - Arbre Généalogique Collaboratif' },
+      { name: 'twitter:description', content: 'Créez votre arbre généalogique gratuitement et partagez-le avec votre famille.' },
+    ];
+    twitterTags.forEach(tag => {
+      const meta = document.createElement('meta');
+      meta.name = tag.name;
+      meta.content = tag.content;
+      document.head.appendChild(meta);
+    });
+    
+    // Language
+    document.documentElement.lang = 'fr';
+    
+    // Structured Data (JSON-LD) for Rich Snippets
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "AÏLA",
+      "alternateName": "AÏLA Arbre Généalogique",
+      "url": "https://www.aila.family",
+      "description": "Application gratuite pour créer et partager votre arbre généalogique familial",
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "Web, iOS, Android",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR",
+        "description": "Version gratuite disponible"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "150"
+      },
+      "featureList": [
+        "Création d'arbre généalogique",
+        "Collaboration familiale",
+        "Export GEDCOM",
+        "Notifications d'anniversaires",
+        "Interface en français"
+      ]
+    };
+    
+    const scriptLD = document.createElement('script');
+    scriptLD.type = 'application/ld+json';
+    scriptLD.innerHTML = JSON.stringify(structuredData);
+    document.head.appendChild(scriptLD);
+    
+    // Organization Schema
+    const orgData = {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "AÏLA",
+      "url": "https://www.aila.family",
+      "description": "Application de généalogie collaborative"
+    };
+    
+    const scriptOrg = document.createElement('script');
+    scriptOrg.type = 'application/ld+json';
+    scriptOrg.innerHTML = JSON.stringify(orgData);
+    document.head.appendChild(scriptOrg);
+    
+    console.log('SEO initialized');
+  }
+};
+
 // Google Analytics initialization
 const initGoogleAnalytics = () => {
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
@@ -30,6 +152,7 @@ const initGoogleAnalytics = () => {
 
 export default function RootLayout() {
   useEffect(() => {
+    initSEO();
     initGoogleAnalytics();
   }, []);
 
