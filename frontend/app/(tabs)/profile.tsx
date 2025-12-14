@@ -332,6 +332,22 @@ export default function ProfileScreen() {
           </View>
         )}
 
+        {/* Premium Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="star" size={20} color="#D4AF37" />
+            <Text style={styles.sectionTitle}>Premium</Text>
+          </View>
+          <TouchableOpacity 
+            style={styles.menuItem} 
+            onPress={() => router.push('/pricing')}
+          >
+            <Ionicons name="diamond-outline" size={22} color="#D4AF37" />
+            <Text style={styles.menuItemText}>Voir les offres Premium</Text>
+            <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+          </TouchableOpacity>
+        </View>
+
         {/* GDPR Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
