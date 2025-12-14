@@ -1155,10 +1155,7 @@ async def debug_tree(current_user: dict = Depends(get_current_user)):
 
 @api_router.get("/tree/export/json")
 async def export_tree_json(current_user: dict = Depends(get_current_user)):
-    """Export family tree as JSON file (downloadable)"""
-    from fastapi.responses import Response
-    import json
-    
+    """Export family tree as JSON data"""
     user_id = str(current_user['_id'])
     
     # Get all tree data
@@ -1178,15 +1175,7 @@ async def export_tree_json(current_user: dict = Depends(get_current_user)):
         }
     }
     
-    json_content = json.dumps(tree_data, indent=2, ensure_ascii=False)
-    
-    return Response(
-        content=json_content,
-        media_type="application/json",
-        headers={
-            "Content-Disposition": f"attachment; filename=aila_tree_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
-        }
-    )
+    return tree_data
 
 @api_router.get("/tree/export/gedcom")
 async def export_tree_gedcom(current_user: dict = Depends(get_current_user)):
