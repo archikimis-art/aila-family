@@ -185,13 +185,25 @@ export default function WelcomeScreen() {
 
           {/* Footer inside buttons container */}
           <View style={styles.footerInline}>
+            {/* Install PWA Button */}
+            {isWeb && (
+              <TouchableOpacity 
+                style={styles.installButton}
+                onPress={handleInstallClick}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="download-outline" size={20} color="#FFFFFF" />
+                <Text style={styles.installButtonText}>Installer l'application</Text>
+              </TouchableOpacity>
+            )}
+            
             <TouchableOpacity 
               style={styles.shareButton}
               onPress={shareApp}
               activeOpacity={0.7}
             >
               <Ionicons name="share-social-outline" size={20} color="#D4AF37" />
-              <Text style={styles.shareButtonText}>Partager l'application</Text>
+              <Text style={styles.shareButtonText}>Partager</Text>
             </TouchableOpacity>
             <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
           </View>
