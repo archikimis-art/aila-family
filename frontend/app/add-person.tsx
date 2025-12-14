@@ -142,7 +142,7 @@ export default function AddPersonScreen() {
         }
         setAllPersons(persons);
         setFamilyLinks(response.data.links || []);
-      } else {
+      } else if (editPersonId) {
         const [personRes, allPersonsRes, linksRes] = await Promise.all([
           personsAPI.getOne(editPersonId),
           personsAPI.getAll(),
