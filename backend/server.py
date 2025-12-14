@@ -1275,6 +1275,238 @@ async def export_tree_gedcom(current_user: dict = Depends(get_current_user)):
         }
     )
 
+# ===================== IMPORT GEDCOM ROUTES =====================
+
+class ImportGedcomRequest(BaseModel):
+    gedcom_content: str
+
+@api_router.post("/tree/import/gedcom")
+async def import_tree_gedcom(request: ImportGedcomRequest, current_user: dict = Depends(get_current_user)):
+    """Import a GEDCOM file and add persons/links to the tree"""
+    user_id = str(current_user['_id'])
+    
+    lines = request.gedcom_content.strip().split('\n')
+    
+    persons_created = 0
+    links_created = 0
+    current_person = None
+    persons_map = {}  # GEDCOM ID -> MongoDB ID
+    families = {}  # Family ID -> {husb, wife, children}
+    
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+        parts = line.split(' ', 2)
+        
+        if len(parts) < 2:
+            i += 1
+            continue
+        
+        level = parts[0]
+        tag_or_id = parts[1]
+        value = parts[2] if len(parts) > 2 else ''
+        
+        # Parse individual
+        if level == '0' and tag_or_id.startswith('@I') and 'INDI' in value:
+            gedcom_id = tag_or_id.strip('@')
+            current_person = {
+                'gedcom_id': gedcom_id,
+                'first_name': 'Inconnu',
+                'last_name': '',
+                'gender': 'unknown',
+                'birth_date': None,
+                'birth_place': None,
+                'death_date': None,
+                'death_place': None,
+                'user_id': user_id,
+            }
+        
+        elif level == '1' and current_person:
+            if tag_or_id == 'NAME' and value:
+                # Parse name like "John /Doe/"
+                name_parts = value.replace('/', ' ').split()
+                if name_parts:
+                    current_person['first_name'] = name_parts[0]
+                    if len(name_parts) > 1:
+                        current_person['last_name'] = ' '.join(name_parts[1:])
+            elif tag_or_id == 'SEX':
+                current_person['gender'] = 'male' if value == 'M' else 'female' if value == 'F' else 'unknown'
+            elif tag_or_id == 'BIRT':
+                # Look ahead for date/place
+                j = i + 1
+                while j < len(lines) and lines[j].strip().startswith('2'):
+                    sub_parts = lines[j].strip().split(' ', 2)
+                    if len(sub_parts) >= 3:
+                        if sub_parts[1] == 'DATE':
+                            current_person['birth_date'] = sub_parts[2]
+                        elif sub_parts[1] == 'PLAC':
+                            current_person['birth_place'] = sub_parts[2]
+                    j += 1
+            elif tag_or_id == 'DEAT':
+                j = i + 1
+                while j < len(lines) and lines[j].strip().startswith('2'):
+                    sub_parts = lines[j].strip().split(' ', 2)
+                    if len(sub_parts) >= 3:
+                        if sub_parts[1] == 'DATE':
+                            current_person['death_date'] = sub_parts[2]
+                        elif sub_parts[1] == 'PLAC':
+                            current_person['death_place'] = sub_parts[2]
+                    j += 1
+        
+        # Save person when we hit next record
+        if level == '0' and current_person and current_person.get('first_name') != 'Inconnu':
+            result = await db.persons.insert_one(current_person)
+            persons_map[current_person['gedcom_id']] = str(result.inserted_id)
+            persons_created += 1
+            current_person = None
+        
+        # Parse family
+        if level == '0' and tag_or_id.startswith('@F') and 'FAM' in value:
+            fam_id = tag_or_id.strip('@')
+            families[fam_id] = {'husb': None, 'wife': None, 'children': []}
+        
+        if level == '1' and families:
+            current_fam_id = list(families.keys())[-1] if families else None
+            if current_fam_id:
+                if tag_or_id == 'HUSB' and value:
+                    families[current_fam_id]['husb'] = value.strip('@')
+                elif tag_or_id == 'WIFE' and value:
+                    families[current_fam_id]['wife'] = value.strip('@')
+                elif tag_or_id == 'CHIL' and value:
+                    families[current_fam_id]['children'].append(value.strip('@'))
+        
+        i += 1
+    
+    # Save last person
+    if current_person and current_person.get('first_name') != 'Inconnu':
+        result = await db.persons.insert_one(current_person)
+        persons_map[current_person['gedcom_id']] = str(result.inserted_id)
+        persons_created += 1
+    
+    # Create family links
+    for fam_id, fam in families.items():
+        husb_id = persons_map.get(fam['husb'])
+        wife_id = persons_map.get(fam['wife'])
+        
+        # Create spouse link
+        if husb_id and wife_id:
+            await db.family_links.insert_one({
+                'user_id': user_id,
+                'person_id_1': husb_id,
+                'person_id_2': wife_id,
+                'link_type': 'spouse',
+            })
+            links_created += 1
+        
+        # Create parent links
+        for child_gedcom_id in fam['children']:
+            child_id = persons_map.get(child_gedcom_id)
+            if child_id:
+                if husb_id:
+                    await db.family_links.insert_one({
+                        'user_id': user_id,
+                        'person_id_1': husb_id,
+                        'person_id_2': child_id,
+                        'link_type': 'parent',
+                    })
+                    links_created += 1
+                if wife_id:
+                    await db.family_links.insert_one({
+                        'user_id': user_id,
+                        'person_id_1': wife_id,
+                        'person_id_2': child_id,
+                        'link_type': 'parent',
+                    })
+                    links_created += 1
+    
+    return {
+        "message": f"Import réussi ! {persons_created} personnes et {links_created} liens créés.",
+        "persons_created": persons_created,
+        "links_created": links_created
+    }
+
+# ===================== SEND TREE BY EMAIL =====================
+
+class SendTreeEmailRequest(BaseModel):
+    recipient_emails: List[str]
+    format: str = "json"  # "json" or "gedcom"
+    message: Optional[str] = None
+
+@api_router.post("/tree/send-email")
+async def send_tree_by_email(request: SendTreeEmailRequest, current_user: dict = Depends(get_current_user)):
+    """Send the family tree file by email to specified recipients"""
+    user_id = str(current_user['_id'])
+    user_name = f"{current_user['first_name']} {current_user['last_name']}"
+    
+    # Get tree data
+    persons = await db.persons.find({"user_id": user_id}).to_list(500)
+    links = await db.family_links.find({"user_id": user_id}).to_list(500)
+    
+    if not persons:
+        raise HTTPException(status_code=400, detail="Votre arbre est vide")
+    
+    # Prepare tree summary
+    tree_summary = f"- {len(persons)} personnes\n- {len(links)} liens familiaux"
+    
+    custom_message = request.message or ""
+    if custom_message:
+        custom_message = f"\n\nMessage de {user_name}:\n{custom_message}"
+    
+    emails_sent = 0
+    errors = []
+    
+    for email in request.recipient_emails:
+        try:
+            html_content = f"""
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0A1628; color: #FFFFFF; padding: 20px; border-radius: 12px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #D4AF37; margin: 0;">🌳 AÏLA</h1>
+                    <p style="color: #B8C5D6;">Arbre Généalogique Familial</p>
+                </div>
+                
+                <p>Bonjour,</p>
+                
+                <p><strong>{user_name}</strong> vous partage son arbre généalogique !</p>
+                
+                <div style="background: #1A2F4A; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <p style="margin: 0; color: #D4AF37;"><strong>Contenu de l'arbre :</strong></p>
+                    <p style="margin: 10px 0 0 0; white-space: pre-line;">{tree_summary}</p>
+                </div>
+                
+                {f'<div style="background: #2A3F5A; padding: 15px; border-radius: 8px; margin: 20px 0;"><p style="margin: 0; white-space: pre-line;">{custom_message}</p></div>' if custom_message else ''}
+                
+                <p>Pour consulter l'arbre interactif, créez votre compte gratuit sur AÏLA :</p>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <a href="{FRONTEND_URL}" style="display: inline-block; background: #D4AF37; color: #0A1628; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                        Découvrir AÏLA
+                    </a>
+                </div>
+                
+                <p style="color: #6B7C93; font-size: 12px; text-align: center;">
+                    AÏLA - L'arbre généalogique qui connecte votre famille
+                </p>
+            </div>
+            """
+            
+            resend.emails.send({
+                "from": "AÏLA <noreply@aila.family>",
+                "to": email,
+                "subject": f"🌳 {user_name} partage son arbre généalogique avec vous",
+                "html": html_content,
+            })
+            emails_sent += 1
+            
+        except Exception as e:
+            logger.error(f"Error sending email to {email}: {e}")
+            errors.append(email)
+    
+    return {
+        "message": f"{emails_sent} email(s) envoyé(s) avec succès",
+        "emails_sent": emails_sent,
+        "errors": errors if errors else None
+    }
+
 # ===================== COLLABORATION ROUTES =====================
 
 @api_router.post("/collaborators/invite", response_model=CollaboratorResponse)
