@@ -388,6 +388,30 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           )}
 
+          {/* Import GEDCOM */}
+          {user && (
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={handleImportGedcom}
+            >
+              <Ionicons name="cloud-upload-outline" size={22} color="#9B59B6" />
+              <Text style={styles.menuItemText}>Importer un fichier GEDCOM</Text>
+              <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+            </TouchableOpacity>
+          )}
+
+          {/* Send by Email */}
+          {user && (
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={handleSendByEmail}
+            >
+              <Ionicons name="mail-outline" size={22} color="#E67E22" />
+              <Text style={styles.menuItemText}>Envoyer l'arbre par email</Text>
+              <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+            </TouchableOpacity>
+          )}
+
           {!user && (
             <TouchableOpacity style={styles.menuItem} onPress={handleClearPreview}>
               <Ionicons name="trash-outline" size={22} color="#FF6B6B" />
