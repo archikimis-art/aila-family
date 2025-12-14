@@ -76,7 +76,9 @@ export const previewAPI = {
   createSession: () => api.post('/preview/session'),
   getSession: (token: string) => api.get(`/preview/${token}`),
   addPerson: (token: string, data: any) => api.post(`/preview/${token}/person`, data),
+  updatePerson: (token: string, personId: string, data: any) => api.put(`/preview/${token}/person/${personId}`, data),
   addLink: (token: string, data: any) => api.post(`/preview/${token}/link`, data),
+  deleteLink: (token: string, linkId: string) => api.delete(`/preview/${token}/link/${linkId}`),
   deletePerson: (token: string, personId: string) => api.delete(`/preview/${token}/person/${personId}`),
   convertToAccount: (token: string) => api.post(`/preview/${token}/convert`),
 };
