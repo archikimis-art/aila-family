@@ -1824,7 +1824,7 @@ async def delete_message(
 @api_router.get("/events/birthdays", response_model=List[UpcomingBirthdayResponse])
 async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user)):
     """Get upcoming birthdays from tree members (next 30 days)"""
-    user_id = current_user["user_id"]
+    user_id = str(current_user['_id'])
     
     # Get all persons with birth dates
     persons = await db.persons.find({
