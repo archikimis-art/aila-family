@@ -72,20 +72,31 @@ export default function ProfileScreen() {
 
   const handleExportData = async () => {
     if (!user) {
-      Alert.alert('Information', 'Créez un compte pour exporter vos données.');
+      if (Platform.OS === 'web') {
+        window.alert('Créez un compte pour exporter vos données.');
+      } else {
+        Alert.alert('Information', 'Créez un compte pour exporter vos données.');
+      }
       return;
     }
 
     setExporting(true);
     try {
       const response = await gdprAPI.exportData();
-      Alert.alert(
-        'Export réussi',
-        `Vos données ont été exportées.\n\n- ${response.data.persons?.length || 0} personnes\n- ${response.data.family_links?.length || 0} liens familiaux`,
-        [{ text: 'OK' }]
-      );
+      const message = `Vos données ont été exportées.\n\n- ${response.data.persons?.length || 0} personnes\n- ${response.data.family_links?.length || 0} liens familiaux`;
+      
+      if (Platform.OS === 'web') {
+        window.alert('Export réussi!\n\n' + message);
+      } else {
+        Alert.alert('Export réussi', message, [{ text: 'OK' }]);
+      }
     } catch (error) {
-      Alert.alert('Erreur', 'Impossible d\'exporter les données.');
+      console.error('Export error:', error);
+      if (Platform.OS === 'web') {
+        window.alert('Erreur: Impossible d\'exporter les données.');
+      } else {
+        Alert.alert('Erreur', 'Impossible d\'exporter les données.');
+      }
     } finally {
       setExporting(false);
     }
