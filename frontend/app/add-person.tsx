@@ -359,6 +359,17 @@ export default function AddPersonScreen() {
     }
   };
 
+  if (initialLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#D4AF37" />
+          <Text style={styles.loadingText}>Chargement...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -370,18 +381,18 @@ export default function AddPersonScreen() {
           <TouchableOpacity style={styles.closeButton} onPress={() => router.back()}>
             <Ionicons name="close" size={24} color="#FFFFFF" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Nouvelle personne</Text>
+          <Text style={styles.headerTitle}>{isEditMode ? 'Modifier' : 'Nouvelle personne'}</Text>
           <TouchableOpacity
             style={[styles.saveButton, loading && styles.saveButtonDisabled]}
             onPress={handleSave}
             disabled={loading}
             testID="save-button"
-            accessibilityLabel="Ajouter une personne"
+            accessibilityLabel={isEditMode ? "Enregistrer les modifications" : "Ajouter une personne"}
           >
             {loading ? (
               <ActivityIndicator size="small" color="#0A1628" />
             ) : (
-              <Text style={styles.saveButtonText}>Ajouter</Text>
+              <Text style={styles.saveButtonText}>{isEditMode ? 'Enregistrer' : 'Ajouter'}</Text>
             )}
           </TouchableOpacity>
         </View>
