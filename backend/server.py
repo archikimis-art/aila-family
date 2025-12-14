@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -14,6 +14,7 @@ import jwt
 import bcrypt
 from bson import ObjectId
 import resend
+import stripe
 
 ROOT_DIR = Path(__file__).parent
 
@@ -38,6 +39,17 @@ if env_file.exists():
 else:
     logger.info("✓ No .env file found, using environment variables from system")
     logger.info(f"✓ Environment variables: MONGO_URL={'SET' if os.environ.get('MONGO_URL') else 'NOT SET'}, DB_NAME={os.environ.get('DB_NAME', 'NOT SET')}")
+
+# Configure Stripe
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
+STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
+stripe.api_key = STRIPE_SECRET_KEY
+
+# Stripe Price IDs (will be created dynamically if not set)
+STRIPE_PRICE_MONTHLY = os.environ.get('STRIPE_PRICE_MONTHLY', '')
+STRIPE_PRICE_YEARLY = os.environ.get('STRIPE_PRICE_YEARLY', '')
+STRIPE_PRICE_LIFETIME = os.environ.get('STRIPE_PRICE_LIFETIME', '')
 
 # Configure Resend for email sending
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', 're_ZVuwLNzR_ER7hfFTBQi6LqZTZuWEQa7Sr')
