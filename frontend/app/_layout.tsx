@@ -127,6 +127,60 @@ const initSEO = () => {
   }
 };
 
+// PWA initialization
+const initPWA = () => {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    // Add manifest link
+    const manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = '/manifest.json';
+    document.head.appendChild(manifestLink);
+    
+    // Add theme color
+    const themeColor = document.createElement('meta');
+    themeColor.name = 'theme-color';
+    themeColor.content = '#D4AF37';
+    document.head.appendChild(themeColor);
+    
+    // Add Apple touch icon
+    const appleIcon = document.createElement('link');
+    appleIcon.rel = 'apple-touch-icon';
+    appleIcon.href = '/icons/icon.svg';
+    document.head.appendChild(appleIcon);
+    
+    // Add Apple mobile web app meta tags
+    const appleMeta1 = document.createElement('meta');
+    appleMeta1.name = 'apple-mobile-web-app-capable';
+    appleMeta1.content = 'yes';
+    document.head.appendChild(appleMeta1);
+    
+    const appleMeta2 = document.createElement('meta');
+    appleMeta2.name = 'apple-mobile-web-app-status-bar-style';
+    appleMeta2.content = 'black-translucent';
+    document.head.appendChild(appleMeta2);
+    
+    const appleMeta3 = document.createElement('meta');
+    appleMeta3.name = 'apple-mobile-web-app-title';
+    appleMeta3.content = 'AÏLA';
+    document.head.appendChild(appleMeta3);
+    
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('AÏLA: Service Worker registered', registration.scope);
+          })
+          .catch((error) => {
+            console.log('AÏLA: Service Worker registration failed', error);
+          });
+      });
+    }
+    
+    console.log('PWA initialized');
+  }
+};
+
 // Google Analytics initialization
 const initGoogleAnalytics = () => {
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
