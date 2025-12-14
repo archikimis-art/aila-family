@@ -40,12 +40,13 @@ export default function PersonDetailScreen() {
   const personId = params.id as string;
   const isPreviewMode = params.preview === 'true';
   const previewToken = params.token as string;
+  const startInEditMode = params.edit === 'true';
 
   const [person, setPerson] = useState<Person | null>(null);
   const [allPersons, setAllPersons] = useState<Person[]>([]);
   const [links, setLinks] = useState<FamilyLink[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(startInEditMode);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
