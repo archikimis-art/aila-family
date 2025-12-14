@@ -795,6 +795,44 @@ const styles = StyleSheet.create({
     height: 100,
     paddingTop: 14,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    color: '#B8C5D6',
+    fontSize: 16,
+  },
+  linkRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#1A2F4A',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#2A3F5A',
+  },
+  linkInfo: {
+    flex: 1,
+  },
+  linkRelation: {
+    fontSize: 12,
+    color: '#D4AF37',
+    marginBottom: 4,
+    textTransform: 'uppercase',
+  },
+  linkName: {
+    fontSize: 16,
+    color: '#FFFFFF',
+  },
+  deleteLinkButton: {
+    padding: 8,
+    marginLeft: 12,
+  },
   genderContainer: {
     flexDirection: 'row',
     gap: 12,
