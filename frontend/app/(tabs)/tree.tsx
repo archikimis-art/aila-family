@@ -202,10 +202,27 @@ export default function TreeScreen() {
     }
   };
 
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    loadData();
-  }, [isPreviewMode]);
+    try {
+      if (isPreviewMode) {
+        let token: string | null = await AsyncStorage.getItem('preview_token');
+        if (token) {
+          const sessionData = await previewAPI.getSession(token);
+          setPersons(sessionData.data.persons || []);
+          setLinks(sessionData.data.links || []);
+        }
+      } else if (user) {
+        const response = await treeAPI.getTree();
+        setPersons(response.data.persons || []);
+        setLinks(response.data.links || []);
+      }
+    } catch (error) {
+      console.error('Error refreshing tree:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [isPreviewMode, user]);
 
   const handleAddPerson = () => {
     if (isPreviewMode && persons.length >= 10) {
