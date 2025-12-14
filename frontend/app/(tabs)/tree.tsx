@@ -765,40 +765,48 @@ export default function TreeScreen() {
 
   const loadEvents = async () => {
     try {
+      console.log('Loading events...');
       const [birthdaysRes, todayRes] = await Promise.all([
         eventsAPI.getUpcomingBirthdays(),
         eventsAPI.getTodaysEvents()
       ]);
+      console.log('Birthdays response:', birthdaysRes.data);
+      console.log('Today events response:', todayRes.data);
+      
       setUpcomingBirthdays(birthdaysRes.data || []);
       setTodaysEvents(todayRes.data?.events || []);
       
       // Show animation for today's events (birthdays today)
       if (todayRes.data?.has_events && todayRes.data.events.length > 0) {
+        console.log('Showing today event animation');
         const firstEvent = todayRes.data.events[0];
         setCurrentEvent(firstEvent);
         setShowEventAnimation(true);
       } 
       // Show popup alert for upcoming birthdays (next 7 days, but not today)
       else if (birthdaysRes.data && birthdaysRes.data.length > 0) {
+        console.log('Checking upcoming birthdays:', birthdaysRes.data);
         const upcomingInWeek = birthdaysRes.data.filter((b: any) => b.days_until > 0 && b.days_until <= 7);
+        console.log('Upcoming in week:', upcomingInWeek);
         if (upcomingInWeek.length > 0) {
           const nextBirthday = upcomingInWeek[0];
           const message = upcomingInWeek.length === 1
             ? `🎂 Anniversaire de ${nextBirthday.person_name} dans ${nextBirthday.days_until} jour${nextBirthday.days_until > 1 ? 's' : ''} !`
             : `🎂 ${upcomingInWeek.length} anniversaires cette semaine ! Prochain: ${nextBirthday.person_name} dans ${nextBirthday.days_until} jour${nextBirthday.days_until > 1 ? 's' : ''}`;
           
+          console.log('Showing birthday popup:', message);
           if (Platform.OS === 'web') {
             // Use a timeout to not block the UI
             setTimeout(() => {
               window.alert(message);
-            }, 1000);
+            }, 1500);
           } else {
             Alert.alert('🎂 Anniversaire à venir', message);
           }
         }
       }
     } catch (error) {
-      console.log('Events not loaded (may be preview mode)');
+      console.log('Events not loaded:', error);
     }
   };
 
