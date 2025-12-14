@@ -244,18 +244,49 @@ export default function TreeScreen() {
     });
   };
 
+  // Track last tap for double-tap detection
+  const lastTapRef = useRef<{ personId: string; time: number } | null>(null);
+  const DOUBLE_TAP_DELAY = 300; // ms
+
   const handlePersonPress = (person: Person) => {
-    setSelectedPerson(person);
-    // Rediriger vers le formulaire complet avec mode édition
-    router.push({
-      pathname: '/add-person',
-      params: { 
-        editId: person.id, 
-        preview: isPreviewMode ? 'true' : 'false', 
-        token: previewToken || '',
-        sharedOwnerId: sharedTreeOwner?.id || '',
-      },
-    });
+    const now = Date.now();
+    const lastTap = lastTapRef.current;
+
+    // Check if this is a double tap on the same person
+    if (lastTap && lastTap.personId === person.id && (now - lastTap.time) < DOUBLE_TAP_DELAY) {
+      // Double tap - open edit mode
+      lastTapRef.current = null;
+      setSelectedPerson(person);
+      router.push({
+        pathname: '/add-person',
+        params: { 
+          editId: person.id, 
+          preview: isPreviewMode ? 'true' : 'false', 
+          token: previewToken || '',
+          sharedOwnerId: sharedTreeOwner?.id || '',
+        },
+      });
+    } else {
+      // Single tap - just view info (go to person detail page)
+      lastTapRef.current = { personId: person.id, time: now };
+      
+      // Small delay to distinguish from double tap
+      setTimeout(() => {
+        if (lastTapRef.current && lastTapRef.current.personId === person.id && (Date.now() - lastTapRef.current.time) >= DOUBLE_TAP_DELAY) {
+          setSelectedPerson(person);
+          router.push({
+            pathname: '/person/[id]',
+            params: { 
+              id: person.id, 
+              preview: isPreviewMode ? 'true' : 'false', 
+              token: previewToken || '',
+              sharedOwnerId: sharedTreeOwner?.id || '',
+            },
+          });
+          lastTapRef.current = null;
+        }
+      }, DOUBLE_TAP_DELAY);
+    }
   };
 
   const handleConvertToAccount = async () => {
