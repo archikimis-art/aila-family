@@ -1874,7 +1874,7 @@ async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user))
 @api_router.get("/events/today")
 async def get_todays_events(current_user: dict = Depends(get_current_user)):
     """Get today's birthdays and events for animation display"""
-    user_id = current_user["user_id"]
+    user_id = str(current_user['_id'])
     today = datetime.now()
     today_str = today.strftime("%m-%d")
     
