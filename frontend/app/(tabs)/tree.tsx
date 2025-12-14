@@ -253,6 +253,7 @@ export default function TreeScreen() {
         preview: isPreviewMode ? 'true' : 'false', 
         token: previewToken || '',
         sharedOwnerId: sharedTreeOwner?.id || '',
+        edit: 'true', // Ouvrir directement en mode édition
       },
     });
   };
