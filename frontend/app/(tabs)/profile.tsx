@@ -257,6 +257,81 @@ export default function ProfileScreen() {
     }
   };
 
+  // Import GEDCOM file
+  const handleImportGedcom = async () => {
+    if (Platform.OS === 'web') {
+      // Create file input
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.ged,.gedcom';
+      
+      input.onchange = async (e: any) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const content = event.target?.result as string;
+          
+          try {
+            const response = await api.post('/tree/import/gedcom', {
+              gedcom_content: content
+            });
+            
+            window.alert(response.data.message);
+          } catch (error: any) {
+            console.error('Import error:', error);
+            window.alert(error.response?.data?.detail || 'Erreur lors de l\'import');
+          }
+        };
+        reader.readAsText(file);
+      };
+      
+      input.click();
+    } else {
+      Alert.alert('Information', 'L\'import GEDCOM est disponible sur la version web.');
+    }
+  };
+
+  // Send tree by email
+  const handleSendByEmail = async () => {
+    if (Platform.OS === 'web') {
+      const emails = window.prompt(
+        'Entrez les adresses email des destinataires (séparées par des virgules) :',
+        ''
+      );
+      
+      if (!emails) return;
+      
+      const message = window.prompt(
+        'Ajoutez un message personnalisé (optionnel) :',
+        ''
+      );
+      
+      try {
+        const emailList = emails.split(',').map(e => e.trim()).filter(e => e);
+        
+        if (emailList.length === 0) {
+          window.alert('Veuillez entrer au moins une adresse email.');
+          return;
+        }
+        
+        const response = await api.post('/tree/send-email', {
+          recipient_emails: emailList,
+          format: 'json',
+          message: message || null
+        });
+        
+        window.alert(response.data.message);
+      } catch (error: any) {
+        console.error('Send email error:', error);
+        window.alert(error.response?.data?.detail || 'Erreur lors de l\'envoi');
+      }
+    } else {
+      Alert.alert('Information', 'Cette fonctionnalité est disponible sur la version web.');
+    }
+  };
+
   const handleGoToWelcome = () => {
     router.replace('/');
   };
