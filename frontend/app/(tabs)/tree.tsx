@@ -755,11 +755,30 @@ export default function TreeScreen() {
       setUpcomingBirthdays(birthdaysRes.data || []);
       setTodaysEvents(todayRes.data?.events || []);
       
-      // Show animation for today's events
+      // Show animation for today's events (birthdays today)
       if (todayRes.data?.has_events && todayRes.data.events.length > 0) {
         const firstEvent = todayRes.data.events[0];
         setCurrentEvent(firstEvent);
         setShowEventAnimation(true);
+      } 
+      // Show popup alert for upcoming birthdays (next 7 days, but not today)
+      else if (birthdaysRes.data && birthdaysRes.data.length > 0) {
+        const upcomingInWeek = birthdaysRes.data.filter((b: any) => b.days_until > 0 && b.days_until <= 7);
+        if (upcomingInWeek.length > 0) {
+          const nextBirthday = upcomingInWeek[0];
+          const message = upcomingInWeek.length === 1
+            ? `🎂 Anniversaire de ${nextBirthday.person_name} dans ${nextBirthday.days_until} jour${nextBirthday.days_until > 1 ? 's' : ''} !`
+            : `🎂 ${upcomingInWeek.length} anniversaires cette semaine ! Prochain: ${nextBirthday.person_name} dans ${nextBirthday.days_until} jour${nextBirthday.days_until > 1 ? 's' : ''}`;
+          
+          if (Platform.OS === 'web') {
+            // Use a timeout to not block the UI
+            setTimeout(() => {
+              window.alert(message);
+            }, 1000);
+          } else {
+            Alert.alert('🎂 Anniversaire à venir', message);
+          }
+        }
       }
     } catch (error) {
       console.log('Events not loaded (may be preview mode)');
