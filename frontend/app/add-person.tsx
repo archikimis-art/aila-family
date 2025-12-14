@@ -95,6 +95,8 @@ export default function AddPersonScreen() {
   const isPreviewMode = params.preview === 'true';
   const previewToken = params.token as string;
   const sharedOwnerId = params.sharedOwnerId as string | undefined;
+  const editPersonId = params.editId as string | undefined; // Mode édition
+  const isEditMode = !!editPersonId;
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -106,7 +108,116 @@ export default function AddPersonScreen() {
   const [geographicBranch, setGeographicBranch] = useState('');
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(isEditMode);
   const [showWilayaList, setShowWilayaList] = useState(false);
+  
+  // Pour le mode édition - liens familiaux
+  const [familyLinks, setFamilyLinks] = useState<any[]>([]);
+  const [allPersons, setAllPersons] = useState<any[]>([]);
+  
+  // Charger les données en mode édition
+  useEffect(() => {
+    if (isEditMode && editPersonId) {
+      loadPersonData();
+    }
+  }, [editPersonId]);
+
+  const loadPersonData = async () => {
+    setInitialLoading(true);
+    try {
+      if (isPreviewMode && previewToken) {
+        const response = await previewAPI.getSession(previewToken);
+        const persons = response.data.persons || [];
+        const foundPerson = persons.find((p: any) => p.id === editPersonId);
+        if (foundPerson) {
+          setFirstName(foundPerson.first_name || '');
+          setLastName(foundPerson.last_name || '');
+          setGender(foundPerson.gender || 'unknown');
+          setBirthDate(foundPerson.birth_date || '');
+          setBirthPlace(foundPerson.birth_place || '');
+          setDeathDate(foundPerson.death_date || '');
+          setDeathPlace(foundPerson.death_place || '');
+          setGeographicBranch(foundPerson.geographic_branch || '');
+          setNotes(foundPerson.notes || '');
+        }
+        setAllPersons(persons);
+        setFamilyLinks(response.data.links || []);
+      } else {
+        const [personRes, allPersonsRes, linksRes] = await Promise.all([
+          personsAPI.getOne(editPersonId),
+          personsAPI.getAll(),
+          (await import('@/services/api')).linksAPI.getAll(),
+        ]);
+        const person = personRes.data;
+        setFirstName(person.first_name || '');
+        setLastName(person.last_name || '');
+        setGender(person.gender || 'unknown');
+        setBirthDate(person.birth_date || '');
+        setBirthPlace(person.birth_place || '');
+        setDeathDate(person.death_date || '');
+        setDeathPlace(person.death_place || '');
+        setGeographicBranch(person.geographic_branch || '');
+        setNotes(person.notes || '');
+        setAllPersons(allPersonsRes.data || []);
+        setFamilyLinks(linksRes.data || []);
+      }
+    } catch (error) {
+      console.error('Error loading person:', error);
+      if (typeof window !== 'undefined') {
+        window.alert('Erreur lors du chargement des données.');
+      }
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+
+  // Obtenir les liens de cette personne
+  const getPersonLinks = () => {
+    if (!editPersonId) return [];
+    return familyLinks.filter(
+      (link: any) => link.person_id_1 === editPersonId || link.person_id_2 === editPersonId
+    );
+  };
+
+  // Obtenir le nom d'une personne par ID
+  const getPersonName = (id: string) => {
+    const person = allPersons.find((p: any) => p.id === id);
+    return person ? `${person.first_name} ${person.last_name}` : 'Inconnu';
+  };
+
+  // Déterminer la relation
+  const getRelationship = (link: any) => {
+    if (link.link_type === 'spouse') return 'Conjoint(e)';
+    if (link.link_type === 'parent') {
+      if (link.person_id_1 === editPersonId) return 'Parent de';
+      return 'Enfant de';
+    }
+    return link.link_type;
+  };
+
+  // Supprimer un lien
+  const handleDeleteLink = async (linkId: string) => {
+    if (typeof window !== 'undefined' && !window.confirm('Supprimer ce lien familial ?')) {
+      return;
+    }
+    try {
+      if (isPreviewMode && previewToken) {
+        await previewAPI.deleteLink(previewToken, linkId);
+      } else {
+        const { linksAPI } = await import('@/services/api');
+        await linksAPI.delete(linkId);
+      }
+      setFamilyLinks(familyLinks.filter((l: any) => l.id !== linkId));
+      if (typeof window !== 'undefined') {
+        window.alert('Lien supprimé.');
+      }
+    } catch (error) {
+      console.error('Error deleting link:', error);
+      if (typeof window !== 'undefined') {
+        window.alert('Erreur lors de la suppression du lien.');
+      }
+    }
+  };
   
   // États pour la sélection géographique
   const [showLocationPicker, setShowLocationPicker] = useState(false);
