@@ -1117,6 +1117,28 @@ export default function TreeScreen() {
               </Animated.View>
             </GestureDetector>
 
+            {/* Clickable overlay for person nodes - positioned above SVG */}
+            <Animated.View 
+              style={[styles.nodesOverlay, animatedTreeStyle]}
+              pointerEvents="box-none"
+            >
+              {nodes.map((node) => (
+                <TouchableOpacity
+                  key={`touch-${node.person.id}`}
+                  style={{
+                    position: 'absolute',
+                    left: node.x,
+                    top: node.y,
+                    width: NODE_WIDTH,
+                    height: NODE_HEIGHT,
+                    borderRadius: 12,
+                  }}
+                  onPress={() => handlePersonPress(node.person)}
+                  activeOpacity={0.7}
+                />
+              ))}
+            </Animated.View>
+
             {/* Zoom Controls - Compact for mobile */}
             <View style={styles.zoomControls}>
               <TouchableOpacity style={styles.zoomButton} onPress={zoomIn}>
