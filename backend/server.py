@@ -2102,6 +2102,258 @@ async def root_health_check():
         # Return 200 to allow Kubernetes to consider the service healthy during startup
         return health_status
 
+# ===================== STRIPE PAYMENT ROUTES =====================
+
+class CreateCheckoutRequest(BaseModel):
+    plan: str  # 'monthly', 'yearly', or 'lifetime'
+    success_url: Optional[str] = None
+    cancel_url: Optional[str] = None
+
+class SubscriptionResponse(BaseModel):
+    subscription_status: str
+    plan: Optional[str] = None
+    current_period_end: Optional[str] = None
+    is_premium: bool
+
+# Stripe Products and Prices
+STRIPE_PRODUCTS = {
+    'monthly': {'name': 'AÏLA Premium Mensuel', 'price': 499, 'interval': 'month'},
+    'yearly': {'name': 'AÏLA Premium Annuel', 'price': 3999, 'interval': 'year'},
+    'lifetime': {'name': 'AÏLA Premium à Vie', 'price': 9900, 'interval': None},
+}
+
+async def get_or_create_stripe_price(plan: str) -> str:
+    """Get or create a Stripe price for the given plan"""
+    if plan not in STRIPE_PRODUCTS:
+        raise HTTPException(status_code=400, detail="Invalid plan")
+    
+    product_config = STRIPE_PRODUCTS[plan]
+    
+    # Search for existing product
+    try:
+        products = stripe.Product.list(limit=100)
+        existing_product = None
+        for p in products.data:
+            if p.metadata.get('aila_plan') == plan:
+                existing_product = p
+                break
+        
+        if existing_product:
+            # Get the price for this product
+            prices = stripe.Price.list(product=existing_product.id, active=True, limit=1)
+            if prices.data:
+                return prices.data[0].id
+        
+        # Create new product
+        product = stripe.Product.create(
+            name=product_config['name'],
+            metadata={'aila_plan': plan}
+        )
+        
+        # Create price
+        price_data = {
+            'product': product.id,
+            'unit_amount': product_config['price'],
+            'currency': 'eur',
+        }
+        
+        if product_config['interval']:
+            price_data['recurring'] = {'interval': product_config['interval']}
+        
+        price = stripe.Price.create(**price_data)
+        return price.id
+        
+    except stripe.error.StripeError as e:
+        logger.error(f"Stripe error: {e}")
+        raise HTTPException(status_code=500, detail=f"Stripe error: {str(e)}")
+
+@api_router.get("/stripe/config")
+async def get_stripe_config():
+    """Get Stripe publishable key"""
+    return {
+        "publishable_key": STRIPE_PUBLISHABLE_KEY,
+        "plans": {
+            "monthly": {"price": "4,99 €", "description": "Par mois"},
+            "yearly": {"price": "39,99 €", "description": "Par an (2 mois gratuits)"},
+            "lifetime": {"price": "99 €", "description": "Paiement unique"},
+        }
+    }
+
+@api_router.post("/stripe/create-checkout-session")
+async def create_checkout_session(
+    request: CreateCheckoutRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """Create a Stripe Checkout session"""
+    try:
+        price_id = await get_or_create_stripe_price(request.plan)
+        user_id = str(current_user['_id'])
+        user_email = current_user['email']
+        
+        # Check if user already has a Stripe customer ID
+        stripe_customer_id = current_user.get('stripe_customer_id')
+        
+        if not stripe_customer_id:
+            # Create a new customer
+            customer = stripe.Customer.create(
+                email=user_email,
+                metadata={'user_id': user_id}
+            )
+            stripe_customer_id = customer.id
+            
+            # Save customer ID to database
+            await db.users.update_one(
+                {"_id": current_user['_id']},
+                {"$set": {"stripe_customer_id": stripe_customer_id}}
+            )
+        
+        success_url = request.success_url or f"{FRONTEND_URL}/(tabs)/profile?payment=success"
+        cancel_url = request.cancel_url or f"{FRONTEND_URL}/pricing?payment=cancelled"
+        
+        # Create checkout session
+        session_params = {
+            'customer': stripe_customer_id,
+            'payment_method_types': ['card'],
+            'line_items': [{'price': price_id, 'quantity': 1}],
+            'mode': 'subscription' if request.plan != 'lifetime' else 'payment',
+            'success_url': success_url,
+            'cancel_url': cancel_url,
+            'metadata': {
+                'user_id': user_id,
+                'plan': request.plan
+            }
+        }
+        
+        session = stripe.checkout.Session.create(**session_params)
+        
+        return {"checkout_url": session.url, "session_id": session.id}
+        
+    except stripe.error.StripeError as e:
+        logger.error(f"Stripe checkout error: {e}")
+        raise HTTPException(status_code=500, detail=f"Stripe error: {str(e)}")
+
+@api_router.get("/stripe/subscription-status", response_model=SubscriptionResponse)
+async def get_subscription_status(current_user: dict = Depends(get_current_user)):
+    """Get user's subscription status"""
+    subscription_status = current_user.get('subscription_status', 'free')
+    plan = current_user.get('subscription_plan')
+    period_end = current_user.get('subscription_period_end')
+    
+    is_premium = subscription_status in ['active', 'lifetime']
+    
+    return SubscriptionResponse(
+        subscription_status=subscription_status,
+        plan=plan,
+        current_period_end=period_end.isoformat() if period_end else None,
+        is_premium=is_premium
+    )
+
+@api_router.post("/stripe/webhook")
+async def stripe_webhook(request: Request):
+    """Handle Stripe webhooks"""
+    payload = await request.body()
+    sig_header = request.headers.get('stripe-signature')
+    
+    try:
+        if STRIPE_WEBHOOK_SECRET:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, STRIPE_WEBHOOK_SECRET
+            )
+        else:
+            # For testing without webhook secret
+            import json
+            event = json.loads(payload)
+            
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail="Invalid payload")
+    except stripe.error.SignatureVerificationError as e:
+        raise HTTPException(status_code=400, detail="Invalid signature")
+    
+    # Handle the event
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        user_id = session.get('metadata', {}).get('user_id')
+        plan = session.get('metadata', {}).get('plan')
+        
+        if user_id:
+            update_data = {
+                'subscription_status': 'lifetime' if plan == 'lifetime' else 'active',
+                'subscription_plan': plan,
+                'stripe_session_id': session['id']
+            }
+            
+            if plan != 'lifetime' and session.get('subscription'):
+                # Get subscription details
+                subscription = stripe.Subscription.retrieve(session['subscription'])
+                update_data['stripe_subscription_id'] = subscription.id
+                update_data['subscription_period_end'] = datetime.fromtimestamp(
+                    subscription.current_period_end
+                )
+            
+            await db.users.update_one(
+                {"_id": ObjectId(user_id)},
+                {"$set": update_data}
+            )
+            logger.info(f"Updated subscription for user {user_id}: {plan}")
+    
+    elif event['type'] == 'customer.subscription.updated':
+        subscription = event['data']['object']
+        customer_id = subscription['customer']
+        
+        # Find user by stripe customer id
+        user = await db.users.find_one({"stripe_customer_id": customer_id})
+        if user:
+            await db.users.update_one(
+                {"_id": user['_id']},
+                {"$set": {
+                    "subscription_status": subscription['status'],
+                    "subscription_period_end": datetime.fromtimestamp(
+                        subscription['current_period_end']
+                    )
+                }}
+            )
+    
+    elif event['type'] == 'customer.subscription.deleted':
+        subscription = event['data']['object']
+        customer_id = subscription['customer']
+        
+        user = await db.users.find_one({"stripe_customer_id": customer_id})
+        if user:
+            await db.users.update_one(
+                {"_id": user['_id']},
+                {"$set": {
+                    "subscription_status": "cancelled",
+                    "subscription_plan": None
+                }}
+            )
+    
+    return {"status": "success"}
+
+@api_router.post("/stripe/cancel-subscription")
+async def cancel_subscription(current_user: dict = Depends(get_current_user)):
+    """Cancel user's subscription"""
+    subscription_id = current_user.get('stripe_subscription_id')
+    
+    if not subscription_id:
+        raise HTTPException(status_code=400, detail="No active subscription")
+    
+    try:
+        # Cancel at period end (user keeps access until end of billing period)
+        stripe.Subscription.modify(
+            subscription_id,
+            cancel_at_period_end=True
+        )
+        
+        await db.users.update_one(
+            {"_id": current_user['_id']},
+            {"$set": {"subscription_status": "cancelling"}}
+        )
+        
+        return {"message": "Subscription will be cancelled at the end of the billing period"}
+        
+    except stripe.error.StripeError as e:
+        raise HTTPException(status_code=500, detail=f"Stripe error: {str(e)}")
+
 @app.get("/")
 async def root_info():
     """Root endpoint"""
