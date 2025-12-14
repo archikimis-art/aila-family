@@ -207,6 +207,7 @@ const initGoogleAnalytics = () => {
 export default function RootLayout() {
   useEffect(() => {
     initSEO();
+    initPWA();
     initGoogleAnalytics();
   }, []);
 
