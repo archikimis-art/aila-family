@@ -211,7 +211,11 @@ export default function ProfileScreen() {
   // Download tree as JSON file
   const handleDownloadJSON = async () => {
     if (!user) {
-      Alert.alert('Information', 'Connectez-vous pour télécharger votre arbre.');
+      if (Platform.OS === 'web') {
+        window.alert('Connectez-vous pour télécharger votre arbre.');
+      } else {
+        Alert.alert('Information', 'Connectez-vous pour télécharger votre arbre.');
+      }
       return;
     }
 
@@ -221,7 +225,7 @@ export default function ProfileScreen() {
       
       if (Platform.OS === 'web') {
         // Create blob and download
-        const blob = new Blob([response.data], { type: 'application/json' });
+        const blob = new Blob([JSON.stringify(response.data, null, 2)], { type: 'application/json' });
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -240,12 +244,13 @@ export default function ProfileScreen() {
           [{ text: 'OK' }]
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Download error:', error);
+      const errorMsg = error?.response?.data?.detail || 'Erreur lors du téléchargement.';
       if (Platform.OS === 'web') {
-        window.alert('Erreur lors du téléchargement.');
+        window.alert(errorMsg);
       } else {
-        Alert.alert('Erreur', 'Impossible de télécharger le fichier.');
+        Alert.alert('Erreur', errorMsg);
       }
     } finally {
       setDownloadingJSON(false);
