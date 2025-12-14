@@ -563,6 +563,30 @@ export default function AddPersonScreen() {
               textAlignVertical="top"
             />
           </View>
+
+          {/* Liens familiaux - seulement en mode édition */}
+          {isEditMode && getPersonLinks().length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Liens familiaux</Text>
+              {getPersonLinks().map((link: any) => {
+                const otherId = link.person_id_1 === editPersonId ? link.person_id_2 : link.person_id_1;
+                return (
+                  <View key={link.id} style={styles.linkRow}>
+                    <View style={styles.linkInfo}>
+                      <Text style={styles.linkRelation}>{getRelationship(link)}</Text>
+                      <Text style={styles.linkName}>{getPersonName(otherId)}</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.deleteLinkButton}
+                      onPress={() => handleDeleteLink(link.id)}
+                    >
+                      <Ionicons name="trash-outline" size={20} color="#E53E3E" />
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
+            </View>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
 
