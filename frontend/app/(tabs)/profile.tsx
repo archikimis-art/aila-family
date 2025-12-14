@@ -340,7 +340,7 @@ export default function ProfileScreen() {
           </View>
           <TouchableOpacity 
             style={styles.menuItem} 
-            onPress={() => router.push('/pricing')}
+            onPress={() => router.push('/pricing' as any)}
           >
             <Ionicons name="diamond-outline" size={22} color="#D4AF37" />
             <Text style={styles.menuItemText}>Voir les offres Premium</Text>
