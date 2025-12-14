@@ -246,14 +246,14 @@ export default function TreeScreen() {
 
   const handlePersonPress = (person: Person) => {
     setSelectedPerson(person);
+    // Rediriger vers le formulaire complet avec mode édition
     router.push({
-      pathname: '/person/[id]',
+      pathname: '/add-person',
       params: { 
-        id: person.id, 
+        editId: person.id, 
         preview: isPreviewMode ? 'true' : 'false', 
         token: previewToken || '',
         sharedOwnerId: sharedTreeOwner?.id || '',
-        edit: 'true', // Ouvrir directement en mode édition
       },
     });
   };
