@@ -942,6 +942,73 @@ async def delete_preview_person(session_token: str, person_id: str):
     
     return await get_preview_session(session_token)
 
+@api_router.put("/preview/{session_token}/person/{person_id}", response_model=PreviewSessionResponse)
+async def update_preview_person(session_token: str, person_id: str, person: PersonCreate):
+    """Update a person in preview session"""
+    session = await db.preview_sessions.find_one({"session_token": session_token})
+    if not session:
+        raise HTTPException(status_code=404, detail="Preview session not found")
+    
+    if session['expires_at'] < datetime.utcnow():
+        await db.preview_sessions.delete_one({"session_token": session_token})
+        raise HTTPException(status_code=410, detail="Preview session expired")
+    
+    # Find and update person
+    persons = session.get('persons', [])
+    person_found = False
+    for i, p in enumerate(persons):
+        if p.get('id') == person_id:
+            persons[i] = {
+                "id": person_id,
+                "first_name": person.first_name,
+                "last_name": person.last_name,
+                "gender": person.gender,
+                "birth_date": person.birth_date,
+                "birth_place": person.birth_place,
+                "death_date": person.death_date,
+                "death_place": person.death_place,
+                "geographic_branch": person.geographic_branch,
+                "notes": person.notes,
+            }
+            person_found = True
+            break
+    
+    if not person_found:
+        raise HTTPException(status_code=404, detail="Person not found in preview session")
+    
+    await db.preview_sessions.update_one(
+        {"session_token": session_token},
+        {"$set": {"persons": persons}}
+    )
+    
+    return await get_preview_session(session_token)
+
+@api_router.delete("/preview/{session_token}/link/{link_id}", response_model=PreviewSessionResponse)
+async def delete_preview_link(session_token: str, link_id: str):
+    """Delete a link from preview session"""
+    session = await db.preview_sessions.find_one({"session_token": session_token})
+    if not session:
+        raise HTTPException(status_code=404, detail="Preview session not found")
+    
+    if session['expires_at'] < datetime.utcnow():
+        await db.preview_sessions.delete_one({"session_token": session_token})
+        raise HTTPException(status_code=410, detail="Preview session expired")
+    
+    # Remove link
+    links = session.get('links', [])
+    original_count = len(links)
+    links = [l for l in links if l.get('id') != link_id]
+    
+    if len(links) == original_count:
+        raise HTTPException(status_code=404, detail="Link not found in preview session")
+    
+    await db.preview_sessions.update_one(
+        {"session_token": session_token},
+        {"$set": {"links": links}}
+    )
+    
+    return await get_preview_session(session_token)
+
 @api_router.post("/preview/{session_token}/convert")
 async def convert_preview_to_permanent(session_token: str, current_user: dict = Depends(get_current_user)):
     session = await db.preview_sessions.find_one({"session_token": session_token})
