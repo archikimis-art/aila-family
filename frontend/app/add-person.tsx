@@ -309,23 +309,37 @@ export default function AddPersonScreen() {
         notes: notes || null,
       };
 
-      console.log('Saving person:', personData);
-      console.log('Preview mode:', isPreviewMode, 'Token:', previewToken, 'Shared owner:', sharedOwnerId);
+      console.log('Saving person:', personData, 'Edit mode:', isEditMode);
 
-      if (isPreviewMode && previewToken) {
-        // Mode aperçu
+      if (isEditMode && editPersonId) {
+        // Mode édition - mettre à jour la personne existante
+        if (isPreviewMode && previewToken) {
+          await previewAPI.updatePerson(previewToken, editPersonId, personData);
+        } else {
+          await personsAPI.update(editPersonId, personData);
+        }
+        if (typeof window !== 'undefined') {
+          window.alert(`${firstName} ${lastName} a été mis(e) à jour.`);
+        }
+      } else if (isPreviewMode && previewToken) {
+        // Mode aperçu - ajouter
         await previewAPI.addPerson(previewToken, personData);
+        if (typeof window !== 'undefined') {
+          window.alert(`${firstName} ${lastName} a été ajouté(e) à l'arbre.`);
+        }
       } else if (sharedOwnerId) {
         // Arbre partagé - utiliser l'endpoint spécifique pour les éditeurs
         const { collaboratorsAPI } = await import('@/services/api');
         await collaboratorsAPI.createPersonInSharedTree(sharedOwnerId, personData);
+        if (typeof window !== 'undefined') {
+          window.alert(`${firstName} ${lastName} a été ajouté(e) à l'arbre.`);
+        }
       } else {
-        // Mon propre arbre
+        // Mon propre arbre - ajouter
         await personsAPI.create(personData);
-      }
-
-      if (typeof window !== 'undefined') {
-        window.alert(`${firstName} ${lastName} a été ajouté(e) à l'arbre.`);
+        if (typeof window !== 'undefined') {
+          window.alert(`${firstName} ${lastName} a été ajouté(e) à l'arbre.`);
+        }
       }
       
       // Navigate to tree with proper parameters
@@ -335,8 +349,8 @@ export default function AddPersonScreen() {
         router.replace('/(tabs)/tree');
       }
     } catch (error: any) {
-      console.error('Add person error:', error);
-      const message = error.response?.data?.detail || 'Erreur lors de l\'ajout.';
+      console.error('Save person error:', error);
+      const message = error.response?.data?.detail || 'Erreur lors de la sauvegarde.';
       if (typeof window !== 'undefined') {
         window.alert('Erreur: ' + message);
       }
