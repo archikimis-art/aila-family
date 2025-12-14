@@ -87,7 +87,7 @@ export const gdprAPI = {
 };
 
 export const exportAPI = {
-  downloadJSON: () => api.get('/tree/export/json', { responseType: 'blob' }),
+  downloadJSON: () => api.get('/tree/export/json'),
   downloadGEDCOM: () => api.get('/tree/export/gedcom', { responseType: 'blob' }),
 };
 
