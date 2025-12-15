@@ -18,44 +18,48 @@ const PLANS = [
   {
     id: 'monthly',
     name: 'Mensuel',
-    price: '4,99 €',
+    price: '2,99 €',
     period: '/mois',
-    description: 'Idéal pour découvrir',
+    description: 'Sans publicités',
     features: [
+      'Aucune publicité',
       'Arbre illimité',
       'Collaborateurs illimités',
       'Export JSON & GEDCOM',
       'Événements familiaux',
-      'Animations festives',
     ],
     popular: false,
+    priceValue: 2.99,
   },
   {
     id: 'yearly',
     name: 'Annuel',
-    price: '39,99 €',
+    price: '24,99 €',
     period: '/an',
-    description: '2 mois gratuits !',
+    description: 'Économisez 30% !',
     features: [
+      'Aucune publicité',
       'Tout le plan mensuel',
-      'Économisez 20%',
+      'Économisez 30%',
       'Support prioritaire',
     ],
     popular: true,
+    priceValue: 24.99,
   },
   {
     id: 'lifetime',
     name: 'À vie',
-    price: '99 €',
+    price: '49,99 €',
     period: 'paiement unique',
     description: 'Accès permanent',
     features: [
-      'Tout le plan annuel',
-      'Accès à vie',
+      'Aucune publicité à vie',
+      'Toutes les fonctionnalités',
       'Mises à jour gratuites',
       'Pas d\'abonnement',
     ],
     popular: false,
+    priceValue: 49.99,
   },
 ];
 
@@ -128,15 +132,44 @@ export default function PricingScreen() {
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         {/* Title */}
         <View style={styles.titleSection}>
-          <Text style={styles.title}>Passez à Premium</Text>
+          <View style={styles.crownIcon}>
+            <Ionicons name="diamond" size={40} color="#D4AF37" />
+          </View>
+          <Text style={styles.title}>Supprimez les publicités</Text>
           <Text style={styles.subtitle}>
-            Débloquez toutes les fonctionnalités pour enrichir votre arbre généalogique
+            Profitez d'AÏLA sans interruption publicitaire
           </Text>
+        </View>
+
+        {/* Free Plan Info */}
+        <View style={styles.freeCard}>
+          <View style={styles.freeHeader}>
+            <Ionicons name="gift-outline" size={24} color="#4A90D9" />
+            <Text style={styles.freeTitle}>Version Gratuite</Text>
+          </View>
+          <View style={styles.freeFeatures}>
+            <View style={styles.featureRow}>
+              <Ionicons name="checkmark-circle" size={18} color="#48BB78" />
+              <Text style={styles.featureText}>Toutes les fonctionnalités</Text>
+            </View>
+            <View style={styles.featureRow}>
+              <Ionicons name="checkmark-circle" size={18} color="#48BB78" />
+              <Text style={styles.featureText}>Arbre illimité</Text>
+            </View>
+            <View style={styles.featureRow}>
+              <Ionicons name="checkmark-circle" size={18} color="#48BB78" />
+              <Text style={styles.featureText}>Collaborateurs illimités</Text>
+            </View>
+            <View style={styles.featureRow}>
+              <Ionicons name="information-circle" size={18} color="#D4AF37" />
+              <Text style={styles.featureText}>Avec publicités</Text>
+            </View>
+          </View>
         </View>
 
         {/* Current Status */}
         {user && (
-          <View style={styles.statusCard}>
+          <View style={[styles.statusCard, isPremium && styles.premiumStatusCard]}>
             <Ionicons 
               name={isPremium ? "checkmark-circle" : "information-circle"} 
               size={24} 
@@ -144,13 +177,15 @@ export default function PricingScreen() {
             />
             <Text style={styles.statusText}>
               {isPremium 
-                ? `Vous êtes Premium (${subscriptionStatus?.plan || 'actif'})` 
-                : 'Version gratuite - 10 personnes max'}
+                ? `Vous êtes Premium - Sans publicités` 
+                : 'Version gratuite avec publicités'}
             </Text>
           </View>
         )}
 
-        {/* Plans */}
+        {/* Premium Plans */}
+        <Text style={styles.sectionTitle}>Passez sans publicités</Text>
+        
         <View style={styles.plansContainer}>
           {PLANS.map((plan) => (
             <View 
@@ -162,7 +197,7 @@ export default function PricingScreen() {
             >
               {plan.popular && (
                 <View style={styles.popularBadge}>
-                  <Text style={styles.popularBadgeText}>POPULAIRE</Text>
+                  <Text style={styles.popularBadgeText}>MEILLEURE OFFRE</Text>
                 </View>
               )}
               
@@ -206,22 +241,32 @@ export default function PricingScreen() {
           ))}
         </View>
 
-        {/* Free Plan Info */}
-        <View style={styles.freeInfo}>
-          <Text style={styles.freeTitle}>🆓 Version Gratuite</Text>
-          <Text style={styles.freeText}>
-            • Jusqu'à 10 personnes dans l'arbre{'\n'}
-            • 1 collaborateur maximum{'\n'}
-            • Fonctionnalités de base
-          </Text>
-        </View>
-
-        {/* Guarantee */}
-        <View style={styles.guarantee}>
-          <Ionicons name="shield-checkmark" size={24} color="#D4AF37" />
-          <Text style={styles.guaranteeText}>
-            Paiement sécurisé par Stripe. Annulez à tout moment.
-          </Text>
+        {/* FAQ */}
+        <View style={styles.faqSection}>
+          <Text style={styles.faqTitle}>Questions fréquentes</Text>
+          
+          <View style={styles.faqItem}>
+            <Text style={styles.faqQuestion}>La version gratuite a-t-elle des limitations ?</Text>
+            <Text style={styles.faqAnswer}>
+              Non ! Toutes les fonctionnalités sont disponibles gratuitement. 
+              Seule différence : les publicités sont affichées.
+            </Text>
+          </View>
+          
+          <View style={styles.faqItem}>
+            <Text style={styles.faqQuestion}>Puis-je annuler à tout moment ?</Text>
+            <Text style={styles.faqAnswer}>
+              Oui, vous pouvez annuler votre abonnement à tout moment. 
+              Vous garderez l'accès premium jusqu'à la fin de la période payée.
+            </Text>
+          </View>
+          
+          <View style={styles.faqItem}>
+            <Text style={styles.faqQuestion}>Le paiement "À vie" est-il vraiment définitif ?</Text>
+            <Text style={styles.faqAnswer}>
+              Oui ! Un seul paiement de 49,99€ et vous n'aurez plus jamais de publicités.
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -240,10 +285,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#1A2F4A',
+    borderBottomColor: '#1E3A5F',
   },
   backButton: {
-    padding: 8,
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerTitle: {
     fontSize: 18,
@@ -261,57 +309,94 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
+  crownIcon: {
+    marginBottom: 12,
+  },
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#D4AF37',
-    marginBottom: 8,
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#B8C5D6',
+    color: '#A0AEC0',
     textAlign: 'center',
-    maxWidth: 300,
+    marginTop: 8,
+  },
+  freeCard: {
+    backgroundColor: '#1E3A5F',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#4A90D9',
+  },
+  freeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  freeTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginLeft: 10,
+  },
+  freeFeatures: {
+    gap: 10,
   },
   statusCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A2F4A',
+    backgroundColor: '#1E3A5F',
     borderRadius: 12,
     padding: 16,
     marginBottom: 24,
     gap: 12,
   },
+  premiumStatusCard: {
+    backgroundColor: 'rgba(72, 187, 120, 0.2)',
+    borderWidth: 1,
+    borderColor: '#48BB78',
+  },
   statusText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#FFFFFF',
     flex: 1,
   },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#D4AF37',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
   plansContainer: {
     gap: 16,
-    marginBottom: 24,
   },
   planCard: {
-    backgroundColor: '#1A2F4A',
+    backgroundColor: '#1E3A5F',
     borderRadius: 16,
     padding: 20,
-    borderWidth: 2,
-    borderColor: '#2A3F5A',
+    borderWidth: 1,
+    borderColor: '#2D4A6F',
   },
   popularCard: {
     borderColor: '#D4AF37',
+    borderWidth: 2,
   },
   popularBadge: {
     position: 'absolute',
     top: -12,
-    alignSelf: 'center',
+    right: 20,
     backgroundColor: '#D4AF37',
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
   popularBadgeText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
     color: '#0A1628',
   },
@@ -320,7 +405,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 8,
-    marginTop: 8,
   },
   priceRow: {
     flexDirection: 'row',
@@ -333,39 +417,40 @@ const styles = StyleSheet.create({
     color: '#D4AF37',
   },
   planPeriod: {
-    fontSize: 14,
-    color: '#B8C5D6',
+    fontSize: 16,
+    color: '#A0AEC0',
     marginLeft: 4,
   },
   planDescription: {
     fontSize: 14,
-    color: '#48BB78',
+    color: '#A0AEC0',
     marginBottom: 16,
   },
   featuresContainer: {
-    marginBottom: 16,
-    gap: 8,
+    marginBottom: 20,
+    gap: 10,
   },
   featureRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
   },
   featureText: {
     fontSize: 14,
-    color: '#B8C5D6',
+    color: '#FFFFFF',
   },
   selectButton: {
-    backgroundColor: '#2A3F5A',
+    backgroundColor: '#4A90D9',
     borderRadius: 12,
-    paddingVertical: 14,
+    padding: 16,
     alignItems: 'center',
   },
   popularButton: {
     backgroundColor: '#D4AF37',
   },
   disabledButton: {
-    opacity: 0.5,
+    backgroundColor: '#2D4A6F',
+    opacity: 0.7,
   },
   selectButtonText: {
     fontSize: 16,
@@ -375,33 +460,27 @@ const styles = StyleSheet.create({
   popularButtonText: {
     color: '#0A1628',
   },
-  freeInfo: {
-    backgroundColor: '#1A2F4A',
-    borderRadius: 12,
-    padding: 16,
+  faqSection: {
+    marginTop: 32,
+  },
+  faqTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
     marginBottom: 16,
   },
-  freeTitle: {
-    fontSize: 16,
+  faqItem: {
+    marginBottom: 16,
+  },
+  faqQuestion: {
+    fontSize: 15,
     fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: 8,
+    color: '#D4AF37',
+    marginBottom: 6,
   },
-  freeText: {
+  faqAnswer: {
     fontSize: 14,
-    color: '#B8C5D6',
-    lineHeight: 22,
-  },
-  guarantee: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingTop: 16,
-  },
-  guaranteeText: {
-    fontSize: 12,
-    color: '#6B7C93',
-    textAlign: 'center',
+    color: '#A0AEC0',
+    lineHeight: 20,
   },
 });
