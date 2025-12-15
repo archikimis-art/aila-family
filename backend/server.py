@@ -2348,11 +2348,11 @@ class SubscriptionResponse(BaseModel):
     current_period_end: Optional[str] = None
     is_premium: bool
 
-# Stripe Products and Prices
+# Stripe Products and Prices - Model: Free with ads, Premium without ads
 STRIPE_PRODUCTS = {
-    'monthly': {'name': 'AÏLA Premium Mensuel', 'price': 499, 'interval': 'month'},
-    'yearly': {'name': 'AÏLA Premium Annuel', 'price': 3999, 'interval': 'year'},
-    'lifetime': {'name': 'AÏLA Premium à Vie', 'price': 9900, 'interval': None},
+    'monthly': {'name': 'AÏLA Sans Publicités - Mensuel', 'price': 299, 'interval': 'month'},
+    'yearly': {'name': 'AÏLA Sans Publicités - Annuel', 'price': 2499, 'interval': 'year'},
+    'lifetime': {'name': 'AÏLA Sans Publicités - À Vie', 'price': 4999, 'interval': None},
 }
 
 async def get_or_create_stripe_price(plan: str) -> str:
