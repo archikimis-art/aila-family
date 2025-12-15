@@ -1539,7 +1539,7 @@ async def invite_collaborator(invite: CollaboratorInvite, current_user: dict = D
     collaborator_doc = {
         "tree_owner_id": user_id,
         "user_id": str(invited_user['_id']) if invited_user else None,
-        "email": invite.email,
+        "email": invite_email,  # Store normalized email
         "role": invite.role,
         "status": "accepted" if invited_user else "pending",  # Auto-accept if user exists
         "invite_token": invite_token,
@@ -1551,10 +1551,10 @@ async def invite_collaborator(invite: CollaboratorInvite, current_user: dict = D
     collaborator_doc['_id'] = result.inserted_id
     collaborator_doc = serialize_object_id(collaborator_doc)
     
-    # Send invitation email
+    # Send invitation email (use original email for display)
     owner_name = f"{current_user['first_name']} {current_user['last_name']}"
     await send_invitation_email(
-        to_email=invite.email,
+        to_email=invite.email,  # Use original email for sending
         inviter_name=owner_name,
         role=invite.role,
         invite_token=invite_token
