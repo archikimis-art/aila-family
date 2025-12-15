@@ -18,7 +18,8 @@
         "backgroundColor": "#0A1628"
       },
       "edgeToEdgeEnabled": true,
-      "jsEngine": "jsc"
+      "jsEngine": "jsc",
+      "package": "com.aila.family"
     },
     "web": {
       "bundler": "metro",
@@ -34,6 +35,12 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#0A1628"
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-8309745338282834~6476050996"
         }
       ]
     ],
