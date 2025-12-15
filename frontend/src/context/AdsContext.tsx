@@ -3,16 +3,18 @@ import { Platform } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/services/api';
 
-// AdMob Test IDs (replace with real IDs in production)
-const TEST_BANNER_ID = Platform.select({
-  ios: 'ca-app-pub-3940256099942544/2934735716',
-  android: 'ca-app-pub-3940256099942544/6300978111',
-  default: 'ca-app-pub-3940256099942544/6300978111',
+// AdMob Production IDs for AÏLA
+const ADMOB_APP_ID = 'ca-app-pub-8309745338282834~6476050996';
+
+const BANNER_AD_UNIT_ID = Platform.select({
+  ios: 'ca-app-pub-3940256099942544/2934735716', // Test ID for iOS (replace with real iOS ID when available)
+  android: 'ca-app-pub-8309745338282834/9092823082', // Production Android Banner ID
+  default: 'ca-app-pub-8309745338282834/9092823082',
 });
 
-const TEST_INTERSTITIAL_ID = Platform.select({
-  ios: 'ca-app-pub-3940256099942544/4411468910',
-  android: 'ca-app-pub-3940256099942544/1033173712',
+const INTERSTITIAL_AD_UNIT_ID = Platform.select({
+  ios: 'ca-app-pub-3940256099942544/4411468910', // Test ID for iOS
+  android: 'ca-app-pub-3940256099942544/1033173712', // Test ID for Android (create interstitial ad unit in AdMob)
   default: 'ca-app-pub-3940256099942544/1033173712',
 });
 
