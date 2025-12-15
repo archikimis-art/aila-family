@@ -23,6 +23,7 @@ interface AdsContextType {
   showAds: boolean;
   bannerId: string;
   interstitialId: string;
+  appId: string;
   actionCount: number;
   incrementAction: () => void;
   shouldShowInterstitial: () => boolean;
