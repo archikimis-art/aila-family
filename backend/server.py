@@ -1639,22 +1639,19 @@ async def remove_collaborator(collaborator_id: str, current_user: dict = Depends
 @api_router.post("/collaborators/accept/{invite_token}")
 async def accept_invitation(invite_token: str, current_user: dict = Depends(get_current_user)):
     """Accept a collaboration invitation using the token"""
-    user_email = current_user['email']
+    user_email = current_user['email'].lower().strip()  # Normalize email
     user_id = str(current_user['_id'])
     
     # Find the invitation by token
-    invitation = await db.collaborators.find_one({
-        "invite_token": invite_token,
-        "email": user_email
-    })
+    invitation = await db.collaborators.find_one({"invite_token": invite_token})
     
     if not invitation:
-        # Maybe the invitation is for a different email, check by token only
-        invitation = await db.collaborators.find_one({"invite_token": invite_token})
-        if not invitation:
-            raise HTTPException(status_code=404, detail="Invitation not found")
-        if invitation['email'] != user_email:
-            raise HTTPException(status_code=403, detail="This invitation was sent to a different email address")
+        raise HTTPException(status_code=404, detail="Invitation not found")
+    
+    # Compare emails case-insensitively
+    invitation_email = invitation['email'].lower().strip()
+    if invitation_email != user_email:
+        raise HTTPException(status_code=403, detail=f"Cette invitation a été envoyée à une autre adresse email ({invitation['email']})")
     
     if invitation['status'] == 'accepted':
         # Already accepted, return the tree owner info
