@@ -1514,20 +1514,24 @@ async def invite_collaborator(invite: CollaboratorInvite, current_user: dict = D
     """Invite someone to collaborate on your family tree"""
     user_id = str(current_user['_id'])
     
-    # Check if already invited
+    # Normalize email to lowercase for consistent comparison
+    invite_email = invite.email.lower().strip()
+    user_email = current_user['email'].lower().strip()
+    
+    # Check if already invited (case-insensitive)
     existing = await db.collaborators.find_one({
         "tree_owner_id": user_id,
-        "email": invite.email
+        "email": {"$regex": f"^{invite_email}$", "$options": "i"}
     })
     if existing:
-        raise HTTPException(status_code=400, detail="This person has already been invited")
+        raise HTTPException(status_code=400, detail="Cette personne a déjà été invitée")
     
     # Check if inviting yourself
-    if invite.email == current_user['email']:
-        raise HTTPException(status_code=400, detail="You cannot invite yourself")
+    if invite_email == user_email:
+        raise HTTPException(status_code=400, detail="Vous ne pouvez pas vous inviter vous-même")
     
-    # Check if the email is registered
-    invited_user = await db.users.find_one({"email": invite.email})
+    # Check if the email is registered (case-insensitive)
+    invited_user = await db.users.find_one({"email": {"$regex": f"^{invite_email}$", "$options": "i"}})
     
     # Create invitation token
     invite_token = str(uuid.uuid4())
