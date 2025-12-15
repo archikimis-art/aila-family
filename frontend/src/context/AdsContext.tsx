@@ -83,8 +83,9 @@ export function AdsProvider({ children }: { children: ReactNode }) {
       value={{
         isPremium,
         showAds,
-        bannerId: TEST_BANNER_ID,
-        interstitialId: TEST_INTERSTITIAL_ID,
+        bannerId: BANNER_AD_UNIT_ID,
+        interstitialId: INTERSTITIAL_AD_UNIT_ID,
+        appId: ADMOB_APP_ID,
         actionCount,
         incrementAction,
         shouldShowInterstitial,
