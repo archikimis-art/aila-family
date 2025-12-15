@@ -4,17 +4,21 @@ import { useAuth } from '@/context/AuthContext';
 import api from '@/services/api';
 
 // AdMob Production IDs for AÏLA
-const ADMOB_APP_ID = 'ca-app-pub-8309745338282834~6476050996';
+const ADMOB_APP_ID = Platform.select({
+  ios: 'ca-app-pub-8309745338282834~5153578079',
+  android: 'ca-app-pub-8309745338282834~6476050996',
+  default: 'ca-app-pub-8309745338282834~6476050996',
+});
 
 const BANNER_AD_UNIT_ID = Platform.select({
-  ios: 'ca-app-pub-3940256099942544/2934735716', // Test ID for iOS (replace with real iOS ID when available)
+  ios: 'ca-app-pub-8309745338282834/8765520025', // Production iOS Banner ID
   android: 'ca-app-pub-8309745338282834/9092823082', // Production Android Banner ID
   default: 'ca-app-pub-8309745338282834/9092823082',
 });
 
 const INTERSTITIAL_AD_UNIT_ID = Platform.select({
-  ios: 'ca-app-pub-3940256099942544/4411468910', // Test ID for iOS
-  android: 'ca-app-pub-3940256099942544/1033173712', // Test ID for Android (create interstitial ad unit in AdMob)
+  ios: 'ca-app-pub-3940256099942544/4411468910', // Test ID for iOS (create interstitial ad unit in AdMob if needed)
+  android: 'ca-app-pub-3940256099942544/1033173712', // Test ID for Android (create interstitial ad unit in AdMob if needed)
   default: 'ca-app-pub-3940256099942544/1033173712',
 });
 
