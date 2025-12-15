@@ -31,6 +31,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import EventAnimation from '@/components/EventAnimation';
+import AdBanner from '@/components/AdBanner';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
