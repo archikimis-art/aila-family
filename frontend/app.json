@@ -10,7 +10,8 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "jsEngine": "jsc"
+      "jsEngine": "jsc",
+      "bundleIdentifier": "com.aila.family"
     },
     "android": {
       "adaptiveIcon": {
@@ -40,7 +41,8 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-8309745338282834~6476050996"
+          "androidAppId": "ca-app-pub-8309745338282834~6476050996",
+          "iosAppId": "ca-app-pub-8309745338282834~5153578079"
         }
       ]
     ],
