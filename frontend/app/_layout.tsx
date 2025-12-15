@@ -205,11 +205,30 @@ const initGoogleAnalytics = () => {
   }
 };
 
+// Google AdSense initialization for web ads
+const initGoogleAdSense = () => {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    // Check if script already exists
+    const existingScript = document.querySelector('script[src*="pagead2.googlesyndication.com"]');
+    if (existingScript) return;
+    
+    // Add AdSense script
+    const adsenseScript = document.createElement('script');
+    adsenseScript.async = true;
+    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309745338282834';
+    adsenseScript.crossOrigin = 'anonymous';
+    document.head.appendChild(adsenseScript);
+    
+    console.log('Google AdSense initialized');
+  }
+};
+
 export default function RootLayout() {
   useEffect(() => {
     initSEO();
     initPWA();
     initGoogleAnalytics();
+    initGoogleAdSense();
   }, []);
 
   return (
