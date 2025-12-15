@@ -2406,9 +2406,9 @@ async def get_stripe_config():
     return {
         "publishable_key": STRIPE_PUBLISHABLE_KEY,
         "plans": {
-            "monthly": {"price": "4,99 €", "description": "Par mois"},
-            "yearly": {"price": "39,99 €", "description": "Par an (2 mois gratuits)"},
-            "lifetime": {"price": "99 €", "description": "Paiement unique"},
+            "monthly": {"price": "2,99 €", "description": "Par mois - Sans publicités"},
+            "yearly": {"price": "24,99 €", "description": "Par an (économisez 30%)"},
+            "lifetime": {"price": "49,99 €", "description": "Paiement unique - À vie"},
         }
     }
 
