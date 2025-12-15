@@ -18,6 +18,12 @@ const initSEO = () => {
     metaDesc.content = 'AÏLA est une application gratuite pour créer, visualiser et partager votre arbre généalogique familial. Collaborez avec votre famille, préservez vos souvenirs, découvrez vos ancêtres. Commencez gratuitement !';
     document.head.appendChild(metaDesc);
     
+    // Google AdSense Verification Meta Tag
+    const metaAdsense = document.createElement('meta');
+    metaAdsense.name = 'google-adsense-account';
+    metaAdsense.content = 'ca-pub-8309745338282834';
+    document.head.appendChild(metaAdsense);
+    
     // Keywords
     const metaKeywords = document.createElement('meta');
     metaKeywords.name = 'keywords';
