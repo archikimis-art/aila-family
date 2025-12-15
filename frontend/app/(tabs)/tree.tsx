@@ -1621,6 +1621,9 @@ export default function TreeScreen() {
           }}
         />
       )}
+      
+      {/* Ad Banner for free users */}
+      <AdBanner />
     </SafeAreaView>
   );
 }
