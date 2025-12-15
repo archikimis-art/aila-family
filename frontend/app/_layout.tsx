@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '@/context/AuthContext';
+import { AdsProvider } from '@/context/AdsContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 
