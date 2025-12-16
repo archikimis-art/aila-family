@@ -56,7 +56,7 @@ const EXTRAS = [
   {
     id: 'pdf_export',
     name: 'Export PDF',
-    price: '2,99 €',
+    price: '0,99 €',
     icon: 'document-text',
     description: 'Téléchargez votre arbre en PDF haute qualité',
     color: '#4A90D9',
@@ -64,7 +64,7 @@ const EXTRAS = [
   {
     id: 'theme_gold',
     name: 'Thème Or Royal',
-    price: '4,99 €',
+    price: '1,99 €',
     icon: 'color-palette',
     description: 'Thème élégant avec bordures dorées',
     color: '#D4AF37',
@@ -72,7 +72,7 @@ const EXTRAS = [
   {
     id: 'theme_nature',
     name: 'Thème Nature',
-    price: '4,99 €',
+    price: '1,99 €',
     icon: 'leaf',
     description: 'Design naturel avec tons verts',
     color: '#48BB78',
@@ -80,7 +80,7 @@ const EXTRAS = [
   {
     id: 'theme_vintage',
     name: 'Thème Vintage',
-    price: '4,99 €',
+    price: '1,99 €',
     icon: 'time',
     description: 'Style rétro sépia classique',
     color: '#8B7355',
