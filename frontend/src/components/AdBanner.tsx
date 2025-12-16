@@ -26,7 +26,7 @@ const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
         ins.style.width = '100%';
         ins.style.height = '90px';
         ins.setAttribute('data-ad-client', ADSENSE_CLIENT);
-        ins.setAttribute('data-ad-slot', 'auto'); // Auto ad slot
+        ins.setAttribute('data-ad-slot', 'auto');
         ins.setAttribute('data-ad-format', 'horizontal');
         ins.setAttribute('data-full-width-responsive', 'true');
         
@@ -54,14 +54,13 @@ const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
   return (
     <div style={webStyles.container}>
       <div ref={adRef} style={webStyles.adContainer}>
-        {/* AdSense ad will be inserted here */}
+        {/* Placeholder discret en attendant l'approbation AdSense */}
         <div style={webStyles.placeholder}>
-          <span style={webStyles.placeholderIcon}>📢</span>
-          <span style={webStyles.placeholderText}>Espace publicitaire</span>
+          <span style={webStyles.placeholderText}>Publicité</span>
         </div>
       </div>
       <button onClick={onRemoveAds} style={webStyles.removeButton}>
-        Supprimer les pubs
+        <span style={webStyles.removeIcon}>✕</span>
       </button>
     </div>
   );
@@ -69,43 +68,50 @@ const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
 
 const webStyles: { [key: string]: React.CSSProperties } = {
   container: {
-    backgroundColor: '#f5f5f5',
-    borderTop: '1px solid #ddd',
+    backgroundColor: '#1E3A5F',
+    borderTop: '1px solid #2D4A6F',
     padding: '8px 16px',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    minHeight: '60px',
+    minHeight: '50px',
   },
   adContainer: {
     flex: 1,
-    minHeight: '50px',
+    minHeight: '40px',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   placeholder: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: '8px',
-    color: '#666',
-  },
-  placeholderIcon: {
-    fontSize: '20px',
+    opacity: 0.5,
   },
   placeholderText: {
-    fontSize: '14px',
+    fontSize: '12px',
+    color: '#A0AEC0',
+    fontStyle: 'italic',
   },
   removeButton: {
-    backgroundColor: '#4A90D9',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '15px',
-    padding: '6px 12px',
-    fontSize: '12px',
-    fontWeight: '600',
+    backgroundColor: 'transparent',
+    border: '1px solid #4A90D9',
+    borderRadius: '50%',
+    width: '28px',
+    height: '28px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     cursor: 'pointer',
-    marginLeft: '16px',
+    marginLeft: '12px',
+    transition: 'all 0.2s',
+  },
+  removeIcon: {
+    fontSize: '14px',
+    color: '#4A90D9',
   },
 };
 
@@ -131,11 +137,10 @@ export default function AdBanner({ style }: AdBannerProps) {
   return (
     <View style={[styles.container, style]}>
       <View style={styles.adContent}>
-        <Ionicons name="megaphone-outline" size={20} color="#666" />
         <Text style={styles.adText}>Publicité</Text>
       </View>
       <TouchableOpacity style={styles.removeButton} onPress={handleRemoveAds}>
-        <Text style={styles.removeText}>✕</Text>
+        <Ionicons name="close" size={16} color="#4A90D9" />
       </TouchableOpacity>
     </View>
   );
@@ -143,10 +148,10 @@ export default function AdBanner({ style }: AdBannerProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#1E3A5F',
     borderTopWidth: 1,
-    borderTopColor: '#ddd',
-    paddingVertical: 10,
+    borderTopColor: '#2D4A6F',
+    paddingVertical: 8,
     paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
@@ -156,22 +161,23 @@ const styles = StyleSheet.create({
   adContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     flex: 1,
+    opacity: 0.5,
   },
   adText: {
-    marginLeft: 8,
-    color: '#666',
-    fontSize: 14,
+    color: '#A0AEC0',
+    fontSize: 12,
+    fontStyle: 'italic',
   },
   removeButton: {
-    backgroundColor: '#4A90D9',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
-  },
-  removeText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#4A90D9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 12,
   },
 });
