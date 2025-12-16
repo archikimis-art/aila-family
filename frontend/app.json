@@ -8,10 +8,32 @@
     "scheme": "aila",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "owner": "aila-family",
+    "extra": {
+      "eas": {
+        "projectId": "aila-family-app"
+      }
+    },
     "ios": {
       "supportsTablet": true,
       "jsEngine": "jsc",
-      "bundleIdentifier": "com.aila.family"
+      "bundleIdentifier": "com.aila.family",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": "Cette autorisation nous permet de vous proposer des publicités personnalisées.",
+        "SKAdNetworkItems": [
+          { "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork" },
+          { "SKAdNetworkIdentifier": "4fzdc2evr5.skadnetwork" },
+          { "SKAdNetworkIdentifier": "2fnua5tdw4.skadnetwork" },
+          { "SKAdNetworkIdentifier": "ydx93a7ass.skadnetwork" },
+          { "SKAdNetworkIdentifier": "5a6flpkh64.skadnetwork" },
+          { "SKAdNetworkIdentifier": "p78axxw29g.skadnetwork" },
+          { "SKAdNetworkIdentifier": "v72qych5uu.skadnetwork" },
+          { "SKAdNetworkIdentifier": "c6k4g5qg8m.skadnetwork" },
+          { "SKAdNetworkIdentifier": "s39g8k73mm.skadnetwork" },
+          { "SKAdNetworkIdentifier": "3qy4746246.skadnetwork" }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -20,7 +42,13 @@
       },
       "edgeToEdgeEnabled": true,
       "jsEngine": "jsc",
-      "package": "com.aila.family"
+      "package": "com.aila.family",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "com.google.android.gms.permission.AD_ID"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -42,7 +70,21 @@
         "react-native-google-mobile-ads",
         {
           "androidAppId": "ca-app-pub-8309745338282834~6476050996",
-          "iosAppId": "ca-app-pub-8309745338282834~5153578079"
+          "iosAppId": "ca-app-pub-8309745338282834~5153578079",
+          "userTrackingUsageDescription": "Cette autorisation nous permet de vous proposer des publicités personnalisées."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "buildToolsVersion": "34.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "13.4"
+          }
         }
       ]
     ],
