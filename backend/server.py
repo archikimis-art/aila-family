@@ -2433,6 +2433,10 @@ async def create_checkout_session(
         user_id = str(current_user['_id'])
         user_email = current_user['email']
         
+        # Get product configuration
+        product_config = STRIPE_PRODUCTS.get(request.plan, {})
+        is_subscription = product_config.get('type') == 'subscription'
+        
         # Check if user already has a Stripe customer ID
         stripe_customer_id = current_user.get('stripe_customer_id')
         
@@ -2458,12 +2462,13 @@ async def create_checkout_session(
             'customer': stripe_customer_id,
             'payment_method_types': ['card'],
             'line_items': [{'price': price_id, 'quantity': 1}],
-            'mode': 'subscription' if request.plan != 'lifetime' else 'payment',
+            'mode': 'subscription' if is_subscription else 'payment',
             'success_url': success_url,
             'cancel_url': cancel_url,
             'metadata': {
                 'user_id': user_id,
-                'plan': request.plan
+                'plan': request.plan,
+                'product_type': product_config.get('type', 'one_time')
             }
         }
         
