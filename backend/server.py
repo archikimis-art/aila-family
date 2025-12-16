@@ -2353,11 +2353,11 @@ STRIPE_PRODUCTS = {
     # Subscriptions
     'monthly': {'name': 'AÏLA Premium - Mensuel', 'price': 299, 'interval': 'month', 'type': 'subscription'},
     'yearly': {'name': 'AÏLA Premium - Annuel', 'price': 2499, 'interval': 'year', 'type': 'subscription'},
-    # Microtransactions (one-time purchases)
-    'pdf_export': {'name': 'Export PDF - AÏLA', 'price': 299, 'interval': None, 'type': 'one_time'},
-    'theme_gold': {'name': 'Thème Or Royal - AÏLA', 'price': 499, 'interval': None, 'type': 'one_time'},
-    'theme_nature': {'name': 'Thème Nature - AÏLA', 'price': 499, 'interval': None, 'type': 'one_time'},
-    'theme_vintage': {'name': 'Thème Vintage - AÏLA', 'price': 499, 'interval': None, 'type': 'one_time'},
+    # Microtransactions (one-time purchases) - Prix réduits
+    'pdf_export': {'name': 'Export PDF - AÏLA', 'price': 99, 'interval': None, 'type': 'one_time'},
+    'theme_gold': {'name': 'Thème Or Royal - AÏLA', 'price': 199, 'interval': None, 'type': 'one_time'},
+    'theme_nature': {'name': 'Thème Nature - AÏLA', 'price': 199, 'interval': None, 'type': 'one_time'},
+    'theme_vintage': {'name': 'Thème Vintage - AÏLA', 'price': 199, 'interval': None, 'type': 'one_time'},
 }
 
 async def get_or_create_stripe_price(plan: str) -> str:
