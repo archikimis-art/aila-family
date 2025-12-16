@@ -1728,12 +1728,10 @@ const styles = StyleSheet.create({
   },
   treeContainer: {
     flex: 1,
-    overflow: 'hidden',
+    backgroundColor: '#0A1628',
   },
   treeContent: {
-    flexGrow: 1,
-    minWidth: '100%',
-    minHeight: '100%',
+    flex: 1,
   },
   nodesOverlay: {
     position: 'absolute',
