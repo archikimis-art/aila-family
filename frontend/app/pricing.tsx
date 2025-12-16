@@ -14,13 +14,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/services/api';
 
+// Subscription Plans (without lifetime)
 const PLANS = [
   {
     id: 'monthly',
     name: 'Mensuel',
     price: '2,99 €',
     period: '/mois',
-    description: 'Sans publicités',
+    description: 'Flexibilité maximale',
     features: [
       'Aucune publicité',
       'Arbre illimité',
@@ -42,24 +43,47 @@ const PLANS = [
       'Tout le plan mensuel',
       'Économisez 30%',
       'Support prioritaire',
+      '2 exports PDF offerts',
     ],
     popular: true,
     priceValue: 24.99,
+    savings: '11,89 €',
+  },
+];
+
+// Microtransactions - One-time purchases
+const EXTRAS = [
+  {
+    id: 'pdf_export',
+    name: 'Export PDF',
+    price: '2,99 €',
+    icon: 'document-text',
+    description: 'Téléchargez votre arbre en PDF haute qualité',
+    color: '#4A90D9',
   },
   {
-    id: 'lifetime',
-    name: 'À vie',
-    price: '49,99 €',
-    period: 'paiement unique',
-    description: 'Accès permanent',
-    features: [
-      'Aucune publicité à vie',
-      'Toutes les fonctionnalités',
-      'Mises à jour gratuites',
-      'Pas d\'abonnement',
-    ],
-    popular: false,
-    priceValue: 49.99,
+    id: 'theme_gold',
+    name: 'Thème Or Royal',
+    price: '4,99 €',
+    icon: 'color-palette',
+    description: 'Thème élégant avec bordures dorées',
+    color: '#D4AF37',
+  },
+  {
+    id: 'theme_nature',
+    name: 'Thème Nature',
+    price: '4,99 €',
+    icon: 'leaf',
+    description: 'Design naturel avec tons verts',
+    color: '#48BB78',
+  },
+  {
+    id: 'theme_vintage',
+    name: 'Thème Vintage',
+    price: '4,99 €',
+    icon: 'time',
+    description: 'Style rétro sépia classique',
+    color: '#8B7355',
   },
 ];
 
@@ -68,6 +92,7 @@ export default function PricingScreen() {
   const { user } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'subscription' | 'extras'>('subscription');
 
   useEffect(() => {
     if (user) {
@@ -86,7 +111,6 @@ export default function PricingScreen() {
 
   const handleSelectPlan = async (planId: string) => {
     if (!user) {
-      // Redirect to login
       if (Platform.OS === 'web') {
         window.alert('Veuillez vous connecter pour souscrire à un abonnement.');
       }
@@ -103,13 +127,42 @@ export default function PricingScreen() {
       });
 
       if (response.data.checkout_url) {
-        // Redirect to Stripe Checkout
         window.location.href = response.data.checkout_url;
       }
     } catch (error: any) {
       console.error('Checkout error:', error);
       if (Platform.OS === 'web') {
         window.alert(error.response?.data?.detail || 'Erreur lors de la création du paiement.');
+      }
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  const handlePurchaseExtra = async (extraId: string) => {
+    if (!user) {
+      if (Platform.OS === 'web') {
+        window.alert('Veuillez vous connecter pour effectuer un achat.');
+      }
+      router.push('/(auth)/login');
+      return;
+    }
+
+    setLoading(extraId);
+    try {
+      const response = await api.post('/stripe/create-checkout-session', {
+        plan: extraId,
+        success_url: `${window.location.origin}/(tabs)/profile?purchase=success&item=${extraId}`,
+        cancel_url: `${window.location.origin}/pricing?purchase=cancelled`,
+      });
+
+      if (response.data.checkout_url) {
+        window.location.href = response.data.checkout_url;
+      }
+    } catch (error: any) {
+      console.error('Purchase error:', error);
+      if (Platform.OS === 'web') {
+        window.alert(error.response?.data?.detail || 'Erreur lors de l\'achat.');
       }
     } finally {
       setLoading(null);
@@ -125,7 +178,7 @@ export default function PricingScreen() {
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Tarifs</Text>
+        <Text style={styles.headerTitle}>Boutique</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -135,36 +188,40 @@ export default function PricingScreen() {
           <View style={styles.crownIcon}>
             <Ionicons name="diamond" size={40} color="#D4AF37" />
           </View>
-          <Text style={styles.title}>Supprimez les publicités</Text>
+          <Text style={styles.title}>Passez Premium</Text>
           <Text style={styles.subtitle}>
-            Profitez d'AÏLA sans interruption publicitaire
+            Profitez d'AÏLA sans publicité et débloquez des fonctionnalités exclusives
           </Text>
         </View>
 
-        {/* Free Plan Info */}
-        <View style={styles.freeCard}>
-          <View style={styles.freeHeader}>
-            <Ionicons name="gift-outline" size={24} color="#4A90D9" />
-            <Text style={styles.freeTitle}>Version Gratuite</Text>
-          </View>
-          <View style={styles.freeFeatures}>
-            <View style={styles.featureRow}>
-              <Ionicons name="checkmark-circle" size={18} color="#48BB78" />
-              <Text style={styles.featureText}>Toutes les fonctionnalités</Text>
-            </View>
-            <View style={styles.featureRow}>
-              <Ionicons name="checkmark-circle" size={18} color="#48BB78" />
-              <Text style={styles.featureText}>Arbre illimité</Text>
-            </View>
-            <View style={styles.featureRow}>
-              <Ionicons name="checkmark-circle" size={18} color="#48BB78" />
-              <Text style={styles.featureText}>Collaborateurs illimités</Text>
-            </View>
-            <View style={styles.featureRow}>
-              <Ionicons name="information-circle" size={18} color="#D4AF37" />
-              <Text style={styles.featureText}>Avec publicités</Text>
-            </View>
-          </View>
+        {/* Tabs */}
+        <View style={styles.tabContainer}>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'subscription' && styles.activeTab]}
+            onPress={() => setActiveTab('subscription')}
+          >
+            <Ionicons 
+              name="card" 
+              size={18} 
+              color={activeTab === 'subscription' ? '#D4AF37' : '#A0AEC0'} 
+            />
+            <Text style={[styles.tabText, activeTab === 'subscription' && styles.activeTabText]}>
+              Abonnements
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'extras' && styles.activeTab]}
+            onPress={() => setActiveTab('extras')}
+          >
+            <Ionicons 
+              name="gift" 
+              size={18} 
+              color={activeTab === 'extras' ? '#D4AF37' : '#A0AEC0'} 
+            />
+            <Text style={[styles.tabText, activeTab === 'extras' && styles.activeTabText]}>
+              Extras
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Current Status */}
@@ -183,75 +240,116 @@ export default function PricingScreen() {
           </View>
         )}
 
-        {/* Premium Plans */}
-        <Text style={styles.sectionTitle}>Passez sans publicités</Text>
-        
-        <View style={styles.plansContainer}>
-          {PLANS.map((plan) => (
-            <View 
-              key={plan.id} 
-              style={[
-                styles.planCard,
-                plan.popular && styles.popularCard,
-              ]}
-            >
-              {plan.popular && (
-                <View style={styles.popularBadge}>
-                  <Text style={styles.popularBadgeText}>MEILLEURE OFFRE</Text>
-                </View>
-              )}
-              
-              <Text style={styles.planName}>{plan.name}</Text>
-              <View style={styles.priceRow}>
-                <Text style={styles.planPrice}>{plan.price}</Text>
-                <Text style={styles.planPeriod}>{plan.period}</Text>
-              </View>
-              <Text style={styles.planDescription}>{plan.description}</Text>
-              
-              <View style={styles.featuresContainer}>
-                {plan.features.map((feature, index) => (
-                  <View key={index} style={styles.featureRow}>
-                    <Ionicons name="checkmark-circle" size={18} color="#48BB78" />
-                    <Text style={styles.featureText}>{feature}</Text>
-                  </View>
-                ))}
-              </View>
-
-              <TouchableOpacity
+        {/* Subscription Plans */}
+        {activeTab === 'subscription' && (
+          <View style={styles.plansContainer}>
+            {PLANS.map((plan) => (
+              <View 
+                key={plan.id} 
                 style={[
-                  styles.selectButton,
-                  plan.popular && styles.popularButton,
-                  isPremium && styles.disabledButton,
+                  styles.planCard,
+                  plan.popular && styles.popularCard,
                 ]}
-                onPress={() => handleSelectPlan(plan.id)}
-                disabled={loading !== null || isPremium}
               >
-                {loading === plan.id ? (
-                  <ActivityIndicator size="small" color="#0A1628" />
-                ) : (
-                  <Text style={[
-                    styles.selectButtonText,
-                    plan.popular && styles.popularButtonText,
-                  ]}>
-                    {isPremium ? 'Déjà Premium' : 'Choisir'}
-                  </Text>
+                {plan.popular && (
+                  <View style={styles.popularBadge}>
+                    <Text style={styles.popularBadgeText}>RECOMMANDÉ</Text>
+                  </View>
                 )}
-              </TouchableOpacity>
+                
+                <Text style={styles.planName}>{plan.name}</Text>
+                <View style={styles.priceRow}>
+                  <Text style={styles.planPrice}>{plan.price}</Text>
+                  <Text style={styles.planPeriod}>{plan.period}</Text>
+                </View>
+                {plan.savings && (
+                  <View style={styles.savingsBadge}>
+                    <Text style={styles.savingsText}>Économie de {plan.savings}/an</Text>
+                  </View>
+                )}
+                <Text style={styles.planDescription}>{plan.description}</Text>
+                
+                <View style={styles.featuresContainer}>
+                  {plan.features.map((feature, index) => (
+                    <View key={index} style={styles.featureRow}>
+                      <Ionicons name="checkmark-circle" size={18} color="#48BB78" />
+                      <Text style={styles.featureText}>{feature}</Text>
+                    </View>
+                  ))}
+                </View>
+
+                <TouchableOpacity
+                  style={[
+                    styles.selectButton,
+                    plan.popular && styles.popularButton,
+                    isPremium && styles.disabledButton,
+                  ]}
+                  onPress={() => handleSelectPlan(plan.id)}
+                  disabled={loading !== null || isPremium}
+                >
+                  {loading === plan.id ? (
+                    <ActivityIndicator size="small" color="#0A1628" />
+                  ) : (
+                    <Text style={[
+                      styles.selectButtonText,
+                      plan.popular && styles.popularButtonText,
+                    ]}>
+                      {isPremium ? 'Déjà Premium' : 'Choisir'}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Extras / Microtransactions */}
+        {activeTab === 'extras' && (
+          <View style={styles.extrasContainer}>
+            <Text style={styles.extrasTitle}>🎨 Personnalisez votre expérience</Text>
+            <Text style={styles.extrasSubtitle}>Achats uniques - pas d'abonnement</Text>
+            
+            {EXTRAS.map((extra) => (
+              <View key={extra.id} style={styles.extraCard}>
+                <View style={[styles.extraIcon, { backgroundColor: extra.color + '20' }]}>
+                  <Ionicons name={extra.icon as any} size={28} color={extra.color} />
+                </View>
+                <View style={styles.extraInfo}>
+                  <Text style={styles.extraName}>{extra.name}</Text>
+                  <Text style={styles.extraDescription}>{extra.description}</Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.extraButton}
+                  onPress={() => handlePurchaseExtra(extra.id)}
+                  disabled={loading !== null}
+                >
+                  {loading === extra.id ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                  ) : (
+                    <Text style={styles.extraButtonText}>{extra.price}</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            ))}
+
+            {/* Coming Soon */}
+            <View style={styles.comingSoonSection}>
+              <Text style={styles.comingSoonTitle}>🚀 Bientôt disponible</Text>
+              <View style={styles.comingSoonItem}>
+                <Ionicons name="print" size={20} color="#A0AEC0" />
+                <Text style={styles.comingSoonText}>Impression poster de votre arbre</Text>
+              </View>
+              <View style={styles.comingSoonItem}>
+                <Ionicons name="book" size={20} color="#A0AEC0" />
+                <Text style={styles.comingSoonText}>Livre photo familial personnalisé</Text>
+              </View>
             </View>
-          ))}
-        </View>
+          </View>
+        )}
 
         {/* FAQ */}
         <View style={styles.faqSection}>
           <Text style={styles.faqTitle}>Questions fréquentes</Text>
-          
-          <View style={styles.faqItem}>
-            <Text style={styles.faqQuestion}>La version gratuite a-t-elle des limitations ?</Text>
-            <Text style={styles.faqAnswer}>
-              Non ! Toutes les fonctionnalités sont disponibles gratuitement. 
-              Seule différence : les publicités sont affichées.
-            </Text>
-          </View>
           
           <View style={styles.faqItem}>
             <Text style={styles.faqQuestion}>Puis-je annuler à tout moment ?</Text>
@@ -262,9 +360,9 @@ export default function PricingScreen() {
           </View>
           
           <View style={styles.faqItem}>
-            <Text style={styles.faqQuestion}>Le paiement "À vie" est-il vraiment définitif ?</Text>
+            <Text style={styles.faqQuestion}>Les achats "Extras" sont-ils permanents ?</Text>
             <Text style={styles.faqAnswer}>
-              Oui ! Un seul paiement de 49,99€ et vous n'aurez plus jamais de publicités.
+              Oui ! Une fois achetés, les thèmes et exports PDF restent disponibles pour toujours sur votre compte.
             </Text>
           </View>
         </View>
@@ -319,32 +417,38 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#A0AEC0',
     textAlign: 'center',
     marginTop: 8,
+    lineHeight: 22,
   },
-  freeCard: {
+  tabContainer: {
+    flexDirection: 'row',
     backgroundColor: '#1E3A5F',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: 12,
+    padding: 4,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#4A90D9',
   },
-  freeHeader: {
+  tab: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderRadius: 10,
+    gap: 6,
   },
-  freeTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    marginLeft: 10,
+  activeTab: {
+    backgroundColor: '#2D4A6F',
   },
-  freeFeatures: {
-    gap: 10,
+  tabText: {
+    fontSize: 14,
+    color: '#A0AEC0',
+    fontWeight: '500',
+  },
+  activeTabText: {
+    color: '#D4AF37',
   },
   statusCard: {
     flexDirection: 'row',
@@ -364,13 +468,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#FFFFFF',
     flex: 1,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#D4AF37',
-    marginBottom: 16,
-    textAlign: 'center',
   },
   plansContainer: {
     gap: 16,
@@ -421,6 +518,19 @@ const styles = StyleSheet.create({
     color: '#A0AEC0',
     marginLeft: 4,
   },
+  savingsBadge: {
+    backgroundColor: 'rgba(72, 187, 120, 0.2)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginBottom: 8,
+  },
+  savingsText: {
+    fontSize: 12,
+    color: '#48BB78',
+    fontWeight: '600',
+  },
   planDescription: {
     fontSize: 14,
     color: '#A0AEC0',
@@ -459,6 +569,85 @@ const styles = StyleSheet.create({
   },
   popularButtonText: {
     color: '#0A1628',
+  },
+  extrasContainer: {
+    gap: 12,
+  },
+  extrasTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
+  },
+  extrasSubtitle: {
+    fontSize: 14,
+    color: '#A0AEC0',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  extraCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E3A5F',
+    borderRadius: 12,
+    padding: 16,
+    gap: 12,
+  },
+  extraIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  extraInfo: {
+    flex: 1,
+  },
+  extraName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  extraDescription: {
+    fontSize: 13,
+    color: '#A0AEC0',
+  },
+  extraButton: {
+    backgroundColor: '#4A90D9',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    minWidth: 70,
+    alignItems: 'center',
+  },
+  extraButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  comingSoonSection: {
+    backgroundColor: '#1E3A5F',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 16,
+    opacity: 0.7,
+  },
+  comingSoonTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#D4AF37',
+    marginBottom: 12,
+  },
+  comingSoonItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 8,
+  },
+  comingSoonText: {
+    fontSize: 14,
+    color: '#A0AEC0',
   },
   faqSection: {
     marginTop: 32,
