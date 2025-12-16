@@ -2350,9 +2350,14 @@ class SubscriptionResponse(BaseModel):
 
 # Stripe Products and Prices - Model: Free with ads, Premium without ads
 STRIPE_PRODUCTS = {
-    'monthly': {'name': 'AÏLA Sans Publicités - Mensuel', 'price': 299, 'interval': 'month'},
-    'yearly': {'name': 'AÏLA Sans Publicités - Annuel', 'price': 2499, 'interval': 'year'},
-    'lifetime': {'name': 'AÏLA Sans Publicités - À Vie', 'price': 4999, 'interval': None},
+    # Subscriptions
+    'monthly': {'name': 'AÏLA Premium - Mensuel', 'price': 299, 'interval': 'month', 'type': 'subscription'},
+    'yearly': {'name': 'AÏLA Premium - Annuel', 'price': 2499, 'interval': 'year', 'type': 'subscription'},
+    # Microtransactions (one-time purchases)
+    'pdf_export': {'name': 'Export PDF - AÏLA', 'price': 299, 'interval': None, 'type': 'one_time'},
+    'theme_gold': {'name': 'Thème Or Royal - AÏLA', 'price': 499, 'interval': None, 'type': 'one_time'},
+    'theme_nature': {'name': 'Thème Nature - AÏLA', 'price': 499, 'interval': None, 'type': 'one_time'},
+    'theme_vintage': {'name': 'Thème Vintage - AÏLA', 'price': 499, 'interval': None, 'type': 'one_time'},
 }
 
 async def get_or_create_stripe_price(plan: str) -> str:
