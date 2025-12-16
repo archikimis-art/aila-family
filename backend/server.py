@@ -2413,7 +2413,12 @@ async def get_stripe_config():
         "plans": {
             "monthly": {"price": "2,99 €", "description": "Par mois - Sans publicités"},
             "yearly": {"price": "24,99 €", "description": "Par an (économisez 30%)"},
-            "lifetime": {"price": "49,99 €", "description": "Paiement unique - À vie"},
+        },
+        "extras": {
+            "pdf_export": {"price": "2,99 €", "description": "Export PDF haute qualité"},
+            "theme_gold": {"price": "4,99 €", "description": "Thème Or Royal"},
+            "theme_nature": {"price": "4,99 €", "description": "Thème Nature"},
+            "theme_vintage": {"price": "4,99 €", "description": "Thème Vintage"},
         }
     }
 
