@@ -2415,10 +2415,10 @@ async def get_stripe_config():
             "yearly": {"price": "24,99 €", "description": "Par an (économisez 30%)"},
         },
         "extras": {
-            "pdf_export": {"price": "2,99 €", "description": "Export PDF haute qualité"},
-            "theme_gold": {"price": "4,99 €", "description": "Thème Or Royal"},
-            "theme_nature": {"price": "4,99 €", "description": "Thème Nature"},
-            "theme_vintage": {"price": "4,99 €", "description": "Thème Vintage"},
+            "pdf_export": {"price": "0,99 €", "description": "Export PDF haute qualité"},
+            "theme_gold": {"price": "1,99 €", "description": "Thème Or Royal"},
+            "theme_nature": {"price": "1,99 €", "description": "Thème Nature"},
+            "theme_vintage": {"price": "1,99 €", "description": "Thème Vintage"},
         }
     }
 
