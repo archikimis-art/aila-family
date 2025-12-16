@@ -1,7 +1,22 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
-const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+// Determine API URL based on environment
+const getApiUrl = () => {
+  // Check if we're on production web
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (hostname === 'www.aila.family' || hostname === 'aila.family') {
+      return 'https://genealogy-aila.preview.emergentagent.com';
+    }
+  }
+  
+  // Use environment variable or fallback
+  return process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+};
+
+const API_URL = getApiUrl();
 
 const api = axios.create({
   baseURL: `${API_URL}/api`,
