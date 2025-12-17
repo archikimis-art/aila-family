@@ -414,10 +414,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
   },
-  adBanner: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
 });
