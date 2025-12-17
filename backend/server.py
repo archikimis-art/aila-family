@@ -2184,7 +2184,7 @@ async def delete_message(
 
 @api_router.get("/events/birthdays", response_model=List[UpcomingBirthdayResponse])
 async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user)):
-    """Get upcoming birthdays from tree members (next 30 days)"""
+    """Get upcoming birthdays from tree members (next 7 days)"""
     user_id = str(current_user['_id'])
     
     # Get all persons with birth dates
@@ -2196,15 +2196,41 @@ async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user))
     upcoming = []
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     
+    def parse_birth_date(date_str: str):
+        """Parse birth date in multiple formats"""
+        if not date_str:
+            return None
+        
+        # Remove time component if present
+        date_str = date_str.split("T")[0].strip()
+        
+        # Try different formats
+        formats = [
+            "%Y-%m-%d",      # 1964-12-25
+            "%d/%m/%Y",      # 25/12/1964
+            "%d-%m-%Y",      # 25-12-1964
+            "%Y",            # 1964 (year only)
+        ]
+        
+        for fmt in formats:
+            try:
+                return datetime.strptime(date_str, fmt)
+            except ValueError:
+                continue
+        
+        return None
+    
     for person in persons:
         birth_date_str = person.get("birth_date")
         if not birth_date_str:
             continue
         
+        birth_date = parse_birth_date(birth_date_str)
+        if not birth_date:
+            logger.warning(f"Could not parse birth date: {birth_date_str}")
+            continue
+        
         try:
-            # Parse birth date
-            birth_date = datetime.strptime(birth_date_str.split("T")[0], "%Y-%m-%d")
-            
             # Calculate this year's birthday
             this_year_birthday = birth_date.replace(year=today.year)
             if this_year_birthday < today:
@@ -2212,8 +2238,8 @@ async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user))
             
             days_until = (this_year_birthday - today).days
             
-            # Only include birthdays in the next 30 days
-            if 0 <= days_until <= 30:
+            # Only include birthdays in the next 7 days (popup reminder)
+            if 0 <= days_until <= 7:
                 age = this_year_birthday.year - birth_date.year
                 
                 upcoming.append(UpcomingBirthdayResponse(
@@ -2224,12 +2250,12 @@ async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user))
                     age=age
                 ))
         except (ValueError, TypeError) as e:
-            logger.error(f"Error parsing birth date {birth_date_str}: {e}")
+            logger.error(f"Error processing birthday for {person.get('first_name', 'Unknown')}: {e}")
             continue
     
     # Sort by days until birthday
     upcoming.sort(key=lambda x: x.days_until)
-    logger.info(f"Found {len(upcoming)} upcoming birthdays")
+    logger.info(f"Found {len(upcoming)} upcoming birthdays in next 7 days")
     return upcoming
 
 @api_router.get("/events/today")
