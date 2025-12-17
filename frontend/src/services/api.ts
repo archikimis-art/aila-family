@@ -8,7 +8,7 @@ const getApiUrl = () => {
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
     const hostname = window.location.hostname;
     if (hostname === 'www.aila.family' || hostname === 'aila.family') {
-      return 'https://genealogy-aila.preview.emergentagent.com';
+      return 'https://aila-family-app.preview.emergentagent.com';
     }
   }
   
