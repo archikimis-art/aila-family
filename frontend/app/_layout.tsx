@@ -242,26 +242,27 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <AuthProvider>
         <AdsProvider>
-          <StatusBar style="light" />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: '#0A1628' },
-              animation: 'slide_from_right',
-            }}
-          >
-            <Stack.Screen name="index" />
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen 
-              name="person/[id]" 
-              options={{ 
-                presentation: 'modal',
-                animation: 'slide_from_bottom'
-              }} 
-            />
-            <Stack.Screen 
-              name="add-person" 
+          <ConversionProvider>
+            <StatusBar style="light" />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: '#0A1628' },
+                animation: 'slide_from_right',
+              }}
+            >
+              <Stack.Screen name="index" />
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen 
+                name="person/[id]" 
+                options={{ 
+                  presentation: 'modal',
+                  animation: 'slide_from_bottom'
+                }} 
+              />
+              <Stack.Screen 
+                name="add-person" 
               options={{ 
                 presentation: 'modal',
                 animation: 'slide_from_bottom'
