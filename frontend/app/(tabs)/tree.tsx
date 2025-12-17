@@ -1639,6 +1639,75 @@ export default function TreeScreen() {
         </View>
       </Modal>
 
+      {/* Shared Trees Modal */}
+      <Modal
+        visible={showSharedTrees}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowSharedTrees(false)}
+      >
+        <View style={styles.sharedTreesOverlay}>
+          <View style={styles.sharedTreesContent}>
+            <View style={styles.sharedTreesHeader}>
+              <Text style={styles.sharedTreesTitle}>👥 Arbres partagés avec moi</Text>
+              <TouchableOpacity onPress={() => setShowSharedTrees(false)}>
+                <Ionicons name="close-circle" size={28} color="#D4AF37" />
+              </TouchableOpacity>
+            </View>
+            
+            <ScrollView style={styles.sharedTreesScroll} showsVerticalScrollIndicator={false}>
+              {sharedTrees.length === 0 ? (
+                <View style={styles.sharedTreesEmpty}>
+                  <Ionicons name="people-outline" size={48} color="#6B7C93" />
+                  <Text style={styles.sharedTreesEmptyText}>
+                    Aucun arbre partagé avec vous pour le moment.
+                  </Text>
+                  <Text style={styles.sharedTreesEmptyHint}>
+                    Lorsqu'un membre de votre famille vous invitera, son arbre apparaîtra ici.
+                  </Text>
+                </View>
+              ) : (
+                sharedTrees.map((tree, index) => (
+                  <TouchableOpacity 
+                    key={index}
+                    style={styles.sharedTreeCard}
+                    onPress={() => {
+                      setShowSharedTrees(false);
+                      router.push({
+                        pathname: '/(tabs)/tree',
+                        params: { 
+                          sharedOwnerId: tree.owner_id,
+                          sharedOwnerName: tree.owner_name
+                        }
+                      });
+                    }}
+                  >
+                    <View style={styles.sharedTreeIcon}>
+                      <Ionicons name="git-branch" size={24} color="#D4AF37" />
+                    </View>
+                    <View style={styles.sharedTreeInfo}>
+                      <Text style={styles.sharedTreeOwner}>{tree.owner_name}</Text>
+                      <Text style={styles.sharedTreeEmail}>{tree.owner_email}</Text>
+                      <Text style={styles.sharedTreeMeta}>
+                        {tree.persons_count} membre{tree.persons_count > 1 ? 's' : ''} • Rôle: {tree.role === 'editor' ? 'Éditeur' : tree.role === 'admin' ? 'Admin' : 'Lecteur'}
+                      </Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={24} color="#6B7C93" />
+                  </TouchableOpacity>
+                ))
+              )}
+            </ScrollView>
+            
+            <TouchableOpacity 
+              style={styles.sharedTreesCloseButton}
+              onPress={() => setShowSharedTrees(false)}
+            >
+              <Text style={styles.sharedTreesCloseButtonText}>Fermer</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       {/* Event Animation */}
       {currentEvent && (
         <EventAnimation
@@ -1653,10 +1722,6 @@ export default function TreeScreen() {
           }}
         />
       )}
-      
-      {/* Ad Banner temporarily disabled for debugging
-      <AdBanner />
-      */}
     </SafeAreaView>
   );
 }
