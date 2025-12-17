@@ -205,7 +205,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-    opacity: 0.5,
+    opacity: 0.6,
+    gap: 6,
+  },
+  adIcon: {
+    fontSize: 14,
   },
   adText: {
     color: '#A0AEC0',
