@@ -1,14 +1,42 @@
 // Build: 1765552905
 import React from 'react';
-import { Tabs } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Platform } from 'react-native';
+import { Platform, TouchableOpacity, View, Text } from 'react-native';
 
 export default function TabsLayout() {
+  const router = useRouter();
+
+  const BackButton = () => (
+    <TouchableOpacity 
+      onPress={() => router.back()}
+      style={{ 
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        paddingLeft: 16,
+        paddingVertical: 8,
+      }}
+    >
+      <Ionicons name="chevron-back" size={24} color="#D4AF37" />
+      <Text style={{ color: '#D4AF37', fontSize: 16, marginLeft: 4 }}>Retour</Text>
+    </TouchableOpacity>
+  );
+
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: '#0A1628',
+          borderBottomWidth: 1,
+          borderBottomColor: '#1A2F4A',
+        },
+        headerTintColor: '#D4AF37',
+        headerTitleStyle: {
+          fontWeight: '600',
+          fontSize: 18,
+        },
+        headerLeft: () => <BackButton />,
         tabBarStyle: {
           backgroundColor: '#0A1628',
           borderTopColor: '#1A2F4A',
