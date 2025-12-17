@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAds } from '@/context/AdsContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Google AdSense Publisher ID
 const ADSENSE_CLIENT = 'ca-pub-8309745338282834';
