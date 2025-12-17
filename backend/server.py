@@ -102,6 +102,54 @@ async def send_invitation_email(to_email: str, inviter_name: str, role: str, inv
         logger.error(f"✗ Failed to send invitation email to {to_email}: {e}")
         return False
 
+async def send_password_reset_email(to_email: str, reset_token: str):
+    """Send password reset email via Resend"""
+    try:
+        reset_url = f"{FRONTEND_URL}/reset-password?token={reset_token}"
+        
+        html_content = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #0A1628; color: #FFFFFF;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #D4AF37; margin: 0;">🌳 AÏLA</h1>
+                <p style="color: #B8C5D6; margin-top: 5px;">Réinitialisation de mot de passe</p>
+            </div>
+            
+            <div style="background-color: #1A2F4A; border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+                <h2 style="color: #FFFFFF; margin-top: 0;">Mot de passe oublié ?</h2>
+                <p style="color: #B8C5D6; line-height: 1.6;">
+                    Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le bouton ci-dessous pour en créer un nouveau.
+                </p>
+                <p style="color: #B8C5D6; line-height: 1.6;">
+                    <strong style="color: #D4AF37;">Ce lien expire dans 1 heure.</strong>
+                </p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{reset_url}" style="display: inline-block; background-color: #D4AF37; color: #0A1628; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 16px;">
+                    Réinitialiser mon mot de passe
+                </a>
+            </div>
+            
+            <p style="color: #6B7C93; font-size: 12px; text-align: center;">
+                Si vous n'avez pas demandé cette réinitialisation, ignorez cet email. Votre mot de passe restera inchangé.
+            </p>
+        </div>
+        """
+        
+        params = {
+            "from": "AÏLA <noreply@aila.family>",
+            "to": [to_email],
+            "subject": "🔑 Réinitialisation de votre mot de passe AÏLA",
+            "html": html_content
+        }
+        
+        email = resend.Emails.send(params)
+        logger.info(f"✓ Password reset email sent to {to_email}")
+        return True
+    except Exception as e:
+        logger.error(f"✗ Failed to send password reset email to {to_email}: {e}")
+        return False
+
 async def send_event_notification_email(to_email: str, sender_name: str, event_type: str, event_title: str, event_description: str = None, event_date: str = None):
     """Send event notification email via Resend"""
     try:
