@@ -244,8 +244,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 24,
+    marginTop: 16,
     gap: 8,
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginTop: 12,
+    padding: 4,
+  },
+  forgotPasswordText: {
+    color: '#D4AF37',
+    fontSize: 14,
   },
   loginButtonDisabled: {
     opacity: 0.6,
