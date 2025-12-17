@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0A1628',
   },
   content: {
-    paddingBottom: 120, // Plus de marge pour le scroll complet sur mobile
+    paddingBottom: 180, // Plus de marge pour le scroll complet sur mobile (bannière pub + tab bar)
   },
   header: {
     alignItems: 'center',
