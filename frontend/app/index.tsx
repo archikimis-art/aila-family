@@ -472,14 +472,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 6,
   },
-  adCloseButton: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#4A90D9',
+  adPremiumButton: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+    borderWidth: 1,
+    borderColor: '#D4AF37',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
     marginLeft: 16,
+  },
+  adPremiumButtonText: {
+    color: '#D4AF37',
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 4,
   },
 });
