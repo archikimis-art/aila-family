@@ -344,7 +344,18 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView 
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={true}
+        indicatorStyle="white"
+      >
+        {/* Indicateur de scroll */}
+        <View style={styles.scrollHint}>
+          <Ionicons name="chevron-down" size={16} color="#6B7C93" />
+          <Text style={styles.scrollHintText}>Défiler pour voir plus</Text>
+          <Ionicons name="chevron-down" size={16} color="#6B7C93" />
+        </View>
+        
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.avatarContainer}>
