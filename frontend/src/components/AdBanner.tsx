@@ -96,12 +96,36 @@ const webStyles: { [key: string]: React.CSSProperties } = {
     alignItems: 'center',
     justifyContent: 'center',
     gap: '8px',
-    opacity: 0.5,
+    opacity: 0.6,
+  },
+  placeholderIcon: {
+    fontSize: '16px',
   },
   placeholderText: {
     fontSize: '12px',
     color: '#A0AEC0',
     fontStyle: 'italic',
+  },
+  premiumButton: {
+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+    border: '1px solid #D4AF37',
+    borderRadius: '8px',
+    padding: '6px 12px',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: '4px',
+    cursor: 'pointer',
+    marginLeft: '12px',
+    transition: 'all 0.2s',
+  },
+  premiumIcon: {
+    fontSize: '14px',
+  },
+  premiumText: {
+    fontSize: '12px',
+    color: '#D4AF37',
+    fontWeight: '600',
   },
   removeButton: {
     backgroundColor: 'transparent',
