@@ -6,7 +6,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AnimatedTreeBackground } from '@/components/AnimatedTreeBackground';
-import AdBanner from '@/components/AdBanner';
 
 const { width, height } = Dimensions.get('window');
 const isWeb = Platform.OS === 'web';
