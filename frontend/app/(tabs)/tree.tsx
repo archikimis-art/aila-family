@@ -766,6 +766,24 @@ export default function TreeScreen() {
     }
   };
 
+  // Load shared trees (trees shared with the current user)
+  const loadSharedTrees = async () => {
+    try {
+      const response = await api.get('/collaborators/shared-with-me');
+      setSharedTrees(response.data || []);
+      console.log('Shared trees loaded:', response.data?.length || 0);
+    } catch (error) {
+      console.log('Shared trees not loaded:', error);
+    }
+  };
+
+  // Load shared trees on mount
+  useEffect(() => {
+    if (user && !isPreviewMode) {
+      loadSharedTrees();
+    }
+  }, [user, isPreviewMode]);
+
   const loadEvents = async () => {
     try {
       console.log('Loading events...');
