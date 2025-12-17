@@ -117,104 +117,106 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Animated Background */}
-      <AnimatedTreeBackground />
-      
-      <LinearGradient
-        colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
-        style={styles.gradient}
-      >
-        {/* Header Logo */}
-        <View style={styles.logoContainer}>
-          <Ionicons name="leaf" size={80} color="#D4AF37" />
-          <Text style={styles.title}>AÏLA</Text>
-          <View style={styles.sloganContainer}>
-            <Text style={styles.sloganLine1}>L'arbre généalogique</Text>
-            <Text style={styles.sloganLine2}>qui connecte votre famille</Text>
+    <View style={styles.mainContainer}>
+      <SafeAreaView style={styles.container}>
+        {/* Animated Background */}
+        <AnimatedTreeBackground />
+        
+        <LinearGradient
+          colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
+          style={styles.gradient}
+        >
+          {/* Header Logo */}
+          <View style={styles.logoContainer}>
+            <Ionicons name="leaf" size={80} color="#D4AF37" />
+            <Text style={styles.title}>AÏLA</Text>
+            <View style={styles.sloganContainer}>
+              <Text style={styles.sloganLine1}>L'arbre généalogique</Text>
+              <Text style={styles.sloganLine2}>qui connecte votre famille</Text>
+            </View>
           </View>
-        </View>
 
-        {/* Features */}
-        <View style={styles.featuresContainer}>
-          <View style={styles.featureItem}>
-            <Ionicons name="git-branch-outline" size={28} color="#D4AF37" />
-            <Text style={styles.featureText}>Créez votre arbre généalogique</Text>
+          {/* Features */}
+          <View style={styles.featuresContainer}>
+            <View style={styles.featureItem}>
+              <Ionicons name="git-branch-outline" size={28} color="#D4AF37" />
+              <Text style={styles.featureText}>Créez votre arbre généalogique</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="chatbubbles-outline" size={28} color="#D4AF37" />
+              <Text style={styles.featureText}>Discutez en famille</Text>
+            </View>
+            <View style={styles.featureItem}>
+              <Ionicons name="calendar-outline" size={28} color="#D4AF37" />
+              <Text style={styles.featureText}>Partagez vos souvenirs</Text>
+            </View>
           </View>
-          <View style={styles.featureItem}>
-            <Ionicons name="chatbubbles-outline" size={28} color="#D4AF37" />
-            <Text style={styles.featureText}>Discutez en famille</Text>
-          </View>
-          <View style={styles.featureItem}>
-            <Ionicons name="calendar-outline" size={28} color="#D4AF37" />
-            <Text style={styles.featureText}>Partagez vos souvenirs</Text>
-          </View>
-        </View>
 
-        {/* Buttons */}
-        <View style={styles.buttonsContainer}>
-          {/* Preview Button */}
-          <TouchableOpacity 
-            style={styles.previewButton} 
-            onPress={goToPreview}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="eye-outline" size={22} color="#D4AF37" />
-            <Text style={styles.previewButtonText}>Mode Aperçu</Text>
-            <Text style={styles.previewNote}>Testez sans inscription (max 10 membres)</Text>
-          </TouchableOpacity>
-
-          {/* Register Button */}
-          <TouchableOpacity 
-            style={styles.primaryButton} 
-            onPress={goToRegister}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="person-add-outline" size={22} color="#0A1628" />
-            <Text style={styles.primaryButtonText}>Créer un compte</Text>
-          </TouchableOpacity>
-
-          {/* Login Button - Simple text */}
-          <TouchableOpacity 
-            style={styles.loginButton} 
-            onPress={goToLogin}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.loginButtonText}>Déjà inscrit ?  </Text>
-            <Text style={styles.loginButtonTextBold}>Se connecter</Text>
-          </TouchableOpacity>
-
-          {/* Footer inside buttons container */}
-          <View style={styles.footerInline}>
+          {/* Buttons */}
+          <View style={styles.buttonsContainer}>
+            {/* Preview Button */}
             <TouchableOpacity 
-              style={styles.shareButton}
-              onPress={shareApp}
+              style={styles.previewButton} 
+              onPress={goToPreview}
               activeOpacity={0.7}
             >
-              <Ionicons name="share-social-outline" size={20} color="#D4AF37" />
-              <Text style={styles.shareButtonText}>Partager</Text>
+              <Ionicons name="eye-outline" size={22} color="#D4AF37" />
+              <Text style={styles.previewButtonText}>Mode Aperçu</Text>
+              <Text style={styles.previewNote}>Testez sans inscription (max 10 membres)</Text>
             </TouchableOpacity>
-            
-            {/* Install PWA Button - discreet */}
-            {isWeb && (
+
+            {/* Register Button */}
+            <TouchableOpacity 
+              style={styles.primaryButton} 
+              onPress={goToRegister}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="person-add-outline" size={22} color="#0A1628" />
+              <Text style={styles.primaryButtonText}>Créer un compte</Text>
+            </TouchableOpacity>
+
+            {/* Login Button - Simple text */}
+            <TouchableOpacity 
+              style={styles.loginButton} 
+              onPress={goToLogin}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.loginButtonText}>Déjà inscrit ?  </Text>
+              <Text style={styles.loginButtonTextBold}>Se connecter</Text>
+            </TouchableOpacity>
+
+            {/* Footer inside buttons container */}
+            <View style={styles.footerInline}>
               <TouchableOpacity 
-                style={styles.installButton}
-                onPress={handleInstallClick}
+                style={styles.shareButton}
+                onPress={shareApp}
                 activeOpacity={0.7}
               >
-                <Ionicons name="download-outline" size={16} color="#6B8BB8" />
-                <Text style={styles.installButtonText}>Installer l'app</Text>
+                <Ionicons name="share-social-outline" size={20} color="#D4AF37" />
+                <Text style={styles.shareButtonText}>Partager</Text>
               </TouchableOpacity>
-            )}
-            
-            <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
+              
+              {/* Install PWA Button - discreet */}
+              {isWeb && (
+                <TouchableOpacity 
+                  style={styles.installButton}
+                  onPress={handleInstallClick}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="download-outline" size={16} color="#6B8BB8" />
+                  <Text style={styles.installButtonText}>Installer l'app</Text>
+                </TouchableOpacity>
+              )}
+              
+              <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
+            </View>
           </View>
-        </View>
-      </LinearGradient>
+        </LinearGradient>
+      </SafeAreaView>
       
-      {/* Bannière publicitaire en bas de page */}
-      <AdBanner style={styles.adBanner} />
-    </SafeAreaView>
+      {/* Bannière publicitaire en bas de page - en dehors du SafeAreaView */}
+      <AdBanner />
+    </View>
   );
 }
 
