@@ -1000,6 +1000,18 @@ export default function TreeScreen() {
           </Text>
         </View>
         <View style={styles.headerButtons}>
+          {/* Shared trees button - show badge if there are shared trees */}
+          {user && !isPreviewMode && sharedTrees.length > 0 && (
+            <TouchableOpacity 
+              style={[styles.helpButton, styles.sharedTreesButton]} 
+              onPress={() => setShowSharedTrees(true)}
+            >
+              <Ionicons name="people" size={20} color="#4A90D9" />
+              <View style={styles.sharedBadge}>
+                <Text style={styles.sharedBadgeText}>{sharedTrees.length}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
           {/* Events button - visible for all users */}
           <TouchableOpacity 
             style={[styles.helpButton, upcomingBirthdays.length > 0 && styles.eventButtonActive]} 
