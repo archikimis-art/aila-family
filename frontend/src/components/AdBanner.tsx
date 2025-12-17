@@ -119,6 +119,7 @@ const webStyles: { [key: string]: React.CSSProperties } = {
 export default function AdBanner({ style }: AdBannerProps) {
   const { showAds, isPremium } = useAds();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   // Don't show ads for premium users
   if (!showAds || isPremium) {
@@ -135,8 +136,9 @@ export default function AdBanner({ style }: AdBannerProps) {
   }
 
   // For mobile, show placeholder (real ads via AdMob in compiled app)
+  // Add paddingBottom for safe area on iPhones with home indicator
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, 8) }, style]}>
       <View style={styles.adContent}>
         <Text style={styles.adText}>Publicité</Text>
       </View>
