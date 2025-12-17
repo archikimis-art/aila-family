@@ -16,6 +16,7 @@ interface AdBannerProps {
 const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
   const adRef = useRef<HTMLDivElement>(null);
   const adInitialized = useRef(false);
+  const [adLoaded, setAdLoaded] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && adRef.current && !adInitialized.current) {
@@ -25,7 +26,7 @@ const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
         ins.className = 'adsbygoogle';
         ins.style.display = 'block';
         ins.style.width = '100%';
-        ins.style.height = '90px';
+        ins.style.height = '60px';
         ins.setAttribute('data-ad-client', ADSENSE_CLIENT);
         ins.setAttribute('data-ad-slot', 'auto');
         ins.setAttribute('data-ad-format', 'horizontal');
@@ -42,6 +43,7 @@ const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
           try {
             ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
             adInitialized.current = true;
+            setAdLoaded(true);
           } catch (e) {
             console.log('AdSense push error:', e);
           }
@@ -55,13 +57,17 @@ const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
   return (
     <div style={webStyles.container}>
       <div ref={adRef} style={webStyles.adContainer}>
-        {/* Placeholder discret en attendant l'approbation AdSense */}
-        <div style={webStyles.placeholder}>
-          <span style={webStyles.placeholderText}>Publicité</span>
-        </div>
+        {/* Placeholder affiché en attendant l'approbation AdSense */}
+        {!adLoaded && (
+          <div style={webStyles.placeholder}>
+            <span style={webStyles.placeholderIcon}>📢</span>
+            <span style={webStyles.placeholderText}>Espace publicitaire</span>
+          </div>
+        )}
       </div>
-      <button onClick={onRemoveAds} style={webStyles.removeButton}>
-        <span style={webStyles.removeIcon}>✕</span>
+      <button onClick={onRemoveAds} style={webStyles.premiumButton}>
+        <span style={webStyles.premiumIcon}>⭐</span>
+        <span style={webStyles.premiumText}>Premium</span>
       </button>
     </div>
   );
