@@ -214,8 +214,10 @@ export default function WelcomeScreen() {
         </LinearGradient>
       </SafeAreaView>
       
-      {/* Bannière publicitaire en bas de page - en dehors du SafeAreaView */}
-      <AdBanner />
+      {/* Bannière publicitaire fixée en bas de page */}
+      <View style={styles.adContainer}>
+        <AdBanner />
+      </View>
     </View>
   );
 }
