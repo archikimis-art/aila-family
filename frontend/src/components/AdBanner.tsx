@@ -5,8 +5,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAds } from '@/context/AdsContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// Google AdSense Publisher ID
+// Google AdSense Publisher ID (Web)
 const ADSENSE_CLIENT = 'ca-pub-8309745338282834';
+
+// Google AdMob Ad Unit IDs (Mobile)
+const ADMOB_BANNER_ANDROID = 'ca-app-pub-8309745338282834/9092823082';
+const ADMOB_BANNER_IOS = 'ca-app-pub-8309745338282834/8092384991';
+const ADMOB_INTERSTITIAL = 'ca-app-pub-8309745338282834/8765520025';
 
 interface AdBannerProps {
   style?: object;
