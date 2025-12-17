@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '@/context/AuthContext';
 import { AdsProvider } from '@/context/AdsContext';
+import { ConversionProvider } from '@/context/ConversionContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 
