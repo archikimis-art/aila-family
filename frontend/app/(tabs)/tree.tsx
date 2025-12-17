@@ -750,9 +750,8 @@ export default function TreeScreen() {
   // Load events and collaborators on mount (only for authenticated users)
   useEffect(() => {
     if (user && !isPreviewMode) {
-      // Temporarily disabled for debugging
-      // loadEvents();
-      // loadCollaborators();
+      loadEvents();
+      loadCollaborators();
     }
   }, [user, isPreviewMode]);
 
