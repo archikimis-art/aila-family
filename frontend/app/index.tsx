@@ -185,38 +185,46 @@ export default function WelcomeScreen() {
               <Text style={styles.loginButtonTextBold}>Se connecter</Text>
             </TouchableOpacity>
 
-            {/* Footer inside buttons container */}
-            <View style={styles.footerInline}>
-              <TouchableOpacity 
-                style={styles.shareButton}
-                onPress={shareApp}
-                activeOpacity={0.7}
-              >
-                <Ionicons name="share-social-outline" size={20} color="#D4AF37" />
-                <Text style={styles.shareButtonText}>Partager</Text>
-              </TouchableOpacity>
-              
-              {/* Install PWA Button - discreet */}
-              {isWeb && (
-                <TouchableOpacity 
-                  style={styles.installButton}
-                  onPress={handleInstallClick}
-                  activeOpacity={0.7}
-                >
-                  <Ionicons name="download-outline" size={16} color="#6B8BB8" />
-                  <Text style={styles.installButtonText}>Installer l'app</Text>
-                </TouchableOpacity>
-              )}
-              
-              <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
-            </View>
+            {/* Footer text only */}
+            <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
           </View>
         </LinearGradient>
       </SafeAreaView>
       
-      {/* Bannière publicitaire fixée en bas de page */}
+      {/* Bannière publicitaire fixée en bas avec boutons intégrés */}
       <View style={styles.adContainer}>
-        <AdBanner />
+        <View style={styles.adBannerContent}>
+          {/* Bouton Partager */}
+          <TouchableOpacity 
+            style={styles.adShareButton}
+            onPress={shareApp}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="share-social-outline" size={18} color="#D4AF37" />
+            <Text style={styles.adShareButtonText}>Partager</Text>
+          </TouchableOpacity>
+          
+          {/* Bouton Installer l'app */}
+          {isWeb && (
+            <TouchableOpacity 
+              style={styles.adInstallButton}
+              onPress={handleInstallClick}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="download-outline" size={16} color="#A0AEC0" />
+              <Text style={styles.adInstallButtonText}>Installer l'app</Text>
+            </TouchableOpacity>
+          )}
+          
+          {/* Bouton fermer pub */}
+          <TouchableOpacity 
+            style={styles.adCloseButton}
+            onPress={() => router.push('/pricing')}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="close" size={16} color="#4A90D9" />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
