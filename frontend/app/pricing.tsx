@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/services/api';
 
-// Subscription Plans (without lifetime)
+// Subscription Plans
 const PLANS = [
   {
     id: 'monthly',
@@ -51,14 +51,14 @@ const PLANS = [
   },
 ];
 
-// Microtransactions - One-time purchases
-const EXTRAS = [
+// Services à la carte - Achats uniques
+const SERVICES = [
   {
     id: 'pdf_export',
-    name: 'Export PDF',
+    name: 'Export PDF Premium',
     price: '0,99 €',
     icon: 'document-text',
-    description: 'Téléchargez votre arbre en PDF haute qualité',
+    description: 'Téléchargez votre arbre généalogique en PDF haute qualité, prêt à imprimer ou partager.',
     color: '#4A90D9',
   },
   {
@@ -66,7 +66,7 @@ const EXTRAS = [
     name: 'Thème Or Royal',
     price: '1,99 €',
     icon: 'color-palette',
-    description: 'Thème élégant avec bordures dorées',
+    description: 'Sublimez votre arbre avec un thème élégant aux bordures dorées et finitions luxueuses.',
     color: '#D4AF37',
   },
   {
@@ -74,7 +74,7 @@ const EXTRAS = [
     name: 'Thème Nature',
     price: '1,99 €',
     icon: 'leaf',
-    description: 'Design naturel avec tons verts',
+    description: 'Un design inspiré de la nature avec des tons verts apaisants et des motifs floraux.',
     color: '#48BB78',
   },
   {
@@ -82,8 +82,27 @@ const EXTRAS = [
     name: 'Thème Vintage',
     price: '1,99 €',
     icon: 'time',
-    description: 'Style rétro sépia classique',
+    description: 'Plongez dans le passé avec ce style rétro sépia, parfait pour une touche nostalgique.',
     color: '#8B7355',
+  },
+];
+
+// Services à venir
+const COMING_SOON = [
+  {
+    icon: 'print',
+    name: 'Impression Poster',
+    description: 'Faites imprimer votre arbre en grand format sur papier premium ou canvas.',
+  },
+  {
+    icon: 'book',
+    name: 'Livre Photo Familial',
+    description: 'Créez un magnifique livre retraçant l\'histoire de votre famille.',
+  },
+  {
+    icon: 'search',
+    name: 'Recherche Généalogique',
+    description: 'Confiez vos recherches à des experts pour découvrir vos ancêtres.',
   },
 ];
 
@@ -92,7 +111,6 @@ export default function PricingScreen() {
   const { user } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<'subscription' | 'extras'>('subscription');
 
   useEffect(() => {
     if (user) {
@@ -139,7 +157,7 @@ export default function PricingScreen() {
     }
   };
 
-  const handlePurchaseExtra = async (extraId: string) => {
+  const handlePurchaseService = async (serviceId: string) => {
     if (!user) {
       if (Platform.OS === 'web') {
         window.alert('Veuillez vous connecter pour effectuer un achat.');
@@ -148,11 +166,11 @@ export default function PricingScreen() {
       return;
     }
 
-    setLoading(extraId);
+    setLoading(serviceId);
     try {
       const response = await api.post('/stripe/create-checkout-session', {
-        plan: extraId,
-        success_url: `${window.location.origin}/(tabs)/profile?purchase=success&item=${extraId}`,
+        plan: serviceId,
+        success_url: `${window.location.origin}/(tabs)/profile?purchase=success&item=${serviceId}`,
         cancel_url: `${window.location.origin}/pricing?purchase=cancelled`,
       });
 
@@ -178,78 +196,51 @@ export default function PricingScreen() {
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Boutique</Text>
+        <Text style={styles.headerTitle}>Offres & Services</Text>
         <View style={{ width: 40 }} />
       </View>
 
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
-        {/* Title */}
-        <View style={styles.titleSection}>
-          <View style={styles.crownIcon}>
-            <Ionicons name="diamond" size={40} color="#D4AF37" />
-          </View>
-          <Text style={styles.title}>Passez Premium</Text>
-          <Text style={styles.subtitle}>
-            Profitez d'AÏLA sans publicité et débloquez des fonctionnalités exclusives
+        {/* Hero Section */}
+        <View style={styles.heroSection}>
+          <Text style={styles.heroEmoji}>🌳</Text>
+          <Text style={styles.heroTitle}>Donnez vie à votre histoire familiale</Text>
+          <Text style={styles.heroSubtitle}>
+            Choisissez l'offre qui vous convient et personnalisez votre expérience
           </Text>
-        </View>
-
-        {/* Tabs */}
-        <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === 'subscription' && styles.activeTab]}
-            onPress={() => setActiveTab('subscription')}
-          >
-            <Ionicons 
-              name="card" 
-              size={18} 
-              color={activeTab === 'subscription' ? '#D4AF37' : '#A0AEC0'} 
-            />
-            <Text style={[styles.tabText, activeTab === 'subscription' && styles.activeTabText]}>
-              Abonnements
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === 'extras' && styles.activeTab]}
-            onPress={() => setActiveTab('extras')}
-          >
-            <Ionicons 
-              name="gift" 
-              size={18} 
-              color={activeTab === 'extras' ? '#D4AF37' : '#A0AEC0'} 
-            />
-            <Text style={[styles.tabText, activeTab === 'extras' && styles.activeTabText]}>
-              Extras
-            </Text>
-          </TouchableOpacity>
         </View>
 
         {/* Current Status */}
         {user && (
           <View style={[styles.statusCard, isPremium && styles.premiumStatusCard]}>
             <Ionicons 
-              name={isPremium ? "checkmark-circle" : "information-circle"} 
+              name={isPremium ? "checkmark-circle" : "gift-outline"} 
               size={24} 
               color={isPremium ? "#48BB78" : "#D4AF37"} 
             />
             <Text style={styles.statusText}>
               {isPremium 
-                ? `Vous êtes Premium - Sans publicités` 
-                : 'Version gratuite avec publicités'}
+                ? 'Vous êtes Premium - Profitez de tous les avantages !' 
+                : 'Version gratuite - Passez Premium pour plus de fonctionnalités'}
             </Text>
           </View>
         )}
 
-        {/* Subscription Plans */}
-        {activeTab === 'subscription' && (
+        {/* Premium Plans Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="diamond" size={24} color="#D4AF37" />
+            <Text style={styles.sectionTitle}>Abonnements Premium</Text>
+          </View>
+          <Text style={styles.sectionDescription}>
+            Supprimez les publicités et débloquez toutes les fonctionnalités
+          </Text>
+
           <View style={styles.plansContainer}>
             {PLANS.map((plan) => (
               <View 
                 key={plan.id} 
-                style={[
-                  styles.planCard,
-                  plan.popular && styles.popularCard,
-                ]}
+                style={[styles.planCard, plan.popular && styles.popularCard]}
               >
                 {plan.popular && (
                   <View style={styles.popularBadge}>
@@ -267,12 +258,11 @@ export default function PricingScreen() {
                     <Text style={styles.savingsText}>Économie de {plan.savings}/an</Text>
                   </View>
                 )}
-                <Text style={styles.planDescription}>{plan.description}</Text>
                 
                 <View style={styles.featuresContainer}>
                   {plan.features.map((feature, index) => (
                     <View key={index} style={styles.featureRow}>
-                      <Ionicons name="checkmark-circle" size={18} color="#48BB78" />
+                      <Ionicons name="checkmark-circle" size={16} color="#48BB78" />
                       <Text style={styles.featureText}>{feature}</Text>
                     </View>
                   ))}
@@ -290,82 +280,112 @@ export default function PricingScreen() {
                   {loading === plan.id ? (
                     <ActivityIndicator size="small" color="#0A1628" />
                   ) : (
-                    <Text style={[
-                      styles.selectButtonText,
-                      plan.popular && styles.popularButtonText,
-                    ]}>
-                      {isPremium ? 'Déjà Premium' : 'Choisir'}
+                    <Text style={[styles.selectButtonText, plan.popular && styles.popularButtonText]}>
+                      {isPremium ? 'Déjà Premium' : 'Choisir ce plan'}
                     </Text>
                   )}
                 </TouchableOpacity>
               </View>
             ))}
           </View>
-        )}
+        </View>
 
-        {/* Extras / Microtransactions */}
-        {activeTab === 'extras' && (
-          <View style={styles.extrasContainer}>
-            <Text style={styles.extrasTitle}>🎨 Personnalisez votre expérience</Text>
-            <Text style={styles.extrasSubtitle}>Achats uniques - pas d'abonnement</Text>
-            
-            {EXTRAS.map((extra) => (
-              <View key={extra.id} style={styles.extraCard}>
-                <View style={[styles.extraIcon, { backgroundColor: extra.color + '20' }]}>
-                  <Ionicons name={extra.icon as any} size={28} color={extra.color} />
+        {/* Services à la carte Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="sparkles" size={24} color="#D4AF37" />
+            <Text style={styles.sectionTitle}>Personnalisation</Text>
+          </View>
+          <Text style={styles.sectionDescription}>
+            Enrichissez votre arbre avec ces services exclusifs (achat unique)
+          </Text>
+
+          <View style={styles.servicesContainer}>
+            {SERVICES.map((service) => (
+              <TouchableOpacity 
+                key={service.id} 
+                style={styles.serviceCard}
+                onPress={() => handlePurchaseService(service.id)}
+                disabled={loading !== null}
+                activeOpacity={0.8}
+              >
+                <View style={[styles.serviceIconContainer, { backgroundColor: service.color + '20' }]}>
+                  <Ionicons name={service.icon as any} size={28} color={service.color} />
                 </View>
-                <View style={styles.extraInfo}>
-                  <Text style={styles.extraName}>{extra.name}</Text>
-                  <Text style={styles.extraDescription}>{extra.description}</Text>
+                <View style={styles.serviceContent}>
+                  <View style={styles.serviceHeader}>
+                    <Text style={styles.serviceName}>{service.name}</Text>
+                    <View style={styles.servicePriceBadge}>
+                      <Text style={styles.servicePriceText}>{service.price}</Text>
+                    </View>
+                  </View>
+                  <Text style={styles.serviceDescription}>{service.description}</Text>
                 </View>
-                <TouchableOpacity
-                  style={styles.extraButton}
-                  onPress={() => handlePurchaseExtra(extra.id)}
-                  disabled={loading !== null}
-                >
-                  {loading === extra.id ? (
-                    <ActivityIndicator size="small" color="#FFFFFF" />
-                  ) : (
-                    <Text style={styles.extraButtonText}>{extra.price}</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
+                {loading === service.id ? (
+                  <ActivityIndicator size="small" color="#D4AF37" />
+                ) : (
+                  <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+                )}
+              </TouchableOpacity>
             ))}
-
-            {/* Coming Soon */}
-            <View style={styles.comingSoonSection}>
-              <Text style={styles.comingSoonTitle}>🚀 Bientôt disponible</Text>
-              <View style={styles.comingSoonItem}>
-                <Ionicons name="print" size={20} color="#A0AEC0" />
-                <Text style={styles.comingSoonText}>Impression poster de votre arbre</Text>
-              </View>
-              <View style={styles.comingSoonItem}>
-                <Ionicons name="book" size={20} color="#A0AEC0" />
-                <Text style={styles.comingSoonText}>Livre photo familial personnalisé</Text>
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* FAQ */}
-        <View style={styles.faqSection}>
-          <Text style={styles.faqTitle}>Questions fréquentes</Text>
-          
-          <View style={styles.faqItem}>
-            <Text style={styles.faqQuestion}>Puis-je annuler à tout moment ?</Text>
-            <Text style={styles.faqAnswer}>
-              Oui, vous pouvez annuler votre abonnement à tout moment. 
-              Vous garderez l'accès premium jusqu'à la fin de la période payée.
-            </Text>
-          </View>
-          
-          <View style={styles.faqItem}>
-            <Text style={styles.faqQuestion}>Les achats "Extras" sont-ils permanents ?</Text>
-            <Text style={styles.faqAnswer}>
-              Oui ! Une fois achetés, les thèmes et exports PDF restent disponibles pour toujours sur votre compte.
-            </Text>
           </View>
         </View>
+
+        {/* Coming Soon Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="rocket" size={24} color="#A0AEC0" />
+            <Text style={[styles.sectionTitle, { color: '#A0AEC0' }]}>Bientôt disponible</Text>
+          </View>
+
+          <View style={styles.comingSoonContainer}>
+            {COMING_SOON.map((item, index) => (
+              <View key={index} style={styles.comingSoonCard}>
+                <View style={styles.comingSoonIcon}>
+                  <Ionicons name={item.icon as any} size={24} color="#6B7C93" />
+                </View>
+                <View style={styles.comingSoonContent}>
+                  <Text style={styles.comingSoonName}>{item.name}</Text>
+                  <Text style={styles.comingSoonDescription}>{item.description}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* FAQ Section */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="help-circle" size={24} color="#D4AF37" />
+            <Text style={styles.sectionTitle}>Questions fréquentes</Text>
+          </View>
+
+          <View style={styles.faqContainer}>
+            <View style={styles.faqItem}>
+              <Text style={styles.faqQuestion}>Puis-je annuler mon abonnement ?</Text>
+              <Text style={styles.faqAnswer}>
+                Oui, à tout moment depuis votre profil. Vous conservez l'accès jusqu'à la fin de la période payée.
+              </Text>
+            </View>
+            
+            <View style={styles.faqItem}>
+              <Text style={styles.faqQuestion}>Les achats de personnalisation sont-ils définitifs ?</Text>
+              <Text style={styles.faqAnswer}>
+                Oui ! Une fois achetés, les thèmes et exports PDF restent disponibles à vie sur votre compte.
+              </Text>
+            </View>
+
+            <View style={styles.faqItem}>
+              <Text style={styles.faqQuestion}>Comment fonctionne l'export PDF ?</Text>
+              <Text style={styles.faqAnswer}>
+                Après achat, vous pourrez télécharger votre arbre en format PDF haute résolution, parfait pour l'impression.
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Footer spacing */}
+        <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -401,54 +421,28 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 20,
-    paddingBottom: 40,
   },
-  titleSection: {
+  heroSection: {
     alignItems: 'center',
     marginBottom: 24,
+    paddingVertical: 20,
   },
-  crownIcon: {
-    marginBottom: 12,
+  heroEmoji: {
+    fontSize: 50,
+    marginBottom: 16,
   },
-  title: {
-    fontSize: 26,
+  heroTitle: {
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
+    marginBottom: 8,
   },
-  subtitle: {
+  heroSubtitle: {
     fontSize: 15,
     color: '#A0AEC0',
     textAlign: 'center',
-    marginTop: 8,
     lineHeight: 22,
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#1E3A5F',
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 20,
-  },
-  tab: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: 10,
-    gap: 6,
-  },
-  activeTab: {
-    backgroundColor: '#2D4A6F',
-  },
-  tabText: {
-    fontSize: 14,
-    color: '#A0AEC0',
-    fontWeight: '500',
-  },
-  activeTabText: {
-    color: '#D4AF37',
   },
   statusCard: {
     flexDirection: 'row',
@@ -460,14 +454,34 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   premiumStatusCard: {
-    backgroundColor: 'rgba(72, 187, 120, 0.2)',
+    backgroundColor: 'rgba(72, 187, 120, 0.15)',
     borderWidth: 1,
     borderColor: '#48BB78',
   },
   statusText: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#FFFFFF',
     flex: 1,
+  },
+  section: {
+    marginBottom: 32,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  sectionDescription: {
+    fontSize: 14,
+    color: '#A0AEC0',
+    marginBottom: 16,
+    lineHeight: 20,
   },
   plansContainer: {
     gap: 16,
@@ -506,7 +520,7 @@ const styles = StyleSheet.create({
   priceRow: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    marginBottom: 4,
+    marginBottom: 8,
   },
   planPrice: {
     fontSize: 32,
@@ -524,26 +538,21 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 8,
     alignSelf: 'flex-start',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   savingsText: {
     fontSize: 12,
     color: '#48BB78',
     fontWeight: '600',
   },
-  planDescription: {
-    fontSize: 14,
-    color: '#A0AEC0',
-    marginBottom: 16,
-  },
   featuresContainer: {
-    marginBottom: 20,
-    gap: 10,
+    marginBottom: 16,
+    gap: 8,
   },
   featureRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
   },
   featureText: {
     fontSize: 14,
@@ -570,22 +579,10 @@ const styles = StyleSheet.create({
   popularButtonText: {
     color: '#0A1628',
   },
-  extrasContainer: {
+  servicesContainer: {
     gap: 12,
   },
-  extrasTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-  },
-  extrasSubtitle: {
-    fontSize: 14,
-    color: '#A0AEC0',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  extraCard: {
+  serviceCard: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#1E3A5F',
@@ -593,79 +590,94 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 12,
   },
-  extraIcon: {
+  serviceIconContainer: {
     width: 56,
     height: 56,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  extraInfo: {
+  serviceContent: {
     flex: 1,
   },
-  extraName: {
+  serviceHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  serviceName: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginBottom: 4,
+    flex: 1,
   },
-  extraDescription: {
+  servicePriceBadge: {
+    backgroundColor: 'rgba(212, 175, 55, 0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    marginLeft: 8,
+  },
+  servicePriceText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#D4AF37',
+  },
+  serviceDescription: {
     fontSize: 13,
     color: '#A0AEC0',
+    lineHeight: 18,
   },
-  extraButton: {
-    backgroundColor: '#4A90D9',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    minWidth: 70,
+  comingSoonContainer: {
+    gap: 12,
+  },
+  comingSoonCard: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: 'rgba(30, 58, 95, 0.5)',
+    borderRadius: 12,
+    padding: 16,
+    gap: 12,
+    borderWidth: 1,
+    borderColor: '#2D4A6F',
+    borderStyle: 'dashed',
+  },
+  comingSoonIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    backgroundColor: 'rgba(107, 124, 147, 0.2)',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  extraButtonText: {
-    fontSize: 14,
+  comingSoonContent: {
+    flex: 1,
+  },
+  comingSoonName: {
+    fontSize: 15,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: '#A0AEC0',
+    marginBottom: 4,
   },
-  comingSoonSection: {
+  comingSoonDescription: {
+    fontSize: 13,
+    color: '#6B7C93',
+    lineHeight: 18,
+  },
+  faqContainer: {
+    gap: 16,
+  },
+  faqItem: {
     backgroundColor: '#1E3A5F',
     borderRadius: 12,
     padding: 16,
-    marginTop: 16,
-    opacity: 0.7,
-  },
-  comingSoonTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#D4AF37',
-    marginBottom: 12,
-  },
-  comingSoonItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 8,
-  },
-  comingSoonText: {
-    fontSize: 14,
-    color: '#A0AEC0',
-  },
-  faqSection: {
-    marginTop: 32,
-  },
-  faqTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 16,
-  },
-  faqItem: {
-    marginBottom: 16,
   },
   faqQuestion: {
     fontSize: 15,
     fontWeight: '600',
     color: '#D4AF37',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   faqAnswer: {
     fontSize: 14,
