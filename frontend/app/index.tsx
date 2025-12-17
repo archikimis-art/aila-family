@@ -221,9 +221,12 @@ export default function WelcomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     backgroundColor: '#0A1628',
+  },
+  container: {
+    flex: 1,
   },
   gradient: {
     flex: 1,
