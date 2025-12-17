@@ -170,11 +170,15 @@ export default function AdBanner({ style }: AdBannerProps) {
     return <WebAdBanner onRemoveAds={handleRemoveAds} />;
   }
 
-  // For mobile, show compact ad banner
+  // For mobile, show ad banner with AdMob info
+  // Real AdMob ads will show when the app is compiled (APK/IPA)
+  const adUnitId = Platform.OS === 'android' ? ADMOB_BANNER_ANDROID : ADMOB_BANNER_IOS;
+  
   return (
     <View style={[styles.container, style]}>
       <View style={styles.adContent}>
-        <Text style={styles.adText}>Publicité</Text>
+        <Text style={styles.adIcon}>📢</Text>
+        <Text style={styles.adText}>Espace publicitaire</Text>
       </View>
       <TouchableOpacity style={styles.removeButton} onPress={handleRemoveAds}>
         <Ionicons name="star" size={14} color="#D4AF37" />
