@@ -58,7 +58,7 @@ export function AdsProvider({ children }: { children: ReactNode }) {
       const data = response.data;
       
       // User is premium if they have an active subscription or lifetime purchase
-      const isActive = data.status === 'active' || data.status === 'lifetime';
+      const isActive = data.is_premium || data.subscription_status === 'active' || data.subscription_status === 'lifetime';
       setIsPremium(isActive);
       setSubscriptionPlan(data.plan || null);
     } catch (error) {
