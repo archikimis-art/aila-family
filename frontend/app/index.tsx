@@ -210,9 +210,6 @@ export default function WelcomeScreen() {
             <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
           </View>
         </View>
-        
-        {/* Ad Banner */}
-        <AdBanner />
       </LinearGradient>
     </SafeAreaView>
   );
