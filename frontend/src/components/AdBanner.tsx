@@ -135,15 +135,15 @@ export default function AdBanner({ style }: AdBannerProps) {
     return <WebAdBanner onRemoveAds={handleRemoveAds} />;
   }
 
-  // For mobile, show placeholder (real ads via AdMob in compiled app)
-  // Add paddingBottom for safe area on iPhones with home indicator
+  // For mobile, show compact ad banner
   return (
-    <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, 8) }, style]}>
+    <View style={[styles.container, style]}>
       <View style={styles.adContent}>
         <Text style={styles.adText}>Publicité</Text>
       </View>
       <TouchableOpacity style={styles.removeButton} onPress={handleRemoveAds}>
-        <Ionicons name="close" size={16} color="#4A90D9" />
+        <Ionicons name="star" size={14} color="#D4AF37" />
+        <Text style={styles.premiumText}>Premium</Text>
       </TouchableOpacity>
     </View>
   );
