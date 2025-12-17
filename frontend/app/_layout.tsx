@@ -276,6 +276,7 @@ export default function RootLayout() {
               }} 
             />
           </Stack>
+          </ConversionProvider>
         </AdsProvider>
       </AuthProvider>
     </SafeAreaProvider>
