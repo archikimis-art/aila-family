@@ -619,6 +619,18 @@ const styles = StyleSheet.create({
   content: {
     paddingBottom: 180, // Plus de marge pour le scroll complet sur mobile (bannière pub + tab bar)
   },
+  scrollHint: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    backgroundColor: 'rgba(26, 47, 74, 0.5)',
+  },
+  scrollHintText: {
+    color: '#6B7C93',
+    fontSize: 12,
+    marginHorizontal: 8,
+  },
   header: {
     alignItems: 'center',
     paddingVertical: 32,
