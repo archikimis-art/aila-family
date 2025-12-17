@@ -215,13 +215,14 @@ export default function WelcomeScreen() {
             </TouchableOpacity>
           )}
           
-          {/* Bouton fermer pub */}
+          {/* Bouton Premium */}
           <TouchableOpacity 
-            style={styles.adCloseButton}
+            style={styles.adPremiumButton}
             onPress={() => router.push('/pricing')}
             activeOpacity={0.7}
           >
-            <Ionicons name="close" size={16} color="#4A90D9" />
+            <Ionicons name="star" size={14} color="#D4AF37" />
+            <Text style={styles.adPremiumButtonText}>Premium</Text>
           </TouchableOpacity>
         </View>
       </View>
