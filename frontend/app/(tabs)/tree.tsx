@@ -746,6 +746,8 @@ export default function TreeScreen() {
   const [selectedRecipients, setSelectedRecipients] = useState<string[]>([]);
   const [sendByEmail, setSendByEmail] = useState(true);
   const [sendInApp, setSendInApp] = useState(true);
+  const [sharedTrees, setSharedTrees] = useState<any[]>([]);
+  const [showSharedTrees, setShowSharedTrees] = useState(false);
 
   // Load events and collaborators on mount (only for authenticated users)
   useEffect(() => {
