@@ -610,6 +610,67 @@ async def admin_reset_password(data: PasswordReset):
     
     return {"message": "Password reset successfully"}
 
+@api_router.post("/auth/forgot-password")
+async def forgot_password(data: ForgotPasswordRequest):
+    """Request a password reset email"""
+    email = data.email.lower().strip()
+    
+    # Check if user exists (but don't reveal if they don't for security)
+    user = await db.users.find_one({"email": {"$regex": f"^{email}$", "$options": "i"}})
+    
+    if user:
+        # Generate reset token
+        reset_token = str(uuid.uuid4())
+        expires_at = datetime.utcnow() + timedelta(hours=1)
+        
+        # Store reset token in database
+        await db.password_resets.delete_many({"email": email})  # Remove old tokens
+        await db.password_resets.insert_one({
+            "email": email,
+            "token": reset_token,
+            "expires_at": expires_at,
+            "created_at": datetime.utcnow()
+        })
+        
+        # Send email
+        await send_password_reset_email(email, reset_token)
+    
+    # Always return success to prevent email enumeration
+    return {"message": "Si un compte existe avec cet email, vous recevrez un lien de réinitialisation."}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(data: ResetPasswordRequest):
+    """Reset password using the token from email"""
+    # Find the reset token
+    reset_record = await db.password_resets.find_one({"token": data.token})
+    
+    if not reset_record:
+        raise HTTPException(status_code=400, detail="Lien de réinitialisation invalide ou expiré")
+    
+    # Check if token is expired
+    if reset_record['expires_at'] < datetime.utcnow():
+        await db.password_resets.delete_one({"token": data.token})
+        raise HTTPException(status_code=400, detail="Ce lien a expiré. Veuillez demander un nouveau lien.")
+    
+    # Validate new password
+    if len(data.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Le mot de passe doit contenir au moins 6 caractères")
+    
+    # Update password
+    new_hash = hash_password(data.new_password)
+    result = await db.users.update_one(
+        {"email": {"$regex": f"^{reset_record['email']}$", "$options": "i"}},
+        {"$set": {"password_hash": new_hash}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    # Delete the used token
+    await db.password_resets.delete_one({"token": data.token})
+    
+    return {"message": "Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter."}
+
 @api_router.get("/auth/me", response_model=UserResponse)
 async def get_me(current_user: dict = Depends(get_current_user)):
     user = serialize_object_id(current_user.copy())
