@@ -264,15 +264,16 @@ except Exception as e:
         logger.error(f"❌ Fallback client creation failed: {fallback_error}")
         pass
 
-# JWT Configuration
+# JWT Configuration - CRITIQUE POUR LA STABILITÉ DE L'AUTHENTIFICATION
+# Ce secret DOIT être constant pour que les sessions restent valides après redémarrage
 JWT_SECRET = os.environ.get('JWT_SECRET')
 if not JWT_SECRET:
-    # Generate a default secret for development, but log a warning
-    import secrets
-    JWT_SECRET = secrets.token_urlsafe(32)
-    logging.warning("JWT_SECRET not set, using generated secret. Set JWT_SECRET in production!")
+    # Secret par défaut FIXE pour la production - NE JAMAIS CHANGER
+    # Idéalement, définir JWT_SECRET dans les variables d'environnement Render
+    JWT_SECRET = 'aila_production_jwt_secret_2024_stable_key_do_not_change_47e8cc1a'
+    logging.warning("JWT_SECRET not set in environment, using default production secret")
 JWT_ALGORITHM = 'HS256'
-JWT_EXPIRATION_HOURS = 24 * 7  # 1 week
+JWT_EXPIRATION_HOURS = 24 * 30  # 30 jours pour éviter les déconnexions fréquentes
 
 # Create the main app
 app = FastAPI(title="AÏLA - Arbre Généalogique API", version="1.0.0")
