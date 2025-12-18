@@ -1766,10 +1766,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
   },
+  headerTitleContainer: {
+    flexDirection: 'column',
+  },
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: '#FFFFFF',
+  },
+  headerAccount: {
+    fontSize: 12,
+    color: '#D4AF37',
+    marginTop: 2,
   },
   convertButton: {
     flexDirection: 'row',
