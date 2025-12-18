@@ -2,21 +2,37 @@ import axios from 'axios';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
+// ============================================================
+// CONFIGURATION API - NE PAS MODIFIER
+// ============================================================
+// URL du backend de production Render - FIXE ET DÉFINITIVE
+const PRODUCTION_API_URL = 'https://aila-backend-hc1m.onrender.com';
+
 // Determine API URL based on environment
 const getApiUrl = () => {
-  // Check if we're on production web
+  // PRODUCTION: Site web aila.family
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
     const hostname = window.location.hostname;
+    // Production domains
     if (hostname === 'www.aila.family' || hostname === 'aila.family') {
-      return 'https://aila-backend-hc1m.onrender.com';
+      console.log('[API] Using PRODUCTION URL:', PRODUCTION_API_URL);
+      return PRODUCTION_API_URL;
+    }
+    // Vercel preview domains
+    if (hostname.includes('vercel.app') || hostname.includes('aila')) {
+      console.log('[API] Using PRODUCTION URL (Vercel):', PRODUCTION_API_URL);
+      return PRODUCTION_API_URL;
     }
   }
   
-  // Use environment variable or fallback
-  return process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+  // DEVELOPMENT: Local or Expo preview
+  const devUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+  console.log('[API] Using DEV URL:', devUrl);
+  return devUrl;
 };
 
 const API_URL = getApiUrl();
+console.log('[API] Final API_URL:', API_URL);
 
 const api = axios.create({
   baseURL: `${API_URL}/api`,
