@@ -15,7 +15,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import api, { gdprAPI, treeAPI, exportAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AdBanner from '@/components/AdBanner';
 
 export default function ProfileScreen() {
   const router = useRouter();
