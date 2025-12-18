@@ -25,18 +25,7 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: true,
-        headerStyle: {
-          backgroundColor: '#0A1628',
-          borderBottomWidth: 1,
-          borderBottomColor: '#1A2F4A',
-        },
-        headerTintColor: '#D4AF37',
-        headerTitleStyle: {
-          fontWeight: '600',
-          fontSize: 18,
-        },
-        headerLeft: () => <BackButton />,
+        headerShown: false, // Masquer le header par défaut
         tabBarStyle: {
           backgroundColor: '#0A1628',
           borderTopColor: '#1A2F4A',
@@ -57,6 +46,7 @@ export default function TabsLayout() {
         name="tree"
         options={{
           title: 'Arbre',
+          headerShown: false, // Pas de header sur l'arbre
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="git-branch-outline" size={size} color={color} />
           ),
