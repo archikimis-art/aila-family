@@ -478,15 +478,16 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   adPremiumButton: {
+    flex: 1, // Prend l'espace disponible
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'rgba(212, 175, 55, 0.15)',
     borderWidth: 1,
     borderColor: '#D4AF37',
     borderRadius: 8,
     paddingVertical: 6,
-    paddingHorizontal: 12,
-    marginLeft: 16,
+    paddingHorizontal: 8,
   },
   adPremiumButtonText: {
     color: '#D4AF37',
