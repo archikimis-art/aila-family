@@ -8,11 +8,8 @@
     "scheme": "aila",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "owner": "aila-family",
     "extra": {
-      "eas": {
-        "projectId": "aila-family-app"
-      }
+      "eas": {}
     },
     "ios": {
       "supportsTablet": true,
