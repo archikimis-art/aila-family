@@ -1001,7 +1001,7 @@ export default function TreeScreen() {
             </Text>
             {user && !isPreviewMode && !sharedTreeOwner && (
               <Text style={styles.headerAccount}>
-                👤 {user.first_name} {user.last_name}
+                {user.first_name} {user.last_name} • {user.email}
               </Text>
             )}
           </View>
