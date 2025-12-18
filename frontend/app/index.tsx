@@ -434,14 +434,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E3A5F',
     borderTopWidth: 1,
     borderTopColor: '#2D4A6F',
+    alignItems: 'center', // Centre le contenu sur web
   },
   adBannerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Espace égal entre les boutons
+    justifyContent: 'space-between',
     paddingVertical: 12,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+    maxWidth: 400, // Largeur max comme sur mobile
+    width: '100%',
   },
   adShareButton: {
     flex: 1, // Prend l'espace disponible
