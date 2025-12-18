@@ -211,7 +211,7 @@ export default function WelcomeScreen() {
               activeOpacity={0.7}
             >
               <Ionicons name="download-outline" size={16} color="#A0AEC0" />
-              <Text style={styles.adInstallButtonText}>Installer l'app</Text>
+              <Text style={styles.adInstallButtonText}>Installer</Text>
             </TouchableOpacity>
           )}
           
