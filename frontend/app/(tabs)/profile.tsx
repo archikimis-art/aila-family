@@ -596,9 +596,6 @@ export default function ProfileScreen() {
         {/* Version */}
         <Text style={styles.version}>Version 1.0.0</Text>
       </ScrollView>
-      
-      {/* Ad Banner for free users */}
-      <AdBanner />
     </SafeAreaView>
   );
 }
