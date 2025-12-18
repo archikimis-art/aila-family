@@ -347,7 +347,6 @@ export default function ProfileScreen() {
       <ScrollView 
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={true}
-        indicatorStyle="white"
       >
         {/* Indicateur de scroll */}
         <View style={styles.scrollHint}>
