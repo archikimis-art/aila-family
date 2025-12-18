@@ -1775,9 +1775,10 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   headerAccount: {
-    fontSize: 12,
-    color: '#D4AF37',
+    fontSize: 10,
+    color: '#6B7C93',
     marginTop: 2,
+    opacity: 0.8,
   },
   convertButton: {
     flexDirection: 'row',
