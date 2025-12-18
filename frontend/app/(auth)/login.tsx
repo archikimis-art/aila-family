@@ -52,15 +52,17 @@ export default function LoginScreen() {
       
       // Messages d'erreur personnalisés - ORDRE IMPORTANT
       if (detail.includes('Invalid email or password') || detail.includes('Invalid credentials') || detail.includes('Incorrect')) {
-        showError('Email ou mot de passe incorrect. Veuillez vérifier vos identifiants.');
+        showError('Email ou mot de passe incorrect. Utilisez "Mot de passe oublié" ci-dessous pour le réinitialiser.');
       } else if (detail.includes('not found') || detail.includes('User not found')) {
         showError('Aucun compte trouvé avec cette adresse email. Veuillez vous inscrire.');
       } else if (detail.includes('Invalid email format')) {
         showError('Format d\'email invalide.');
+      } else if (error.message?.includes('Network') || error.code === 'ERR_NETWORK') {
+        showError('Erreur de connexion au serveur. Vérifiez votre connexion internet.');
       } else if (detail) {
         showError(detail);
       } else {
-        showError('Erreur de connexion. Veuillez réessayer.');
+        showError('Erreur de connexion. Veuillez réessayer ou utiliser "Mot de passe oublié".');
       }
     } finally {
       setLoading(false);
