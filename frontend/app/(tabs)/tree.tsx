@@ -995,9 +995,16 @@ export default function TreeScreen() {
         </TouchableOpacity>
         <View style={styles.headerLeft}>
           <Ionicons name="leaf" size={28} color="#D4AF37" />
-          <Text style={styles.headerTitle}>
-            {sharedTreeOwner ? `Arbre de ${sharedTreeOwner.name}` : (isPreviewMode ? 'Mode Aperçu' : 'Mon Arbre')}
-          </Text>
+          <View style={styles.headerTitleContainer}>
+            <Text style={styles.headerTitle}>
+              {sharedTreeOwner ? `Arbre de ${sharedTreeOwner.name}` : (isPreviewMode ? 'Mode Aperçu' : 'Mon Arbre')}
+            </Text>
+            {user && !isPreviewMode && !sharedTreeOwner && (
+              <Text style={styles.headerAccount}>
+                👤 {user.first_name} {user.last_name}
+              </Text>
+            )}
+          </View>
         </View>
         <View style={styles.headerButtons}>
           {/* Shared trees button - show badge if there are shared trees */}
