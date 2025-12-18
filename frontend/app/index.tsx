@@ -203,7 +203,7 @@ export default function WelcomeScreen() {
             <Text style={styles.adShareButtonText}>Partager</Text>
           </TouchableOpacity>
           
-          {/* Bouton Télécharger App */}
+          {/* Bouton Télécharger */}
           {isWeb && (
             <TouchableOpacity 
               style={styles.adInstallButton}
@@ -211,7 +211,7 @@ export default function WelcomeScreen() {
               activeOpacity={0.7}
             >
               <Ionicons name="download-outline" size={14} color="#A0AEC0" />
-              <Text style={styles.adInstallButtonText} translate="no">App</Text>
+              <Text style={styles.adInstallButtonText}>Télécharger</Text>
             </TouchableOpacity>
           )}
           
