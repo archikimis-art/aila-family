@@ -3,36 +3,38 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
 // ============================================================
-// CONFIGURATION API - NE PAS MODIFIER
+// CONFIGURATION API - NE PAS MODIFIER CETTE SECTION
 // ============================================================
 // URL du backend de production Render - FIXE ET DÉFINITIVE
 const PRODUCTION_API_URL = 'https://aila-backend-hc1m.onrender.com';
 
 // Determine API URL based on environment
 const getApiUrl = () => {
-  // PRODUCTION: Site web aila.family
+  // Sur le WEB : toujours utiliser la production SAUF localhost
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    // Production domains
-    if (hostname === 'www.aila.family' || hostname === 'aila.family') {
-      console.log('[API] Using PRODUCTION URL:', PRODUCTION_API_URL);
-      return PRODUCTION_API_URL;
+    
+    // Seul localhost utilise le backend local
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      const devUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+      console.log('[API] DEV MODE - localhost:', devUrl);
+      return devUrl;
     }
-    // Vercel preview domains
-    if (hostname.includes('vercel.app') || hostname.includes('aila')) {
-      console.log('[API] Using PRODUCTION URL (Vercel):', PRODUCTION_API_URL);
-      return PRODUCTION_API_URL;
-    }
+    
+    // TOUS les autres domaines (aila.family, vercel, preview, etc.) → PRODUCTION
+    console.log('[API] PRODUCTION MODE for domain:', hostname);
+    return PRODUCTION_API_URL;
   }
   
-  // DEVELOPMENT: Local or Expo preview
-  const devUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
-  console.log('[API] Using DEV URL:', devUrl);
-  return devUrl;
+  // Mobile natif : utiliser la production par défaut
+  console.log('[API] MOBILE/NATIVE MODE → PRODUCTION');
+  return PRODUCTION_API_URL;
 };
 
 const API_URL = getApiUrl();
-console.log('[API] Final API_URL:', API_URL);
+console.log('[API] ========================================');
+console.log('[API] FINAL API URL:', API_URL);
+console.log('[API] ========================================');
 
 const api = axios.create({
   baseURL: `${API_URL}/api`,
