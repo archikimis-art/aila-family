@@ -438,31 +438,36 @@ const styles = StyleSheet.create({
   adBannerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between', // Espace égal entre les boutons
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingBottom: Platform.OS === 'ios' ? 28 : 12,
   },
   adShareButton: {
+    flex: 1, // Prend l'espace disponible
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
   },
   adShareButtonText: {
     color: '#D4AF37',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
     marginLeft: 6,
   },
   adInstallButton: {
+    flex: 1, // Prend l'espace disponible - CENTRÉ
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: '#3A5A7C',
     borderRadius: 8,
     paddingVertical: 8,
+    marginHorizontal: 8, // Marge pour centrer
     paddingHorizontal: 12,
     marginLeft: 16,
   },
