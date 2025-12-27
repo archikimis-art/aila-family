@@ -238,6 +238,18 @@ frontend:
         agent: "main"
         comment: "Welcome screen displays correctly with all buttons"
 
+  - task: "Tree View - Sibling Sorting by Birth Date"
+    implemented: true
+    working: NA
+    file: "app/(tabs)/tree.tsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "NEW FEATURE: Siblings are now automatically sorted by birth date (oldest to youngest). Members without birth date are placed at the end. Added parseBirthDate() and sortSiblingsByBirthDate() functions in buildTreeLayout(). Sorting is applied in STEP 4.5, STEP 6 and STEP 8 of the tree layout algorithm."
+
   - task: "Tree View (Preview Mode)"
     implemented: true
     working: true
