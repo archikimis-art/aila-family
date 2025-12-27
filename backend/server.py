@@ -2259,13 +2259,19 @@ async def delete_message(
 
 @api_router.get("/events/birthdays", response_model=List[UpcomingBirthdayResponse])
 async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user)):
-    """Get upcoming birthdays from tree members (next 7 days)"""
+    """Get upcoming birthdays from tree members (next 7 days) - EXCLUDING DECEASED PERSONS"""
     user_id = str(current_user['_id'])
     
-    # Get all persons with birth dates
+    # Get all persons with birth dates, EXCLUDING deceased persons
+    # A person is deceased if death_date exists and is not empty
     persons = await db.persons.find({
         "user_id": user_id,
-        "birth_date": {"$ne": None, "$exists": True}
+        "birth_date": {"$ne": None, "$exists": True},
+        "$or": [
+            {"death_date": {"$exists": False}},  # No death_date field
+            {"death_date": None},                 # death_date is null
+            {"death_date": ""}                    # death_date is empty string
+        ]
     }).to_list(None)
     
     upcoming = []
@@ -2300,6 +2306,12 @@ async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user))
         if not birth_date_str:
             continue
         
+        # Double-check: Skip if person has ANY death date (even partial)
+        death_date = person.get("death_date")
+        if death_date and str(death_date).strip():
+            logger.info(f"Skipping birthday for deceased person: {person.get('first_name')} {person.get('last_name')}")
+            continue
+        
         birth_date = parse_birth_date(birth_date_str)
         if not birth_date:
             logger.warning(f"Could not parse birth date: {birth_date_str}")
@@ -2330,7 +2342,7 @@ async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user))
     
     # Sort by days until birthday
     upcoming.sort(key=lambda x: x.days_until)
-    logger.info(f"Found {len(upcoming)} upcoming birthdays in next 7 days")
+    logger.info(f"Found {len(upcoming)} upcoming birthdays in next 7 days (excluding deceased)")
     return upcoming
 
 @api_router.get("/events/today")
