@@ -670,12 +670,21 @@ export default function TreeScreen() {
       const familyUnits = buildFamilyUnits(personsAtLevel);
       
       familyUnits.forEach(unit => {
-        // Get all children of this unit
-        const allChildrenIds: string[] = [];
+        // Get all children of this unit - SORTED BY BIRTH DATE
+        let allChildrenIds: string[] = [];
         unit.forEach(person => {
           const children = parentToChildren.get(person.id);
-          if (children) children.forEach(cId => allChildrenIds.push(cId));
+          if (children) {
+            children.forEach(cId => {
+              if (!allChildrenIds.includes(cId)) {
+                allChildrenIds.push(cId);
+              }
+            });
+          }
         });
+        
+        // Re-sort children by birth date to ensure correct order
+        allChildrenIds = sortSiblingsByBirthDate(allChildrenIds);
         
         if (allChildrenIds.length === 0) return;
         
