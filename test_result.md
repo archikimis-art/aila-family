@@ -117,6 +117,18 @@ backend:
         agent: "main"
         comment: "API returns version info correctly"
 
+  - task: "Chat Privacy - Messages Scoped to Family Tree"
+    implemented: true
+    working: NA
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: NA
+        agent: "main"
+        comment: "CRITICAL FIX: Chat messages are now scoped to tree_owner_id. Messages visible only to tree owner + accepted collaborators. Added helper functions get_user_tree_owner_id() and get_accessible_tree_ids(). Legacy messages without tree_owner_id are handled gracefully. Needs testing to verify privacy."
+
   - task: "User Registration with GDPR consent"
     implemented: true
     working: true
