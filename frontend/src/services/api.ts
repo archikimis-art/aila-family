@@ -180,3 +180,19 @@ export const eventsAPI = {
   }) => api.post('/events', data),
   deleteEvent: (id: string) => api.delete(`/events/${id}`),
 };
+
+// Tree Merge API
+export const mergeAPI = {
+  getMergeableTrees: () => api.get('/tree/merge/shared-trees'),
+  analyzeMerge: (sourceTreeOwnerId: string) => 
+    api.post(`/tree/merge/analyze?source_tree_owner_id=${sourceTreeOwnerId}`),
+  executeMerge: (data: {
+    source_tree_owner_id: string;
+    decisions: Array<{
+      source_person_id: string;
+      action: 'merge' | 'add' | 'skip';
+      target_person_id?: string;
+    }>;
+    import_links: boolean;
+  }) => api.post('/tree/merge/execute', data),
+};
