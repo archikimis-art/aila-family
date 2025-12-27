@@ -2347,22 +2347,33 @@ async def get_upcoming_birthdays(current_user: dict = Depends(get_current_user))
 
 @api_router.get("/events/today")
 async def get_todays_events(current_user: dict = Depends(get_current_user)):
-    """Get today's birthdays and events for animation display"""
+    """Get today's birthdays and events for animation display - EXCLUDING DECEASED PERSONS"""
     user_id = str(current_user['_id'])
     today = datetime.now()
     today_str = today.strftime("%m-%d")
     
     events = []
     
-    # Check for birthdays today
+    # Check for birthdays today - EXCLUDING deceased persons
     persons = await db.persons.find({
         "user_id": user_id,
-        "birth_date": {"$ne": None, "$exists": True}
+        "birth_date": {"$ne": None, "$exists": True},
+        "$or": [
+            {"death_date": {"$exists": False}},  # No death_date field
+            {"death_date": None},                 # death_date is null
+            {"death_date": ""}                    # death_date is empty string
+        ]
     }).to_list(None)
     
     for person in persons:
         birth_date_str = person.get("birth_date")
         if birth_date_str:
+            # Skip if person has ANY death date (even partial)
+            death_date = person.get("death_date")
+            if death_date and str(death_date).strip():
+                logger.info(f"Skipping today's birthday for deceased: {person.get('first_name')} {person.get('last_name')}")
+                continue
+            
             try:
                 birth_date = datetime.strptime(birth_date_str.split("T")[0], "%Y-%m-%d")
                 if birth_date.strftime("%m-%d") == today_str:
