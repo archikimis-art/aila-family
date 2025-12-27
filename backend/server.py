@@ -1662,6 +1662,346 @@ async def send_tree_by_email(request: SendTreeEmailRequest, current_user: dict =
         "errors": errors if errors else None
     }
 
+# ===================== TREE MERGE ROUTES =====================
+
+def normalize_name(name: str) -> str:
+    """Normalize a name for comparison"""
+    if not name:
+        return ""
+    import unicodedata
+    # Remove accents
+    normalized = unicodedata.normalize('NFD', name.lower())
+    normalized = ''.join(c for c in normalized if unicodedata.category(c) != 'Mn')
+    # Remove extra spaces and special characters
+    normalized = ' '.join(normalized.split())
+    return normalized.strip()
+
+def parse_date_for_comparison(date_str: Optional[str]) -> Optional[datetime]:
+    """Parse a date string for comparison"""
+    if not date_str:
+        return None
+    
+    date_str = str(date_str).split("T")[0].strip()
+    
+    formats = [
+        "%Y-%m-%d",
+        "%d/%m/%Y",
+        "%d-%m-%Y",
+        "%Y",
+    ]
+    
+    for fmt in formats:
+        try:
+            return datetime.strptime(date_str, fmt)
+        except ValueError:
+            continue
+    return None
+
+def calculate_similarity(person1: dict, person2: dict) -> tuple[float, str]:
+    """
+    Calculate similarity between two persons.
+    Returns (score 0-100, reason)
+    """
+    score = 0
+    reasons = []
+    
+    # Compare first name (40 points max)
+    name1 = normalize_name(person1.get('first_name', ''))
+    name2 = normalize_name(person2.get('first_name', ''))
+    if name1 and name2:
+        if name1 == name2:
+            score += 40
+            reasons.append("Même prénom")
+        elif name1 in name2 or name2 in name1:
+            score += 25
+            reasons.append("Prénom similaire")
+    
+    # Compare last name (40 points max)
+    lastname1 = normalize_name(person1.get('last_name', ''))
+    lastname2 = normalize_name(person2.get('last_name', ''))
+    if lastname1 and lastname2:
+        if lastname1 == lastname2:
+            score += 40
+            reasons.append("Même nom de famille")
+        elif lastname1 in lastname2 or lastname2 in lastname1:
+            score += 25
+            reasons.append("Nom similaire")
+    
+    # Compare birth date (20 points max)
+    date1 = parse_date_for_comparison(person1.get('birth_date'))
+    date2 = parse_date_for_comparison(person2.get('birth_date'))
+    if date1 and date2:
+        diff_days = abs((date1 - date2).days)
+        if diff_days == 0:
+            score += 20
+            reasons.append("Même date de naissance")
+        elif diff_days <= 365:  # Within a year (could be partial dates)
+            score += 10
+            reasons.append("Année de naissance proche")
+    
+    # Bonus for same gender
+    if person1.get('gender') and person2.get('gender'):
+        if person1['gender'] == person2['gender']:
+            score = min(100, score + 5)
+    
+    reason = " + ".join(reasons) if reasons else "Aucune correspondance"
+    return (min(100, score), reason)
+
+@api_router.get("/tree/merge/shared-trees")
+async def get_mergeable_trees(current_user: dict = Depends(get_current_user)):
+    """Get list of trees that can be merged (trees shared with current user as editor)"""
+    user_id = str(current_user['_id'])
+    
+    # Get all collaborations where user is editor
+    collaborations = await db.collaborators.find({
+        "user_id": user_id,
+        "status": "accepted",
+        "role": "editor"
+    }).to_list(100)
+    
+    mergeable_trees = []
+    for collab in collaborations:
+        owner_id = collab['tree_owner_id']
+        owner = await db.users.find_one({"_id": ObjectId(owner_id)})
+        if owner:
+            persons_count = await db.persons.count_documents({"user_id": owner_id})
+            mergeable_trees.append({
+                "owner_id": owner_id,
+                "owner_name": f"{owner['first_name']} {owner['last_name']}",
+                "owner_email": owner['email'],
+                "persons_count": persons_count,
+                "role": collab['role']
+            })
+    
+    return {"trees": mergeable_trees}
+
+@api_router.post("/tree/merge/analyze", response_model=MergeAnalysisResponse)
+async def analyze_merge(source_tree_owner_id: str, current_user: dict = Depends(get_current_user)):
+    """
+    Analyze a potential merge between source tree and current user's tree.
+    Detects duplicates and prepares merge plan.
+    """
+    user_id = str(current_user['_id'])
+    
+    # Verify user has access to source tree (must be collaborator with editor role)
+    collaboration = await db.collaborators.find_one({
+        "tree_owner_id": source_tree_owner_id,
+        "user_id": user_id,
+        "status": "accepted",
+        "role": "editor"
+    })
+    
+    if not collaboration:
+        raise HTTPException(
+            status_code=403, 
+            detail="Vous devez être éditeur de l'arbre source pour pouvoir le fusionner"
+        )
+    
+    # Get source tree owner info
+    source_owner = await db.users.find_one({"_id": ObjectId(source_tree_owner_id)})
+    if not source_owner:
+        raise HTTPException(status_code=404, detail="Propriétaire de l'arbre source non trouvé")
+    
+    # Get source tree persons
+    source_persons = await db.persons.find({"user_id": source_tree_owner_id}).to_list(1000)
+    
+    # Get target tree persons (current user's tree)
+    target_persons = await db.persons.find({"user_id": user_id}).to_list(1000)
+    
+    # Get source tree links
+    source_links = await db.family_links.find({"user_id": source_tree_owner_id}).to_list(1000)
+    
+    # Find duplicates
+    duplicates = []
+    matched_source_ids = set()
+    
+    for source_person in source_persons:
+        best_match = None
+        best_score = 0
+        best_reason = ""
+        
+        for target_person in target_persons:
+            score, reason = calculate_similarity(source_person, target_person)
+            if score >= 60 and score > best_score:  # Threshold of 60%
+                best_score = score
+                best_match = target_person
+                best_reason = reason
+        
+        if best_match:
+            matched_source_ids.add(str(source_person['_id']))
+            duplicates.append(DuplicateCandidate(
+                source_person_id=str(source_person['_id']),
+                source_person_name=f"{source_person['first_name']} {source_person['last_name']}",
+                source_birth_date=source_person.get('birth_date'),
+                target_person_id=str(best_match['_id']),
+                target_person_name=f"{best_match['first_name']} {best_match['last_name']}",
+                target_birth_date=best_match.get('birth_date'),
+                similarity_score=best_score,
+                match_reason=best_reason
+            ))
+    
+    # Count new persons (not duplicates)
+    new_persons_count = len(source_persons) - len(matched_source_ids)
+    
+    logger.info(f"Merge analysis: {len(source_persons)} source persons, {len(duplicates)} duplicates found, {new_persons_count} new persons")
+    
+    return MergeAnalysisResponse(
+        source_tree_owner_id=source_tree_owner_id,
+        source_tree_owner_name=f"{source_owner['first_name']} {source_owner['last_name']}",
+        source_persons_count=len(source_persons),
+        target_persons_count=len(target_persons),
+        duplicates_found=duplicates,
+        new_persons_count=new_persons_count,
+        new_links_count=len(source_links)
+    )
+
+@api_router.post("/tree/merge/execute", response_model=MergeExecuteResponse)
+async def execute_merge(request: MergeExecuteRequest, current_user: dict = Depends(get_current_user)):
+    """
+    Execute the merge based on user decisions.
+    - merge: Use existing target person (link source data to target)
+    - add: Add source person as new person in target tree
+    - skip: Don't import this person
+    """
+    user_id = str(current_user['_id'])
+    
+    # Verify user has access to source tree
+    collaboration = await db.collaborators.find_one({
+        "tree_owner_id": request.source_tree_owner_id,
+        "user_id": user_id,
+        "status": "accepted",
+        "role": "editor"
+    })
+    
+    if not collaboration:
+        raise HTTPException(
+            status_code=403, 
+            detail="Vous devez être éditeur de l'arbre source pour pouvoir le fusionner"
+        )
+    
+    # Get source tree data
+    source_persons = await db.persons.find({"user_id": request.source_tree_owner_id}).to_list(1000)
+    source_links = await db.family_links.find({"user_id": request.source_tree_owner_id}).to_list(1000)
+    
+    # Build source person map
+    source_person_map = {str(p['_id']): p for p in source_persons}
+    
+    # Build ID mapping: source_id -> target_id
+    id_mapping = {}
+    
+    persons_merged = 0
+    persons_added = 0
+    persons_skipped = 0
+    
+    # Process decisions
+    decision_map = {d.source_person_id: d for d in request.decisions}
+    
+    for source_person in source_persons:
+        source_id = str(source_person['_id'])
+        decision = decision_map.get(source_id)
+        
+        if decision:
+            if decision.action == "merge" and decision.target_person_id:
+                # Map source ID to existing target ID
+                id_mapping[source_id] = decision.target_person_id
+                persons_merged += 1
+                logger.info(f"Merging {source_person['first_name']} -> {decision.target_person_id}")
+                
+            elif decision.action == "add":
+                # Create new person in target tree
+                new_person = {
+                    "user_id": user_id,
+                    "first_name": source_person['first_name'],
+                    "last_name": source_person['last_name'],
+                    "gender": source_person.get('gender', 'unknown'),
+                    "birth_date": source_person.get('birth_date'),
+                    "birth_place": source_person.get('birth_place'),
+                    "death_date": source_person.get('death_date'),
+                    "death_place": source_person.get('death_place'),
+                    "photo": source_person.get('photo'),
+                    "notes": source_person.get('notes'),
+                    "geographic_branch": source_person.get('geographic_branch'),
+                    "created_at": datetime.utcnow(),
+                    "is_preview": False,
+                    "merged_from": request.source_tree_owner_id  # Track origin
+                }
+                result = await db.persons.insert_one(new_person)
+                id_mapping[source_id] = str(result.inserted_id)
+                persons_added += 1
+                logger.info(f"Added new person: {source_person['first_name']} {source_person['last_name']}")
+                
+            elif decision.action == "skip":
+                persons_skipped += 1
+                logger.info(f"Skipped: {source_person['first_name']} {source_person['last_name']}")
+        else:
+            # No decision provided - add as new by default
+            new_person = {
+                "user_id": user_id,
+                "first_name": source_person['first_name'],
+                "last_name": source_person['last_name'],
+                "gender": source_person.get('gender', 'unknown'),
+                "birth_date": source_person.get('birth_date'),
+                "birth_place": source_person.get('birth_place'),
+                "death_date": source_person.get('death_date'),
+                "death_place": source_person.get('death_place'),
+                "photo": source_person.get('photo'),
+                "notes": source_person.get('notes'),
+                "geographic_branch": source_person.get('geographic_branch'),
+                "created_at": datetime.utcnow(),
+                "is_preview": False,
+                "merged_from": request.source_tree_owner_id
+            }
+            result = await db.persons.insert_one(new_person)
+            id_mapping[source_id] = str(result.inserted_id)
+            persons_added += 1
+    
+    # Import links if requested
+    links_added = 0
+    if request.import_links:
+        for source_link in source_links:
+            source_person1_id = source_link['person_id_1']
+            source_person2_id = source_link['person_id_2']
+            
+            # Map to target IDs
+            target_person1_id = id_mapping.get(source_person1_id)
+            target_person2_id = id_mapping.get(source_person2_id)
+            
+            # Only create link if both persons exist in target tree
+            if target_person1_id and target_person2_id:
+                # Check if link already exists
+                existing_link = await db.family_links.find_one({
+                    "user_id": user_id,
+                    "$or": [
+                        {"person_id_1": target_person1_id, "person_id_2": target_person2_id, "link_type": source_link['link_type']},
+                        {"person_id_1": target_person2_id, "person_id_2": target_person1_id, "link_type": source_link['link_type']}
+                    ]
+                })
+                
+                if not existing_link:
+                    new_link = {
+                        "user_id": user_id,
+                        "person_id_1": target_person1_id,
+                        "person_id_2": target_person2_id,
+                        "link_type": source_link['link_type'],
+                        "created_at": datetime.utcnow()
+                    }
+                    await db.family_links.insert_one(new_link)
+                    links_added += 1
+    
+    message = f"Fusion terminée ! {persons_merged} personne(s) fusionnée(s), {persons_added} personne(s) ajoutée(s), {links_added} lien(s) créé(s)"
+    if persons_skipped > 0:
+        message += f", {persons_skipped} personne(s) ignorée(s)"
+    
+    logger.info(message)
+    
+    return MergeExecuteResponse(
+        persons_merged=persons_merged,
+        persons_added=persons_added,
+        persons_skipped=persons_skipped,
+        links_added=links_added,
+        message=message
+    )
+
 # ===================== COLLABORATION ROUTES =====================
 
 @api_router.post("/collaborators/invite", response_model=CollaboratorResponse)
