@@ -455,6 +455,98 @@ export default function TreeScreen() {
       levelGroups.get(level)!.push(p);
     });
 
+    // ==================== STEP 4.5: SORT SIBLINGS BY BIRTH DATE ====================
+    // Trier automatiquement les fratries par date de naissance (du plus âgé au plus jeune)
+    // Les membres sans date de naissance sont placés à la fin
+    
+    const parseBirthDate = (dateStr?: string): Date | null => {
+      if (!dateStr) return null;
+      // Handle various date formats: YYYY-MM-DD, DD/MM/YYYY, etc.
+      const date = new Date(dateStr);
+      if (!isNaN(date.getTime())) return date;
+      // Try DD/MM/YYYY format
+      const parts = dateStr.split(/[\/\-\.]/);
+      if (parts.length === 3) {
+        // Try YYYY-MM-DD
+        if (parts[0].length === 4) {
+          return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        }
+        // Try DD/MM/YYYY or DD-MM-YYYY
+        return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+      }
+      return null;
+    };
+
+    const sortSiblingsByBirthDate = (siblingIds: string[]): string[] => {
+      return [...siblingIds].sort((aId, bId) => {
+        const personA = personById.get(aId);
+        const personB = personById.get(bId);
+        const dateA = parseBirthDate(personA?.birth_date);
+        const dateB = parseBirthDate(personB?.birth_date);
+        
+        // Both have dates - sort oldest first (earliest date first)
+        if (dateA && dateB) {
+          return dateA.getTime() - dateB.getTime();
+        }
+        // Only A has date - A comes first
+        if (dateA && !dateB) return -1;
+        // Only B has date - B comes first
+        if (!dateA && dateB) return 1;
+        // Neither has date - keep original order
+        return 0;
+      });
+    };
+
+    // Sort children for each parent by birth date
+    parentToChildren.forEach((childrenSet, parentId) => {
+      const sortedChildren = sortSiblingsByBirthDate(Array.from(childrenSet));
+      parentToChildren.set(parentId, new Set(sortedChildren));
+    });
+
+    // Also sort persons within each level group based on sibling order
+    levelGroups.forEach((personsAtLevel, level) => {
+      // Group persons by their common parents (siblings)
+      const siblingGroups = new Map<string, Person[]>();
+      const noParentGroup: Person[] = [];
+      
+      personsAtLevel.forEach(person => {
+        const parents = childToParents.get(person.id);
+        if (parents && parents.size > 0) {
+          // Create a key from sorted parent IDs
+          const parentKey = Array.from(parents).sort().join(',');
+          if (!siblingGroups.has(parentKey)) {
+            siblingGroups.set(parentKey, []);
+          }
+          siblingGroups.get(parentKey)!.push(person);
+        } else {
+          noParentGroup.push(person);
+        }
+      });
+      
+      // Sort each sibling group by birth date
+      siblingGroups.forEach((siblings, key) => {
+        siblings.sort((a, b) => {
+          const dateA = parseBirthDate(a.birth_date);
+          const dateB = parseBirthDate(b.birth_date);
+          if (dateA && dateB) return dateA.getTime() - dateB.getTime();
+          if (dateA && !dateB) return -1;
+          if (!dateA && dateB) return 1;
+          return 0;
+        });
+      });
+      
+      // Rebuild the level group with sorted siblings
+      const sortedPersons: Person[] = [];
+      siblingGroups.forEach(siblings => {
+        sortedPersons.push(...siblings);
+      });
+      sortedPersons.push(...noParentGroup);
+      
+      levelGroups.set(level, sortedPersons);
+    });
+
+    console.log('Siblings sorted by birth date');
+
     // ==================== STEP 5: BUILD FAMILY UNITS ====================
     // A family unit is a group of spouses that should be positioned together
     const buildFamilyUnits = (personsAtLevel: Person[]): Person[][] => {
