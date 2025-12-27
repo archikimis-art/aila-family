@@ -479,6 +479,44 @@ class UpcomingBirthdayResponse(BaseModel):
     days_until: int
     age: Optional[int] = None
 
+# ===================== TREE MERGE MODELS =====================
+
+class DuplicateCandidate(BaseModel):
+    source_person_id: str
+    source_person_name: str
+    source_birth_date: Optional[str] = None
+    target_person_id: str
+    target_person_name: str
+    target_birth_date: Optional[str] = None
+    similarity_score: float  # 0-100
+    match_reason: str
+
+class MergeAnalysisResponse(BaseModel):
+    source_tree_owner_id: str
+    source_tree_owner_name: str
+    source_persons_count: int
+    target_persons_count: int
+    duplicates_found: List[DuplicateCandidate]
+    new_persons_count: int  # Persons that will be added (not duplicates)
+    new_links_count: int
+
+class MergeDecision(BaseModel):
+    source_person_id: str
+    action: str  # "merge" (use target), "add" (add as new), "skip" (ignore)
+    target_person_id: Optional[str] = None  # Required if action is "merge"
+
+class MergeExecuteRequest(BaseModel):
+    source_tree_owner_id: str
+    decisions: List[MergeDecision]
+    import_links: bool = True
+
+class MergeExecuteResponse(BaseModel):
+    persons_merged: int
+    persons_added: int
+    persons_skipped: int
+    links_added: int
+    message: str
+
 # ===================== HELPERS =====================
 
 def hash_password(password: str) -> str:
