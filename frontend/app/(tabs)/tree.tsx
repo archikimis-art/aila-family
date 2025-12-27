@@ -596,12 +596,22 @@ export default function TreeScreen() {
         // Calculate unit width
         const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
         
-        // Try to center above children
-        const allChildrenIds: string[] = [];
+        // Try to center above children - USE SORTED ORDER
+        let allChildrenIds: string[] = [];
         unit.forEach(person => {
           const children = parentToChildren.get(person.id);
-          if (children) children.forEach(cId => allChildrenIds.push(cId));
+          if (children) {
+            // Children are already sorted by birth date in STEP 4.5
+            children.forEach(cId => {
+              if (!allChildrenIds.includes(cId)) {
+                allChildrenIds.push(cId);
+              }
+            });
+          }
         });
+        
+        // Re-sort children by birth date to ensure correct order
+        allChildrenIds = sortSiblingsByBirthDate(allChildrenIds);
 
         let unitX = currentX;
         
