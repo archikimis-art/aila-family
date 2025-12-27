@@ -490,6 +490,18 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           )}
 
+          {/* Merge Trees */}
+          {user && (
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => router.push('/merge-trees')}
+            >
+              <Ionicons name="git-merge-outline" size={22} color="#00BCD4" />
+              <Text style={styles.menuItemText}>Fusionner des arbres</Text>
+              <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+            </TouchableOpacity>
+          )}
+
           {!user && (
             <TouchableOpacity style={styles.menuItem} onPress={handleClearPreview}>
               <Ionicons name="trash-outline" size={22} color="#FF6B6B" />
