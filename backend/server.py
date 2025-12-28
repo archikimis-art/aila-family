@@ -3290,3 +3290,36 @@ async def startup_db_client():
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+# DEBUG ENDPOINT - TEMPORARY
+@api_router.get("/debug/tree-structure")
+async def debug_tree_structure(current_user: dict = Depends(get_current_user)):
+    """Debug endpoint to see tree structure"""
+    user_id = str(current_user['_id'])
+    
+    persons = await db.persons.find({"user_id": user_id}).to_list(100)
+    links = await db.family_links.find({"user_id": user_id}).to_list(100)
+    
+    result = {
+        "persons": [],
+        "spouse_links": [],
+        "parent_links": []
+    }
+    
+    for p in persons:
+        result["persons"].append({
+            "id": str(p['_id']),
+            "name": f"{p.get('first_name', '')} {p.get('last_name', '')}",
+            "birth_date": p.get('birth_date')
+        })
+    
+    for l in links:
+        p1_name = next((p['name'] for p in result["persons"] if p['id'] == l['person_id_1']), l['person_id_1'])
+        p2_name = next((p['name'] for p in result["persons"] if p['id'] == l['person_id_2']), l['person_id_2'])
+        
+        if l['link_type'] == 'spouse':
+            result["spouse_links"].append(f"{p1_name} <--SPOUSE--> {p2_name}")
+        elif l['link_type'] == 'parent':
+            result["parent_links"].append(f"{p1_name} --PARENT--> {p2_name}")
+    
+    return result
