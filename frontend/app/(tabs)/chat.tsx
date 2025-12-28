@@ -77,6 +77,14 @@ export default function ChatScreen() {
   };
 
   const handleDeleteMessage = async (messageId: string) => {
+    console.log('Attempting to delete message:', messageId);
+    
+    if (!messageId) {
+      console.error('No message ID provided');
+      Alert.alert('Erreur', 'ID du message manquant.');
+      return;
+    }
+    
     Alert.alert(
       'Supprimer le message',
       'Êtes-vous sûr de vouloir supprimer ce message ?',
@@ -87,10 +95,18 @@ export default function ChatScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await chatAPI.deleteMessage(messageId);
+              console.log('Deleting message with ID:', messageId);
+              const response = await chatAPI.deleteMessage(messageId);
+              console.log('Delete response:', response);
               await loadMessages();
-            } catch (error) {
-              Alert.alert('Erreur', 'Impossible de supprimer le message.');
+              console.log('Messages reloaded after delete');
+            } catch (error: any) {
+              console.error('Error deleting message:', error);
+              console.error('Error details:', error.response?.data);
+              Alert.alert(
+                'Erreur', 
+                error.response?.data?.detail || 'Impossible de supprimer le message.'
+              );
             }
           },
         },
