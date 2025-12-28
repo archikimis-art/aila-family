@@ -547,22 +547,12 @@ export default function TreeScreen() {
 
     console.log('Siblings sorted by birth date');
 
-    // ==================== STEP 5: BUILD FAMILY UNITS (CACHED) ====================
+    // ==================== STEP 5: BUILD FAMILY UNITS ====================
     // A family unit is a group of spouses that should be positioned together
     // CRITICAL: Spouses must NEVER be separated - they form an atomic unit
-    // This cache ensures consistency across all steps
-    
-    const familyUnitsCache = new Map<number, Person[][]>();
-    
-    const buildFamilyUnitsForLevel = (level: number): Person[][] => {
-      // Return cached if available
-      if (familyUnitsCache.has(level)) {
-        return familyUnitsCache.get(level)!;
-      }
-      
-      const personsAtLevel = levelGroups.get(level) || [];
-      console.log(`=== Building Family Units for Level ${level} ===`);
-      console.log('Persons:', personsAtLevel.map(p => p.first_name).join(', '));
+    const buildFamilyUnits = (personsAtLevel: Person[]): Person[][] => {
+      console.log('=== Building Family Units ===');
+      console.log('Persons at level:', personsAtLevel.map(p => `${p.first_name} ${p.last_name}`).join(', '));
       
       // Build a spouse graph for persons at THIS level only
       const spouseGraphAtLevel = new Map<string, Set<string>>();
@@ -582,11 +572,11 @@ export default function TreeScreen() {
         }
       });
       
-      // Log spouse relationships found
+      console.log('Spouse graph at this level:');
       spouseGraphAtLevel.forEach((spouses, personId) => {
         const person = personById.get(personId);
         const spouseNames = Array.from(spouses).map(sid => personById.get(sid)?.first_name || sid);
-        console.log(`  COUPLE FOUND: ${person?.first_name} <-> ${spouseNames.join(', ')}`);
+        console.log(`  ${person?.first_name} -> [${spouseNames.join(', ')}]`);
       });
       
       // Find connected components (spouse groups) using Union-Find
@@ -608,11 +598,10 @@ export default function TreeScreen() {
         }
       };
       
-      // Union all spouse pairs - THIS GUARANTEES COUPLES STAY TOGETHER
+      // Union all spouse pairs
       spouseGraphAtLevel.forEach((spouses, personId) => {
         spouses.forEach(spouseId => {
           union(personId, spouseId);
-          console.log(`  UNION: ${personById.get(personId)?.first_name} + ${personById.get(spouseId)?.first_name}`);
         });
       });
       
@@ -629,34 +618,19 @@ export default function TreeScreen() {
       // Convert to array of units
       const familyUnits: Person[][] = Array.from(componentGroups.values());
       
-      // Sort units by sibling birth date
-      const sortedUnits = sortFamilyUnitsByBirthDateInternal(familyUnits, level);
-      
-      console.log('Final sorted units:', sortedUnits.map(u => `[${u.map(p => p.first_name).join('+')}]`).join(' | '));
-      
-      // Cache and return
-      familyUnitsCache.set(level, sortedUnits);
-      return sortedUnits;
-    };
-    
-    // Internal sorting function
-    const sortFamilyUnitsByBirthDateInternal = (units: Person[][], level: number): Person[][] => {
-      // Get all parent IDs for this level to identify siblings
-      const parentIds: string[] = [];
-      const personsAtLevel = levelGroups.get(level) || [];
-      
-      personsAtLevel.forEach(person => {
-        const parents = childToParents.get(person.id);
-        if (parents) {
-          parents.forEach(parentId => {
-            if (!parentIds.includes(parentId)) {
-              parentIds.push(parentId);
-            }
-          });
-        }
+      console.log('Family units created:');
+      familyUnits.forEach((unit, i) => {
+        console.log(`  Unit ${i}: [${unit.map(p => p.first_name).join(' + ')}]`);
       });
       
-      // Get sibling IDs (children of these parents)
+      return familyUnits;
+    };
+
+    // ==================== STEP 5.5: SORT FAMILY UNITS BY BIRTH DATE ====================
+    // Sort family units so that siblings appear in birth order (oldest first)
+    // A family unit's "birth date" is the earliest birth date of its members who are siblings
+    const sortFamilyUnitsByBirthDate = (units: Person[][], parentIds: string[]): Person[][] => {
+      // Get sibling IDs at this level (children of the same parents)
       const siblingIds = new Set<string>();
       parentIds.forEach(parentId => {
         const children = parentToChildren.get(parentId);
@@ -665,10 +639,9 @@ export default function TreeScreen() {
         }
       });
       
-      // For each unit, find the representative birth date (from siblings, not spouses who married in)
-      const getUnitSortKey = (unit: Person[]): { date: Date | null; siblingName: string } => {
+      // For each unit, find the representative birth date (from siblings, not spouses)
+      const getUnitBirthDate = (unit: Person[]): Date | null => {
         let earliestDate: Date | null = null;
-        let siblingName = '';
         
         for (const person of unit) {
           // Only consider siblings for sorting (not spouses who married into the family)
@@ -676,38 +649,32 @@ export default function TreeScreen() {
             const date = parseBirthDate(person.birth_date);
             if (date && (!earliestDate || date < earliestDate)) {
               earliestDate = date;
-              siblingName = person.first_name;
-            }
-            // If no date but is a sibling, still use as reference
-            if (!siblingName) {
-              siblingName = person.first_name;
             }
           }
         }
         
-        // Fallback to first person if no sibling found
+        // If no sibling found, use the first person's date
         if (!earliestDate && unit.length > 0) {
           earliestDate = parseBirthDate(unit[0].birth_date);
-          if (!siblingName) siblingName = unit[0].first_name;
         }
         
-        return { date: earliestDate, siblingName };
+        return earliestDate;
       };
       
       return [...units].sort((unitA, unitB) => {
-        const keyA = getUnitSortKey(unitA);
-        const keyB = getUnitSortKey(unitB);
+        const dateA = getUnitBirthDate(unitA);
+        const dateB = getUnitBirthDate(unitB);
         
         // Both have dates - oldest first
-        if (keyA.date && keyB.date) {
-          return keyA.date.getTime() - keyB.date.getTime();
+        if (dateA && dateB) {
+          return dateA.getTime() - dateB.getTime();
         }
         // Only A has date - A comes first
-        if (keyA.date && !keyB.date) return -1;
+        if (dateA && !dateB) return -1;
         // Only B has date - B comes first
-        if (!keyA.date && keyB.date) return 1;
-        // Neither has date - alphabetical by sibling name
-        return keyA.siblingName.localeCompare(keyB.siblingName);
+        if (!dateA && dateB) return 1;
+        // Neither has date - keep original order
+        return 0;
       });
     };
 
@@ -739,12 +706,18 @@ export default function TreeScreen() {
     
     // First pass: Position from bottom to top
     sortedLevels.forEach(level => {
+      const personsAtLevel = levelGroups.get(level) || [];
       const y = level * LEVEL_HEIGHT + 80;
       
-      // Use cached family units - COUPLES ARE GUARANTEED TO STAY TOGETHER
-      const familyUnits = buildFamilyUnitsForLevel(level);
+      // Build family units (couples stay together)
+      let familyUnits = buildFamilyUnits(personsAtLevel);
       
-      console.log(`STEP 6 - Level ${level}: ${familyUnits.length} units`);
+      // Sort family units by birth date of siblings (oldest first)
+      // This ensures siblings appear in correct order while keeping spouses together
+      const parentIds = getParentIdsForLevel(level);
+      familyUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
+      
+      console.log(`Level ${level}: ${familyUnits.length} family units (sorted by birth date)`);
       
       let currentX = 50;
       
@@ -752,11 +725,12 @@ export default function TreeScreen() {
         // Calculate unit width
         const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
         
-        // Try to center above children
+        // Try to center above children - USE SORTED ORDER
         let allChildrenIds: string[] = [];
         unit.forEach(person => {
           const children = parentToChildren.get(person.id);
           if (children) {
+            // Children are already sorted by birth date in STEP 4.5
             children.forEach(cId => {
               if (!allChildrenIds.includes(cId)) {
                 allChildrenIds.push(cId);
@@ -765,7 +739,7 @@ export default function TreeScreen() {
           }
         });
         
-        // Sort children by birth date
+        // Re-sort children by birth date to ensure correct order
         allChildrenIds = sortSiblingsByBirthDate(allChildrenIds);
 
         let unitX = currentX;
@@ -802,10 +776,12 @@ export default function TreeScreen() {
     const allLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
     
     allLevels.forEach((level: number) => {
-      // Use cached family units - COUPLES ARE GUARANTEED TO STAY TOGETHER
-      const sortedUnits = buildFamilyUnitsForLevel(level);
+      const personsAtLevel = levelGroups.get(level) || [];
       
-      console.log(`STEP 7 - Level ${level}: repositioning ${sortedUnits.length} units`);
+      // Rebuild family units to ensure couples stay together
+      const familyUnits = buildFamilyUnits(personsAtLevel);
+      const parentIds = getParentIdsForLevel(level);
+      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
       
       // Sort units by their leftmost position
       const unitsWithPositions = sortedUnits.map(unit => {
@@ -835,11 +811,13 @@ export default function TreeScreen() {
     // Second pass: Adjust parent positions to center above their children
     const bottomUpLevels = Array.from(levelGroups.keys()).sort((a, b) => b - a);
     
-    bottomUpLevels.forEach((level: number) => {
-      // Use cached family units - COUPLES ARE GUARANTEED TO STAY TOGETHER
-      const familyUnits = buildFamilyUnitsForLevel(level);
+    bottomUpLevels.forEach(level => {
+      const personsAtLevel = levelGroups.get(level) || [];
       
-      console.log(`STEP 8 - Level ${level}: recentering ${familyUnits.length} units`);
+      // Build and sort family units the same way as in STEP 6
+      let familyUnits = buildFamilyUnits(personsAtLevel);
+      const parentIds = getParentIdsForLevel(level);
+      familyUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
       
       familyUnits.forEach(unit => {
         // Get all children of this unit - SORTED BY BIRTH DATE
@@ -855,7 +833,7 @@ export default function TreeScreen() {
           }
         });
         
-        // Sort children by birth date
+        // Re-sort children by birth date to ensure correct order
         allChildrenIds = sortSiblingsByBirthDate(allChildrenIds);
         
         if (allChildrenIds.length === 0) return;
