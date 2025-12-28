@@ -2489,67 +2489,43 @@ async def mark_all_notifications_read(current_user: dict = Depends(get_current_u
     return {"message": "All notifications marked as read"}
 
 # ===================== CHAT ROUTES =====================
-# IMPORTANT: Chat messages are now PRIVATE per family tree
-# Messages are scoped to tree_owner_id - only the owner and their collaborators can see them
-
-async def get_user_tree_owner_id(user_id: str) -> str:
-    """
-    Get the tree_owner_id for chat messages.
-    - If user owns a tree (has persons), they are the tree_owner
-    - If user is a collaborator on someone else's tree, use that tree owner's ID
-    - Falls back to user's own ID if no collaboration found
-    """
-    # Check if user has their own tree (owns persons)
-    user_persons = await db.persons.find_one({"user_id": user_id})
-    if user_persons:
-        return user_id  # User owns their own tree
-    
-    # Check if user is a collaborator on someone else's tree
-    collaboration = await db.collaborators.find_one({
-        "user_id": user_id,
-        "status": "accepted"
-    })
-    if collaboration:
-        return collaboration['tree_owner_id']
-    
-    # Default to user's own ID (they'll start their own tree)
-    return user_id
-
-async def get_accessible_tree_ids(user_id: str) -> List[str]:
-    """
-    Get all tree_owner_ids that a user can access for chat.
-    - User's own ID (their own tree)
-    - All tree_owner_ids where user is an accepted collaborator
-    """
-    accessible_ids = [user_id]  # Always include user's own tree
-    
-    # Find all trees where user is a collaborator
-    collaborations = await db.collaborators.find({
-        "user_id": user_id,
-        "status": "accepted"
-    }).to_list(100)
-    
-    for collab in collaborations:
-        if collab['tree_owner_id'] not in accessible_ids:
-            accessible_ids.append(collab['tree_owner_id'])
-    
-    return accessible_ids
+# IMPORTANT: Chat messages are STRICTLY PRIVATE per user's own tree
+# - Each user sees ONLY their own tree's messages on their session
+# - To see a shared tree's chat, user must explicitly view that tree (via tree_id parameter)
 
 @api_router.post("/chat/messages", response_model=ChatMessageResponse)
 async def send_message(
     message_data: ChatMessageCreate,
+    tree_id: Optional[str] = None,  # Optional: specify which tree to post to
     current_user: dict = Depends(get_current_user)
 ):
-    """Send a chat message - visible only to family tree members (owner + collaborators)"""
+    """
+    Send a chat message.
+    - If tree_id is not provided: posts to YOUR OWN tree
+    - If tree_id is provided: posts to that tree (must have editor access)
+    """
     user_id = str(current_user['_id'])
     user_name = f"{current_user['first_name']} {current_user['last_name']}"
     
     # Determine which tree this message belongs to
-    tree_owner_id = await get_user_tree_owner_id(user_id)
+    if tree_id and tree_id != user_id:
+        # Posting to a shared tree - verify editor access
+        collaboration = await db.collaborators.find_one({
+            "tree_owner_id": tree_id,
+            "user_id": user_id,
+            "status": "accepted",
+            "role": "editor"
+        })
+        if not collaboration:
+            raise HTTPException(status_code=403, detail="Vous n'avez pas les droits pour poster dans ce chat")
+        target_tree_id = tree_id
+    else:
+        # Posting to own tree
+        target_tree_id = user_id
     
-    # Prepare message document with tree_owner_id for privacy
+    # Prepare message document
     message_doc = {
-        "tree_owner_id": tree_owner_id,  # CRITICAL: Associates message with a specific family tree
+        "tree_owner_id": target_tree_id,  # CRITICAL: Associates message with a specific tree
         "user_id": user_id,
         "user_name": user_name,
         "message": message_data.message,
@@ -2571,7 +2547,7 @@ async def send_message(
     result = await db.chat_messages.insert_one(message_doc)
     message_doc['_id'] = result.inserted_id
     
-    logger.info(f"Chat message sent by {user_name} for tree_owner: {tree_owner_id}")
+    logger.info(f"Chat message sent by {user_name} to tree: {target_tree_id}")
     
     return ChatMessageResponse(**serialize_object_id(message_doc))
 
@@ -2579,22 +2555,39 @@ async def send_message(
 async def get_messages(
     limit: int = 50,
     skip: int = 0,
+    tree_id: Optional[str] = None,  # Optional: specify which tree's chat to view
     current_user: dict = Depends(get_current_user)
 ):
-    """Get chat messages - ONLY messages from accessible family trees (owner + collaborators)"""
+    """
+    Get chat messages - STRICTLY PRIVATE per tree.
+    - If tree_id is not provided: returns ONLY YOUR OWN tree's messages
+    - If tree_id is provided: returns that tree's messages (must have access)
+    """
     user_id = str(current_user['_id'])
     
-    # Get all tree IDs this user can access
-    accessible_tree_ids = await get_accessible_tree_ids(user_id)
+    # Determine which tree's messages to fetch
+    if tree_id and tree_id != user_id:
+        # Viewing a shared tree's chat - verify access
+        collaboration = await db.collaborators.find_one({
+            "tree_owner_id": tree_id,
+            "user_id": user_id,
+            "status": "accepted"
+        })
+        if not collaboration:
+            raise HTTPException(status_code=403, detail="Vous n'avez pas accès à ce chat")
+        target_tree_id = tree_id
+        logger.info(f"User {user_id} viewing shared tree chat: {tree_id}")
+    else:
+        # Viewing own tree's chat
+        target_tree_id = user_id
+        logger.info(f"User {user_id} viewing own tree chat")
     
-    logger.info(f"User {user_id} accessing chat for trees: {accessible_tree_ids}")
-    
-    # PRIVACY FIX: Only fetch messages from accessible trees
-    # Also include legacy messages (no tree_owner_id) that belong to this user
+    # STRICT PRIVACY: Only fetch messages from the specified tree
     query = {
         "$or": [
-            {"tree_owner_id": {"$in": accessible_tree_ids}},  # Messages from accessible trees
-            {"tree_owner_id": {"$exists": False}, "user_id": user_id}  # Legacy messages from this user
+            {"tree_owner_id": target_tree_id},
+            # Legacy messages (no tree_owner_id) - only show if viewing own tree
+            {"tree_owner_id": {"$exists": False}, "user_id": target_tree_id}
         ]
     }
     
@@ -2602,6 +2595,8 @@ async def get_messages(
     
     # Reverse to show oldest first
     messages.reverse()
+    
+    logger.info(f"Returning {len(messages)} messages for tree: {target_tree_id}")
     
     return [ChatMessageResponse(**serialize_object_id(m)) for m in messages]
 
