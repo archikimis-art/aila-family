@@ -771,22 +771,37 @@ export default function TreeScreen() {
       });
     });
 
-    // ==================== STEP 7: FIX OVERLAPPING ====================
-    const allLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
-    
+    // ==================== STEP 7: FIX OVERLAPPING (PRESERVE FAMILY UNITS) ====================
+    // CRITICAL: When fixing overlaps, we must keep family units together!
     allLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
-      const positions = personsAtLevel
-        .map(p => ({ person: p, pos: personPositions.get(p.id)! }))
-        .filter(item => item.pos)
-        .sort((a, b) => a.pos.x - b.pos.x);
       
-      let minX = 50;
-      positions.forEach(({ person, pos }) => {
-        if (pos.x < minX) {
-          personPositions.set(person.id, { x: minX, y: pos.y });
-        }
-        minX = Math.max(minX, pos.x) + NODE_WIDTH + NODE_SPACING;
+      // Rebuild family units to ensure couples stay together
+      const familyUnits = buildFamilyUnits(personsAtLevel);
+      const parentIds = getParentIdsForLevel(level);
+      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
+      
+      // Sort units by their leftmost position
+      const unitsWithPositions = sortedUnits.map(unit => {
+        const positions = unit.map(p => personPositions.get(p.id)?.x || 0);
+        const minX = Math.min(...positions);
+        return { unit, minX };
+      }).sort((a, b) => a.minX - b.minX);
+      
+      // Reposition units to avoid overlap while keeping them together
+      let currentX = 50;
+      unitsWithPositions.forEach(({ unit }) => {
+        const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
+        const y = personPositions.get(unit[0].id)?.y || 0;
+        
+        // Position each person in the unit side by side
+        let x = currentX;
+        unit.forEach(person => {
+          personPositions.set(person.id, { x, y });
+          x += NODE_WIDTH + COUPLE_SPACING;
+        });
+        
+        currentX += unitWidth + NODE_SPACING;
       });
     });
 
