@@ -554,8 +554,33 @@ export default function TreeScreen() {
       const processedIds = new Set<string>();
       const familyUnits: Person[][] = [];
       
+      console.log('=== Building Family Units ===');
+      console.log('Persons at level:', personsAtLevel.map(p => `${p.first_name} ${p.last_name}`));
+      console.log('Spouse map entries:');
+      spouseMap.forEach((spouses, personId) => {
+        const person = personById.get(personId);
+        const spouseNames = Array.from(spouses).map(sid => {
+          const s = personById.get(sid);
+          return s ? `${s.first_name} ${s.last_name}` : sid;
+        });
+        console.log(`  ${person?.first_name} ${person?.last_name} -> spouses: [${spouseNames.join(', ')}]`);
+      });
+      
+      // IMPORTANT: Process persons with spouses FIRST to ensure couples are formed correctly
+      // Sort so that persons with spouses at this level come first
+      const sortedPersons = [...personsAtLevel].sort((a, b) => {
+        const aHasSpouseHere = spouseMap.get(a.id) && 
+          Array.from(spouseMap.get(a.id)!).some(sid => personsAtLevel.find(p => p.id === sid));
+        const bHasSpouseHere = spouseMap.get(b.id) && 
+          Array.from(spouseMap.get(b.id)!).some(sid => personsAtLevel.find(p => p.id === sid));
+        
+        if (aHasSpouseHere && !bHasSpouseHere) return -1;
+        if (!aHasSpouseHere && bHasSpouseHere) return 1;
+        return 0;
+      });
+      
       // First, identify all couples and single persons
-      personsAtLevel.forEach(person => {
+      sortedPersons.forEach(person => {
         if (processedIds.has(person.id)) return;
         
         const unit: Person[] = [person];
@@ -569,12 +594,16 @@ export default function TreeScreen() {
             if (spouse && !processedIds.has(spouse.id)) {
               unit.push(spouse);
               processedIds.add(spouse.id);
+              console.log(`  Grouped spouse: ${spouse.first_name} ${spouse.last_name} with ${person.first_name} ${person.last_name}`);
             }
           });
         }
         
         familyUnits.push(unit);
+        console.log(`  Created unit: [${unit.map(p => p.first_name).join(' + ')}]`);
       });
+      
+      console.log('Final family units:', familyUnits.map(u => `[${u.map(p => p.first_name).join(' + ')}]`));
       
       return familyUnits;
     };
