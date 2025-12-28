@@ -749,7 +749,11 @@ export default function TreeScreen() {
     
     bottomUpLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
-      const familyUnits = buildFamilyUnits(personsAtLevel);
+      
+      // Build and sort family units the same way as in STEP 6
+      let familyUnits = buildFamilyUnits(personsAtLevel);
+      const parentIds = getParentIdsForLevel(level);
+      familyUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
       
       familyUnits.forEach(unit => {
         // Get all children of this unit - SORTED BY BIRTH DATE
