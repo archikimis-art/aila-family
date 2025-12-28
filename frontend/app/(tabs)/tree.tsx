@@ -661,7 +661,16 @@ export default function TreeScreen() {
     sortedLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
       const y = level * LEVEL_HEIGHT + 80;
-      const familyUnits = buildFamilyUnits(personsAtLevel);
+      
+      // Build family units (couples stay together)
+      let familyUnits = buildFamilyUnits(personsAtLevel);
+      
+      // Sort family units by birth date of siblings (oldest first)
+      // This ensures siblings appear in correct order while keeping spouses together
+      const parentIds = getParentIdsForLevel(level);
+      familyUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
+      
+      console.log(`Level ${level}: ${familyUnits.length} family units (sorted by birth date)`);
       
       let currentX = 50;
       
