@@ -783,16 +783,13 @@ export default function TreeScreen() {
       const parentIds = getParentIdsForLevel(level);
       const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
       
-      // Sort units by their leftmost position
-      const unitsWithPositions = sortedUnits.map(unit => {
-        const positions = unit.map(p => personPositions.get(p.id)?.x || 0);
-        const minX = Math.min(...positions);
-        return { unit, minX };
-      }).sort((a, b) => a.minX - b.minX);
+      // CRITICAL FIX: Do NOT re-sort by position! Keep birth date order!
+      // Previously: sorted by minX which broke sibling order
+      // Now: use sortedUnits directly (already sorted by birth date)
       
-      // Reposition units to avoid overlap while keeping them together
+      // Reposition units in BIRTH DATE ORDER while keeping them together
       let currentX = 50;
-      unitsWithPositions.forEach(({ unit }) => {
+      sortedUnits.forEach(unit => {
         const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
         const y = personPositions.get(unit[0].id)?.y || 0;
         
