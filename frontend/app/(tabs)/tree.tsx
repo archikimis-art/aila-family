@@ -551,53 +551,77 @@ export default function TreeScreen() {
     // A family unit is a group of spouses that should be positioned together
     // CRITICAL: Spouses must NEVER be separated - they form an atomic unit
     const buildFamilyUnits = (personsAtLevel: Person[]): Person[][] => {
-      const processedIds = new Set<string>();
-      const familyUnits: Person[][] = [];
-      
       console.log('=== Building Family Units ===');
-      console.log('Persons at level:', personsAtLevel.map(p => `${p.first_name} ${p.last_name} (${p.id.substring(0,6)})`));
+      console.log('Persons at level:', personsAtLevel.map(p => `${p.first_name} ${p.last_name}`).join(', '));
       
-      // STEP 5.1: First, identify ALL couples at this level
-      // A couple is formed when BOTH spouses are at this level
-      const couplesAtLevel: [Person, Person][] = [];
-      const personsInCouples = new Set<string>();
+      // Build a spouse graph for persons at THIS level only
+      const spouseGraphAtLevel = new Map<string, Set<string>>();
       
       personsAtLevel.forEach(person => {
-        if (personsInCouples.has(person.id)) return;
-        
-        const spouseIds = spouseMap.get(person.id);
-        if (spouseIds) {
-          spouseIds.forEach(spouseId => {
-            // Check if spouse is also at this level
-            const spouse = personsAtLevel.find(p => p.id === spouseId);
-            if (spouse && !personsInCouples.has(spouseId)) {
-              couplesAtLevel.push([person, spouse]);
-              personsInCouples.add(person.id);
-              personsInCouples.add(spouseId);
-              console.log(`  Found couple: ${person.first_name} + ${spouse.first_name}`);
+        const globalSpouses = spouseMap.get(person.id);
+        if (globalSpouses) {
+          globalSpouses.forEach(spouseId => {
+            // Only include if spouse is also at this level
+            if (personsAtLevel.find(p => p.id === spouseId)) {
+              if (!spouseGraphAtLevel.has(person.id)) {
+                spouseGraphAtLevel.set(person.id, new Set());
+              }
+              spouseGraphAtLevel.get(person.id)!.add(spouseId);
             }
           });
         }
       });
       
-      // STEP 5.2: Create units from couples (couples stay together)
-      couplesAtLevel.forEach(([person1, person2]) => {
-        processedIds.add(person1.id);
-        processedIds.add(person2.id);
-        familyUnits.push([person1, person2]);
-        console.log(`  Created couple unit: [${person1.first_name} + ${person2.first_name}]`);
+      console.log('Spouse graph at this level:');
+      spouseGraphAtLevel.forEach((spouses, personId) => {
+        const person = personById.get(personId);
+        const spouseNames = Array.from(spouses).map(sid => personById.get(sid)?.first_name || sid);
+        console.log(`  ${person?.first_name} -> [${spouseNames.join(', ')}]`);
       });
       
-      // STEP 5.3: Create units for single persons (not in a couple at this level)
+      // Find connected components (spouse groups) using Union-Find
+      const parent = new Map<string, string>();
+      personsAtLevel.forEach(p => parent.set(p.id, p.id));
+      
+      const find = (id: string): string => {
+        if (parent.get(id) !== id) {
+          parent.set(id, find(parent.get(id)!));
+        }
+        return parent.get(id)!;
+      };
+      
+      const union = (id1: string, id2: string) => {
+        const root1 = find(id1);
+        const root2 = find(id2);
+        if (root1 !== root2) {
+          parent.set(root2, root1);
+        }
+      };
+      
+      // Union all spouse pairs
+      spouseGraphAtLevel.forEach((spouses, personId) => {
+        spouses.forEach(spouseId => {
+          union(personId, spouseId);
+        });
+      });
+      
+      // Group persons by their root (connected component)
+      const componentGroups = new Map<string, Person[]>();
       personsAtLevel.forEach(person => {
-        if (processedIds.has(person.id)) return;
-        
-        processedIds.add(person.id);
-        familyUnits.push([person]);
-        console.log(`  Created single unit: [${person.first_name}]`);
+        const root = find(person.id);
+        if (!componentGroups.has(root)) {
+          componentGroups.set(root, []);
+        }
+        componentGroups.get(root)!.push(person);
       });
       
-      console.log('Final units before sorting:', familyUnits.map(u => `[${u.map(p => p.first_name).join('+')}]`).join(', '));
+      // Convert to array of units
+      const familyUnits: Person[][] = Array.from(componentGroups.values());
+      
+      console.log('Family units created:');
+      familyUnits.forEach((unit, i) => {
+        console.log(`  Unit ${i}: [${unit.map(p => p.first_name).join(' + ')}]`);
+      });
       
       return familyUnits;
     };
