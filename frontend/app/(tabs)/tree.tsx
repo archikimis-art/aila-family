@@ -549,17 +549,19 @@ export default function TreeScreen() {
 
     // ==================== STEP 5: BUILD FAMILY UNITS ====================
     // A family unit is a group of spouses that should be positioned together
+    // CRITICAL: Spouses must NEVER be separated - they form an atomic unit
     const buildFamilyUnits = (personsAtLevel: Person[]): Person[][] => {
       const processedIds = new Set<string>();
       const familyUnits: Person[][] = [];
       
+      // First, identify all couples and single persons
       personsAtLevel.forEach(person => {
         if (processedIds.has(person.id)) return;
         
         const unit: Person[] = [person];
         processedIds.add(person.id);
         
-        // Add all spouses at this level
+        // Add all spouses at this level - THEY MUST STAY TOGETHER
         const spouses = spouseMap.get(person.id);
         if (spouses) {
           spouses.forEach(spouseId => {
@@ -575,6 +577,77 @@ export default function TreeScreen() {
       });
       
       return familyUnits;
+    };
+
+    // ==================== STEP 5.5: SORT FAMILY UNITS BY BIRTH DATE ====================
+    // Sort family units so that siblings appear in birth order (oldest first)
+    // A family unit's "birth date" is the earliest birth date of its members who are siblings
+    const sortFamilyUnitsByBirthDate = (units: Person[][], parentIds: string[]): Person[][] => {
+      // Get sibling IDs at this level (children of the same parents)
+      const siblingIds = new Set<string>();
+      parentIds.forEach(parentId => {
+        const children = parentToChildren.get(parentId);
+        if (children) {
+          children.forEach(childId => siblingIds.add(childId));
+        }
+      });
+      
+      // For each unit, find the representative birth date (from siblings, not spouses)
+      const getUnitBirthDate = (unit: Person[]): Date | null => {
+        let earliestDate: Date | null = null;
+        
+        for (const person of unit) {
+          // Only consider siblings for sorting (not spouses who married into the family)
+          if (siblingIds.has(person.id)) {
+            const date = parseBirthDate(person.birth_date);
+            if (date && (!earliestDate || date < earliestDate)) {
+              earliestDate = date;
+            }
+          }
+        }
+        
+        // If no sibling found, use the first person's date
+        if (!earliestDate && unit.length > 0) {
+          earliestDate = parseBirthDate(unit[0].birth_date);
+        }
+        
+        return earliestDate;
+      };
+      
+      return [...units].sort((unitA, unitB) => {
+        const dateA = getUnitBirthDate(unitA);
+        const dateB = getUnitBirthDate(unitB);
+        
+        // Both have dates - oldest first
+        if (dateA && dateB) {
+          return dateA.getTime() - dateB.getTime();
+        }
+        // Only A has date - A comes first
+        if (dateA && !dateB) return -1;
+        // Only B has date - B comes first
+        if (!dateA && dateB) return 1;
+        // Neither has date - keep original order
+        return 0;
+      });
+    };
+
+    // Helper to get all parent IDs at a given level
+    const getParentIdsForLevel = (level: number): string[] => {
+      const parentIds: string[] = [];
+      const personsAtLevel = levelGroups.get(level) || [];
+      
+      personsAtLevel.forEach(person => {
+        const parents = childToParents.get(person.id);
+        if (parents) {
+          parents.forEach(parentId => {
+            if (!parentIds.includes(parentId)) {
+              parentIds.push(parentId);
+            }
+          });
+        }
+      });
+      
+      return parentIds;
     };
 
     // ==================== STEP 6: POSITION NODES (BOTTOM-UP THEN TOP-DOWN) ====================
