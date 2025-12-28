@@ -712,9 +712,6 @@ export default function TreeScreen() {
     };
 
     // Helper to get all parent IDs at a given level
-    };
-
-    // Helper to get all parent IDs at a given level
     const getParentIdsForLevel = (level: number): string[] => {
       const parentIds: string[] = [];
       const personsAtLevel = levelGroups.get(level) || [];
@@ -742,18 +739,12 @@ export default function TreeScreen() {
     
     // First pass: Position from bottom to top
     sortedLevels.forEach(level => {
-      const personsAtLevel = levelGroups.get(level) || [];
       const y = level * LEVEL_HEIGHT + 80;
       
-      // Build family units (couples stay together)
-      let familyUnits = buildFamilyUnits(personsAtLevel);
+      // Use cached family units - COUPLES ARE GUARANTEED TO STAY TOGETHER
+      const familyUnits = buildFamilyUnitsForLevel(level);
       
-      // Sort family units by birth date of siblings (oldest first)
-      // This ensures siblings appear in correct order while keeping spouses together
-      const parentIds = getParentIdsForLevel(level);
-      familyUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
-      
-      console.log(`Level ${level}: ${familyUnits.length} family units (sorted by birth date)`);
+      console.log(`STEP 6 - Level ${level}: ${familyUnits.length} units`);
       
       let currentX = 50;
       
@@ -761,12 +752,11 @@ export default function TreeScreen() {
         // Calculate unit width
         const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
         
-        // Try to center above children - USE SORTED ORDER
+        // Try to center above children
         let allChildrenIds: string[] = [];
         unit.forEach(person => {
           const children = parentToChildren.get(person.id);
           if (children) {
-            // Children are already sorted by birth date in STEP 4.5
             children.forEach(cId => {
               if (!allChildrenIds.includes(cId)) {
                 allChildrenIds.push(cId);
@@ -775,7 +765,7 @@ export default function TreeScreen() {
           }
         });
         
-        // Re-sort children by birth date to ensure correct order
+        // Sort children by birth date
         allChildrenIds = sortSiblingsByBirthDate(allChildrenIds);
 
         let unitX = currentX;
