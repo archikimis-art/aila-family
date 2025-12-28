@@ -2617,16 +2617,40 @@ async def delete_message(
     if not is_admin and message['user_id'] != user_id:
         raise HTTPException(status_code=403, detail="You can only delete your own messages")
     
-    # Additional check: user must have access to this tree's messages
-    accessible_tree_ids = await get_accessible_tree_ids(user_id)
-    message_tree_id = message.get('tree_owner_id', message['user_id'])
-    
-    if not is_admin and message_tree_id not in accessible_tree_ids:
-        raise HTTPException(status_code=403, detail="You don't have access to this message")
-    
     await db.chat_messages.delete_one({"_id": ObjectId(message_id)})
     
     return {"message": "Message deleted successfully"}
+
+@api_router.post("/chat/migrate-messages")
+async def migrate_chat_messages(current_user: dict = Depends(get_current_user)):
+    """
+    Migration endpoint: Fix all chat messages to have correct tree_owner_id.
+    Only admin can run this.
+    """
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin only")
+    
+    # Find all messages without tree_owner_id or with wrong tree_owner_id
+    messages_without_tree = await db.chat_messages.find({
+        "$or": [
+            {"tree_owner_id": {"$exists": False}},
+            {"tree_owner_id": None}
+        ]
+    }).to_list(1000)
+    
+    fixed_count = 0
+    for msg in messages_without_tree:
+        # Set tree_owner_id to the message author's user_id
+        await db.chat_messages.update_one(
+            {"_id": msg['_id']},
+            {"$set": {"tree_owner_id": msg['user_id']}}
+        )
+        fixed_count += 1
+    
+    return {
+        "message": f"Migration complete. Fixed {fixed_count} messages.",
+        "fixed_count": fixed_count
+    }
 
 # ===================== FAMILY EVENTS =====================
 
