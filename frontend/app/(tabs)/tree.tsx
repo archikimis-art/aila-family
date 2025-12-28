@@ -773,7 +773,9 @@ export default function TreeScreen() {
 
     // ==================== STEP 7: FIX OVERLAPPING (PRESERVE FAMILY UNITS) ====================
     // CRITICAL: When fixing overlaps, we must keep family units together!
-    allLevels.forEach(level => {
+    const allLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
+    
+    allLevels.forEach((level: number) => {
       const personsAtLevel = levelGroups.get(level) || [];
       
       // Rebuild family units to ensure couples stay together
