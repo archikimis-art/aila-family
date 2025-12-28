@@ -547,12 +547,22 @@ export default function TreeScreen() {
 
     console.log('Siblings sorted by birth date');
 
-    // ==================== STEP 5: BUILD FAMILY UNITS ====================
+    // ==================== STEP 5: BUILD FAMILY UNITS (CACHED) ====================
     // A family unit is a group of spouses that should be positioned together
     // CRITICAL: Spouses must NEVER be separated - they form an atomic unit
-    const buildFamilyUnits = (personsAtLevel: Person[]): Person[][] => {
-      console.log('=== Building Family Units ===');
-      console.log('Persons at level:', personsAtLevel.map(p => `${p.first_name} ${p.last_name}`).join(', '));
+    // This cache ensures consistency across all steps
+    
+    const familyUnitsCache = new Map<number, Person[][]>();
+    
+    const buildFamilyUnitsForLevel = (level: number): Person[][] => {
+      // Return cached if available
+      if (familyUnitsCache.has(level)) {
+        return familyUnitsCache.get(level)!;
+      }
+      
+      const personsAtLevel = levelGroups.get(level) || [];
+      console.log(`=== Building Family Units for Level ${level} ===`);
+      console.log('Persons:', personsAtLevel.map(p => p.first_name).join(', '));
       
       // Build a spouse graph for persons at THIS level only
       const spouseGraphAtLevel = new Map<string, Set<string>>();
@@ -572,11 +582,11 @@ export default function TreeScreen() {
         }
       });
       
-      console.log('Spouse graph at this level:');
+      // Log spouse relationships found
       spouseGraphAtLevel.forEach((spouses, personId) => {
         const person = personById.get(personId);
         const spouseNames = Array.from(spouses).map(sid => personById.get(sid)?.first_name || sid);
-        console.log(`  ${person?.first_name} -> [${spouseNames.join(', ')}]`);
+        console.log(`  COUPLE FOUND: ${person?.first_name} <-> ${spouseNames.join(', ')}`);
       });
       
       // Find connected components (spouse groups) using Union-Find
@@ -598,16 +608,108 @@ export default function TreeScreen() {
         }
       };
       
-      // Union all spouse pairs
+      // Union all spouse pairs - THIS GUARANTEES COUPLES STAY TOGETHER
       spouseGraphAtLevel.forEach((spouses, personId) => {
         spouses.forEach(spouseId => {
           union(personId, spouseId);
+          console.log(`  UNION: ${personById.get(personId)?.first_name} + ${personById.get(spouseId)?.first_name}`);
         });
       });
       
       // Group persons by their root (connected component)
       const componentGroups = new Map<string, Person[]>();
       personsAtLevel.forEach(person => {
+        const root = find(person.id);
+        if (!componentGroups.has(root)) {
+          componentGroups.set(root, []);
+        }
+        componentGroups.get(root)!.push(person);
+      });
+      
+      // Convert to array of units
+      const familyUnits: Person[][] = Array.from(componentGroups.values());
+      
+      // Sort units by sibling birth date
+      const sortedUnits = sortFamilyUnitsByBirthDateInternal(familyUnits, level);
+      
+      console.log('Final sorted units:', sortedUnits.map(u => `[${u.map(p => p.first_name).join('+')}]`).join(' | '));
+      
+      // Cache and return
+      familyUnitsCache.set(level, sortedUnits);
+      return sortedUnits;
+    };
+    
+    // Internal sorting function
+    const sortFamilyUnitsByBirthDateInternal = (units: Person[][], level: number): Person[][] => {
+      // Get all parent IDs for this level to identify siblings
+      const parentIds: string[] = [];
+      const personsAtLevel = levelGroups.get(level) || [];
+      
+      personsAtLevel.forEach(person => {
+        const parents = childToParents.get(person.id);
+        if (parents) {
+          parents.forEach(parentId => {
+            if (!parentIds.includes(parentId)) {
+              parentIds.push(parentId);
+            }
+          });
+        }
+      });
+      
+      // Get sibling IDs (children of these parents)
+      const siblingIds = new Set<string>();
+      parentIds.forEach(parentId => {
+        const children = parentToChildren.get(parentId);
+        if (children) {
+          children.forEach(childId => siblingIds.add(childId));
+        }
+      });
+      
+      // For each unit, find the representative birth date (from siblings, not spouses who married in)
+      const getUnitSortKey = (unit: Person[]): { date: Date | null; siblingName: string } => {
+        let earliestDate: Date | null = null;
+        let siblingName = '';
+        
+        for (const person of unit) {
+          // Only consider siblings for sorting (not spouses who married into the family)
+          if (siblingIds.has(person.id)) {
+            const date = parseBirthDate(person.birth_date);
+            if (date && (!earliestDate || date < earliestDate)) {
+              earliestDate = date;
+              siblingName = person.first_name;
+            }
+            // If no date but is a sibling, still use as reference
+            if (!siblingName) {
+              siblingName = person.first_name;
+            }
+          }
+        }
+        
+        // Fallback to first person if no sibling found
+        if (!earliestDate && unit.length > 0) {
+          earliestDate = parseBirthDate(unit[0].birth_date);
+          if (!siblingName) siblingName = unit[0].first_name;
+        }
+        
+        return { date: earliestDate, siblingName };
+      };
+      
+      return [...units].sort((unitA, unitB) => {
+        const keyA = getUnitSortKey(unitA);
+        const keyB = getUnitSortKey(unitB);
+        
+        // Both have dates - oldest first
+        if (keyA.date && keyB.date) {
+          return keyA.date.getTime() - keyB.date.getTime();
+        }
+        // Only A has date - A comes first
+        if (keyA.date && !keyB.date) return -1;
+        // Only B has date - B comes first
+        if (!keyA.date && keyB.date) return 1;
+        // Neither has date - alphabetical by sibling name
+        return keyA.siblingName.localeCompare(keyB.siblingName);
+      });
+    };
         const root = find(person.id);
         if (!componentGroups.has(root)) {
           componentGroups.set(root, []);
