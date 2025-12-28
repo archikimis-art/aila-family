@@ -802,12 +802,10 @@ export default function TreeScreen() {
     const allLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
     
     allLevels.forEach((level: number) => {
-      const personsAtLevel = levelGroups.get(level) || [];
+      // Use cached family units - COUPLES ARE GUARANTEED TO STAY TOGETHER
+      const sortedUnits = buildFamilyUnitsForLevel(level);
       
-      // Rebuild family units to ensure couples stay together
-      const familyUnits = buildFamilyUnits(personsAtLevel);
-      const parentIds = getParentIdsForLevel(level);
-      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
+      console.log(`STEP 7 - Level ${level}: repositioning ${sortedUnits.length} units`);
       
       // Sort units by their leftmost position
       const unitsWithPositions = sortedUnits.map(unit => {
@@ -837,13 +835,11 @@ export default function TreeScreen() {
     // Second pass: Adjust parent positions to center above their children
     const bottomUpLevels = Array.from(levelGroups.keys()).sort((a, b) => b - a);
     
-    bottomUpLevels.forEach(level => {
-      const personsAtLevel = levelGroups.get(level) || [];
+    bottomUpLevels.forEach((level: number) => {
+      // Use cached family units - COUPLES ARE GUARANTEED TO STAY TOGETHER
+      const familyUnits = buildFamilyUnitsForLevel(level);
       
-      // Build and sort family units the same way as in STEP 6
-      let familyUnits = buildFamilyUnits(personsAtLevel);
-      const parentIds = getParentIdsForLevel(level);
-      familyUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
+      console.log(`STEP 8 - Level ${level}: recentering ${familyUnits.length} units`);
       
       familyUnits.forEach(unit => {
         // Get all children of this unit - SORTED BY BIRTH DATE
@@ -859,7 +855,7 @@ export default function TreeScreen() {
           }
         });
         
-        // Re-sort children by birth date to ensure correct order
+        // Sort children by birth date
         allChildrenIds = sortSiblingsByBirthDate(allChildrenIds);
         
         if (allChildrenIds.length === 0) return;
