@@ -772,27 +772,27 @@ export default function TreeScreen() {
     });
 
     // ==================== STEP 7: FIX OVERLAPPING (PRESERVE FAMILY UNITS) ====================
-    // CRITICAL: When fixing overlaps, we must keep family units together!
+    // CRITICAL: When fixing overlaps, we must keep family units together AND in sibling order!
     const allLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
     
     allLevels.forEach((level: number) => {
       const personsAtLevel = levelGroups.get(level) || [];
       
-      // Rebuild family units to ensure couples stay together
+      // Rebuild family units - couples stay together
       const familyUnits = buildFamilyUnits(personsAtLevel);
       const parentIds = getParentIdsForLevel(level);
+      // IMPORTANT: Sort by birth date - this determines the final order!
       const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
       
-      // Sort units by their leftmost position
-      const unitsWithPositions = sortedUnits.map(unit => {
-        const positions = unit.map(p => personPositions.get(p.id)?.x || 0);
-        const minX = Math.min(...positions);
-        return { unit, minX };
-      }).sort((a, b) => a.minX - b.minX);
+      console.log(`STEP 7 - Level ${level}: ${sortedUnits.length} units`);
+      sortedUnits.forEach((unit, i) => {
+        console.log(`  Unit ${i}: [${unit.map(p => p.first_name).join(' + ')}]`);
+      });
       
-      // Reposition units to avoid overlap while keeping them together
+      // Reposition units in BIRTH ORDER (not position order!)
+      // This ensures siblings are correctly ordered from oldest to youngest
       let currentX = 50;
-      unitsWithPositions.forEach(({ unit }) => {
+      sortedUnits.forEach(unit => {
         const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
         const y = personPositions.get(unit[0].id)?.y || 0;
         
