@@ -22,8 +22,16 @@ const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
   const adRef = useRef<HTMLDivElement>(null);
   const adInitialized = useRef(false);
   const [adLoaded, setAdLoaded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Prevent SSR hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!isMounted) return;
+    
     if (typeof window !== 'undefined' && adRef.current && !adInitialized.current) {
       try {
         // Create the ad element
