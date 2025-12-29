@@ -928,12 +928,6 @@ export default function TreeScreen() {
         });
         
         minNextX = newX + width + NODE_SPACING;
-        unit.forEach(person => {
-          personPositions.set(person.id, { x, y });
-          x += NODE_WIDTH + COUPLE_SPACING;
-        });
-        
-        currentX += unitWidth + NODE_SPACING;
       });
     });
 
