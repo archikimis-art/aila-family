@@ -999,7 +999,7 @@ export default function TreeScreen() {
       }),
     };
 
-    console.log('========== END TREE LAYOUT v11 ==========');
+    console.log('========== END TREE LAYOUT v12 ==========');
     return { nodes, connections, debugInfo };
   };
 
