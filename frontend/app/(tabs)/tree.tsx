@@ -840,15 +840,14 @@ export default function TreeScreen() {
     // Second pass: Adjust parent positions to center above their children
     const bottomUpLevels = Array.from(levelGroups.keys()).sort((a, b) => b - a);
     
-    bottomUpLevels.forEach(level => {
+    bottomUpLevels.forEach((level: number) => {
       const personsAtLevel = levelGroups.get(level) || [];
       
       // Build and sort family units the same way as in STEP 6
-      let familyUnits = buildFamilyUnits(personsAtLevel);
-      const parentIds = getParentIdsForLevel(level);
-      familyUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
+      const familyUnits = buildFamilyUnits(personsAtLevel);
+      const sortedFamilyUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
-      familyUnits.forEach(unit => {
+      sortedFamilyUnits.forEach(unit => {
         // Get all children of this unit - SORTED BY BIRTH DATE
         let allChildrenIds: string[] = [];
         unit.forEach(person => {
@@ -862,7 +861,7 @@ export default function TreeScreen() {
           }
         });
         
-        // Re-sort children by birth date to ensure correct order
+        // Sort children by birth date
         allChildrenIds = sortSiblingsByBirthDate(allChildrenIds);
         
         if (allChildrenIds.length === 0) return;
@@ -896,7 +895,7 @@ export default function TreeScreen() {
       });
     });
 
-    // ==================== STEP 9: FINAL OVERLAP FIX ====================
+    // ==================== STEP 9: FINAL OVERLAP FIX (PRESERVE BIRTH ORDER) ====================
     allLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
       const positions = personsAtLevel
