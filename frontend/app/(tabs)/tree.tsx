@@ -891,43 +891,35 @@ export default function TreeScreen() {
       });
     });
 
-    // ==================== STEP 9: FINAL OVERLAP FIX (PRESERVE CENTERING) ====================
-    // Fix overlaps while preserving parent-child centering as much as possible
+    // ==================== STEP 9: FINAL OVERLAP FIX (PRESERVE BIRTH ORDER AND CENTERING) ====================
+    // Fix overlaps while preserving BOTH birth order AND parent-child centering
     allLevels.forEach((level: number) => {
       const personsAtLevel = levelGroups.get(level) || [];
       
-      // Rebuild family units in correct order
+      // Rebuild family units in BIRTH ORDER (this is the correct order!)
       const familyUnits = buildFamilyUnits(personsAtLevel);
       const sortedFamilyUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
-      // Get current positions and check for overlaps
-      const unitsWithPositions = sortedFamilyUnits.map(unit => {
-        const firstPersonPos = personPositions.get(unit[0].id);
-        return {
-          unit,
-          x: firstPersonPos?.x || 0,
-          y: firstPersonPos?.y || 0,
-          width: unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING
-        };
-      });
-      
-      // Sort by X position to fix overlaps from left to right
-      unitsWithPositions.sort((a, b) => a.x - b.x);
-      
-      // Fix overlaps while trying to preserve centering
+      // Process units in BIRTH ORDER (oldest first) and fix overlaps
       let minNextX = 50;
-      unitsWithPositions.forEach(({ unit, x, y, width }) => {
-        // If current position would overlap, shift right
-        const newX = Math.max(x, minNextX);
+      
+      sortedFamilyUnits.forEach(unit => {
+        const firstPersonPos = personPositions.get(unit[0].id);
+        const currentX = firstPersonPos?.x || 0;
+        const y = firstPersonPos?.y || 0;
+        const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
+        
+        // Only shift right if there's an overlap, otherwise keep centered position
+        const newX = Math.max(currentX, minNextX);
         
         // Update positions for all persons in unit
-        let currentX = newX;
+        let x = newX;
         unit.forEach(person => {
-          personPositions.set(person.id, { x: currentX, y });
-          currentX += NODE_WIDTH + COUPLE_SPACING;
+          personPositions.set(person.id, { x, y });
+          x += NODE_WIDTH + COUPLE_SPACING;
         });
         
-        minNextX = newX + width + NODE_SPACING;
+        minNextX = newX + unitWidth + NODE_SPACING;
       });
     });
 
