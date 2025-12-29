@@ -186,6 +186,21 @@ export default function WelcomeScreen() {
 
             {/* Footer text only */}
             <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
+            
+            {/* Legal Links */}
+            <View style={styles.legalLinks}>
+              <TouchableOpacity onPress={() => router.push('/about')}>
+                <Text style={styles.legalLink}>À propos</Text>
+              </TouchableOpacity>
+              <Text style={styles.legalSeparator}>•</Text>
+              <TouchableOpacity onPress={() => router.push('/privacy')}>
+                <Text style={styles.legalLink}>Confidentialité</Text>
+              </TouchableOpacity>
+              <Text style={styles.legalSeparator}>•</Text>
+              <TouchableOpacity onPress={() => router.push('/terms')}>
+                <Text style={styles.legalLink}>CGU</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </LinearGradient>
       </SafeAreaView>
