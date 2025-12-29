@@ -325,7 +325,7 @@ export default function TreeScreen() {
   const buildTreeLayout = () => {
     if (persons.length === 0) return { nodes: [], connections: [], debugInfo: null };
 
-    console.log('========== TREE LAYOUT v13 - PROFESSIONAL ==========');
+    console.log('========== TREE LAYOUT v14 - SIMPLE STABLE ==========');
     
     // ==================== STEP 1: BUILD RELATIONSHIP MAPS ====================
     const childToParents = new Map<string, Set<string>>();
