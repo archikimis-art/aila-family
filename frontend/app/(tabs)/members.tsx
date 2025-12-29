@@ -202,6 +202,9 @@ export default function MembersScreen() {
       <TouchableOpacity style={styles.fab} onPress={handleAddPerson}>
         <Ionicons name="add" size={28} color="#0A1628" />
       </TouchableOpacity>
+      
+      {/* Ad Banner */}
+      <AdBanner />
     </SafeAreaView>
   );
 }
