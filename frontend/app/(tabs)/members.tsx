@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { personsAPI, previewAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AdBanner from '@/components/AdBanner';
 
 interface Person {
   id: string;
