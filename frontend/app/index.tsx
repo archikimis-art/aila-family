@@ -441,6 +441,23 @@ const styles = StyleSheet.create({
     marginTop: 8,
     textAlign: 'center',
   },
+  legalLinks: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+    flexWrap: 'wrap',
+  },
+  legalLink: {
+    color: '#6B8BB8',
+    fontSize: 12,
+    textDecorationLine: 'underline',
+  },
+  legalSeparator: {
+    color: '#4A5568',
+    fontSize: 12,
+    marginHorizontal: 8,
+  },
   adContainer: {
     position: 'absolute',
     bottom: 0,
