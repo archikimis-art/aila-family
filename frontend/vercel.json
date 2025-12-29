@@ -71,7 +71,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://familymap-debug.preview.emergentagent.com/api/:path*"
+      "destination": "https://ancestry-app-4.preview.emergentagent.com/api/:path*"
     },
     {
       "source": "/ads.txt",
