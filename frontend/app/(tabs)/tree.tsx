@@ -891,8 +891,8 @@ export default function TreeScreen() {
       });
     });
 
-    // ==================== STEP 9: FINAL OVERLAP FIX (PRESERVE BIRTH ORDER) ====================
-    // CRITICAL: Fix overlaps while preserving the birth date order of family units
+    // ==================== STEP 9: FINAL OVERLAP FIX (PRESERVE CENTERING) ====================
+    // Fix overlaps while preserving parent-child centering as much as possible
     allLevels.forEach((level: number) => {
       const personsAtLevel = levelGroups.get(level) || [];
       
@@ -900,14 +900,34 @@ export default function TreeScreen() {
       const familyUnits = buildFamilyUnits(personsAtLevel);
       const sortedFamilyUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
-      // Reposition all units from left to right, preserving birth order
-      let currentX = 50;
-      sortedFamilyUnits.forEach(unit => {
-        const y = personPositions.get(unit[0].id)?.y || 0;
-        const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
+      // Get current positions and check for overlaps
+      const unitsWithPositions = sortedFamilyUnits.map(unit => {
+        const firstPersonPos = personPositions.get(unit[0].id);
+        return {
+          unit,
+          x: firstPersonPos?.x || 0,
+          y: firstPersonPos?.y || 0,
+          width: unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING
+        };
+      });
+      
+      // Sort by X position to fix overlaps from left to right
+      unitsWithPositions.sort((a, b) => a.x - b.x);
+      
+      // Fix overlaps while trying to preserve centering
+      let minNextX = 50;
+      unitsWithPositions.forEach(({ unit, x, y, width }) => {
+        // If current position would overlap, shift right
+        const newX = Math.max(x, minNextX);
         
-        // Position each person in the unit side by side
-        let x = currentX;
+        // Update positions for all persons in unit
+        let currentX = newX;
+        unit.forEach(person => {
+          personPositions.set(person.id, { x: currentX, y });
+          currentX += NODE_WIDTH + COUPLE_SPACING;
+        });
+        
+        minNextX = newX + width + NODE_SPACING;
         unit.forEach(person => {
           personPositions.set(person.id, { x, y });
           x += NODE_WIDTH + COUPLE_SPACING;
