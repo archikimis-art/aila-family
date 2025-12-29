@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { chatAPI } from '@/services/api';
+import AdBanner from '@/components/AdBanner';
 
 interface ChatMessage {
   id: string;
