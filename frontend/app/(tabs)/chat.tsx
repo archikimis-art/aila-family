@@ -284,6 +284,9 @@ export default function ChatScreen() {
             </TouchableOpacity>
           </View>
         </View>
+        
+        {/* Ad Banner */}
+        <AdBanner />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
