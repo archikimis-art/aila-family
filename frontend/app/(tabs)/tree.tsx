@@ -812,13 +812,9 @@ export default function TreeScreen() {
       
       // Rebuild family units to ensure couples stay together
       const familyUnits = buildFamilyUnits(personsAtLevel);
-      const parentIds = getParentIdsForLevel(level);
-      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, parentIds);
+      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
       // CRITICAL FIX: Do NOT re-sort by position! Keep birth date order!
-      // Previously: sorted by minX which broke sibling order
-      // Now: use sortedUnits directly (already sorted by birth date)
-      
       // Reposition units in BIRTH DATE ORDER while keeping them together
       let currentX = 50;
       sortedUnits.forEach(unit => {
