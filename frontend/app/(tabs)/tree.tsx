@@ -876,30 +876,29 @@ export default function TreeScreen() {
       });
     });
     
-    // PASS 4: Final overlap fix - shift units that overlap while preserving birth order
+    // PASS 4: Final overlap fix - PRESERVE BIRTH ORDER (don't re-sort by X!)
     topToBottomLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
       const y = level * LEVEL_HEIGHT + 80;
       
       const familyUnits = buildFamilyUnits(personsAtLevel);
+      // CRITICAL: Keep birth date order, don't sort by X position!
       const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
-      
-      // Sort units by their current X position to process left to right
-      const unitsWithX = sortedUnits.map(unit => ({
-        unit,
-        x: personPositions.get(unit[0].id)?.x ?? 0,
-        width: unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING
-      })).sort((a, b) => a.x - b.x);
       
       let minNextX = 50;
       
-      unitsWithX.forEach(({ unit, x, width }) => {
-        const newX = Math.max(x, minNextX);
+      // Process in BIRTH ORDER (oldest first), shifting right if needed
+      sortedUnits.forEach(unit => {
+        const currentX = personPositions.get(unit[0].id)?.x ?? 50;
+        const width = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
         
-        let currentX = newX;
+        // Shift right only if overlapping with previous unit
+        const newX = Math.max(currentX, minNextX);
+        
+        let x = newX;
         unit.forEach(person => {
-          personPositions.set(person.id, { x: currentX, y });
-          currentX += NODE_WIDTH + COUPLE_SPACING;
+          personPositions.set(person.id, { x, y });
+          x += NODE_WIDTH + COUPLE_SPACING;
         });
         
         minNextX = newX + width + NODE_SPACING;
