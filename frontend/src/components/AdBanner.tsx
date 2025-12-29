@@ -163,9 +163,20 @@ export default function AdBanner({ style }: AdBannerProps) {
   const { showAds, isPremium } = useAds();
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const [isClient, setIsClient] = useState(false);
+
+  // Prevent SSR hydration mismatch - only render on client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Don't show ads for premium users
   if (!showAds || isPremium) {
+    return null;
+  }
+
+  // Don't render anything until we're on the client (prevents hydration mismatch)
+  if (!isClient && Platform.OS === 'web') {
     return null;
   }
 
