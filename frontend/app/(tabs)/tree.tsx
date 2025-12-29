@@ -2095,6 +2095,9 @@ export default function TreeScreen() {
           }}
         />
       )}
+      
+      {/* Ad Banner */}
+      <AdBanner />
     </SafeAreaView>
   );
 }
