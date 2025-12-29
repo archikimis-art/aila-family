@@ -1082,7 +1082,7 @@ export default function TreeScreen() {
       }),
     };
 
-    console.log('========== END TREE LAYOUT v16 ==========');
+    console.log('========== END TREE LAYOUT v17 ==========');
     return { nodes, connections, debugInfo };
   };
 
