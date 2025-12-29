@@ -730,68 +730,75 @@ export default function TreeScreen() {
       return parentIds;
     };
 
-    // ==================== STEP 6: POSITION NODES (BOTTOM-UP THEN TOP-DOWN) ====================
+    // ==================== STEP 6: SIMPLIFIED POSITIONING ALGORITHM ====================
+    // This algorithm ensures:
+    // 1. Siblings are sorted by birth date (oldest to youngest, left to right)
+    // 2. Couples are NEVER separated (treated as single units)
+    // 3. Parents are centered above their children
+    
     const personPositions = new Map<string, { x: number; y: number }>();
     const nodes: { person: Person; x: number; y: number }[] = [];
     
-    // Sort levels from bottom to top (children first)
-    const sortedLevels = Array.from(levelGroups.keys()).sort((a, b) => b - a);
+    // Get all levels from bottom (highest number) to top (0)
+    const bottomToTopLevels = Array.from(levelGroups.keys()).sort((a, b) => b - a);
+    const topToBottomLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
     
-    // First pass: Position from bottom to top
-    sortedLevels.forEach(level => {
+    console.log('Levels (bottom to top):', bottomToTopLevels);
+    
+    // PASS 1: Initial positioning from bottom to top
+    // Children are positioned first, then parents are centered above them
+    bottomToTopLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
       const y = level * LEVEL_HEIGHT + 80;
       
       // Build family units (couples stay together)
       const familyUnits = buildFamilyUnits(personsAtLevel);
       
-      // Sort family units by birth date of siblings (oldest first)
-      // This ensures siblings appear in correct order while keeping spouses together
-      const sortedFamilyUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
+      // Sort units by sibling birth date (oldest first)
+      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
-      console.log(`STEP 6 - Level ${level}: positioning ${sortedFamilyUnits.length} family units`);
+      console.log(`PASS 1 - Level ${level}: ${sortedUnits.length} units - ${sortedUnits.map(u => '[' + u.map(p => p.first_name).join('+') + ']').join(', ')}`);
       
       let currentX = 50;
       
-      sortedFamilyUnits.forEach(unit => {
-        // Calculate unit width
+      sortedUnits.forEach(unit => {
         const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
         
-        // Try to center above children
-        let allChildrenIds: string[] = [];
+        // Get all children of this unit
+        let childrenIds: string[] = [];
         unit.forEach(person => {
           const children = parentToChildren.get(person.id);
           if (children) {
             children.forEach(cId => {
-              if (!allChildrenIds.includes(cId)) {
-                allChildrenIds.push(cId);
+              if (!childrenIds.includes(cId)) {
+                childrenIds.push(cId);
               }
             });
           }
         });
         
-        // Sort children by birth date
-        allChildrenIds = sortSiblingsByBirthDate(allChildrenIds);
-
+        // Sort children by birth date for consistent ordering
+        childrenIds = sortSiblingsByBirthDate(childrenIds);
+        
+        // Get positions of children (already positioned in previous iterations)
+        const childPositions = childrenIds
+          .map(cId => personPositions.get(cId))
+          .filter((pos): pos is { x: number; y: number } => pos !== undefined);
+        
         let unitX = currentX;
         
-        if (allChildrenIds.length > 0) {
-          const childPositions = allChildrenIds
-            .map(cId => personPositions.get(cId))
-            .filter((pos): pos is { x: number; y: number } => pos !== undefined);
+        if (childPositions.length > 0) {
+          // Center above children
+          const minX = Math.min(...childPositions.map(p => p.x));
+          const maxX = Math.max(...childPositions.map(p => p.x + NODE_WIDTH));
+          const childrenCenter = (minX + maxX) / 2;
+          unitX = childrenCenter - unitWidth / 2;
           
-          if (childPositions.length > 0) {
-            // Find the center of all children
-            const minChildX = Math.min(...childPositions.map(p => p.x));
-            const maxChildX = Math.max(...childPositions.map(p => p.x + NODE_WIDTH));
-            const childrenCenter = (minChildX + maxChildX) / 2;
-            
-            // Center the unit above children
-            unitX = Math.max(currentX, childrenCenter - unitWidth / 2);
-          }
+          // Don't let it go left of minimum position
+          unitX = Math.max(currentX, unitX);
         }
-
-        // Position each person in unit side by side
+        
+        // Position each person in the unit
         let x = unitX;
         unit.forEach(person => {
           personPositions.set(person.id, { x, y });
@@ -801,126 +808,29 @@ export default function TreeScreen() {
         currentX = unitX + unitWidth + NODE_SPACING;
       });
     });
-
-    // ==================== STEP 7: CALCULATE SUBTREE WIDTHS ====================
-    // Calculate the width needed for each person's subtree (including all descendants)
-    const subtreeWidths = new Map<string, number>();
     
-    const calculateSubtreeWidth = (personId: string): number => {
-      if (subtreeWidths.has(personId)) {
-        return subtreeWidths.get(personId)!;
-      }
-      
-      const children = parentToChildren.get(personId);
-      if (!children || children.size === 0) {
-        // Leaf node - just the node width
-        subtreeWidths.set(personId, NODE_WIDTH);
-        return NODE_WIDTH;
-      }
-      
-      // Get all children and their subtree widths
-      const childIds = Array.from(children);
-      let totalChildrenWidth = 0;
-      
-      childIds.forEach((childId, index) => {
-        const childWidth = calculateSubtreeWidth(childId);
-        totalChildrenWidth += childWidth;
-        if (index < childIds.length - 1) {
-          totalChildrenWidth += NODE_SPACING;
-        }
-      });
-      
-      // The subtree width is the max of this node's width and children's total width
-      const width = Math.max(NODE_WIDTH, totalChildrenWidth);
-      subtreeWidths.set(personId, width);
-      return width;
-    };
-    
-    // Calculate subtree widths for all persons (bottom-up)
-    persons.forEach(p => calculateSubtreeWidth(p.id));
-    
-    // ==================== STEP 8: POSITION WITH PROPER CENTERING ====================
-    // Position from top to bottom, centering children under parents
-    const allLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
-    
-    allLevels.forEach((level: number) => {
+    // PASS 2: Fix overlaps while preserving birth order
+    // Process each level and ensure no overlaps
+    topToBottomLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
       const y = level * LEVEL_HEIGHT + 80;
       
-      // Build and sort family units
+      // Build and sort family units (same order as before)
       const familyUnits = buildFamilyUnits(personsAtLevel);
-      const sortedFamilyUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
+      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
-      sortedFamilyUnits.forEach(unit => {
-        // Check if this unit has children that are already positioned
-        let allChildrenIds: string[] = [];
-        unit.forEach(person => {
-          const children = parentToChildren.get(person.id);
-          if (children) {
-            children.forEach(cId => {
-              if (!allChildrenIds.includes(cId)) {
-                allChildrenIds.push(cId);
-              }
-            });
-          }
-        });
-        
-        const childPositions = allChildrenIds
-          .map(cId => personPositions.get(cId))
-          .filter((pos): pos is { x: number; y: number } => pos !== undefined);
-        
-        const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
-        
-        if (childPositions.length > 0) {
-          // Center this unit above its children
-          const minChildX = Math.min(...childPositions.map(p => p.x));
-          const maxChildX = Math.max(...childPositions.map(p => p.x + NODE_WIDTH));
-          const childrenCenter = (minChildX + maxChildX) / 2;
-          const unitX = childrenCenter - unitWidth / 2;
-          
-          let x = unitX;
-          unit.forEach(person => {
-            personPositions.set(person.id, { x, y });
-            x += NODE_WIDTH + COUPLE_SPACING;
-          });
-        }
-        // If no children positioned yet, position will be set in next pass
-      });
-    });
-    
-    // ==================== STEP 9: POSITION REMAINING AND FIX OVERLAPS ====================
-    // Position any units not yet positioned and fix overlaps level by level
-    allLevels.forEach((level: number) => {
-      const personsAtLevel = levelGroups.get(level) || [];
-      const y = level * LEVEL_HEIGHT + 80;
+      // Collect all units with their positions
+      const unitsWithPositions = sortedUnits.map(unit => ({
+        unit,
+        x: personPositions.get(unit[0].id)?.x ?? 50,
+        width: unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING
+      }));
       
-      // Build and sort family units
-      const familyUnits = buildFamilyUnits(personsAtLevel);
-      const sortedFamilyUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
-      
-      // Get current positions
-      const unitsWithPositions = sortedFamilyUnits.map(unit => {
-        const firstPersonPos = personPositions.get(unit[0].id);
-        return {
-          unit,
-          x: firstPersonPos?.x ?? -1, // -1 means not positioned
-          width: unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING
-        };
-      });
-      
-      // Position from left to right, respecting birth order
+      // Fix overlaps: shift units right if they overlap with previous units
       let minNextX = 50;
       
       unitsWithPositions.forEach(({ unit, x, width }) => {
-        let newX: number;
-        
-        if (x < 0) {
-          // Not yet positioned - place at current position
-          newX = minNextX;
-        } else {
-          // Already positioned (centered above children) - only shift if overlap
-          newX = Math.max(x, minNextX);
-        }
+        const newX = Math.max(x, minNextX);
         
         // Update positions
         let currentX = newX;
@@ -933,58 +843,49 @@ export default function TreeScreen() {
       });
     });
     
-    // ==================== STEP 10: FINAL CENTERING PASS ====================
-    // Re-center parents above their children (bottom-up)
-    const bottomUpLevels = Array.from(levelGroups.keys()).sort((a, b) => b - a);
-    
-    bottomUpLevels.forEach((level: number) => {
+    // PASS 3: Re-center parents above children (bottom-up)
+    // This ensures parents are properly centered after overlap fixes
+    bottomToTopLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
       
       // Build and sort family units
       const familyUnits = buildFamilyUnits(personsAtLevel);
-      const sortedFamilyUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
+      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
-      // Build and sort family units the same way as in STEP 6
-      const familyUnits = buildFamilyUnits(personsAtLevel);
-      const sortedFamilyUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
-      
-      sortedFamilyUnits.forEach(unit => {
-        // Get all children of this unit - SORTED BY BIRTH DATE
-        let allChildrenIds: string[] = [];
+      sortedUnits.forEach(unit => {
+        // Get all children of this unit
+        let childrenIds: string[] = [];
         unit.forEach(person => {
           const children = parentToChildren.get(person.id);
           if (children) {
             children.forEach(cId => {
-              if (!allChildrenIds.includes(cId)) {
-                allChildrenIds.push(cId);
+              if (!childrenIds.includes(cId)) {
+                childrenIds.push(cId);
               }
             });
           }
         });
         
-        // Sort children by birth date
-        allChildrenIds = sortSiblingsByBirthDate(allChildrenIds);
+        childrenIds = sortSiblingsByBirthDate(childrenIds);
         
-        if (allChildrenIds.length === 0) return;
+        if (childrenIds.length === 0) return;
         
-        const childPositions = allChildrenIds
+        const childPositions = childrenIds
           .map(cId => personPositions.get(cId))
           .filter((pos): pos is { x: number; y: number } => pos !== undefined);
         
         if (childPositions.length === 0) return;
         
         // Calculate children center
-        const minChildX = Math.min(...childPositions.map(p => p.x));
-        const maxChildX = Math.max(...childPositions.map(p => p.x + NODE_WIDTH));
-        const childrenCenter = (minChildX + maxChildX) / 2;
+        const minX = Math.min(...childPositions.map(p => p.x));
+        const maxX = Math.max(...childPositions.map(p => p.x + NODE_WIDTH));
+        const childrenCenter = (minX + maxX) / 2;
         
         // Calculate unit width
         const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
         
-        // Calculate new position centered above children
+        // Center unit above children
         const newUnitX = childrenCenter - unitWidth / 2;
-        
-        // Check if new position doesn't overlap with other units at same level
         const y = personPositions.get(unit[0].id)?.y || 0;
         
         // Apply new positions
@@ -995,29 +896,24 @@ export default function TreeScreen() {
         });
       });
     });
-
-    // ==================== STEP 9: FINAL OVERLAP FIX (PRESERVE BIRTH ORDER AND CENTERING) ====================
-    // Fix overlaps while preserving BOTH birth order AND parent-child centering
-    allLevels.forEach((level: number) => {
+    
+    // PASS 4: Final overlap fix (preserve centering where possible)
+    topToBottomLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
+      const y = level * LEVEL_HEIGHT + 80;
       
-      // Rebuild family units in BIRTH ORDER (this is the correct order!)
       const familyUnits = buildFamilyUnits(personsAtLevel);
-      const sortedFamilyUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
+      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
-      // Process units in BIRTH ORDER (oldest first) and fix overlaps
       let minNextX = 50;
       
-      sortedFamilyUnits.forEach(unit => {
-        const firstPersonPos = personPositions.get(unit[0].id);
-        const currentX = firstPersonPos?.x || 0;
-        const y = firstPersonPos?.y || 0;
+      sortedUnits.forEach(unit => {
+        const currentX = personPositions.get(unit[0].id)?.x ?? 50;
         const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
         
-        // Only shift right if there's an overlap, otherwise keep centered position
+        // Only shift right if there's an overlap
         const newX = Math.max(currentX, minNextX);
         
-        // Update positions for all persons in unit
         let x = newX;
         unit.forEach(person => {
           personPositions.set(person.id, { x, y });
