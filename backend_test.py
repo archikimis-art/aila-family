@@ -11,7 +11,7 @@ from datetime import datetime
 import time
 
 # Configuration
-BASE_URL = "https://expo-build-rescue.preview.emergentagent.com/api"
+BASE_URL = "https://familymap-debug.preview.emergentagent.com/api"
 TIMEOUT = 30
 
 class GenealogyAPITester:
