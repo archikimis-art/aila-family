@@ -325,7 +325,7 @@ export default function TreeScreen() {
   const buildTreeLayout = () => {
     if (persons.length === 0) return { nodes: [], connections: [], debugInfo: null };
 
-    console.log('========== TREE LAYOUT v9 - CLEAN REWRITE ==========');
+    console.log('========== TREE LAYOUT v10 - TOP-DOWN CENTERING ==========');
     
     // ==================== STEP 1: BUILD RELATIONSHIP MAPS ====================
     const childToParents = new Map<string, Set<string>>();
