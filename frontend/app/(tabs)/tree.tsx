@@ -1145,7 +1145,7 @@ export default function TreeScreen() {
       }),
     };
 
-    console.log('========== END TREE LAYOUT v9 ==========');
+    console.log('========== END TREE LAYOUT v10 ==========');
     return { nodes, connections, debugInfo };
   };
 
