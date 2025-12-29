@@ -547,39 +547,67 @@ export default function TreeScreen() {
 
     console.log('Siblings sorted by birth date');
 
-    // ==================== STEP 5: BUILD FAMILY UNITS ====================
-    // A family unit is a group of spouses that should be positioned together
-    // CRITICAL: Spouses must NEVER be separated - they form an atomic unit
-    const buildFamilyUnits = (personsAtLevel: Person[]): Person[][] => {
-      console.log('=== Building Family Units ===');
-      console.log('Persons at level:', personsAtLevel.map(p => `${p.first_name} ${p.last_name}`).join(', '));
+    // ==================== STEP 5: BUILD AND SORT FAMILY UNITS ====================
+    // RÈGLE ABSOLUE: Les époux ne sont JAMAIS séparés
+    // RÈGLE ABSOLUE: Les fratries sont triées par date de naissance (aîné à gauche)
+    
+    // Identifier qui est un "enfant" (a des parents dans l'arbre) vs "conjoint qui a épousé"
+    const getChildrenAtLevel = (level: number): Set<string> => {
+      const children = new Set<string>();
+      const personsAtLevel = levelGroups.get(level) || [];
       
-      // Build a spouse graph for persons at THIS level only
+      personsAtLevel.forEach(person => {
+        const parents = childToParents.get(person.id);
+        if (parents && parents.size > 0) {
+          children.add(person.id);
+        }
+      });
+      
+      return children;
+    };
+    
+    const buildFamilyUnits = (personsAtLevel: Person[]): Person[][] => {
+      console.log('=== BUILD FAMILY UNITS ===');
+      console.log('Input:', personsAtLevel.map(p => p.first_name).join(', '));
+      
+      // ÉTAPE 1: Construire le graphe des époux pour CE niveau
       const spouseGraphAtLevel = new Map<string, Set<string>>();
       
       personsAtLevel.forEach(person => {
         const globalSpouses = spouseMap.get(person.id);
         if (globalSpouses) {
           globalSpouses.forEach(spouseId => {
-            // Only include if spouse is also at this level
             if (personsAtLevel.find(p => p.id === spouseId)) {
               if (!spouseGraphAtLevel.has(person.id)) {
                 spouseGraphAtLevel.set(person.id, new Set());
               }
               spouseGraphAtLevel.get(person.id)!.add(spouseId);
+              
+              // Bidirectionnel
+              if (!spouseGraphAtLevel.has(spouseId)) {
+                spouseGraphAtLevel.set(spouseId, new Set());
+              }
+              spouseGraphAtLevel.get(spouseId)!.add(person.id);
             }
           });
         }
       });
       
-      console.log('Spouse graph at this level:');
+      // Log des couples trouvés
+      const loggedPairs = new Set<string>();
       spouseGraphAtLevel.forEach((spouses, personId) => {
-        const person = personById.get(personId);
-        const spouseNames = Array.from(spouses).map(sid => personById.get(sid)?.first_name || sid);
-        console.log(`  ${person?.first_name} -> [${spouseNames.join(', ')}]`);
+        spouses.forEach(spouseId => {
+          const pairKey = [personId, spouseId].sort().join('-');
+          if (!loggedPairs.has(pairKey)) {
+            loggedPairs.add(pairKey);
+            const p1 = personById.get(personId);
+            const p2 = personById.get(spouseId);
+            console.log(`  COUPLE: ${p1?.first_name} <-> ${p2?.first_name}`);
+          }
+        });
       });
       
-      // Find connected components (spouse groups) using Union-Find
+      // ÉTAPE 2: Union-Find pour grouper les époux
       const parent = new Map<string, string>();
       personsAtLevel.forEach(p => parent.set(p.id, p.id));
       
@@ -598,14 +626,14 @@ export default function TreeScreen() {
         }
       };
       
-      // Union all spouse pairs
+      // Unir tous les époux
       spouseGraphAtLevel.forEach((spouses, personId) => {
         spouses.forEach(spouseId => {
           union(personId, spouseId);
         });
       });
       
-      // Group persons by their root (connected component)
+      // ÉTAPE 3: Grouper par composante connexe
       const componentGroups = new Map<string, Person[]>();
       personsAtLevel.forEach(person => {
         const root = find(person.id);
@@ -615,15 +643,73 @@ export default function TreeScreen() {
         componentGroups.get(root)!.push(person);
       });
       
-      // Convert to array of units
+      // Convertir en tableau d'unités
       const familyUnits: Person[][] = Array.from(componentGroups.values());
       
-      console.log('Family units created:');
-      familyUnits.forEach((unit, i) => {
-        console.log(`  Unit ${i}: [${unit.map(p => p.first_name).join(' + ')}]`);
-      });
+      console.log('Units created:', familyUnits.map(u => `[${u.map(p => p.first_name).join('+')}]`).join(' | '));
       
       return familyUnits;
+    };
+    
+    // Fonction de tri des unités par date de naissance
+    const sortFamilyUnitsByBirthDate = (units: Person[][], level: number): Person[][] => {
+      console.log('=== SORT FAMILY UNITS ===');
+      
+      // Identifier les "vrais enfants" (qui ont des parents) vs "conjoints mariés"
+      const childrenAtLevel = getChildrenAtLevel(level);
+      
+      console.log('Children at this level:', Array.from(childrenAtLevel).map(id => personById.get(id)?.first_name).join(', '));
+      
+      // Pour chaque unité, trouver la date de naissance du MEMBRE DE LA FRATRIE (pas le conjoint)
+      const getUnitSortKey = (unit: Person[]): { birthDate: Date | null; siblingName: string } => {
+        let birthDate: Date | null = null;
+        let siblingName = '';
+        
+        // Chercher le membre de la fratrie dans l'unité (celui qui a des parents)
+        for (const person of unit) {
+          if (childrenAtLevel.has(person.id)) {
+            const date = parseBirthDate(person.birth_date);
+            siblingName = person.first_name;
+            birthDate = date;
+            console.log(`  Unit [${unit.map(p => p.first_name).join('+')}]: sibling=${siblingName}, birthDate=${person.birth_date}`);
+            break; // On prend le premier membre de la fratrie trouvé
+          }
+        }
+        
+        // Si aucun membre de la fratrie, utiliser le premier de l'unité
+        if (!siblingName && unit.length > 0) {
+          birthDate = parseBirthDate(unit[0].birth_date);
+          siblingName = unit[0].first_name;
+        }
+        
+        return { birthDate, siblingName };
+      };
+      
+      // Trier les unités par date de naissance (aîné en premier = plus petite date)
+      const sortedUnits = [...units].sort((unitA, unitB) => {
+        const keyA = getUnitSortKey(unitA);
+        const keyB = getUnitSortKey(unitB);
+        
+        if (keyA.birthDate && keyB.birthDate) {
+          return keyA.birthDate.getTime() - keyB.birthDate.getTime();
+        }
+        if (keyA.birthDate && !keyB.birthDate) return -1;
+        if (!keyA.birthDate && keyB.birthDate) return 1;
+        // Si pas de date, tri alphabétique
+        return keyA.siblingName.localeCompare(keyB.siblingName);
+      });
+      
+      console.log('Sorted order:', sortedUnits.map(u => {
+        const key = getUnitSortKey(u);
+        return `[${u.map(p => p.first_name).join('+')}] (${key.siblingName})`;
+      }).join(' -> '));
+      
+      return sortedUnits;
+    };
+
+    // Helper pour obtenir le niveau actuel
+    const getLevelForPerson = (personId: string): number => {
+      return personLevels.get(personId) || 0;
     };
 
     // ==================== STEP 5.5: SORT FAMILY UNITS BY BIRTH DATE ====================
