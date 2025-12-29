@@ -730,246 +730,121 @@ export default function TreeScreen() {
       return parentIds;
     };
 
-    // ==================== STEP 6: PROFESSIONAL TREE LAYOUT v13 ====================
-    // APPROCHE PROFESSIONNELLE ET DURABLE:
-    // 
-    // PRINCIPE CLÉ: Chaque couple de parents gère EXCLUSIVEMENT ses propres enfants.
-    // Les enfants de parents différents ne sont JAMAIS mélangés.
-    //
-    // ÉTAPES:
-    // 1. Identifier les "unités familiales racines" (personnes sans parents dans l'arbre)
-    // 2. Pour chaque racine, positionner récursivement tous ses descendants
-    // 3. Les fratries sont triées par date de naissance
-    // 4. Les couples restent ensemble
-    // 5. Les enfants sont centrés sous leurs parents
-    //
-    // Cette approche garantit que chaque branche familiale est isolée.
+    // ==================== STEP 6: SIMPLE STABLE ALGORITHM v14 ====================
+    // Retour aux bases - algorithme simple qui fonctionne:
+    // 1. Positionner niveau par niveau (haut vers bas)
+    // 2. Garder les couples ensemble
+    // 3. Trier les fratries par date de naissance
+    // 4. Centrer les parents au-dessus de leurs enfants (bottom-up pass)
     
     const personPositions = new Map<string, { x: number; y: number }>();
     const nodes: { person: Person; x: number; y: number }[] = [];
-    const processedPersons = new Set<string>();
     
-    console.log('=== PROFESSIONAL TREE LAYOUT v13 ===');
+    const topToBottomLevels = Array.from(levelGroups.keys()).sort((a, b) => a - b);
+    const bottomToTopLevels = Array.from(levelGroups.keys()).sort((a, b) => b - a);
     
-    // Helper: Get the family unit for a person (person + their spouse(s) at same level)
-    const getFamilyUnit = (personId: string): Person[] => {
-      const person = personById.get(personId);
-      if (!person) return [];
-      
-      const personLevel = personLevels.get(personId) || 0;
-      const unit: Person[] = [person];
-      
-      const spouses = spouseMap.get(personId);
-      if (spouses) {
-        spouses.forEach(spouseId => {
-          const spouse = personById.get(spouseId);
-          const spouseLevel = personLevels.get(spouseId) || 0;
-          if (spouse && spouseLevel === personLevel && !unit.find(p => p.id === spouseId)) {
-            unit.push(spouse);
-          }
-        });
-      }
-      
-      return unit;
-    };
+    console.log('=== SIMPLE STABLE ALGORITHM v14 ===');
     
-    // Helper: Get direct children of a family unit
-    const getUnitChildren = (unit: Person[]): Person[] => {
-      const childrenIds = new Set<string>();
+    // PASS 1: Position all nodes from top to bottom, left to right
+    // Each level is positioned independently, keeping couples together and sorting by birth date
+    topToBottomLevels.forEach(level => {
+      const personsAtLevel = levelGroups.get(level) || [];
+      const y = level * LEVEL_HEIGHT + 80;
       
-      unit.forEach(parent => {
-        const children = parentToChildren.get(parent.id);
-        if (children) {
-          children.forEach(childId => childrenIds.add(childId));
-        }
-      });
-      
-      // Convert to array and sort by birth date
-      const childrenArray = Array.from(childrenIds)
-        .map(id => personById.get(id))
-        .filter((p): p is Person => p !== undefined);
+      // Build family units (couples stay together)
+      const familyUnits = buildFamilyUnits(personsAtLevel);
       
       // Sort by birth date (oldest first)
-      childrenArray.sort((a, b) => {
-        const dateA = a.birth_date ? new Date(a.birth_date).getTime() : Infinity;
-        const dateB = b.birth_date ? new Date(b.birth_date).getTime() : Infinity;
-        if (isNaN(dateA) && isNaN(dateB)) return 0;
-        if (isNaN(dateA)) return 1;
-        if (isNaN(dateB)) return -1;
-        return dateA - dateB;
-      });
+      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
-      return childrenArray;
-    };
-    
-    // Helper: Calculate the width needed for a family unit and all its descendants
-    const calculateSubtreeWidth = (unit: Person[], level: number, memo: Map<string, number>): number => {
-      const unitKey = unit.map(p => p.id).sort().join(',');
+      // Position units left to right
+      let currentX = 50;
       
-      if (memo.has(unitKey)) {
-        return memo.get(unitKey)!;
-      }
-      
-      const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
-      
-      // Get children
-      const children = getUnitChildren(unit);
-      
-      if (children.length === 0) {
-        memo.set(unitKey, unitWidth);
-        return unitWidth;
-      }
-      
-      // Group children into their own family units (with their spouses)
-      const childUnits: Person[][] = [];
-      const processedChildIds = new Set<string>();
-      
-      children.forEach(child => {
-        if (processedChildIds.has(child.id)) return;
-        
-        const childUnit = getFamilyUnit(child.id);
-        childUnit.forEach(p => processedChildIds.add(p.id));
-        childUnits.push(childUnit);
-      });
-      
-      // Calculate total width of all child subtrees
-      let totalChildrenWidth = 0;
-      childUnits.forEach((childUnit, index) => {
-        const childSubtreeWidth = calculateSubtreeWidth(childUnit, level + 1, memo);
-        totalChildrenWidth += childSubtreeWidth;
-        if (index < childUnits.length - 1) {
-          totalChildrenWidth += NODE_SPACING;
-        }
-      });
-      
-      const subtreeWidth = Math.max(unitWidth, totalChildrenWidth);
-      memo.set(unitKey, subtreeWidth);
-      
-      return subtreeWidth;
-    };
-    
-    // MAIN RECURSIVE FUNCTION: Position a family unit and all its descendants
-    const positionFamilyTree = (unit: Person[], startX: number, level: number, subtreeWidths: Map<string, number>): number => {
-      const y = level * LEVEL_HEIGHT + 80;
-      const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
-      const unitKey = unit.map(p => p.id).sort().join(',');
-      const subtreeWidth = subtreeWidths.get(unitKey) || unitWidth;
-      
-      // Get children sorted by birth date
-      const children = getUnitChildren(unit);
-      
-      // Group children into family units
-      const childUnits: Person[][] = [];
-      const processedChildIds = new Set<string>();
-      
-      children.forEach(child => {
-        if (processedChildIds.has(child.id)) return;
-        const childUnit = getFamilyUnit(child.id);
-        childUnit.forEach(p => processedChildIds.add(p.id));
-        childUnits.push(childUnit);
-      });
-      
-      // Calculate where this unit should be positioned (centered in its subtree space)
-      const unitX = startX + (subtreeWidth - unitWidth) / 2;
-      
-      // Position this unit
-      let x = unitX;
-      unit.forEach(person => {
-        personPositions.set(person.id, { x, y });
-        processedPersons.add(person.id);
-        x += NODE_WIDTH + COUPLE_SPACING;
-      });
-      
-      console.log(`Level ${level}: [${unit.map(p => p.first_name).join('+')}] at x=${unitX.toFixed(0)}, subtree=${subtreeWidth}`);
-      
-      // Position children (each child unit gets its own subtree space)
-      if (childUnits.length > 0) {
-        let childStartX = startX;
-        
-        childUnits.forEach(childUnit => {
-          const childUnitKey = childUnit.map(p => p.id).sort().join(',');
-          const childSubtreeWidth = subtreeWidths.get(childUnitKey) || (childUnit.length * NODE_WIDTH + (childUnit.length - 1) * COUPLE_SPACING);
-          
-          // Recursively position this child's family tree
-          positionFamilyTree(childUnit, childStartX, level + 1, subtreeWidths);
-          
-          childStartX += childSubtreeWidth + NODE_SPACING;
+      sortedUnits.forEach(unit => {
+        let x = currentX;
+        unit.forEach(person => {
+          personPositions.set(person.id, { x, y });
+          x += NODE_WIDTH + COUPLE_SPACING;
         });
-      }
+        currentX = x - COUPLE_SPACING + NODE_SPACING;
+      });
+    });
+    
+    // PASS 2: Center parents above their children (bottom to top)
+    bottomToTopLevels.forEach(level => {
+      const personsAtLevel = levelGroups.get(level) || [];
       
-      return subtreeWidth;
-    };
-    
-    // STEP 1: Find all root persons (people without parents in this tree)
-    const rootPersons: Person[] = [];
-    persons.forEach(person => {
-      const parents = childToParents.get(person.id);
-      if (!parents || parents.size === 0) {
-        rootPersons.push(person);
-      }
-    });
-    
-    console.log(`Found ${rootPersons.length} root persons`);
-    
-    // STEP 2: Group root persons into family units
-    const rootUnits: Person[][] = [];
-    const processedRootIds = new Set<string>();
-    
-    // Sort root persons by their level first, then by birth date
-    rootPersons.sort((a, b) => {
-      const levelA = personLevels.get(a.id) || 0;
-      const levelB = personLevels.get(b.id) || 0;
-      if (levelA !== levelB) return levelA - levelB;
+      const familyUnits = buildFamilyUnits(personsAtLevel);
+      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
-      const dateA = a.birth_date ? new Date(a.birth_date).getTime() : Infinity;
-      const dateB = b.birth_date ? new Date(b.birth_date).getTime() : Infinity;
-      return dateA - dateB;
+      sortedUnits.forEach(unit => {
+        // Get all children of this unit
+        let childrenIds: string[] = [];
+        unit.forEach(person => {
+          const children = parentToChildren.get(person.id);
+          if (children) {
+            children.forEach(cId => {
+              if (!childrenIds.includes(cId)) childrenIds.push(cId);
+            });
+          }
+        });
+        
+        if (childrenIds.length === 0) return;
+        
+        // Sort children by birth date
+        childrenIds = sortSiblingsByBirthDate(childrenIds);
+        
+        // Get child positions
+        const childPositions = childrenIds
+          .map(cId => personPositions.get(cId))
+          .filter((pos): pos is { x: number; y: number } => pos !== undefined);
+        
+        if (childPositions.length === 0) return;
+        
+        // Calculate children center
+        const minChildX = Math.min(...childPositions.map(p => p.x));
+        const maxChildX = Math.max(...childPositions.map(p => p.x + NODE_WIDTH));
+        const childrenCenter = (minChildX + maxChildX) / 2;
+        
+        // Center unit above children
+        const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
+        const newUnitX = childrenCenter - unitWidth / 2;
+        const y = personPositions.get(unit[0].id)?.y || 0;
+        
+        // Apply new position
+        let x = newUnitX;
+        unit.forEach(person => {
+          personPositions.set(person.id, { x, y });
+          x += NODE_WIDTH + COUPLE_SPACING;
+        });
+      });
     });
     
-    rootPersons.forEach(person => {
-      if (processedRootIds.has(person.id)) return;
+    // PASS 3: Fix overlaps (top to bottom) - shift units right if they overlap
+    topToBottomLevels.forEach(level => {
+      const personsAtLevel = levelGroups.get(level) || [];
+      const y = level * LEVEL_HEIGHT + 80;
       
-      const unit = getFamilyUnit(person.id);
-      unit.forEach(p => processedRootIds.add(p.id));
-      rootUnits.push(unit);
-    });
-    
-    console.log(`Created ${rootUnits.length} root family units`);
-    
-    // STEP 3: Calculate subtree widths for all units
-    const subtreeWidths = new Map<string, number>();
-    rootUnits.forEach(unit => {
-      calculateSubtreeWidth(unit, 0, subtreeWidths);
-    });
-    
-    // STEP 4: Position each root family tree
-    let currentX = 50;
-    
-    // Sort root units by their level (roots at level 0 first)
-    rootUnits.sort((a, b) => {
-      const levelA = personLevels.get(a[0].id) || 0;
-      const levelB = personLevels.get(b[0].id) || 0;
-      return levelA - levelB;
-    });
-    
-    rootUnits.forEach(rootUnit => {
-      const unitKey = rootUnit.map(p => p.id).sort().join(',');
-      const subtreeWidth = subtreeWidths.get(unitKey) || (rootUnit.length * NODE_WIDTH + (rootUnit.length - 1) * COUPLE_SPACING);
+      const familyUnits = buildFamilyUnits(personsAtLevel);
+      const sortedUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
       
-      positionFamilyTree(rootUnit, currentX, personLevels.get(rootUnit[0].id) || 0, subtreeWidths);
+      let minNextX = 50;
       
-      currentX += subtreeWidth + NODE_SPACING * 2; // Extra space between root families
-    });
-    
-    // STEP 5: Handle any orphaned persons (not connected to any family tree)
-    persons.forEach(person => {
-      if (!processedPersons.has(person.id)) {
-        const level = personLevels.get(person.id) || 0;
-        const y = level * LEVEL_HEIGHT + 80;
-        personPositions.set(person.id, { x: currentX, y });
-        console.log(`Orphaned: ${person.first_name} at x=${currentX}`);
-        currentX += NODE_WIDTH + NODE_SPACING;
-      }
+      sortedUnits.forEach(unit => {
+        const currentX = personPositions.get(unit[0].id)?.x ?? 50;
+        const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
+        
+        // Shift right if overlapping
+        const newX = Math.max(currentX, minNextX);
+        
+        let x = newX;
+        unit.forEach(person => {
+          personPositions.set(person.id, { x, y });
+          x += NODE_WIDTH + COUPLE_SPACING;
+        });
+        
+        minNextX = newX + unitWidth + NODE_SPACING;
+      });
     });
 
     // Build final nodes array
