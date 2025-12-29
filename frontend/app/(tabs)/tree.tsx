@@ -877,7 +877,7 @@ export default function TreeScreen() {
       }
     });
     
-    // PASS 2: Center parents above their children (bottom to top)
+    // PASS 2: Center parents above their children AND propagate shifts to descendants
     bottomToTopLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
       
@@ -923,7 +923,23 @@ export default function TreeScreen() {
       });
     });
     
-    // PASS 3: Fix overlaps (preserve parent order for siblings)
+    // PASS 3: Fix overlaps level by level, AND shift children when parents shift
+    // Helper function to shift a person and all their descendants
+    const shiftPersonAndDescendants = (personId: string, shiftAmount: number) => {
+      const pos = personPositions.get(personId);
+      if (!pos) return;
+      
+      personPositions.set(personId, { x: pos.x + shiftAmount, y: pos.y });
+      
+      // Shift all children recursively
+      const children = parentToChildren.get(personId);
+      if (children) {
+        children.forEach(childId => {
+          shiftPersonAndDescendants(childId, shiftAmount);
+        });
+      }
+    };
+    
     topToBottomLevels.forEach(level => {
       const personsAtLevel = levelGroups.get(level) || [];
       const y = level * LEVEL_HEIGHT + 80;
@@ -941,15 +957,18 @@ export default function TreeScreen() {
         const currentX = personPositions.get(unit[0].id)?.x ?? 50;
         const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
         
-        // Shift right if overlapping
-        const newX = Math.max(currentX, minNextX);
+        // Check if we need to shift
+        if (currentX < minNextX) {
+          const shiftAmount = minNextX - currentX;
+          
+          // Shift this unit and ALL its descendants
+          unit.forEach(person => {
+            shiftPersonAndDescendants(person.id, shiftAmount);
+          });
+        }
         
-        let x = newX;
-        unit.forEach(person => {
-          personPositions.set(person.id, { x, y });
-          x += NODE_WIDTH + COUPLE_SPACING;
-        });
-        
+        // Update minNextX based on new position
+        const newX = personPositions.get(unit[0].id)?.x ?? minNextX;
         minNextX = newX + unitWidth + NODE_SPACING;
       });
     });
