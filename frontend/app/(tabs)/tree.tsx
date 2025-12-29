@@ -896,19 +896,28 @@ export default function TreeScreen() {
     });
 
     // ==================== STEP 9: FINAL OVERLAP FIX (PRESERVE BIRTH ORDER) ====================
-    allLevels.forEach(level => {
+    // CRITICAL: Fix overlaps while preserving the birth date order of family units
+    allLevels.forEach((level: number) => {
       const personsAtLevel = levelGroups.get(level) || [];
-      const positions = personsAtLevel
-        .map(p => ({ person: p, pos: personPositions.get(p.id)! }))
-        .filter(item => item.pos)
-        .sort((a, b) => a.pos.x - b.pos.x);
       
-      let minX = 50;
-      positions.forEach(({ person, pos }) => {
-        if (pos.x < minX) {
-          personPositions.set(person.id, { x: minX, y: pos.y });
-        }
-        minX = personPositions.get(person.id)!.x + NODE_WIDTH + NODE_SPACING;
+      // Rebuild family units in correct order
+      const familyUnits = buildFamilyUnits(personsAtLevel);
+      const sortedFamilyUnits = sortFamilyUnitsByBirthDate(familyUnits, level);
+      
+      // Reposition all units from left to right, preserving birth order
+      let currentX = 50;
+      sortedFamilyUnits.forEach(unit => {
+        const y = personPositions.get(unit[0].id)?.y || 0;
+        const unitWidth = unit.length * NODE_WIDTH + (unit.length - 1) * COUPLE_SPACING;
+        
+        // Position each person in the unit side by side
+        let x = currentX;
+        unit.forEach(person => {
+          personPositions.set(person.id, { x, y });
+          x += NODE_WIDTH + COUPLE_SPACING;
+        });
+        
+        currentX += unitWidth + NODE_SPACING;
       });
     });
 
