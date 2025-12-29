@@ -315,18 +315,17 @@ export default function TreeScreen() {
   };
 
   // ============================================================================
-  // DEFINITIVE TREE LAYOUT ALGORITHM v8 - IMPROVED CENTERING
+  // DEFINITIVE TREE LAYOUT ALGORITHM v9 - CLEAN REWRITE
   // ============================================================================
-  // RÈGLES FONDAMENTALES:
-  // 1. Les parents sont TOUJOURS au-dessus de leurs enfants
-  // 2. Les époux sont TOUJOURS sur la même ligne (même niveau) et côte à côte
+  // RÈGLES FONDAMENTALES (INVIOLABLES):
+  // 1. Les époux sont TOUJOURS côte à côte (jamais séparés)
+  // 2. Les fratries sont triées par date de naissance (aîné à gauche)
   // 3. Les parents sont centrés au-dessus de leurs enfants
-  // 4. Le repositionnement est automatique peu importe l'ordre de création
   // ============================================================================
   const buildTreeLayout = () => {
     if (persons.length === 0) return { nodes: [], connections: [], debugInfo: null };
 
-    console.log('========== TREE LAYOUT v8 - IMPROVED CENTERING ==========');
+    console.log('========== TREE LAYOUT v9 - CLEAN REWRITE ==========');
     
     // ==================== STEP 1: BUILD RELATIONSHIP MAPS ====================
     const childToParents = new Map<string, Set<string>>();
