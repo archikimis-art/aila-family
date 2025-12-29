@@ -77,41 +77,66 @@ export default function ChatScreen() {
   };
 
   const handleDeleteMessage = async (messageId: string) => {
-    console.log('Attempting to delete message:', messageId);
+    console.log('=== DELETE MESSAGE TRIGGERED ===');
+    console.log('Message ID:', messageId);
+    console.log('Message ID type:', typeof messageId);
     
     if (!messageId) {
       console.error('No message ID provided');
-      Alert.alert('Erreur', 'ID du message manquant.');
+      if (Platform.OS === 'web') {
+        window.alert('Erreur: ID du message manquant.');
+      } else {
+        Alert.alert('Erreur', 'ID du message manquant.');
+      }
       return;
     }
     
-    Alert.alert(
-      'Supprimer le message',
-      'Êtes-vous sûr de vouloir supprimer ce message ?',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Supprimer',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              console.log('Deleting message with ID:', messageId);
-              const response = await chatAPI.deleteMessage(messageId);
-              console.log('Delete response:', response);
-              await loadMessages();
-              console.log('Messages reloaded after delete');
-            } catch (error: any) {
-              console.error('Error deleting message:', error);
-              console.error('Error details:', error.response?.data);
-              Alert.alert(
-                'Erreur', 
-                error.response?.data?.detail || 'Impossible de supprimer le message.'
-              );
-            }
-          },
-        },
-      ]
-    );
+    // Use window.confirm on web for better compatibility
+    const confirmDelete = Platform.OS === 'web' 
+      ? window.confirm('Êtes-vous sûr de vouloir supprimer ce message ?')
+      : await new Promise<boolean>((resolve) => {
+          Alert.alert(
+            'Supprimer le message',
+            'Êtes-vous sûr de vouloir supprimer ce message ?',
+            [
+              { text: 'Annuler', style: 'cancel', onPress: () => resolve(false) },
+              { text: 'Supprimer', style: 'destructive', onPress: () => resolve(true) },
+            ]
+          );
+        });
+    
+    if (!confirmDelete) {
+      console.log('Delete cancelled by user');
+      return;
+    }
+    
+    try {
+      console.log('Calling API to delete message:', messageId);
+      const response = await chatAPI.deleteMessage(messageId);
+      console.log('Delete API response:', response);
+      console.log('Delete API response status:', response.status);
+      console.log('Delete API response data:', response.data);
+      
+      // Reload messages after successful deletion
+      await loadMessages();
+      console.log('Messages reloaded successfully after delete');
+      
+    } catch (error: any) {
+      console.error('=== DELETE ERROR ===');
+      console.error('Error object:', error);
+      console.error('Error message:', error.message);
+      console.error('Error response:', error.response);
+      console.error('Error response data:', error.response?.data);
+      console.error('Error response status:', error.response?.status);
+      
+      const errorMessage = error.response?.data?.detail || 'Impossible de supprimer le message.';
+      
+      if (Platform.OS === 'web') {
+        window.alert('Erreur: ' + errorMessage);
+      } else {
+        Alert.alert('Erreur', errorMessage);
+      }
+    }
   };
 
   const onRefresh = () => {
