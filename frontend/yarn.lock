@@ -1631,6 +1631,13 @@
   resolved "https://registry.npmjs.org/@nolyfill/is-core-module/-/is-core-module-1.0.39.tgz"
   integrity sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==
 
+"@openspacelabs/react-native-zoomable-view@^2.4.2":
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/@openspacelabs/react-native-zoomable-view/-/react-native-zoomable-view-2.4.2.tgz#e3fcea7dd3b6eee5d96b4d199d5810f0098e0896"
+  integrity sha512-Rcdldg7Am1y+Iu/Nuc82Ej2Exypeeh0oHpWrnc2SDyNa08A+efNYWOtropcbKWetWv+S6z6VJRsgvuiWug11zg==
+  dependencies:
+    prop-types "^15.7.2"
+
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
   resolved "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz"
@@ -6338,7 +6345,7 @@ prompts@^2.3.2:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.8.1:
+prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
