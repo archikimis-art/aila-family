@@ -1276,21 +1276,21 @@ export default function TreeScreen() {
   };
 
   // ============================================================================
-  // ZOOMABLE VIEW - SOLUTION PROFESSIONNELLE
+  // ZOOM & PAN - WEB SOLUTION avec react-zoom-pan-pinch
   // ============================================================================
-  const zoomableViewRef = useRef<any>(null);
+  const transformRef = useRef<any>(null);
 
-  const MIN_ZOOM = 0.1;   // Zoom très arrière pour grands arbres
-  const MAX_ZOOM = 5;     // Zoom avant jusqu'à 5x
+  const MIN_ZOOM = 0.1;
+  const MAX_ZOOM = 5;
 
-  // Reset to center
+  // Reset zoom
   const resetToCenter = useCallback(() => {
-    if (zoomableViewRef.current) {
-      zoomableViewRef.current.zoomTo(1);
+    if (Platform.OS === 'web' && transformRef.current) {
+      transformRef.current.resetTransform();
     }
   }, []);
 
-  // Fit to screen - zoom pour voir tout l'arbre
+  // Fit to screen
   const fitToScreen = useCallback(() => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height - 250;
@@ -1300,25 +1300,21 @@ export default function TreeScreen() {
     let optimalScale = Math.min(scaleX, scaleY) * 0.85;
     optimalScale = Math.max(MIN_ZOOM, Math.min(optimalScale, 1));
     
-    if (zoomableViewRef.current) {
-      zoomableViewRef.current.zoomTo(optimalScale);
+    if (Platform.OS === 'web' && transformRef.current) {
+      transformRef.current.setTransform(0, 0, optimalScale);
     }
   }, [svgWidth, svgHeight]);
 
   // Zoom buttons
   const zoomIn = useCallback(() => {
-    if (zoomableViewRef.current) {
-      const currentZoom = zoomableViewRef.current.zoomLevel || 1;
-      const newZoom = Math.min(currentZoom * 1.5, MAX_ZOOM);
-      zoomableViewRef.current.zoomTo(newZoom);
+    if (Platform.OS === 'web' && transformRef.current) {
+      transformRef.current.zoomIn(0.5);
     }
   }, []);
 
   const zoomOut = useCallback(() => {
-    if (zoomableViewRef.current) {
-      const currentZoom = zoomableViewRef.current.zoomLevel || 1;
-      const newZoom = Math.max(currentZoom / 1.5, MIN_ZOOM);
-      zoomableViewRef.current.zoomTo(newZoom);
+    if (Platform.OS === 'web' && transformRef.current) {
+      transformRef.current.zoomOut(0.5);
     }
   }, []);
 
