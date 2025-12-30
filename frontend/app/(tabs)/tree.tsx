@@ -1255,12 +1255,44 @@ export default function TreeScreen() {
   const savedTranslateX = useSharedValue(0);
   const savedTranslateY = useSharedValue(0);
 
-  const MIN_SCALE = 0.3;
+  const MIN_SCALE = 0.15;  // Permet de voir des arbres très grands
   const MAX_SCALE = 3;
 
-  // Reset to center
+  // Fit to screen - calcule le zoom optimal pour voir tout l'arbre
+  const fitToScreen = useCallback(() => {
+    const screenWidth = Dimensions.get('window').width;
+    const screenHeight = Dimensions.get('window').height - 200; // Moins la nav et les boutons
+    
+    // Calculer le zoom nécessaire pour voir tout l'arbre
+    const scaleX = screenWidth / svgWidth;
+    const scaleY = screenHeight / svgHeight;
+    
+    // Prendre le plus petit zoom pour que tout rentre
+    let optimalScale = Math.min(scaleX, scaleY) * 0.85; // 85% pour avoir une marge
+    
+    // Limiter entre MIN et MAX
+    optimalScale = Math.max(MIN_SCALE, Math.min(optimalScale, 1.2));
+    
+    // Calculer le centre de l'arbre
+    const treeCenterX = svgWidth / 2;
+    const treeCenterY = svgHeight / 2;
+    
+    // Calculer la translation pour centrer
+    const targetTranslateX = (screenWidth / 2) - (treeCenterX * optimalScale);
+    const targetTranslateY = (screenHeight / 2) - (treeCenterY * optimalScale) + 50;
+    
+    console.log(`[FitToScreen] svgWidth=${svgWidth}, svgHeight=${svgHeight}, optimalScale=${optimalScale.toFixed(2)}`);
+    
+    scale.value = withSpring(optimalScale, { damping: 15 });
+    savedScale.value = optimalScale;
+    translateX.value = withSpring(targetTranslateX, { damping: 15 });
+    translateY.value = withSpring(targetTranslateY, { damping: 15 });
+    savedTranslateX.value = targetTranslateX;
+    savedTranslateY.value = targetTranslateY;
+  }, [svgWidth, svgHeight]);
+
+  // Reset to center (zoom 1, position 0,0)
   const resetToCenter = useCallback(() => {
-    'worklet';
     scale.value = withSpring(1, { damping: 15 });
     savedScale.value = 1;
     translateX.value = withSpring(0, { damping: 15 });
