@@ -1334,11 +1334,11 @@ export default function TreeScreen() {
       savedTranslateY.value = translateY.value;
     });
 
-  // Double tap gesture to reset/center
+  // Double tap gesture to fit to screen
   const doubleTapGesture = Gesture.Tap()
     .numberOfTaps(2)
     .onEnd(() => {
-      resetToCenter();
+      runOnJS(fitToScreen)();
     });
 
   // Combine gestures
