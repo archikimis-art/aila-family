@@ -1296,7 +1296,7 @@ export default function TreeScreen() {
   // Fit to screen - Zoom pour voir TOUT l'arbre à l'écran
   const fitToScreen = useCallback(() => {
     const screenWidth = Dimensions.get('window').width;
-    const screenHeight = Dimensions.get('window').height - 200; // Espace pour nav et boutons
+    const screenHeight = Dimensions.get('window').height - 200;
     
     console.log(`[FitToScreen] SVG: ${svgWidth}x${svgHeight}, Screen: ${screenWidth}x${screenHeight}`);
     
@@ -1305,49 +1305,35 @@ export default function TreeScreen() {
     const scaleY = screenHeight / svgHeight;
     
     // Prendre le plus petit zoom pour que tout rentre
-    let optimalScale = Math.min(scaleX, scaleY) * 0.9; // 90% pour avoir une marge
-    
-    // Permettre un zoom très petit si nécessaire
+    let optimalScale = Math.min(scaleX, scaleY) * 0.85;
     optimalScale = Math.max(MIN_SCALE, Math.min(optimalScale, 1.5));
     
-    // Calculer les dimensions de l'arbre après le scale
+    // Calculer le centrage
     const scaledWidth = svgWidth * optimalScale;
     const scaledHeight = svgHeight * optimalScale;
-    
-    // Centrer l'arbre sur l'écran
-    // L'origine du scale est au centre, donc on doit compenser et centrer
     const centerOffsetX = (screenWidth - scaledWidth) / 2;
     const centerOffsetY = (screenHeight - scaledHeight) / 2;
-    
-    // Compensation pour le scale depuis le centre
     const scaleCompensationX = (screenWidth / 2) * (1 - optimalScale);
     const scaleCompensationY = (screenHeight / 2) * (1 - optimalScale);
-    
-    // Translation finale = centrage - compensation du scale
     const finalTranslateX = centerOffsetX - scaleCompensationX;
     const finalTranslateY = centerOffsetY - scaleCompensationY;
     
     console.log(`[FitToScreen] scale=${optimalScale.toFixed(3)}, translate=(${finalTranslateX.toFixed(0)}, ${finalTranslateY.toFixed(0)})`);
     
     scale.value = withSpring(optimalScale, { damping: 15 });
-    savedScale.value = optimalScale;
     translateX.value = withSpring(finalTranslateX, { damping: 15 });
     translateY.value = withSpring(finalTranslateY, { damping: 15 });
-    savedTranslateX.value = finalTranslateX;
-    savedTranslateY.value = finalTranslateY;
   }, [svgWidth, svgHeight]);
 
   // Zoom in/out functions for buttons
   const zoomIn = useCallback(() => {
-    const newScale = Math.min(savedScale.value * 1.5, MAX_SCALE);
+    const newScale = Math.min(scale.value * 1.5, MAX_SCALE);
     scale.value = withSpring(newScale, { damping: 15 });
-    savedScale.value = newScale;
   }, []);
 
   const zoomOut = useCallback(() => {
-    const newScale = Math.max(savedScale.value / 1.5, MIN_SCALE);
+    const newScale = Math.max(scale.value / 1.5, MIN_SCALE);
     scale.value = withSpring(newScale, { damping: 15 });
-    savedScale.value = newScale;
   }, []);
 
   // Pinch gesture for zoom - OPTIMISÉ pour mobile
