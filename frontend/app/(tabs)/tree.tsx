@@ -2204,6 +2204,10 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: 'hidden',
   },
+  zoomableView: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
   treeContent: {
     flexGrow: 1,
     minWidth: '100%',
