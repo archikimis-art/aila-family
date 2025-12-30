@@ -1,4 +1,4 @@
-// Build: 2025010604 - ZOOMABLE VIEW SOLUTION
+// Build: 2025010605 - WEB + NATIVE ZOOM SOLUTION
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
@@ -22,9 +22,21 @@ import { useAuth } from '@/context/AuthContext';
 import { treeAPI, previewAPI, eventsAPI } from '@/services/api';
 import api from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import EventAnimation from '@/components/EventAnimation';
 import AdBanner from '@/components/AdBanner';
+
+// Import conditionnel pour le web
+let TransformWrapper: any = null;
+let TransformComponent: any = null;
+if (Platform.OS === 'web') {
+  try {
+    const zoomPanPinch = require('react-zoom-pan-pinch');
+    TransformWrapper = zoomPanPinch.TransformWrapper;
+    TransformComponent = zoomPanPinch.TransformComponent;
+  } catch (e) {
+    console.log('react-zoom-pan-pinch not available');
+  }
+}
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
