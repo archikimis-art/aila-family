@@ -1086,24 +1086,34 @@ export default function TreeScreen() {
     return { nodes, connections, debugInfo };
   };
 
-  const { nodes: rawNodes, connections, debugInfo } = buildTreeLayout();
+  const { nodes: rawNodes, connections: rawConnections, debugInfo } = buildTreeLayout();
   
-  // NORMALISER les positions Y pour que l'arbre commence toujours en haut
+  // NORMALISER les positions pour que l'arbre commence toujours en haut-gauche
   const minY = rawNodes.length > 0 ? Math.min(...rawNodes.map(n => n.y)) : 0;
   const minX = rawNodes.length > 0 ? Math.min(...rawNodes.map(n => n.x)) : 0;
   
-  // Décaler tous les nodes pour commencer à Y=20 et X=20
+  const offsetX = -minX + 20;
+  const offsetY = -minY + 20;
+  
+  // Décaler tous les nodes
   const nodes = rawNodes.map(n => ({
     ...n,
-    x: n.x - minX + 20,
-    y: n.y - minY + 20
+    x: n.x + offsetX,
+    y: n.y + offsetY
+  }));
+  
+  // Décaler toutes les connexions
+  const connections = rawConnections.map(c => ({
+    ...c,
+    from: { x: c.from.x + offsetX, y: c.from.y + offsetY },
+    to: { x: c.to.x + offsetX, y: c.to.y + offsetY }
   }));
   
   // Recalculer les dimensions du SVG après normalisation
   const svgWidth = Math.max(SCREEN_WIDTH, nodes.reduce((max, n) => Math.max(max, n.x + NODE_WIDTH + 60), 0));
   const svgHeight = Math.max(400, nodes.reduce((max, n) => Math.max(max, n.y + NODE_HEIGHT + 80), 0));
   
-  console.log(`[SVG] Normalized: minY was ${minY}, minX was ${minX}, new size: ${svgWidth}x${svgHeight}`);
+  console.log(`[SVG] Normalized: offset(${offsetX}, ${offsetY}), size: ${svgWidth}x${svgHeight}, nodes: ${nodes.length}`);
   
   // State to show/hide debug panel
   const [showDebug, setShowDebug] = useState(false);
