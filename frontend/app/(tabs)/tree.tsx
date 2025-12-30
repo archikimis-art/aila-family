@@ -1336,49 +1336,53 @@ export default function TreeScreen() {
     scale.value = withSpring(newScale, { damping: 15 });
   }, []);
 
-  // Pinch gesture for zoom - OPTIMISÉ pour mobile
+  // Pinch gesture for zoom - ROBUSTE
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
       'worklet';
-      // Sauvegarder l'état initial au début du geste
+      // Sauvegarder le scale actuel au DÉBUT du geste
+      startScale.value = scale.value;
     })
     .onUpdate((e) => {
       'worklet';
-      // Appliquer le zoom instantanément (sans animation) pour plus de fluidité
-      const newScale = Math.min(Math.max(savedScale.value * e.scale, MIN_SCALE), MAX_SCALE);
-      scale.value = newScale;
+      // Calculer le nouveau scale basé sur le scale de DÉPART
+      const newScale = startScale.value * e.scale;
+      scale.value = Math.min(Math.max(newScale, MIN_SCALE), MAX_SCALE);
     })
     .onEnd(() => {
       'worklet';
-      savedScale.value = scale.value;
+      // Le scale.value contient déjà la bonne valeur, pas besoin de la sauvegarder
     });
 
-  // Pan gesture for dragging - Déplacement dans TOUTES les directions
+  // Pan gesture for dragging - ROBUSTE - Fonctionne dans TOUTES les directions
   const panGesture = Gesture.Pan()
-    .minDistance(1) // Très faible distance pour déclencher immédiatement
-    .minPointers(1) // Un seul doigt suffit
-    .maxPointers(2) // Permet aussi 2 doigts
+    .minDistance(1)
+    .minPointers(1)
+    .maxPointers(2)
     .onStart(() => {
       'worklet';
-      // Rien à faire au démarrage
+      // Sauvegarder les translations actuelles au DÉBUT du geste
+      startTranslateX.value = translateX.value;
+      startTranslateY.value = translateY.value;
     })
     .onUpdate((e) => {
       'worklet';
-      // Déplacement instantané dans toutes les directions
-      translateX.value = savedTranslateX.value + e.translationX;
-      translateY.value = savedTranslateY.value + e.translationY;
+      // Calculer les nouvelles translations basées sur les valeurs de DÉPART
+      translateX.value = startTranslateX.value + e.translationX;
+      translateY.value = startTranslateY.value + e.translationY;
     })
     .onEnd((e) => {
       'worklet';
-      // Ajouter de l'inertie pour un défilement naturel
-      const velocityFactor = 0.15;
-      const finalX = savedTranslateX.value + e.translationX + e.velocityX * velocityFactor;
-      const finalY = savedTranslateY.value + e.translationY + e.velocityY * velocityFactor;
-      
-      translateX.value = withSpring(finalX, { damping: 20, stiffness: 90 });
-      translateY.value = withSpring(finalY, { damping: 20, stiffness: 90 });
-      savedTranslateX.value = finalX;
-      savedTranslateY.value = finalY;
+      // Ajouter de l'inertie pour un défilement plus naturel
+      const velocityFactor = 0.1;
+      translateX.value = withSpring(
+        translateX.value + e.velocityX * velocityFactor,
+        { damping: 25, stiffness: 120 }
+      );
+      translateY.value = withSpring(
+        translateY.value + e.velocityY * velocityFactor,
+        { damping: 25, stiffness: 120 }
+      );
     });
 
   // Double tap gesture to reset to center (plus fiable que fitToScreen)
