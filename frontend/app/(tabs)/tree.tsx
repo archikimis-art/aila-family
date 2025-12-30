@@ -1271,138 +1271,136 @@ export default function TreeScreen() {
   };
 
   // ============================================================================
-  // ZOOM & PAN STATE - VERSION ROBUSTE
+  // ZOOM & PAN - SOLUTION PROFESSIONNELLE
   // ============================================================================
   const scale = useSharedValue(1);
+  const savedScale = useSharedValue(1);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
+  const savedTranslateX = useSharedValue(0);
+  const savedTranslateY = useSharedValue(0);
   
-  // Variables pour stocker l'état au début de chaque geste
-  const startScale = useSharedValue(1);
-  const startTranslateX = useSharedValue(0);
-  const startTranslateY = useSharedValue(0);
+  // Flag pour bloquer le pan pendant le pinch
+  const isPinching = useSharedValue(false);
 
-  const MIN_SCALE = 0.08;  // Permet de voir des arbres TRÈS grands
+  const MIN_SCALE = 0.05;  // Zoom très arrière pour grands arbres
   const MAX_SCALE = 5;     // Zoom avant jusqu'à 5x
 
-  // Reset to center - Remet l'arbre à sa position initiale (zoom 1, centré)
+  // Reset to center
   const resetToCenter = useCallback(() => {
-    console.log('[ResetToCenter] Resetting to default view');
-    scale.value = withSpring(1, { damping: 15 });
-    translateX.value = withSpring(0, { damping: 15 });
-    translateY.value = withSpring(0, { damping: 15 });
+    scale.value = withSpring(1, { damping: 20 });
+    savedScale.value = 1;
+    translateX.value = withSpring(0, { damping: 20 });
+    translateY.value = withSpring(0, { damping: 20 });
+    savedTranslateX.value = 0;
+    savedTranslateY.value = 0;
   }, []);
 
-  // Fit to screen - Zoom pour voir TOUT l'arbre à l'écran
+  // Fit to screen
   const fitToScreen = useCallback(() => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height - 200;
     
-    console.log(`[FitToScreen] SVG: ${svgWidth}x${svgHeight}, Screen: ${screenWidth}x${screenHeight}`);
-    
-    // Calculer le zoom nécessaire pour voir tout l'arbre
     const scaleX = screenWidth / svgWidth;
     const scaleY = screenHeight / svgHeight;
-    
-    // Prendre le plus petit zoom pour que tout rentre
     let optimalScale = Math.min(scaleX, scaleY) * 0.85;
     optimalScale = Math.max(MIN_SCALE, Math.min(optimalScale, 1.5));
     
-    // Calculer le centrage
     const scaledWidth = svgWidth * optimalScale;
     const scaledHeight = svgHeight * optimalScale;
     const centerOffsetX = (screenWidth - scaledWidth) / 2;
     const centerOffsetY = (screenHeight - scaledHeight) / 2;
-    const scaleCompensationX = (screenWidth / 2) * (1 - optimalScale);
-    const scaleCompensationY = (screenHeight / 2) * (1 - optimalScale);
-    const finalTranslateX = centerOffsetX - scaleCompensationX;
-    const finalTranslateY = centerOffsetY - scaleCompensationY;
+    const scaleCompX = (screenWidth / 2) * (1 - optimalScale);
+    const scaleCompY = (screenHeight / 2) * (1 - optimalScale);
+    const finalX = centerOffsetX - scaleCompX;
+    const finalY = centerOffsetY - scaleCompY;
     
-    console.log(`[FitToScreen] scale=${optimalScale.toFixed(3)}, translate=(${finalTranslateX.toFixed(0)}, ${finalTranslateY.toFixed(0)})`);
-    
-    scale.value = withSpring(optimalScale, { damping: 15 });
-    translateX.value = withSpring(finalTranslateX, { damping: 15 });
-    translateY.value = withSpring(finalTranslateY, { damping: 15 });
+    scale.value = withSpring(optimalScale, { damping: 20 });
+    savedScale.value = optimalScale;
+    translateX.value = withSpring(finalX, { damping: 20 });
+    translateY.value = withSpring(finalY, { damping: 20 });
+    savedTranslateX.value = finalX;
+    savedTranslateY.value = finalY;
   }, [svgWidth, svgHeight]);
 
-  // Zoom in/out functions for buttons
+  // Zoom buttons
   const zoomIn = useCallback(() => {
-    const newScale = Math.min(scale.value * 1.5, MAX_SCALE);
-    scale.value = withSpring(newScale, { damping: 15 });
+    const newScale = Math.min(savedScale.value * 1.5, MAX_SCALE);
+    scale.value = withSpring(newScale, { damping: 20 });
+    savedScale.value = newScale;
   }, []);
 
   const zoomOut = useCallback(() => {
-    const newScale = Math.max(scale.value / 1.5, MIN_SCALE);
-    scale.value = withSpring(newScale, { damping: 15 });
+    const newScale = Math.max(savedScale.value / 1.5, MIN_SCALE);
+    scale.value = withSpring(newScale, { damping: 20 });
+    savedScale.value = newScale;
   }, []);
 
-  // Pinch gesture for zoom - ROBUSTE
+  // ========== PINCH GESTURE (ZOOM) ==========
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
       'worklet';
-      // Sauvegarder le scale actuel au DÉBUT du geste
-      startScale.value = scale.value;
+      isPinching.value = true;
+      savedScale.value = scale.value;
     })
-    .onUpdate((e) => {
+    .onUpdate((event) => {
       'worklet';
-      // Calculer le nouveau scale basé sur le scale de DÉPART
-      const newScale = startScale.value * e.scale;
+      const newScale = savedScale.value * event.scale;
       scale.value = Math.min(Math.max(newScale, MIN_SCALE), MAX_SCALE);
     })
     .onEnd(() => {
       'worklet';
-      // Le scale.value contient déjà la bonne valeur, pas besoin de la sauvegarder
+      savedScale.value = scale.value;
+      isPinching.value = false;
     });
 
-  // Pan gesture for dragging - ROBUSTE - Fonctionne dans TOUTES les directions
+  // ========== PAN GESTURE (DÉPLACEMENT) ==========
   const panGesture = Gesture.Pan()
-    .minDistance(1)
-    .minPointers(1)
-    .maxPointers(2)
+    .averageTouches(true)  // Important pour le multi-touch
     .onStart(() => {
       'worklet';
-      // Sauvegarder les translations actuelles au DÉBUT du geste
-      startTranslateX.value = translateX.value;
-      startTranslateY.value = translateY.value;
+      savedTranslateX.value = translateX.value;
+      savedTranslateY.value = translateY.value;
     })
-    .onUpdate((e) => {
+    .onUpdate((event) => {
       'worklet';
-      // Calculer les nouvelles translations basées sur les valeurs de DÉPART
-      translateX.value = startTranslateX.value + e.translationX;
-      translateY.value = startTranslateY.value + e.translationY;
+      // Ne pas bloquer le pan même pendant le pinch pour une meilleure UX
+      translateX.value = savedTranslateX.value + event.translationX;
+      translateY.value = savedTranslateY.value + event.translationY;
     })
-    .onEnd((e) => {
+    .onEnd((event) => {
       'worklet';
-      // Ajouter de l'inertie pour un défilement plus naturel
-      const velocityFactor = 0.1;
-      translateX.value = withSpring(
-        translateX.value + e.velocityX * velocityFactor,
-        { damping: 25, stiffness: 120 }
-      );
-      translateY.value = withSpring(
-        translateY.value + e.velocityY * velocityFactor,
-        { damping: 25, stiffness: 120 }
-      );
+      // Inertie pour un défilement naturel
+      const decay = 0.1;
+      const finalX = translateX.value + event.velocityX * decay;
+      const finalY = translateY.value + event.velocityY * decay;
+      translateX.value = withSpring(finalX, { damping: 20, stiffness: 100 });
+      translateY.value = withSpring(finalY, { damping: 20, stiffness: 100 });
+      savedTranslateX.value = finalX;
+      savedTranslateY.value = finalY;
     });
 
-  // Double tap gesture to reset to center (plus fiable que fitToScreen)
+  // ========== DOUBLE TAP (RESET) ==========
   const doubleTapGesture = Gesture.Tap()
     .numberOfTaps(2)
     .onEnd(() => {
-      runOnJS(resetToCenter)();
+      'worklet';
+      scale.value = withSpring(1, { damping: 20 });
+      savedScale.value = 1;
+      translateX.value = withSpring(0, { damping: 20 });
+      translateY.value = withSpring(0, { damping: 20 });
+      savedTranslateX.value = 0;
+      savedTranslateY.value = 0;
     });
 
-  // Combine gestures
+  // Combiner les gestes - ORDRE IMPORTANT
   const composedGesture = Gesture.Simultaneous(
     pinchGesture,
     panGesture,
     doubleTapGesture
   );
 
-  // NOTE: Auto-fit désactivé car cause des problèmes sur mobile
-  // L'utilisateur peut utiliser le bouton 📐 pour ajuster manuellement
-
-  // Animated style for the tree container
+  // Style animé
   const animatedTreeStyle = useAnimatedStyle(() => {
     return {
       transform: [
