@@ -1461,7 +1461,7 @@ export default function TreeScreen() {
         </View>
       )}
 
-      {/* Tree View with Zoom & Pan - SOLUTION PROFESSIONNELLE */}
+      {/* Tree View with Zoom & Pan - SOLUTION WEB */}
       <View style={styles.treeContainer}>
         {persons.length === 0 ? (
           <View style={styles.emptyState}>
@@ -1477,148 +1477,59 @@ export default function TreeScreen() {
           </View>
         ) : (
           <>
-            <ReactNativeZoomableView
-              ref={zoomableViewRef}
-              maxZoom={MAX_ZOOM}
-              minZoom={MIN_ZOOM}
-              initialZoom={1}
-              bindToBorders={false}
-              captureEvent={true}
-              style={styles.zoomableView}
-              contentWidth={svgWidth}
-              contentHeight={svgHeight}
-              panBoundaryPadding={50}
-              zoomStep={0.5}
-              doubleTapZoomToCenter={true}
-              movementSensibility={1}
-              onDoubleTapAfter={() => {
-                // Reset sur double tap
-                if (zoomableViewRef.current) {
-                  zoomableViewRef.current.zoomTo(1);
-                }
-              }}
-            >
-              <View style={{ width: svgWidth, height: svgHeight }}>
-                <Svg width={svgWidth} height={svgHeight}>
-                  <Defs>
-                    <LinearGradient id="maleGrad" x1="0" y1="0" x2="0" y2="1">
-                      <Stop offset="0" stopColor="#4A90D9" stopOpacity="0.3" />
-                      <Stop offset="1" stopColor="#4A90D9" stopOpacity="0.1" />
-                    </LinearGradient>
-                    <LinearGradient id="femaleGrad" x1="0" y1="0" x2="0" y2="1">
-                      <Stop offset="0" stopColor="#D94A8C" stopOpacity="0.3" />
-                      <Stop offset="1" stopColor="#D94A8C" stopOpacity="0.1" />
-                    </LinearGradient>
-                    <LinearGradient id="unknownGrad" x1="0" y1="0" x2="0" y2="1">
-                      <Stop offset="0" stopColor="#6B7C93" stopOpacity="0.3" />
-                      <Stop offset="1" stopColor="#6B7C93" stopOpacity="0.1" />
-                    </LinearGradient>
-                  </Defs>
-
-                  {/* Connections */}
-                  {connections.map((conn, index) => (
-                    <G key={`conn-${index}`}>
-                      {conn.type === 'spouse' ? (
-                        <Line
-                          x1={conn.from.x}
-                          y1={conn.from.y}
-                          x2={conn.to.x}
-                          y2={conn.to.y}
-                          stroke="#D4AF37"
-                          strokeWidth="2"
-                          strokeDasharray="5,5"
-                        />
-                      ) : (
-                        <>
-                          <Line
-                            x1={conn.from.x}
-                            y1={conn.from.y}
-                            x2={conn.from.x}
-                            y2={(conn.from.y + conn.to.y) / 2}
-                            stroke="#3A5070"
-                            strokeWidth="2"
-                          />
-                          <Line
-                            x1={conn.from.x}
-                            y1={(conn.from.y + conn.to.y) / 2}
-                            x2={conn.to.x}
-                            y2={(conn.from.y + conn.to.y) / 2}
-                            stroke="#3A5070"
-                            strokeWidth="2"
-                          />
-                          <Line
-                            x1={conn.to.x}
-                            y1={(conn.from.y + conn.to.y) / 2}
-                            x2={conn.to.x}
-                            y2={conn.to.y}
-                            stroke="#3A5070"
-                            strokeWidth="2"
-                          />
-                        </>
-                      )}
-                    </G>
-                  ))}
-
-                  {/* Nodes */}
-                  {nodes.map((node) => {
-                    const gradientId = node.person.gender === 'male' ? 'maleGrad' : 
-                                       node.person.gender === 'female' ? 'femaleGrad' : 'unknownGrad';
-                    const borderColor = getGenderColor(node.person.gender);
-                    
-                    return (
-                      <G key={`node-${node.person.id}`}>
-                        <Rect
-                          x={node.x}
-                          y={node.y}
-                          width={NODE_WIDTH}
-                          height={NODE_HEIGHT}
-                          rx={12}
-                          fill={`url(#${gradientId})`}
-                          stroke={borderColor}
-                          strokeWidth="2"
-                        />
-                        <SvgText
-                          x={node.x + NODE_WIDTH / 2}
-                          y={node.y + 25}
-                          textAnchor="middle"
-                          fill="#FFFFFF"
-                          fontSize="12"
-                          fontWeight="bold"
-                        >
-                          {node.person.first_name}
-                        </SvgText>
-                        <SvgText
-                          x={node.x + NODE_WIDTH / 2}
-                          y={node.y + 42}
-                          textAnchor="middle"
-                          fill="#B8C5D6"
-                          fontSize="10"
-                        >
-                          {node.person.last_name}
-                        </SvgText>
-                      </G>
-                    );
-                  })}
-                </Svg>
-
-                {/* Clickable overlay for person nodes */}
-                {nodes.map((node) => (
-                  <TouchableOpacity
-                    key={`touch-${node.person.id}`}
-                    style={{
-                      position: 'absolute',
-                      left: node.x,
-                      top: node.y,
-                      width: NODE_WIDTH,
-                      height: NODE_HEIGHT,
-                      borderRadius: 12,
-                    }}
-                    onPress={() => handlePersonPress(node.person)}
-                    activeOpacity={0.7}
+            {Platform.OS === 'web' && TransformWrapper ? (
+              <TransformWrapper
+                ref={transformRef}
+                initialScale={1}
+                minScale={MIN_ZOOM}
+                maxScale={MAX_ZOOM}
+                centerOnInit={false}
+                limitToBounds={false}
+                panning={{ velocityDisabled: false }}
+                pinch={{ step: 10 }}
+                doubleClick={{ mode: 'reset' }}
+                wheel={{ step: 0.1 }}
+              >
+                <TransformComponent
+                  wrapperStyle={{ width: '100%', height: '100%' }}
+                  contentStyle={{ width: svgWidth, height: svgHeight }}
+                >
+                  <TreeSvgContent 
+                    svgWidth={svgWidth}
+                    svgHeight={svgHeight}
+                    connections={connections}
+                    nodes={nodes}
+                    getGenderColor={getGenderColor}
+                    handlePersonPress={handlePersonPress}
                   />
-                ))}
-              </View>
-            </ReactNativeZoomableView>
+                </TransformComponent>
+              </TransformWrapper>
+            ) : (
+              <ScrollView 
+                style={{ flex: 1 }}
+                contentContainerStyle={{ minWidth: svgWidth, minHeight: svgHeight }}
+                horizontal={true}
+                showsHorizontalScrollIndicator={true}
+                showsVerticalScrollIndicator={true}
+                maximumZoomScale={MAX_ZOOM}
+                minimumZoomScale={MIN_ZOOM}
+                bouncesZoom={true}
+              >
+                <ScrollView
+                  nestedScrollEnabled={true}
+                  showsVerticalScrollIndicator={true}
+                >
+                  <TreeSvgContent 
+                    svgWidth={svgWidth}
+                    svgHeight={svgHeight}
+                    connections={connections}
+                    nodes={nodes}
+                    getGenderColor={getGenderColor}
+                    handlePersonPress={handlePersonPress}
+                  />
+                </ScrollView>
+              </ScrollView>
+            )}
 
             {/* Zoom Controls - Compact for mobile */}
             <View style={styles.zoomControls}>
