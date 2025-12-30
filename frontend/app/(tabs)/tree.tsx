@@ -1294,57 +1294,59 @@ export default function TreeScreen() {
     savedTranslateY.value = 0;
   }, []);
 
-  // Fit to screen - Zoom pour voir tout l'arbre avec compensation pour le scale depuis le centre
+  // Fit to screen - Zoom pour voir TOUT l'arbre à l'écran
   const fitToScreen = useCallback(() => {
     const screenWidth = Dimensions.get('window').width;
-    const screenHeight = Dimensions.get('window').height - 250; // Espace pour nav et boutons
+    const screenHeight = Dimensions.get('window').height - 200; // Espace pour nav et boutons
     
-    // Si l'arbre est petit, ne pas zoomer
-    if (svgWidth <= screenWidth && svgHeight <= screenHeight) {
-      console.log('[FitToScreen] Tree fits in screen, resetting to center');
-      resetToCenter();
-      return;
-    }
+    console.log(`[FitToScreen] SVG: ${svgWidth}x${svgHeight}, Screen: ${screenWidth}x${screenHeight}`);
     
     // Calculer le zoom nécessaire pour voir tout l'arbre
     const scaleX = screenWidth / svgWidth;
     const scaleY = screenHeight / svgHeight;
     
-    // Prendre le plus petit zoom pour que tout rentre, avec marge
-    let optimalScale = Math.min(scaleX, scaleY) * 0.85;
+    // Prendre le plus petit zoom pour que tout rentre
+    let optimalScale = Math.min(scaleX, scaleY) * 0.9; // 90% pour avoir une marge
     
-    // Limiter entre MIN et MAX (ne pas trop dézoomer ni zoomer)
-    optimalScale = Math.max(MIN_SCALE, Math.min(optimalScale, 1));
+    // Permettre un zoom très petit si nécessaire
+    optimalScale = Math.max(MIN_SCALE, Math.min(optimalScale, 1.5));
     
-    // COMPENSATION: Le scale est appliqué depuis le centre de la vue.
-    // Pour que l'arbre reste en haut-gauche après le scale, on doit compenser avec une translation.
-    // Quand on scale par S depuis le centre, le point (0,0) se déplace de:
-    //   - X: (screenWidth/2) * (1 - S) vers la droite
-    //   - Y: (screenHeight/2) * (1 - S) vers le bas
-    // On doit donc translater de ces valeurs négatives pour ramener l'arbre en haut-gauche
+    // Calculer les dimensions de l'arbre après le scale
+    const scaledWidth = svgWidth * optimalScale;
+    const scaledHeight = svgHeight * optimalScale;
     
-    const compensationX = -(screenWidth / 2) * (1 - optimalScale);
-    const compensationY = -(screenHeight / 2) * (1 - optimalScale);
+    // Centrer l'arbre sur l'écran
+    // L'origine du scale est au centre, donc on doit compenser et centrer
+    const centerOffsetX = (screenWidth - scaledWidth) / 2;
+    const centerOffsetY = (screenHeight - scaledHeight) / 2;
     
-    console.log(`[FitToScreen] scale=${optimalScale.toFixed(2)}, compensation=(${compensationX.toFixed(0)}, ${compensationY.toFixed(0)})`);
+    // Compensation pour le scale depuis le centre
+    const scaleCompensationX = (screenWidth / 2) * (1 - optimalScale);
+    const scaleCompensationY = (screenHeight / 2) * (1 - optimalScale);
+    
+    // Translation finale = centrage - compensation du scale
+    const finalTranslateX = centerOffsetX - scaleCompensationX;
+    const finalTranslateY = centerOffsetY - scaleCompensationY;
+    
+    console.log(`[FitToScreen] scale=${optimalScale.toFixed(3)}, translate=(${finalTranslateX.toFixed(0)}, ${finalTranslateY.toFixed(0)})`);
     
     scale.value = withSpring(optimalScale, { damping: 15 });
     savedScale.value = optimalScale;
-    translateX.value = withSpring(compensationX, { damping: 15 });
-    translateY.value = withSpring(compensationY, { damping: 15 });
-    savedTranslateX.value = compensationX;
-    savedTranslateY.value = compensationY;
-  }, [svgWidth, svgHeight, resetToCenter]);
+    translateX.value = withSpring(finalTranslateX, { damping: 15 });
+    translateY.value = withSpring(finalTranslateY, { damping: 15 });
+    savedTranslateX.value = finalTranslateX;
+    savedTranslateY.value = finalTranslateY;
+  }, [svgWidth, svgHeight]);
 
   // Zoom in/out functions for buttons
   const zoomIn = useCallback(() => {
-    const newScale = Math.min(savedScale.value * 1.3, MAX_SCALE);
+    const newScale = Math.min(savedScale.value * 1.5, MAX_SCALE);
     scale.value = withSpring(newScale, { damping: 15 });
     savedScale.value = newScale;
   }, []);
 
   const zoomOut = useCallback(() => {
-    const newScale = Math.max(savedScale.value / 1.3, MIN_SCALE);
+    const newScale = Math.max(savedScale.value / 1.5, MIN_SCALE);
     scale.value = withSpring(newScale, { damping: 15 });
     savedScale.value = newScale;
   }, []);
