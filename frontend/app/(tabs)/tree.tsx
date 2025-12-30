@@ -1,4 +1,4 @@
-// Build: 2025010603 - EVENTS WITH RECIPIENTS
+// Build: 2025010604 - ZOOMABLE VIEW SOLUTION
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
@@ -22,14 +22,7 @@ import { useAuth } from '@/context/AuthContext';
 import { treeAPI, previewAPI, eventsAPI } from '@/services/api';
 import api from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GestureHandlerRootView, GestureDetector, Gesture, PinchGestureHandler, PanGestureHandler, TapGestureHandler, State } from 'react-native-gesture-handler';
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withSpring, 
-  withTiming,
-  runOnJS,
-} from 'react-native-reanimated';
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import EventAnimation from '@/components/EventAnimation';
 import AdBanner from '@/components/AdBanner';
 
