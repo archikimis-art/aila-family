@@ -1264,145 +1264,51 @@ export default function TreeScreen() {
   };
 
   // ============================================================================
-  // ZOOM & PAN - SOLUTION PROFESSIONNELLE
+  // ZOOMABLE VIEW - SOLUTION PROFESSIONNELLE
   // ============================================================================
-  const scale = useSharedValue(1);
-  const savedScale = useSharedValue(1);
-  const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
-  const savedTranslateX = useSharedValue(0);
-  const savedTranslateY = useSharedValue(0);
-  
-  // Flag pour bloquer le pan pendant le pinch
-  const isPinching = useSharedValue(false);
+  const zoomableViewRef = useRef<any>(null);
 
-  const MIN_SCALE = 0.05;  // Zoom très arrière pour grands arbres
-  const MAX_SCALE = 5;     // Zoom avant jusqu'à 5x
+  const MIN_ZOOM = 0.1;   // Zoom très arrière pour grands arbres
+  const MAX_ZOOM = 5;     // Zoom avant jusqu'à 5x
 
   // Reset to center
   const resetToCenter = useCallback(() => {
-    scale.value = withSpring(1, { damping: 20 });
-    savedScale.value = 1;
-    translateX.value = withSpring(0, { damping: 20 });
-    translateY.value = withSpring(0, { damping: 20 });
-    savedTranslateX.value = 0;
-    savedTranslateY.value = 0;
+    if (zoomableViewRef.current) {
+      zoomableViewRef.current.zoomTo(1);
+    }
   }, []);
 
-  // Fit to screen
+  // Fit to screen - zoom pour voir tout l'arbre
   const fitToScreen = useCallback(() => {
     const screenWidth = Dimensions.get('window').width;
-    const screenHeight = Dimensions.get('window').height - 200;
+    const screenHeight = Dimensions.get('window').height - 250;
     
     const scaleX = screenWidth / svgWidth;
     const scaleY = screenHeight / svgHeight;
     let optimalScale = Math.min(scaleX, scaleY) * 0.85;
-    optimalScale = Math.max(MIN_SCALE, Math.min(optimalScale, 1.5));
+    optimalScale = Math.max(MIN_ZOOM, Math.min(optimalScale, 1));
     
-    const scaledWidth = svgWidth * optimalScale;
-    const scaledHeight = svgHeight * optimalScale;
-    const centerOffsetX = (screenWidth - scaledWidth) / 2;
-    const centerOffsetY = (screenHeight - scaledHeight) / 2;
-    const scaleCompX = (screenWidth / 2) * (1 - optimalScale);
-    const scaleCompY = (screenHeight / 2) * (1 - optimalScale);
-    const finalX = centerOffsetX - scaleCompX;
-    const finalY = centerOffsetY - scaleCompY;
-    
-    scale.value = withSpring(optimalScale, { damping: 20 });
-    savedScale.value = optimalScale;
-    translateX.value = withSpring(finalX, { damping: 20 });
-    translateY.value = withSpring(finalY, { damping: 20 });
-    savedTranslateX.value = finalX;
-    savedTranslateY.value = finalY;
+    if (zoomableViewRef.current) {
+      zoomableViewRef.current.zoomTo(optimalScale);
+    }
   }, [svgWidth, svgHeight]);
 
   // Zoom buttons
   const zoomIn = useCallback(() => {
-    const newScale = Math.min(savedScale.value * 1.5, MAX_SCALE);
-    scale.value = withSpring(newScale, { damping: 20 });
-    savedScale.value = newScale;
+    if (zoomableViewRef.current) {
+      const currentZoom = zoomableViewRef.current.zoomLevel || 1;
+      const newZoom = Math.min(currentZoom * 1.5, MAX_ZOOM);
+      zoomableViewRef.current.zoomTo(newZoom);
+    }
   }, []);
 
   const zoomOut = useCallback(() => {
-    const newScale = Math.max(savedScale.value / 1.5, MIN_SCALE);
-    scale.value = withSpring(newScale, { damping: 20 });
-    savedScale.value = newScale;
+    if (zoomableViewRef.current) {
+      const currentZoom = zoomableViewRef.current.zoomLevel || 1;
+      const newZoom = Math.max(currentZoom / 1.5, MIN_ZOOM);
+      zoomableViewRef.current.zoomTo(newZoom);
+    }
   }, []);
-
-  // ========== PINCH GESTURE (ZOOM) ==========
-  const pinchGesture = Gesture.Pinch()
-    .onStart(() => {
-      'worklet';
-      isPinching.value = true;
-      savedScale.value = scale.value;
-    })
-    .onUpdate((event) => {
-      'worklet';
-      const newScale = savedScale.value * event.scale;
-      scale.value = Math.min(Math.max(newScale, MIN_SCALE), MAX_SCALE);
-    })
-    .onEnd(() => {
-      'worklet';
-      savedScale.value = scale.value;
-      isPinching.value = false;
-    });
-
-  // ========== PAN GESTURE (DÉPLACEMENT) ==========
-  const panGesture = Gesture.Pan()
-    .averageTouches(true)  // Important pour le multi-touch
-    .onStart(() => {
-      'worklet';
-      savedTranslateX.value = translateX.value;
-      savedTranslateY.value = translateY.value;
-    })
-    .onUpdate((event) => {
-      'worklet';
-      // Ne pas bloquer le pan même pendant le pinch pour une meilleure UX
-      translateX.value = savedTranslateX.value + event.translationX;
-      translateY.value = savedTranslateY.value + event.translationY;
-    })
-    .onEnd((event) => {
-      'worklet';
-      // Inertie pour un défilement naturel
-      const decay = 0.1;
-      const finalX = translateX.value + event.velocityX * decay;
-      const finalY = translateY.value + event.velocityY * decay;
-      translateX.value = withSpring(finalX, { damping: 20, stiffness: 100 });
-      translateY.value = withSpring(finalY, { damping: 20, stiffness: 100 });
-      savedTranslateX.value = finalX;
-      savedTranslateY.value = finalY;
-    });
-
-  // ========== DOUBLE TAP (RESET) ==========
-  const doubleTapGesture = Gesture.Tap()
-    .numberOfTaps(2)
-    .onEnd(() => {
-      'worklet';
-      scale.value = withSpring(1, { damping: 20 });
-      savedScale.value = 1;
-      translateX.value = withSpring(0, { damping: 20 });
-      translateY.value = withSpring(0, { damping: 20 });
-      savedTranslateX.value = 0;
-      savedTranslateY.value = 0;
-    });
-
-  // Combiner les gestes - ORDRE IMPORTANT
-  const composedGesture = Gesture.Simultaneous(
-    pinchGesture,
-    panGesture,
-    doubleTapGesture
-  );
-
-  // Style animé
-  const animatedTreeStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateX: translateX.value },
-        { translateY: translateY.value },
-        { scale: scale.value },
-      ],
-    };
-  });
 
   const getGenderColor = (gender: string) => {
     switch (gender) {
