@@ -1271,27 +1271,26 @@ export default function TreeScreen() {
   };
 
   // ============================================================================
-  // ZOOM & PAN STATE
+  // ZOOM & PAN STATE - VERSION ROBUSTE
   // ============================================================================
   const scale = useSharedValue(1);
-  const savedScale = useSharedValue(1);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
-  const savedTranslateX = useSharedValue(0);
-  const savedTranslateY = useSharedValue(0);
+  
+  // Variables pour stocker l'état au début de chaque geste
+  const startScale = useSharedValue(1);
+  const startTranslateX = useSharedValue(0);
+  const startTranslateY = useSharedValue(0);
 
-  const MIN_SCALE = 0.1;  // Permet de voir des arbres TRÈS grands (zoom arrière 10x)
-  const MAX_SCALE = 4;    // Zoom avant jusqu'à 4x
+  const MIN_SCALE = 0.08;  // Permet de voir des arbres TRÈS grands
+  const MAX_SCALE = 5;     // Zoom avant jusqu'à 5x
 
   // Reset to center - Remet l'arbre à sa position initiale (zoom 1, centré)
   const resetToCenter = useCallback(() => {
     console.log('[ResetToCenter] Resetting to default view');
     scale.value = withSpring(1, { damping: 15 });
-    savedScale.value = 1;
     translateX.value = withSpring(0, { damping: 15 });
     translateY.value = withSpring(0, { damping: 15 });
-    savedTranslateX.value = 0;
-    savedTranslateY.value = 0;
   }, []);
 
   // Fit to screen - Zoom pour voir TOUT l'arbre à l'écran
