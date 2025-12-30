@@ -1294,7 +1294,7 @@ export default function TreeScreen() {
     savedTranslateY.value = 0;
   }, []);
 
-  // Fit to screen - Zoom pour voir tout l'arbre (SIMPLIFIÉ)
+  // Fit to screen - Zoom pour voir tout l'arbre avec compensation pour le scale depuis le centre
   const fitToScreen = useCallback(() => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height - 250; // Espace pour nav et boutons
@@ -1311,21 +1311,29 @@ export default function TreeScreen() {
     const scaleY = screenHeight / svgHeight;
     
     // Prendre le plus petit zoom pour que tout rentre, avec marge
-    let optimalScale = Math.min(scaleX, scaleY) * 0.9;
+    let optimalScale = Math.min(scaleX, scaleY) * 0.85;
     
     // Limiter entre MIN et MAX (ne pas trop dézoomer ni zoomer)
     optimalScale = Math.max(MIN_SCALE, Math.min(optimalScale, 1));
     
-    console.log(`[FitToScreen] svgWidth=${svgWidth}, svgHeight=${svgHeight}, screen=${screenWidth}x${screenHeight}, scale=${optimalScale.toFixed(2)}`);
+    // COMPENSATION: Le scale est appliqué depuis le centre de la vue.
+    // Pour que l'arbre reste en haut-gauche après le scale, on doit compenser avec une translation.
+    // Quand on scale par S depuis le centre, le point (0,0) se déplace de:
+    //   - X: (screenWidth/2) * (1 - S) vers la droite
+    //   - Y: (screenHeight/2) * (1 - S) vers le bas
+    // On doit donc translater de ces valeurs négatives pour ramener l'arbre en haut-gauche
     
-    // Appliquer le zoom SANS translation (l'arbre reste en haut à gauche, l'utilisateur peut naviguer)
+    const compensationX = -(screenWidth / 2) * (1 - optimalScale);
+    const compensationY = -(screenHeight / 2) * (1 - optimalScale);
+    
+    console.log(`[FitToScreen] scale=${optimalScale.toFixed(2)}, compensation=(${compensationX.toFixed(0)}, ${compensationY.toFixed(0)})`);
+    
     scale.value = withSpring(optimalScale, { damping: 15 });
     savedScale.value = optimalScale;
-    // Recentrer horizontalement seulement, pas verticalement
-    translateX.value = withSpring(0, { damping: 15 });
-    translateY.value = withSpring(0, { damping: 15 });
-    savedTranslateX.value = 0;
-    savedTranslateY.value = 0;
+    translateX.value = withSpring(compensationX, { damping: 15 });
+    translateY.value = withSpring(compensationY, { damping: 15 });
+    savedTranslateX.value = compensationX;
+    savedTranslateY.value = compensationY;
   }, [svgWidth, svgHeight, resetToCenter]);
 
   // Zoom in/out functions for buttons
