@@ -1280,8 +1280,8 @@ export default function TreeScreen() {
   const savedTranslateX = useSharedValue(0);
   const savedTranslateY = useSharedValue(0);
 
-  const MIN_SCALE = 0.2;  // Permet de voir des arbres très grands
-  const MAX_SCALE = 3;
+  const MIN_SCALE = 0.1;  // Permet de voir des arbres TRÈS grands (zoom arrière 10x)
+  const MAX_SCALE = 4;    // Zoom avant jusqu'à 4x
 
   // Reset to center - Remet l'arbre à sa position initiale (zoom 1, centré)
   const resetToCenter = useCallback(() => {
