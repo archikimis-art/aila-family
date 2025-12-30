@@ -2279,7 +2279,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     minWidth: '100%',
     minHeight: '100%',
-    transformOrigin: 'top left',  // IMPORTANT: Scale depuis le coin supérieur gauche
   },
   nodesOverlay: {
     position: 'absolute',
