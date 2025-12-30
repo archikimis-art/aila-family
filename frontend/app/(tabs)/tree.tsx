@@ -1731,7 +1731,7 @@ export default function TreeScreen() {
 
             {/* Zoom hint - Hidden on very small screens */}
             <View style={styles.zoomHint}>
-              <Text style={styles.zoomHintText}>Double-tap ou 📍: recentrer • 📐: voir tout</Text>
+              <Text style={styles.zoomHintText}>👆 Glisser pour déplacer • 🤏 Pincer pour zoomer • 📐 Voir tout</Text>
             </View>
           </>
         )}
