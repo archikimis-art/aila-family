@@ -70,6 +70,146 @@ const LEVEL_HEIGHT = 140;
 const NODE_SPACING = 30;
 const COUPLE_SPACING = 15;
 
+// Composant réutilisable pour le contenu SVG de l'arbre
+interface TreeSvgContentProps {
+  svgWidth: number;
+  svgHeight: number;
+  connections: any[];
+  nodes: any[];
+  getGenderColor: (gender: string) => string;
+  handlePersonPress: (person: Person) => void;
+}
+
+const TreeSvgContent: React.FC<TreeSvgContentProps> = ({
+  svgWidth,
+  svgHeight,
+  connections,
+  nodes,
+  getGenderColor,
+  handlePersonPress,
+}) => (
+  <View style={{ width: svgWidth, height: svgHeight, position: 'relative' }}>
+    <Svg width={svgWidth} height={svgHeight}>
+      <Defs>
+        <LinearGradient id="maleGrad" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0" stopColor="#4A90D9" stopOpacity="0.3" />
+          <Stop offset="1" stopColor="#4A90D9" stopOpacity="0.1" />
+        </LinearGradient>
+        <LinearGradient id="femaleGrad" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0" stopColor="#D94A8C" stopOpacity="0.3" />
+          <Stop offset="1" stopColor="#D94A8C" stopOpacity="0.1" />
+        </LinearGradient>
+        <LinearGradient id="unknownGrad" x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0" stopColor="#6B7C93" stopOpacity="0.3" />
+          <Stop offset="1" stopColor="#6B7C93" stopOpacity="0.1" />
+        </LinearGradient>
+      </Defs>
+
+      {/* Connections */}
+      {connections.map((conn, index) => (
+        <G key={`conn-${index}`}>
+          {conn.type === 'spouse' ? (
+            <Line
+              x1={conn.from.x}
+              y1={conn.from.y}
+              x2={conn.to.x}
+              y2={conn.to.y}
+              stroke="#D4AF37"
+              strokeWidth="2"
+              strokeDasharray="5,5"
+            />
+          ) : (
+            <>
+              <Line
+                x1={conn.from.x}
+                y1={conn.from.y}
+                x2={conn.from.x}
+                y2={(conn.from.y + conn.to.y) / 2}
+                stroke="#3A5070"
+                strokeWidth="2"
+              />
+              <Line
+                x1={conn.from.x}
+                y1={(conn.from.y + conn.to.y) / 2}
+                x2={conn.to.x}
+                y2={(conn.from.y + conn.to.y) / 2}
+                stroke="#3A5070"
+                strokeWidth="2"
+              />
+              <Line
+                x1={conn.to.x}
+                y1={(conn.from.y + conn.to.y) / 2}
+                x2={conn.to.x}
+                y2={conn.to.y}
+                stroke="#3A5070"
+                strokeWidth="2"
+              />
+            </>
+          )}
+        </G>
+      ))}
+
+      {/* Nodes */}
+      {nodes.map((node) => {
+        const gradientId = node.person.gender === 'male' ? 'maleGrad' : 
+                           node.person.gender === 'female' ? 'femaleGrad' : 'unknownGrad';
+        const borderColor = getGenderColor(node.person.gender);
+        
+        return (
+          <G key={`node-${node.person.id}`}>
+            <Rect
+              x={node.x}
+              y={node.y}
+              width={NODE_WIDTH}
+              height={NODE_HEIGHT}
+              rx={12}
+              fill={`url(#${gradientId})`}
+              stroke={borderColor}
+              strokeWidth="2"
+            />
+            <SvgText
+              x={node.x + NODE_WIDTH / 2}
+              y={node.y + 25}
+              textAnchor="middle"
+              fill="#FFFFFF"
+              fontSize="12"
+              fontWeight="bold"
+            >
+              {node.person.first_name}
+            </SvgText>
+            <SvgText
+              x={node.x + NODE_WIDTH / 2}
+              y={node.y + 42}
+              textAnchor="middle"
+              fill="#B8C5D6"
+              fontSize="10"
+            >
+              {node.person.last_name}
+            </SvgText>
+          </G>
+        );
+      })}
+    </Svg>
+
+    {/* Clickable overlay for person nodes */}
+    {nodes.map((node) => (
+      <TouchableOpacity
+        key={`touch-${node.person.id}`}
+        style={{
+          position: 'absolute',
+          left: node.x,
+          top: node.y,
+          width: NODE_WIDTH,
+          height: NODE_HEIGHT,
+          borderRadius: 12,
+        }}
+        onPress={() => handlePersonPress(node.person)}
+        activeOpacity={0.7}
+      />
+    ))}
+  </View>
+);
+
 export default function TreeScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
