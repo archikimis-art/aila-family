@@ -1349,24 +1349,44 @@ export default function TreeScreen() {
     savedScale.value = newScale;
   }, []);
 
-  // Pinch gesture for zoom
+  // Pinch gesture for zoom - OPTIMISÉ pour mobile
   const pinchGesture = Gesture.Pinch()
+    .onStart(() => {
+      // Sauvegarder l'état initial au début du geste
+    })
     .onUpdate((e) => {
-      scale.value = Math.min(Math.max(savedScale.value * e.scale, MIN_SCALE), MAX_SCALE);
+      // Appliquer le zoom instantanément (sans animation) pour plus de fluidité
+      const newScale = Math.min(Math.max(savedScale.value * e.scale, MIN_SCALE), MAX_SCALE);
+      scale.value = newScale;
     })
     .onEnd(() => {
       savedScale.value = scale.value;
     });
 
-  // Pan gesture for dragging
+  // Pan gesture for dragging - OPTIMISÉ pour mobile avec un seul doigt
   const panGesture = Gesture.Pan()
+    .minDistance(5) // Réduire la distance minimum pour déclencher le pan
+    .onStart(() => {
+      // Sauvegarder la position au début
+    })
     .onUpdate((e) => {
+      // Déplacement instantané pour plus de réactivité
       translateX.value = savedTranslateX.value + e.translationX;
       translateY.value = savedTranslateY.value + e.translationY;
     })
-    .onEnd(() => {
-      savedTranslateX.value = translateX.value;
-      savedTranslateY.value = translateY.value;
+    .onEnd((e) => {
+      // Ajouter un peu d'inertie/vélocité pour un défilement plus naturel
+      const velocityFactor = 0.1;
+      translateX.value = withSpring(
+        savedTranslateX.value + e.translationX + e.velocityX * velocityFactor,
+        { damping: 20, stiffness: 100 }
+      );
+      translateY.value = withSpring(
+        savedTranslateY.value + e.translationY + e.velocityY * velocityFactor,
+        { damping: 20, stiffness: 100 }
+      );
+      savedTranslateX.value = savedTranslateX.value + e.translationX + e.velocityX * velocityFactor;
+      savedTranslateY.value = savedTranslateY.value + e.translationY + e.velocityY * velocityFactor;
     });
 
   // Double tap gesture to reset to center (plus fiable que fitToScreen)
