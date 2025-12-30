@@ -1348,6 +1348,28 @@ export default function TreeScreen() {
     doubleTapGesture
   );
 
+  // Auto-fit when tree is loaded or changes significantly
+  const [hasAutoFitted, setHasAutoFitted] = useState(false);
+  
+  useEffect(() => {
+    // Auto-fit quand l'arbre a des nodes et qu'on n'a pas encore fait le fit
+    if (nodes.length > 0 && !loading && !hasAutoFitted) {
+      // Petit délai pour que le SVG soit rendu
+      const timer = setTimeout(() => {
+        fitToScreen();
+        setHasAutoFitted(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [nodes.length, loading, hasAutoFitted, fitToScreen]);
+  
+  // Reset hasAutoFitted quand on refresh
+  useEffect(() => {
+    if (refreshing) {
+      setHasAutoFitted(false);
+    }
+  }, [refreshing]);
+
   // Animated style for the tree container
   const animatedTreeStyle = useAnimatedStyle(() => {
     return {
