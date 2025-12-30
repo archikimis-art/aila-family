@@ -1365,30 +1365,32 @@ export default function TreeScreen() {
       savedScale.value = scale.value;
     });
 
-  // Pan gesture for dragging - OPTIMISÉ pour mobile avec un seul doigt
+  // Pan gesture for dragging - Déplacement dans TOUTES les directions
   const panGesture = Gesture.Pan()
-    .minDistance(5) // Réduire la distance minimum pour déclencher le pan
+    .minDistance(1) // Très faible distance pour déclencher immédiatement
+    .minPointers(1) // Un seul doigt suffit
+    .maxPointers(2) // Permet aussi 2 doigts
     .onStart(() => {
-      // Sauvegarder la position au début
+      'worklet';
+      // Rien à faire au démarrage
     })
     .onUpdate((e) => {
-      // Déplacement instantané pour plus de réactivité
+      'worklet';
+      // Déplacement instantané dans toutes les directions
       translateX.value = savedTranslateX.value + e.translationX;
       translateY.value = savedTranslateY.value + e.translationY;
     })
     .onEnd((e) => {
-      // Ajouter un peu d'inertie/vélocité pour un défilement plus naturel
-      const velocityFactor = 0.1;
-      translateX.value = withSpring(
-        savedTranslateX.value + e.translationX + e.velocityX * velocityFactor,
-        { damping: 20, stiffness: 100 }
-      );
-      translateY.value = withSpring(
-        savedTranslateY.value + e.translationY + e.velocityY * velocityFactor,
-        { damping: 20, stiffness: 100 }
-      );
-      savedTranslateX.value = savedTranslateX.value + e.translationX + e.velocityX * velocityFactor;
-      savedTranslateY.value = savedTranslateY.value + e.translationY + e.velocityY * velocityFactor;
+      'worklet';
+      // Ajouter de l'inertie pour un défilement naturel
+      const velocityFactor = 0.15;
+      const finalX = savedTranslateX.value + e.translationX + e.velocityX * velocityFactor;
+      const finalY = savedTranslateY.value + e.translationY + e.velocityY * velocityFactor;
+      
+      translateX.value = withSpring(finalX, { damping: 20, stiffness: 90 });
+      translateY.value = withSpring(finalY, { damping: 20, stiffness: 90 });
+      savedTranslateX.value = finalX;
+      savedTranslateY.value = finalY;
     });
 
   // Double tap gesture to reset to center (plus fiable que fitToScreen)
