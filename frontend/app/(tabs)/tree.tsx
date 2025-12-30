@@ -2275,6 +2275,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(42, 63, 90, 0.9)',
     borderRadius: 16,
   },
+  fitButton: {
+    backgroundColor: 'rgba(212, 175, 55, 0.3)',
+    borderWidth: 1,
+    borderColor: '#D4AF37',
+  },
   zoomHint: {
     position: 'absolute',
     bottom: 8,
