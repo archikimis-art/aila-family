@@ -1354,14 +1354,17 @@ export default function TreeScreen() {
   // Pinch gesture for zoom - OPTIMISÉ pour mobile
   const pinchGesture = Gesture.Pinch()
     .onStart(() => {
+      'worklet';
       // Sauvegarder l'état initial au début du geste
     })
     .onUpdate((e) => {
+      'worklet';
       // Appliquer le zoom instantanément (sans animation) pour plus de fluidité
       const newScale = Math.min(Math.max(savedScale.value * e.scale, MIN_SCALE), MAX_SCALE);
       scale.value = newScale;
     })
     .onEnd(() => {
+      'worklet';
       savedScale.value = scale.value;
     });
 
