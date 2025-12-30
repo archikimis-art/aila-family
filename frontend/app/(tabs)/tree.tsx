@@ -1666,14 +1666,17 @@ export default function TreeScreen() {
               <TouchableOpacity style={styles.zoomButton} onPress={zoomOut}>
                 <Ionicons name="remove" size={18} color="#FFFFFF" />
               </TouchableOpacity>
+              <TouchableOpacity style={styles.zoomButton} onPress={resetToCenter}>
+                <Ionicons name="locate-outline" size={16} color="#FFFFFF" />
+              </TouchableOpacity>
               <TouchableOpacity style={[styles.zoomButton, styles.fitButton]} onPress={fitToScreen}>
-                <Ionicons name="contract-outline" size={16} color="#D4AF37" />
+                <Ionicons name="scan-outline" size={16} color="#D4AF37" />
               </TouchableOpacity>
             </View>
 
             {/* Zoom hint - Hidden on very small screens */}
             <View style={styles.zoomHint}>
-              <Text style={styles.zoomHintText}>Double-tap: recentrer • Pincer: zoom • 📐: tout afficher</Text>
+              <Text style={styles.zoomHintText}>Double-tap ou 📍: recentrer • 📐: voir tout</Text>
             </View>
           </>
         )}
