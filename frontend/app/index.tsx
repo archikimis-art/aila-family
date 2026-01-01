@@ -454,17 +454,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
   },
   legalLink: {
     color: '#6B8BB8',
-    fontSize: 12,
+    fontSize: 10,
     textDecorationLine: 'underline',
   },
   legalSeparator: {
     color: '#4A5568',
-    fontSize: 12,
-    marginHorizontal: 8,
+    fontSize: 10,
+    marginHorizontal: 4,
   },
   adContainer: {
     position: 'absolute',
