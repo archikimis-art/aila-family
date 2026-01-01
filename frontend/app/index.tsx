@@ -187,7 +187,7 @@ export default function WelcomeScreen() {
             {/* Footer text only */}
             <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
             
-            {/* Legal Links */}
+            {/* Legal Links - All on one line */}
             <View style={styles.legalLinks}>
               <TouchableOpacity onPress={() => router.push('/about')}>
                 <Text style={styles.legalLink}>À propos</Text>
@@ -200,8 +200,7 @@ export default function WelcomeScreen() {
               <TouchableOpacity onPress={() => router.push('/faq')}>
                 <Text style={styles.legalLink}>FAQ</Text>
               </TouchableOpacity>
-            </View>
-            <View style={styles.legalLinks}>
+              <Text style={styles.legalSeparator}>•</Text>
               <TouchableOpacity onPress={() => router.push('/privacy')}>
                 <Text style={styles.legalLink}>Confidentialité</Text>
               </TouchableOpacity>
