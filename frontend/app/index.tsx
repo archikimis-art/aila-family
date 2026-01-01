@@ -193,6 +193,15 @@ export default function WelcomeScreen() {
                 <Text style={styles.legalLink}>À propos</Text>
               </TouchableOpacity>
               <Text style={styles.legalSeparator}>•</Text>
+              <TouchableOpacity onPress={() => router.push('/blog')}>
+                <Text style={styles.legalLink}>Blog</Text>
+              </TouchableOpacity>
+              <Text style={styles.legalSeparator}>•</Text>
+              <TouchableOpacity onPress={() => router.push('/faq')}>
+                <Text style={styles.legalLink}>FAQ</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.legalLinks}>
               <TouchableOpacity onPress={() => router.push('/privacy')}>
                 <Text style={styles.legalLink}>Confidentialité</Text>
               </TouchableOpacity>
