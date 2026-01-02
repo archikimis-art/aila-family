@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   versionSection: {
     alignItems: 'center',
     paddingVertical: 30,
-    marginBottom: 40,
+    marginBottom: 20,
   },
   version: {
     fontSize: 14,
@@ -231,5 +231,21 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#4A5568',
     marginTop: 4,
+  },
+  homeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#D4AF37',
+    marginHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  homeButtonText: {
+    color: '#0A1628',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
 });
