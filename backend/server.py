@@ -3330,6 +3330,10 @@ async def debug_tree_structure(current_user: dict = Depends(get_current_user)):
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@aila.family')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'AilaAdmin2024!')
 
+# Log admin config on startup (masked)
+logger.info(f"Admin email configured: {ADMIN_EMAIL}")
+logger.info(f"Admin password configured: {'*' * len(ADMIN_PASSWORD)} ({len(ADMIN_PASSWORD)} chars)")
+
 class AdminLoginRequest(BaseModel):
     email: EmailStr
     password: str
