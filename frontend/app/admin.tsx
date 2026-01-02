@@ -18,12 +18,12 @@ import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // API URL configuration
-const PRODUCTION_API_URL = 'https://aila-backend-hc1m.onrender.com';
+const PRODUCTION_API_URL = 'https://aila-backend-hc1m.onrender.com/api';
 const getApiUrl = () => {
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
     const hostname = window.location.hostname;
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return 'http://localhost:8001';
+      return 'http://localhost:8001/api';
     }
     return PRODUCTION_API_URL;
   }
