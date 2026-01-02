@@ -16,7 +16,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getApiUrl } from '@/utils/api';
+
+// API URL configuration
+const PRODUCTION_API_URL = 'https://aila-backend-hc1m.onrender.com';
+const getApiUrl = () => {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:8001';
+    }
+    return PRODUCTION_API_URL;
+  }
+  return PRODUCTION_API_URL;
+};
 
 interface User {
   id: string;
