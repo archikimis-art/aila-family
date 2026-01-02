@@ -296,8 +296,8 @@ export default function AdminScreen() {
             )}
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <Text style={styles.backButtonText}>← Retour à l'application</Text>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/')}>
+            <Text style={styles.backButtonText}>← Retour à l'accueil</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -309,8 +309,11 @@ export default function AdminScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Ionicons name="shield-checkmark" size={28} color="#D4AF37" />
+        <TouchableOpacity onPress={() => router.replace('/')} style={styles.homeButton}>
+          <Ionicons name="home-outline" size={24} color="#D4AF37" />
+        </TouchableOpacity>
+        <View style={styles.headerCenter}>
+          <Ionicons name="shield-checkmark" size={24} color="#D4AF37" />
           <Text style={styles.headerTitle}>Admin AÏLA</Text>
         </View>
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
