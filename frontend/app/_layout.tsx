@@ -17,13 +17,13 @@ const initSEO = () => {
     seoMark.content = 'true';
     document.head.appendChild(seoMark);
 
-    // Title optimisé (≤60 caractères visibles)
-    document.title = 'AÏLA - Arbre Généalogique Gratuit | Créez votre Histoire Familiale';
+    // Title optimisé - AILA FAMILLE en premier
+    document.title = 'AILA Famille - Arbre Généalogique Gratuit | AÏLA Family App';
     
-    // Meta Description optimisée (≤155 caractères)
+    // Meta Description optimisée avec AILA FAMILLE
     const metaDesc = document.createElement('meta');
     metaDesc.name = 'description';
-    metaDesc.content = 'Créez votre arbre généalogique gratuitement avec AÏLA. Application collaborative pour visualiser, partager et préserver votre histoire familiale. Essayez maintenant !';
+    metaDesc.content = 'AILA Famille : créez votre arbre généalogique gratuitement. AÏLA est l\'application famille pour visualiser et partager votre histoire familiale. Rejoignez la communauté AILA !';
     document.head.appendChild(metaDesc);
     
     // Google AdSense Verification
@@ -32,16 +32,16 @@ const initSEO = () => {
     metaAdsense.content = 'ca-pub-8309745338282834';
     document.head.appendChild(metaAdsense);
     
-    // Google Site Verification (si nécessaire)
+    // Google Site Verification
     const metaGoogleVerify = document.createElement('meta');
     metaGoogleVerify.name = 'google-site-verification';
     metaGoogleVerify.content = 'google672554d9d4721846';
     document.head.appendChild(metaGoogleVerify);
     
-    // Keywords optimisés
+    // Keywords optimisés - AILA FAMILLE en priorité
     const metaKeywords = document.createElement('meta');
     metaKeywords.name = 'keywords';
-    metaKeywords.content = 'arbre généalogique gratuit, généalogie en ligne, créer arbre familial, application généalogie, logiciel arbre généalogique, histoire familiale, ancêtres, AÏLA, généalogie collaborative, arbre généalogique en ligne gratuit';
+    metaKeywords.content = 'AILA famille, AILA family, aila.family, AÏLA famille, arbre généalogique AILA, application AILA, généalogie AILA, arbre familial AILA, AILA généalogie gratuit, créer arbre AILA, AILA arbre famille';
     document.head.appendChild(metaKeywords);
     
     // Author
