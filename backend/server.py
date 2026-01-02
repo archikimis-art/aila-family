@@ -2934,8 +2934,7 @@ async def health_check():
             "error": str(e)
         }
 
-# Include the router in the main app
-app.include_router(api_router)
+# Note: app.include_router moved to end of file to include all routes
 
 # Root-level health check for Kubernetes (without /api prefix)
 @app.get("/health")
