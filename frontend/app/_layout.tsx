@@ -81,16 +81,16 @@ const initSEO = () => {
     linkHreflang.href = 'https://www.aila.family/';
     document.head.appendChild(linkHreflang);
     
-    // Open Graph optimisé
+    // Open Graph optimisé - AILA FAMILLE
     const ogTags = [
       { property: 'og:type', content: 'website' },
       { property: 'og:url', content: 'https://www.aila.family/' },
-      { property: 'og:title', content: 'AÏLA - Arbre Généalogique Gratuit' },
-      { property: 'og:description', content: 'Créez et partagez votre arbre généalogique gratuitement. Application collaborative pour toute la famille.' },
-      { property: 'og:site_name', content: 'AÏLA' },
+      { property: 'og:title', content: 'AILA Famille - Arbre Généalogique Gratuit' },
+      { property: 'og:description', content: 'AILA Famille : créez et partagez votre arbre généalogique gratuitement. Application famille collaborative.' },
+      { property: 'og:site_name', content: 'AILA Famille' },
       { property: 'og:locale', content: 'fr_FR' },
       { property: 'og:image', content: 'https://www.aila.family/icons/icon.svg' },
-      { property: 'og:image:alt', content: 'AÏLA - Arbre Généalogique' },
+      { property: 'og:image:alt', content: 'AILA Famille - Arbre Généalogique' },
     ];
     ogTags.forEach(tag => {
       const meta = document.createElement('meta');
@@ -99,12 +99,12 @@ const initSEO = () => {
       document.head.appendChild(meta);
     });
     
-    // Twitter Card optimisé
+    // Twitter Card optimisé - AILA FAMILLE
     const twitterTags = [
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:site', content: '@aila_family' },
-      { name: 'twitter:title', content: 'AÏLA - Arbre Généalogique Gratuit' },
-      { name: 'twitter:description', content: 'Créez votre arbre généalogique gratuitement et partagez-le avec votre famille.' },
+      { name: 'twitter:title', content: 'AILA Famille - Arbre Généalogique' },
+      { name: 'twitter:description', content: 'AILA Famille : créez votre arbre généalogique gratuitement et partagez-le avec votre famille.' },
       { name: 'twitter:image', content: 'https://www.aila.family/icons/icon.svg' },
     ];
     twitterTags.forEach(tag => {
@@ -118,17 +118,17 @@ const initSEO = () => {
     document.documentElement.lang = 'fr';
     
     // ========================================
-    // STRUCTURED DATA (JSON-LD) - OPTIMISÉ
+    // STRUCTURED DATA (JSON-LD) - AILA FAMILLE
     // ========================================
     
-    // 1. WebSite Schema avec SearchAction
+    // 1. WebSite Schema avec SearchAction - AILA FAMILLE
     const websiteSchema = {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "AÏLA",
-      "alternateName": ["AÏLA Arbre Généalogique", "Aila Family", "AILA"],
+      "name": "AILA Famille",
+      "alternateName": ["AILA FAMILLE", "AÏLA Famille", "Aila Family", "AILA", "aila.family"],
       "url": "https://www.aila.family",
-      "description": "Application gratuite pour créer et partager votre arbre généalogique familial",
+      "description": "AILA Famille - Application gratuite pour créer et partager votre arbre généalogique familial",
       "inLanguage": "fr-FR",
       "potentialAction": {
         "@type": "SearchAction",
