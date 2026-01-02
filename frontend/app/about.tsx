@@ -18,7 +18,7 @@ export default function AboutScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.replace('/')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>À propos d'AÏLA</Text>
