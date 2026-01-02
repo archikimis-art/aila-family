@@ -3323,3 +3323,280 @@ async def debug_tree_structure(current_user: dict = Depends(get_current_user)):
             result["parent_links"].append(f"{p1_name} --PARENT--> {p2_name}")
     
     return result
+
+
+# ===================== ADMIN ENDPOINTS =====================
+
+# Admin credentials (in production, use environment variables)
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@aila.family')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'AilaAdmin2024!')
+
+class AdminLoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+class AdminUserResponse(BaseModel):
+    id: str
+    email: str
+    first_name: str
+    last_name: str
+    created_at: datetime
+    role: str
+    gdpr_consent: bool
+    persons_count: int = 0
+    last_login: Optional[datetime] = None
+
+class AdminStatsResponse(BaseModel):
+    total_users: int
+    total_persons: int
+    total_links: int
+    users_today: int
+    users_this_week: int
+    users_this_month: int
+    premium_users: int
+
+class AdminResetPasswordRequest(BaseModel):
+    new_password: str
+
+async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Verify admin JWT token"""
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        
+        if payload.get('role') != 'admin':
+            raise HTTPException(status_code=403, detail="Admin access required")
+        
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+@api_router.post("/admin/login")
+async def admin_login(request: AdminLoginRequest):
+    """Admin login endpoint"""
+    # Check against admin credentials
+    if request.email == ADMIN_EMAIL and request.password == ADMIN_PASSWORD:
+        # Generate admin JWT token
+        payload = {
+            "email": ADMIN_EMAIL,
+            "role": "admin",
+            "exp": datetime.utcnow() + timedelta(hours=24)
+        }
+        token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+        
+        return {
+            "access_token": token,
+            "token_type": "bearer",
+            "role": "admin"
+        }
+    
+    # Also check if user is an admin in the database
+    user = await db.users.find_one({"email": request.email})
+    if user and user.get('role') == 'admin':
+        if bcrypt.checkpw(request.password.encode('utf-8'), user['password_hash'].encode('utf-8')):
+            payload = {
+                "user_id": str(user['_id']),
+                "email": user['email'],
+                "role": "admin",
+                "exp": datetime.utcnow() + timedelta(hours=24)
+            }
+            token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+            
+            return {
+                "access_token": token,
+                "token_type": "bearer",
+                "role": "admin"
+            }
+    
+    raise HTTPException(status_code=401, detail="Invalid admin credentials")
+
+@api_router.get("/admin/stats", response_model=AdminStatsResponse)
+async def get_admin_stats(admin: dict = Depends(verify_admin)):
+    """Get admin dashboard statistics"""
+    now = datetime.utcnow()
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    week_start = today_start - timedelta(days=7)
+    month_start = today_start - timedelta(days=30)
+    
+    # Get counts
+    total_users = await db.users.count_documents({})
+    total_persons = await db.persons.count_documents({})
+    total_links = await db.family_links.count_documents({})
+    
+    # Users by time period
+    users_today = await db.users.count_documents({"created_at": {"$gte": today_start}})
+    users_this_week = await db.users.count_documents({"created_at": {"$gte": week_start}})
+    users_this_month = await db.users.count_documents({"created_at": {"$gte": month_start}})
+    
+    # Premium users (those with subscription)
+    premium_users = await db.users.count_documents({"subscription_status": "active"})
+    
+    return AdminStatsResponse(
+        total_users=total_users,
+        total_persons=total_persons,
+        total_links=total_links,
+        users_today=users_today,
+        users_this_week=users_this_week,
+        users_this_month=users_this_month,
+        premium_users=premium_users
+    )
+
+@api_router.get("/admin/users")
+async def get_admin_users(
+    skip: int = 0, 
+    limit: int = 50, 
+    search: Optional[str] = None,
+    admin: dict = Depends(verify_admin)
+):
+    """Get all users with pagination and search"""
+    query = {}
+    
+    if search:
+        query["$or"] = [
+            {"email": {"$regex": search, "$options": "i"}},
+            {"first_name": {"$regex": search, "$options": "i"}},
+            {"last_name": {"$regex": search, "$options": "i"}}
+        ]
+    
+    # Get users
+    users = await db.users.find(query).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    total = await db.users.count_documents(query)
+    
+    # Enrich with persons count
+    result = []
+    for user in users:
+        user_id = str(user['_id'])
+        persons_count = await db.persons.count_documents({"user_id": user_id})
+        
+        result.append({
+            "id": user_id,
+            "email": user.get('email', ''),
+            "first_name": user.get('first_name', ''),
+            "last_name": user.get('last_name', ''),
+            "created_at": user.get('created_at', datetime.utcnow()),
+            "role": user.get('role', 'member'),
+            "gdpr_consent": user.get('gdpr_consent', False),
+            "persons_count": persons_count,
+            "last_login": user.get('last_login')
+        })
+    
+    return {
+        "users": result,
+        "total": total,
+        "skip": skip,
+        "limit": limit
+    }
+
+@api_router.get("/admin/users/{user_id}")
+async def get_admin_user_detail(user_id: str, admin: dict = Depends(verify_admin)):
+    """Get detailed user information"""
+    user = await db.users.find_one({"_id": ObjectId(user_id)})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Get user's persons and links
+    persons = await db.persons.find({"user_id": user_id}).to_list(1000)
+    links = await db.family_links.find({"user_id": user_id}).to_list(1000)
+    
+    return {
+        "id": str(user['_id']),
+        "email": user.get('email', ''),
+        "first_name": user.get('first_name', ''),
+        "last_name": user.get('last_name', ''),
+        "created_at": user.get('created_at'),
+        "role": user.get('role', 'member'),
+        "gdpr_consent": user.get('gdpr_consent', False),
+        "gdpr_consent_date": user.get('gdpr_consent_date'),
+        "subscription_status": user.get('subscription_status', 'free'),
+        "persons_count": len(persons),
+        "links_count": len(links),
+        "last_login": user.get('last_login')
+    }
+
+@api_router.post("/admin/users/{user_id}/reset-password")
+async def admin_reset_user_password(
+    user_id: str, 
+    request: AdminResetPasswordRequest,
+    admin: dict = Depends(verify_admin)
+):
+    """Reset user password (admin action)"""
+    user = await db.users.find_one({"_id": ObjectId(user_id)})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Hash new password
+    password_hash = bcrypt.hashpw(request.new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
+    # Update password
+    await db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"password_hash": password_hash, "updated_at": datetime.utcnow()}}
+    )
+    
+    logger.info(f"Admin reset password for user {user_id} ({user.get('email')})")
+    
+    return {"message": "Password reset successfully", "user_email": user.get('email')}
+
+@api_router.delete("/admin/users/{user_id}")
+async def admin_delete_user(user_id: str, admin: dict = Depends(verify_admin)):
+    """Delete user and all their data (admin action)"""
+    user = await db.users.find_one({"_id": ObjectId(user_id)})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user_email = user.get('email')
+    
+    # Delete all user data
+    await db.persons.delete_many({"user_id": user_id})
+    await db.family_links.delete_many({"user_id": user_id})
+    await db.collaborators.delete_many({"$or": [{"tree_owner_id": user_id}, {"user_id": user_id}]})
+    await db.notifications.delete_many({"user_id": user_id})
+    await db.contributions.delete_many({"user_id": user_id})
+    await db.events.delete_many({"user_id": user_id})
+    
+    # Finally delete user
+    await db.users.delete_one({"_id": ObjectId(user_id)})
+    
+    logger.info(f"Admin deleted user {user_id} ({user_email}) and all associated data")
+    
+    return {"message": "User deleted successfully", "user_email": user_email}
+
+@api_router.post("/admin/users/{user_id}/make-admin")
+async def admin_make_user_admin(user_id: str, admin: dict = Depends(verify_admin)):
+    """Promote user to admin role"""
+    user = await db.users.find_one({"_id": ObjectId(user_id)})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    await db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"role": "admin"}}
+    )
+    
+    logger.info(f"Admin promoted user {user_id} ({user.get('email')}) to admin")
+    
+    return {"message": "User promoted to admin", "user_email": user.get('email')}
+
+@api_router.post("/admin/users/{user_id}/remove-admin")
+async def admin_remove_user_admin(user_id: str, admin: dict = Depends(verify_admin)):
+    """Remove admin role from user"""
+    user = await db.users.find_one({"_id": ObjectId(user_id)})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    await db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"role": "member"}}
+    )
+    
+    logger.info(f"Admin removed admin role from user {user_id} ({user.get('email')})")
+    
+    return {"message": "Admin role removed", "user_email": user.get('email')}
+
