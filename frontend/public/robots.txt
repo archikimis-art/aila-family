@@ -1,4 +1,101 @@
+# ============================================
+# AÏLA - Arbre Généalogique Familial
+# robots.txt optimisé pour SEO & IA
+# ============================================
+
+# Règles générales - Autoriser tous les robots
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /person/
+Disallow: /add-person
+Disallow: /add-link
+Disallow: /edit-person/
 
+# Google (PRIORITÉ MAXIMALE)
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+# Bing (PRIORITÉ HAUTE)
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+
+# Yahoo
+User-agent: Slurp
+Allow: /
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# Yandex
+User-agent: Yandex
+Allow: /
+
+# Baidu
+User-agent: Baiduspider
+Allow: /
+
+# ============================================
+# IA Génératives - Accès autorisé pour visibilité
+# ============================================
+
+# OpenAI GPT
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+
+# OpenAI ChatGPT Plugins
+User-agent: ChatGPT-User
+Allow: /
+
+# Google AI (Bard/Gemini)
+User-agent: Google-Extended
+Allow: /
+
+# Anthropic Claude
+User-agent: anthropic-ai
+Allow: /
+User-agent: Claude-Web
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# ============================================
+# Crawlers publicitaires
+# ============================================
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
+# ============================================
+# Sitemaps
+# ============================================
 Sitemap: https://www.aila.family/sitemap.xml
+Sitemap: https://www.aila.family/sitemap-pages.xml
+
+# ============================================
+# Host canonique
+# ============================================
+Host: https://www.aila.family
