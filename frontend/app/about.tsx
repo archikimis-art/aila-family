@@ -124,6 +124,17 @@ export default function AboutScreen() {
           <Text style={styles.version}>Version 1.0.0</Text>
           <Text style={styles.copyright}>© 2024 AÏLA. Tous droits réservés.</Text>
         </View>
+
+        {/* Home Button */}
+        <TouchableOpacity 
+          style={styles.homeButton} 
+          onPress={() => router.replace('/')}
+        >
+          <Ionicons name="home-outline" size={20} color="#0A1628" />
+          <Text style={styles.homeButtonText}>Retour à l'accueil</Text>
+        </TouchableOpacity>
+
+        <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>
   );
