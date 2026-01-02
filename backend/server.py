@@ -3599,3 +3599,8 @@ async def admin_remove_user_admin(user_id: str, admin: dict = Depends(verify_adm
     
     return {"message": "Admin role removed", "user_email": user.get('email')}
 
+
+
+# ===================== INCLUDE ROUTER AT END =====================
+# This must be at the end to include all routes defined above
+app.include_router(api_router)
