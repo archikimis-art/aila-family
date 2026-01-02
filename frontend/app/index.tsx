@@ -294,6 +294,13 @@ const styles = StyleSheet.create({
     marginTop: 16,
     letterSpacing: 2,
   },
+  subtitle: {
+    fontSize: isLargeScreen ? 18 : 14,
+    fontWeight: '600',
+    color: '#D4AF37',
+    letterSpacing: 6,
+    marginTop: 4,
+  },
   sloganContainer: {
     alignItems: 'center',
     marginTop: 8,
