@@ -2,8 +2,8 @@ import { Platform } from 'react-native';
 
 // AdMob Interstitial IDs
 const INTERSTITIAL_IDS = {
-  android: 'ca-app-pub-8309745338282834/9092823082', // Remplacer par un vrai ID interstitiel si disponible
-  ios: 'ca-app-pub-8309745338282834/8765520025',
+  android: 'ca-app-pub-8309745338282834/2167320060', // Interstitiel Android
+  ios: 'ca-app-pub-8309745338282834/8765520025', // Interstitiel iOS
 };
 
 // Configuration
