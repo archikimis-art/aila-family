@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { Stack, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '@/context/AuthContext';
 import { AdsProvider } from '@/context/AdsContext';
 import { ConversionProvider } from '@/context/ConversionContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
+import { initializeAds, onPageChange } from '@/services/AdMobInterstitial';
 
 // SEO Meta Tags and Structured Data - Optimisé pour Google & IA
 const initSEO = () => {
