@@ -374,12 +374,26 @@ const initGoogleAdSense = () => {
 };
 
 export default function RootLayout() {
+  const pathname = usePathname();
+
   useEffect(() => {
     initSEO();
     initPWA();
     initGoogleAnalytics();
     initGoogleAdSense();
+    
+    // Initialize AdMob for native apps
+    if (Platform.OS !== 'web') {
+      initializeAds();
+    }
   }, []);
+
+  // Track page changes for interstitial ads
+  useEffect(() => {
+    if (Platform.OS !== 'web' && pathname) {
+      onPageChange(pathname);
+    }
+  }, [pathname]);
 
   return (
     <SafeAreaProvider>
