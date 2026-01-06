@@ -6,7 +6,17 @@ import { AdsProvider } from '@/context/AdsContext';
 import { ConversionProvider } from '@/context/ConversionContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
-import { initializeAds, onPageChange } from '@/services/AdMobInterstitial';
+
+// Lazy import AdMob only on native platforms
+let initializeAds: () => Promise<void> = async () => {};
+let onPageChange: (pageName?: string) => Promise<void> = async () => {};
+
+if (Platform.OS !== 'web') {
+  // Dynamic import for native only
+  const AdMobModule = require('@/services/AdMobInterstitial');
+  initializeAds = AdMobModule.initializeAds;
+  onPageChange = AdMobModule.onPageChange;
+}
 
 // SEO Meta Tags and Structured Data - Optimisé pour Google & IA
 const initSEO = () => {
