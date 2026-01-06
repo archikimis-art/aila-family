@@ -297,16 +297,36 @@ export default function ProfileScreen() {
     }
   };
 
-  // Send tree by email
+  // Send tree by email with format choice
   const handleSendByEmail = async () => {
     if (Platform.OS === 'web') {
+      // Step 1: Choose format
+      const formatChoice = window.prompt(
+        'Choisissez le format d\'export :\n\n1 - JSON (données brutes)\n2 - PDF (document imprimable)\n3 - Excel/CSV (tableur)\n\nEntrez 1, 2 ou 3 :',
+        '2'
+      );
+      
+      if (!formatChoice) return;
+      
+      let format = 'pdf';
+      let formatName = 'PDF';
+      if (formatChoice === '1') { format = 'json'; formatName = 'JSON'; }
+      else if (formatChoice === '2') { format = 'pdf'; formatName = 'PDF'; }
+      else if (formatChoice === '3') { format = 'csv'; formatName = 'Excel/CSV'; }
+      else {
+        window.alert('Choix invalide. Veuillez entrer 1, 2 ou 3.');
+        return;
+      }
+      
+      // Step 2: Get email addresses
       const emails = window.prompt(
-        'Entrez les adresses email des destinataires (séparées par des virgules) :',
+        `Envoyer l'arbre au format ${formatName}.\n\nEntrez les adresses email des destinataires (séparées par des virgules) :`,
         ''
       );
       
       if (!emails) return;
       
+      // Step 3: Optional message
       const message = window.prompt(
         'Ajoutez un message personnalisé (optionnel) :',
         ''
@@ -320,20 +340,79 @@ export default function ProfileScreen() {
           return;
         }
         
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const invalidEmails = emailList.filter(e => !emailRegex.test(e));
+        if (invalidEmails.length > 0) {
+          window.alert(`Adresses email invalides : ${invalidEmails.join(', ')}`);
+          return;
+        }
+        
+        window.alert('Envoi en cours...');
+        
         const response = await api.post('/tree/send-email', {
           recipient_emails: emailList,
-          format: 'json',
+          format: format,
           message: message || null
         });
         
-        window.alert(response.data.message);
+        window.alert(response.data.message || `Arbre envoyé avec succès au format ${formatName} !`);
       } catch (error: any) {
         console.error('Send email error:', error);
-        window.alert(error.response?.data?.detail || 'Erreur lors de l\'envoi');
+        window.alert(error.response?.data?.detail || 'Erreur lors de l\'envoi. Vérifiez votre connexion.');
       }
     } else {
-      Alert.alert('Information', 'Cette fonctionnalité est disponible sur la version web.');
+      Alert.alert(
+        'Envoyer par email',
+        'Choisissez le format :',
+        [
+          { text: 'Annuler', style: 'cancel' },
+          { 
+            text: 'JSON', 
+            onPress: () => sendTreeByEmailMobile('json') 
+          },
+          { 
+            text: 'PDF', 
+            onPress: () => sendTreeByEmailMobile('pdf') 
+          },
+          { 
+            text: 'Excel/CSV', 
+            onPress: () => sendTreeByEmailMobile('csv') 
+          },
+        ]
+      );
     }
+  };
+
+  // Mobile helper for sending email
+  const sendTreeByEmailMobile = async (format: string) => {
+    Alert.prompt(
+      'Adresses email',
+      'Entrez les adresses email (séparées par des virgules) :',
+      async (emails) => {
+        if (!emails) return;
+        
+        try {
+          const emailList = emails.split(',').map((e: string) => e.trim()).filter((e: string) => e);
+          
+          if (emailList.length === 0) {
+            Alert.alert('Erreur', 'Veuillez entrer au moins une adresse email.');
+            return;
+          }
+          
+          const response = await api.post('/tree/send-email', {
+            recipient_emails: emailList,
+            format: format,
+            message: null
+          });
+          
+          Alert.alert('Succès', response.data.message || 'Arbre envoyé !');
+        } catch (error: any) {
+          Alert.alert('Erreur', error.response?.data?.detail || 'Erreur lors de l\'envoi.');
+        }
+      },
+      'plain-text'
+    );
   };
 
   // Export PDF - Print
