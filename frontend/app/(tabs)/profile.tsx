@@ -762,11 +762,12 @@ export default function ProfileScreen() {
             }
             .tree-container {
               overflow: auto;
-              background: #0A1628;
+              background: #FAFAFA;
               border-radius: 8px;
               padding: 20px;
               max-height: 60vh;
               cursor: grab;
+              border: 1px solid #e0e0e0;
             }
             .tree-container:active {
               cursor: grabbing;
