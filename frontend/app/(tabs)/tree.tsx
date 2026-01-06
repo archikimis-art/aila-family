@@ -2310,6 +2310,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#D4AF37',
   },
+  printButton: {
+    backgroundColor: 'rgba(76, 175, 80, 0.3)',
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+  },
   zoomHint: {
     position: 'absolute',
     bottom: 8,
