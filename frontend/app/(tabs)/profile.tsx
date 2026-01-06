@@ -430,13 +430,13 @@ export default function ProfileScreen() {
     try {
       console.log('[Export PDF] Fetching data...');
       
-      // Fetch data
+      // Fetch data - Note: backend uses /links not /family-links
       const [personsRes, linksRes] = await Promise.all([
         api.get('/persons'),
-        api.get('/family-links')
+        api.get('/links')
       ]);
       
-      console.log('[Export PDF] Data received:', personsRes.data?.length, 'persons');
+      console.log('[Export PDF] Data received:', personsRes.data?.length, 'persons', linksRes.data?.length, 'links');
       
       const persons = personsRes.data || [];
       const links = linksRes.data || [];
@@ -528,13 +528,13 @@ export default function ProfileScreen() {
     try {
       console.log('[Export Excel] Fetching data...');
       
-      // Fetch data
+      // Fetch data - Note: backend uses /links not /family-links
       const [personsRes, linksRes] = await Promise.all([
         api.get('/persons'),
-        api.get('/family-links')
+        api.get('/links')
       ]);
       
-      console.log('[Export Excel] Data received:', personsRes.data?.length, 'persons');
+      console.log('[Export Excel] Data received:', personsRes.data?.length, 'persons', linksRes.data?.length, 'links');
       
       const persons = personsRes.data || [];
       const links = linksRes.data || [];
