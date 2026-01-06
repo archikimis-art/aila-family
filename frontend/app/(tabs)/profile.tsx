@@ -624,27 +624,22 @@ export default function ProfileScreen() {
       return;
     }
     
-    setExportingPDF(true);
-    try {
-      console.log('[Export PDF Visual] Fetching data...');
-      
-      const [personsRes, linksRes] = await Promise.all([
-        api.get('/persons'),
-        api.get('/links')
-      ]);
-      
-      const persons = personsRes.data || [];
-      const links = linksRes.data || [];
-      
-      if (persons.length === 0) {
-        window.alert('Aucune personne dans votre arbre à exporter.\n\nAjoutez d\'abord des membres à votre arbre généalogique.');
-        setExportingPDF(false);
-        return;
-      }
-      
-      // Build tree structure
-      const tree = buildTreeStructure(persons, links);
-      const today = new Date().toLocaleDateString('fr-FR');
+    // Redirect to tree page with print mode
+    // This will show the exact same tree as displayed
+    const printUrl = `${window.location.origin}/(tabs)/tree?print=true`;
+    
+    // Show info message
+    window.alert(
+      '📄 Pour imprimer votre arbre :\n\n' +
+      '1. Vous allez être redirigé vers la page Arbre\n' +
+      '2. Ajustez le zoom selon vos besoins\n' +
+      '3. Utilisez Ctrl+P (ou Cmd+P sur Mac) pour imprimer\n\n' +
+      'Conseil : Choisissez "Paysage" dans les options d\'impression pour un meilleur rendu.'
+    );
+    
+    // Navigate to tree tab
+    router.push('/(tabs)/tree');
+  };
       
       // Generate SVG nodes - Darker colors for better print visibility
       const svgNodes = tree.nodes.map((node: any) => {
