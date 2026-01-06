@@ -611,23 +611,8 @@ export default function ProfileScreen() {
     
     return { nodes, connections, width: maxX, height: maxY };
   };
-        const parentCenterX = spouse ? nodeX + NODE_WIDTH + 10 : nodeX + NODE_WIDTH / 2;
-        const childNode = nodes.find((n: any) => n.person.id === child.id);
-        if (childNode) {
-          connections.push({
-            type: 'parent-child',
-            from: { x: parentCenterX, y: nodeY + NODE_HEIGHT },
-            to: { x: childNode.x + NODE_WIDTH / 2, y: childNode.y }
-          });
-        }
-        
-        currentChildX = childWidth + NODE_SPACING;
-      });
-      
-      return Math.max(xOffset + NODE_WIDTH + (spouse ? NODE_WIDTH + 20 : 0), currentChildX);
-    };
-    
-    // Process all root persons
+
+  // Export PDF - Visual Tree
     let currentX = 50;
     rootPersons.forEach((root: any) => {
       currentX = processNode(root, 0, currentX) + NODE_SPACING * 2;
