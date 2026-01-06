@@ -21,6 +21,7 @@ let lastAdTime = 0;
 let pageChangeCount = 0;
 let isAdLoading = false;
 let interstitialAd: any = null;
+let mobileAdsModule: any = null;
 
 // Fonction pour vérifier si on peut afficher une pub
 const canShowAd = (): boolean => {
