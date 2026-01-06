@@ -460,12 +460,14 @@ export default function ProfileScreen() {
       `).join('');
       
       const linkRows = links.map((link: any) => {
-        const p1 = persons.find((p: any) => p.id === link.person1_id);
-        const p2 = persons.find((p: any) => p.id === link.person2_id);
+        const p1 = persons.find((p: any) => p.id === link.person_id_1);
+        const p2 = persons.find((p: any) => p.id === link.person_id_2);
+        const linkType = link.link_type || link.relationship_type || 'autre';
+        const linkLabel = linkType === 'parent' ? 'Parent de' : linkType === 'spouse' ? 'Conjoint(e)' : linkType === 'sibling' ? 'Frère/Sœur' : linkType;
         return `
           <tr>
             <td>${p1 ? `${p1.first_name} ${p1.last_name}` : 'Inconnu'}</td>
-            <td>${link.relationship_type === 'parent' ? 'Parent de' : link.relationship_type === 'spouse' ? 'Conjoint(e)' : 'Frère/Sœur'}</td>
+            <td>${linkLabel}</td>
             <td>${p2 ? `${p2.first_name} ${p2.last_name}` : 'Inconnu'}</td>
           </tr>
         `;
