@@ -1685,6 +1685,11 @@ export default function TreeScreen() {
               <TouchableOpacity style={[styles.zoomButton, styles.fitButton]} onPress={fitToScreen}>
                 <Ionicons name="scan-outline" size={16} color="#D4AF37" />
               </TouchableOpacity>
+              {Platform.OS === 'web' && (
+                <TouchableOpacity style={[styles.zoomButton, styles.printButton]} onPress={() => window.print()}>
+                  <Ionicons name="print-outline" size={16} color="#4CAF50" />
+                </TouchableOpacity>
+              )}
             </View>
 
             {/* Zoom hint */}
