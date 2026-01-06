@@ -336,6 +336,50 @@ export default function ProfileScreen() {
     }
   };
 
+  // Export PDF - Print
+  const handlePrintPDF = async () => {
+    if (Platform.OS !== 'web') {
+      Alert.alert('Information', 'L\'impression PDF est disponible sur la version web.');
+      return;
+    }
+    
+    setExportingPDF(true);
+    try {
+      const success = await printPDF();
+      if (!success) {
+        window.alert('Erreur lors de la génération du PDF. Veuillez réessayer.');
+      }
+    } catch (error) {
+      console.error('Print PDF error:', error);
+      window.alert('Erreur lors de l\'impression.');
+    } finally {
+      setExportingPDF(false);
+    }
+  };
+
+  // Export Excel/CSV
+  const handleExportExcel = async () => {
+    if (Platform.OS !== 'web') {
+      Alert.alert('Information', 'L\'export Excel est disponible sur la version web.');
+      return;
+    }
+    
+    setExportingExcel(true);
+    try {
+      const success = await exportToExcel();
+      if (success) {
+        window.alert('Fichier Excel téléchargé avec succès !');
+      } else {
+        window.alert('Erreur lors de l\'export Excel. Veuillez réessayer.');
+      }
+    } catch (error) {
+      console.error('Export Excel error:', error);
+      window.alert('Erreur lors de l\'export.');
+    } finally {
+      setExportingExcel(false);
+    }
+  };
+
   const handleGoToWelcome = () => {
     router.replace('/');
   };
