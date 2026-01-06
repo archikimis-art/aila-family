@@ -424,13 +424,80 @@ export default function ProfileScreen() {
     
     setExportingPDF(true);
     try {
-      const success = await printPDF();
-      if (!success) {
-        window.alert('Erreur lors de la génération du PDF. Veuillez réessayer.');
+      // Fetch data
+      const [personsRes, linksRes] = await Promise.all([
+        api.get('/persons'),
+        api.get('/family-links')
+      ]);
+      
+      const persons = personsRes.data || [];
+      const links = linksRes.data || [];
+      
+      if (persons.length === 0) {
+        window.alert('Aucune personne dans votre arbre à exporter.');
+        setExportingPDF(false);
+        return;
+      }
+      
+      // Generate HTML
+      const today = new Date().toLocaleDateString('fr-FR');
+      const personRows = persons.map((p: any) => `
+        <tr>
+          <td>${p.first_name || ''} ${p.last_name || ''}</td>
+          <td>${p.gender === 'male' ? 'Homme' : p.gender === 'female' ? 'Femme' : 'Autre'}</td>
+          <td>${p.birth_date || '-'}</td>
+          <td>${p.death_date || '-'}</td>
+          <td>${p.birth_place || '-'}</td>
+        </tr>
+      `).join('');
+      
+      const linkRows = links.map((link: any) => {
+        const p1 = persons.find((p: any) => p.id === link.person1_id);
+        const p2 = persons.find((p: any) => p.id === link.person2_id);
+        return `
+          <tr>
+            <td>${p1 ? `${p1.first_name} ${p1.last_name}` : 'Inconnu'}</td>
+            <td>${link.relationship_type === 'parent' ? 'Parent de' : link.relationship_type === 'spouse' ? 'Conjoint(e)' : 'Frère/Sœur'}</td>
+            <td>${p2 ? `${p2.first_name} ${p2.last_name}` : 'Inconnu'}</td>
+          </tr>
+        `;
+      }).join('');
+      
+      const html = `
+        <!DOCTYPE html>
+        <html><head><meta charset="UTF-8"><title>Arbre AÏLA</title>
+        <style>
+          body { font-family: Arial; padding: 20px; }
+          h1 { color: #D4AF37; text-align: center; }
+          table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+          th { background: #0A1628; color: white; padding: 10px; text-align: left; }
+          td { padding: 8px; border-bottom: 1px solid #ddd; }
+          .stats { background: #f5f5f5; padding: 15px; margin: 20px 0; border-radius: 8px; }
+        </style></head>
+        <body>
+          <h1>🌳 Arbre Généalogique AÏLA</h1>
+          <p style="text-align:center;color:#666;">Exporté le ${today}</p>
+          <div class="stats"><b>${persons.length}</b> personnes • <b>${links.length}</b> liens</div>
+          <h2>Membres de la famille</h2>
+          <table><tr><th>Nom</th><th>Genre</th><th>Naissance</th><th>Décès</th><th>Lieu</th></tr>${personRows}</table>
+          <h2>Liens familiaux</h2>
+          <table><tr><th>Personne 1</th><th>Relation</th><th>Personne 2</th></tr>${linkRows}</table>
+          <p style="text-align:center;color:#888;margin-top:40px;">www.aila.family</p>
+        </body></html>
+      `;
+      
+      // Open print window
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(html);
+        printWindow.document.close();
+        setTimeout(() => printWindow.print(), 500);
+      } else {
+        window.alert('Veuillez autoriser les popups pour imprimer.');
       }
     } catch (error) {
       console.error('Print PDF error:', error);
-      window.alert('Erreur lors de l\'impression.');
+      window.alert('Erreur lors de la génération. Vérifiez votre connexion.');
     } finally {
       setExportingPDF(false);
     }
@@ -445,15 +512,55 @@ export default function ProfileScreen() {
     
     setExportingExcel(true);
     try {
-      const success = await exportToExcel();
-      if (success) {
-        window.alert('Fichier Excel téléchargé avec succès !');
-      } else {
-        window.alert('Erreur lors de l\'export Excel. Veuillez réessayer.');
+      // Fetch data
+      const [personsRes, linksRes] = await Promise.all([
+        api.get('/persons'),
+        api.get('/family-links')
+      ]);
+      
+      const persons = personsRes.data || [];
+      const links = linksRes.data || [];
+      
+      if (persons.length === 0) {
+        window.alert('Aucune personne dans votre arbre à exporter.');
+        setExportingExcel(false);
+        return;
       }
+      
+      // Generate CSV with BOM for Excel
+      let csv = '\uFEFF'; // UTF-8 BOM
+      csv += 'Prénom,Nom,Genre,Date de naissance,Date de décès,Lieu de naissance,Profession,Notes\n';
+      
+      persons.forEach((p: any) => {
+        csv += `"${p.first_name || ''}","${p.last_name || ''}","${p.gender === 'male' ? 'Homme' : p.gender === 'female' ? 'Femme' : 'Autre'}","${p.birth_date || ''}","${p.death_date || ''}","${p.birth_place || ''}","${p.occupation || ''}","${(p.notes || '').replace(/"/g, '""')}"\n`;
+      });
+      
+      csv += '\n\nLiens familiaux\nPersonne 1,Relation,Personne 2\n';
+      
+      links.forEach((link: any) => {
+        const p1 = persons.find((p: any) => p.id === link.person1_id);
+        const p2 = persons.find((p: any) => p.id === link.person2_id);
+        const p1Name = p1 ? `${p1.first_name} ${p1.last_name}` : 'Inconnu';
+        const p2Name = p2 ? `${p2.first_name} ${p2.last_name}` : 'Inconnu';
+        const rel = link.relationship_type === 'parent' ? 'Parent de' : link.relationship_type === 'spouse' ? 'Conjoint(e)' : 'Frère/Sœur';
+        csv += `"${p1Name}","${rel}","${p2Name}"\n`;
+      });
+      
+      // Download
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `arbre_aila_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      
+      window.alert('Fichier Excel/CSV téléchargé !');
     } catch (error) {
       console.error('Export Excel error:', error);
-      window.alert('Erreur lors de l\'export.');
+      window.alert('Erreur lors de l\'export. Vérifiez votre connexion.');
     } finally {
       setExportingExcel(false);
     }
