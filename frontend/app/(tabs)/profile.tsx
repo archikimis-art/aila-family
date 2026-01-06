@@ -414,7 +414,164 @@ export default function ProfileScreen() {
     );
   };
 
-  // Export PDF - Print
+  // Helper function to build tree structure for visual export
+  const buildTreeStructure = (persons: any[], links: any[]) => {
+    const NODE_WIDTH = 140;
+    const NODE_HEIGHT = 70;
+    const LEVEL_HEIGHT = 120;
+    const NODE_SPACING = 40;
+    
+    // Find root persons (those who have no parents in the links)
+    const childIds = new Set(links.filter((l: any) => l.link_type === 'parent').map((l: any) => l.person_id_2));
+    const parentIds = new Set(links.filter((l: any) => l.link_type === 'parent').map((l: any) => l.person_id_1));
+    
+    // Root persons are those who are parents but not children
+    let rootPersons = persons.filter((p: any) => parentIds.has(p.id) && !childIds.has(p.id));
+    
+    // If no clear roots, use all persons without parents
+    if (rootPersons.length === 0) {
+      rootPersons = persons.filter((p: any) => !childIds.has(p.id));
+    }
+    
+    // If still empty, just use first person
+    if (rootPersons.length === 0 && persons.length > 0) {
+      rootPersons = [persons[0]];
+    }
+    
+    // Build nodes with positions
+    const nodes: any[] = [];
+    const connections: any[] = [];
+    const processedIds = new Set<string>();
+    
+    const getChildren = (personId: string) => {
+      return links
+        .filter((l: any) => l.link_type === 'parent' && l.person_id_1 === personId)
+        .map((l: any) => persons.find((p: any) => p.id === l.person_id_2))
+        .filter(Boolean);
+    };
+    
+    const getSpouse = (personId: string) => {
+      const spouseLink = links.find((l: any) => 
+        l.link_type === 'spouse' && (l.person_id_1 === personId || l.person_id_2 === personId)
+      );
+      if (spouseLink) {
+        const spouseId = spouseLink.person_id_1 === personId ? spouseLink.person_id_2 : spouseLink.person_id_1;
+        return persons.find((p: any) => p.id === spouseId);
+      }
+      return null;
+    };
+    
+    const processNode = (person: any, level: number, xOffset: number): number => {
+      if (processedIds.has(person.id)) return xOffset;
+      processedIds.add(person.id);
+      
+      const children = getChildren(person.id);
+      const spouse = getSpouse(person.id);
+      
+      let nodeX = xOffset;
+      const nodeY = level * LEVEL_HEIGHT + 50;
+      
+      // Calculate width needed for children
+      let childrenWidth = 0;
+      const childPositions: any[] = [];
+      
+      children.forEach((child: any) => {
+        if (!processedIds.has(child.id)) {
+          const childX = childrenWidth;
+          childPositions.push({ child, x: childX });
+          childrenWidth += NODE_WIDTH + NODE_SPACING;
+        }
+      });
+      
+      if (childrenWidth > 0) {
+        childrenWidth -= NODE_SPACING;
+      }
+      
+      // Center parent above children
+      if (childPositions.length > 0) {
+        nodeX = xOffset + childrenWidth / 2 - NODE_WIDTH / 2;
+        if (spouse) nodeX -= (NODE_WIDTH + 20) / 2;
+      }
+      
+      // Add main node
+      nodes.push({
+        person,
+        x: nodeX,
+        y: nodeY,
+        width: NODE_WIDTH,
+        height: NODE_HEIGHT
+      });
+      
+      // Add spouse if exists
+      if (spouse && !processedIds.has(spouse.id)) {
+        processedIds.add(spouse.id);
+        const spouseX = nodeX + NODE_WIDTH + 20;
+        nodes.push({
+          person: spouse,
+          x: spouseX,
+          y: nodeY,
+          width: NODE_WIDTH,
+          height: NODE_HEIGHT
+        });
+        
+        // Spouse connection (horizontal dashed line)
+        connections.push({
+          type: 'spouse',
+          from: { x: nodeX + NODE_WIDTH, y: nodeY + NODE_HEIGHT / 2 },
+          to: { x: spouseX, y: nodeY + NODE_HEIGHT / 2 }
+        });
+      }
+      
+      // Process children
+      let currentChildX = xOffset;
+      childPositions.forEach(({ child }) => {
+        const childWidth = processNode(child, level + 1, currentChildX);
+        
+        // Parent to child connection
+        const parentCenterX = spouse ? nodeX + NODE_WIDTH + 10 : nodeX + NODE_WIDTH / 2;
+        const childNode = nodes.find((n: any) => n.person.id === child.id);
+        if (childNode) {
+          connections.push({
+            type: 'parent-child',
+            from: { x: parentCenterX, y: nodeY + NODE_HEIGHT },
+            to: { x: childNode.x + NODE_WIDTH / 2, y: childNode.y }
+          });
+        }
+        
+        currentChildX = childWidth + NODE_SPACING;
+      });
+      
+      return Math.max(xOffset + NODE_WIDTH + (spouse ? NODE_WIDTH + 20 : 0), currentChildX);
+    };
+    
+    // Process all root persons
+    let currentX = 50;
+    rootPersons.forEach((root: any) => {
+      currentX = processNode(root, 0, currentX) + NODE_SPACING * 2;
+    });
+    
+    // Add any unprocessed persons
+    persons.forEach((p: any) => {
+      if (!processedIds.has(p.id)) {
+        nodes.push({
+          person: p,
+          x: currentX,
+          y: 50,
+          width: NODE_WIDTH,
+          height: NODE_HEIGHT
+        });
+        currentX += NODE_WIDTH + NODE_SPACING;
+      }
+    });
+    
+    // Calculate SVG dimensions
+    const maxX = Math.max(...nodes.map((n: any) => n.x + n.width)) + 50;
+    const maxY = Math.max(...nodes.map((n: any) => n.y + n.height)) + 50;
+    
+    return { nodes, connections, width: Math.max(maxX, 800), height: Math.max(maxY, 400) };
+  };
+
+  // Export PDF - Visual Tree
   const handlePrintPDF = async () => {
     if (Platform.OS !== 'web') {
       Alert.alert('Information', 'L\'impression PDF est disponible sur la version web.');
@@ -428,15 +585,12 @@ export default function ProfileScreen() {
     
     setExportingPDF(true);
     try {
-      console.log('[Export PDF] Fetching data...');
+      console.log('[Export PDF Visual] Fetching data...');
       
-      // Fetch data - Note: backend uses /links not /family-links
       const [personsRes, linksRes] = await Promise.all([
         api.get('/persons'),
         api.get('/links')
       ]);
-      
-      console.log('[Export PDF] Data received:', personsRes.data?.length, 'persons', linksRes.data?.length, 'links');
       
       const persons = personsRes.data || [];
       const links = linksRes.data || [];
@@ -447,56 +601,151 @@ export default function ProfileScreen() {
         return;
       }
       
-      // Generate HTML
+      // Build tree structure
+      const tree = buildTreeStructure(persons, links);
       const today = new Date().toLocaleDateString('fr-FR');
-      const personRows = persons.map((p: any) => `
-        <tr>
-          <td>${p.first_name || ''} ${p.last_name || ''}</td>
-          <td>${p.gender === 'male' ? 'Homme' : p.gender === 'female' ? 'Femme' : 'Autre'}</td>
-          <td>${p.birth_date || '-'}</td>
-          <td>${p.death_date || '-'}</td>
-          <td>${p.birth_place || '-'}</td>
-        </tr>
-      `).join('');
       
-      const linkRows = links.map((link: any) => {
-        const p1 = persons.find((p: any) => p.id === link.person_id_1);
-        const p2 = persons.find((p: any) => p.id === link.person_id_2);
-        const linkType = link.link_type || link.relationship_type || 'autre';
-        const linkLabel = linkType === 'parent' ? 'Parent de' : linkType === 'spouse' ? 'Conjoint(e)' : linkType === 'sibling' ? 'Frère/Sœur' : linkType;
+      // Generate SVG nodes
+      const svgNodes = tree.nodes.map((node: any) => {
+        const p = node.person;
+        const fillColor = p.gender === 'male' ? '#1a3a5c' : p.gender === 'female' ? '#5c1a3a' : '#3a3a3a';
+        const borderColor = p.gender === 'male' ? '#4A90D9' : p.gender === 'female' ? '#D94A8C' : '#6B7C93';
+        const birthYear = p.birth_date ? p.birth_date.substring(0, 4) : '';
+        const deathYear = p.death_date ? p.death_date.substring(0, 4) : '';
+        const years = birthYear ? (deathYear ? `${birthYear} - ${deathYear}` : `né(e) ${birthYear}`) : '';
+        
         return `
-          <tr>
-            <td>${p1 ? `${p1.first_name} ${p1.last_name}` : 'Inconnu'}</td>
-            <td>${linkLabel}</td>
-            <td>${p2 ? `${p2.first_name} ${p2.last_name}` : 'Inconnu'}</td>
-          </tr>
+          <g>
+            <rect x="${node.x}" y="${node.y}" width="${node.width}" height="${node.height}" 
+                  rx="12" fill="${fillColor}" stroke="${borderColor}" stroke-width="3"/>
+            <text x="${node.x + node.width/2}" y="${node.y + 28}" text-anchor="middle" 
+                  fill="white" font-size="14" font-weight="bold" font-family="Arial">${p.first_name || ''}</text>
+            <text x="${node.x + node.width/2}" y="${node.y + 46}" text-anchor="middle" 
+                  fill="#B8C5D6" font-size="12" font-family="Arial">${p.last_name || ''}</text>
+            ${years ? `<text x="${node.x + node.width/2}" y="${node.y + 62}" text-anchor="middle" 
+                  fill="#888" font-size="10" font-family="Arial">${years}</text>` : ''}
+          </g>
         `;
       }).join('');
       
-      const html = `
-        <!DOCTYPE html>
-        <html><head><meta charset="UTF-8"><title>Arbre AÏLA</title>
-        <style>
-          body { font-family: Arial; padding: 20px; }
-          h1 { color: #D4AF37; text-align: center; }
-          table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-          th { background: #0A1628; color: white; padding: 10px; text-align: left; }
-          td { padding: 8px; border-bottom: 1px solid #ddd; }
-          .stats { background: #f5f5f5; padding: 15px; margin: 20px 0; border-radius: 8px; }
-        </style></head>
-        <body>
-          <h1>🌳 Arbre Généalogique AÏLA</h1>
-          <p style="text-align:center;color:#666;">Exporté le ${today}</p>
-          <div class="stats"><b>${persons.length}</b> personnes • <b>${links.length}</b> liens</div>
-          <h2>Membres de la famille</h2>
-          <table><tr><th>Nom</th><th>Genre</th><th>Naissance</th><th>Décès</th><th>Lieu</th></tr>${personRows}</table>
-          <h2>Liens familiaux</h2>
-          <table><tr><th>Personne 1</th><th>Relation</th><th>Personne 2</th></tr>${linkRows}</table>
-          <p style="text-align:center;color:#888;margin-top:40px;">www.aila.family</p>
-        </body></html>
+      // Generate SVG connections
+      const svgConnections = tree.connections.map((conn: any) => {
+        if (conn.type === 'spouse') {
+          return `<line x1="${conn.from.x}" y1="${conn.from.y}" x2="${conn.to.x}" y2="${conn.to.y}" 
+                        stroke="#D4AF37" stroke-width="3" stroke-dasharray="8,4"/>`;
+        } else {
+          const midY = (conn.from.y + conn.to.y) / 2;
+          return `
+            <line x1="${conn.from.x}" y1="${conn.from.y}" x2="${conn.from.x}" y2="${midY}" 
+                  stroke="#4A6A8A" stroke-width="2"/>
+            <line x1="${conn.from.x}" y1="${midY}" x2="${conn.to.x}" y2="${midY}" 
+                  stroke="#4A6A8A" stroke-width="2"/>
+            <line x1="${conn.to.x}" y1="${midY}" x2="${conn.to.x}" y2="${conn.to.y}" 
+                  stroke="#4A6A8A" stroke-width="2"/>
+          `;
+        }
+      }).join('');
+      
+      // Generate legend
+      const legend = `
+        <g transform="translate(20, ${tree.height + 20})">
+          <rect x="0" y="0" width="200" height="80" rx="8" fill="#f8f9fa" stroke="#ddd"/>
+          <text x="10" y="20" font-size="12" font-weight="bold" fill="#333">Légende :</text>
+          <rect x="10" y="30" width="20" height="15" rx="4" fill="#1a3a5c" stroke="#4A90D9" stroke-width="2"/>
+          <text x="40" y="42" font-size="11" fill="#333">Homme</text>
+          <rect x="100" y="30" width="20" height="15" rx="4" fill="#5c1a3a" stroke="#D94A8C" stroke-width="2"/>
+          <text x="130" y="42" font-size="11" fill="#333">Femme</text>
+          <line x1="10" y1="60" x2="50" y2="60" stroke="#D4AF37" stroke-width="2" stroke-dasharray="5,3"/>
+          <text x="60" y="64" font-size="11" fill="#333">Couple</text>
+        </g>
       `;
       
-      // Open print window
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Arbre Généalogique - AÏLA</title>
+          <style>
+            @page { size: landscape; margin: 10mm; }
+            body { 
+              font-family: Arial, sans-serif; 
+              margin: 0; 
+              padding: 20px;
+              background: white;
+            }
+            .header {
+              text-align: center;
+              margin-bottom: 20px;
+              padding-bottom: 15px;
+              border-bottom: 3px solid #D4AF37;
+            }
+            .header h1 {
+              color: #0A1628;
+              margin: 0;
+              font-size: 28px;
+            }
+            .header .subtitle {
+              color: #D4AF37;
+              font-size: 16px;
+              margin-top: 5px;
+            }
+            .header .date {
+              color: #666;
+              font-size: 12px;
+              margin-top: 5px;
+            }
+            .tree-container {
+              overflow: auto;
+              background: #0A1628;
+              border-radius: 12px;
+              padding: 20px;
+            }
+            .stats {
+              text-align: center;
+              margin-top: 20px;
+              padding: 10px;
+              background: #f5f5f5;
+              border-radius: 8px;
+            }
+            .footer {
+              text-align: center;
+              margin-top: 20px;
+              color: #888;
+              font-size: 11px;
+            }
+            @media print {
+              .tree-container { break-inside: avoid; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>🌳 Arbre Généalogique</h1>
+            <div class="subtitle">Famille ${user?.last_name || ''}</div>
+            <div class="date">Exporté le ${today}</div>
+          </div>
+          
+          <div class="tree-container">
+            <svg width="${tree.width}" height="${tree.height + 110}" viewBox="0 0 ${tree.width} ${tree.height + 110}">
+              <rect width="100%" height="100%" fill="#0A1628"/>
+              ${svgConnections}
+              ${svgNodes}
+              ${legend}
+            </svg>
+          </div>
+          
+          <div class="stats">
+            <strong>${persons.length}</strong> personnes • <strong>${links.length}</strong> liens familiaux
+          </div>
+          
+          <div class="footer">
+            Généré par AÏLA - www.aila.family
+          </div>
+        </body>
+        </html>
+      `;
+      
       const printWindow = window.open('', '_blank');
       if (printWindow) {
         printWindow.document.write(html);
@@ -506,8 +755,7 @@ export default function ProfileScreen() {
         window.alert('Veuillez autoriser les popups pour imprimer.\n\nCliquez sur l\'icône popup bloqué dans la barre d\'adresse.');
       }
     } catch (error: any) {
-      console.error('[Export PDF] Error:', error);
-      console.error('[Export PDF] Response:', error.response?.data);
+      console.error('[Export PDF Visual] Error:', error);
       window.alert('Erreur lors de la génération.\n\n' + (error.response?.data?.detail || error.message || 'Vérifiez votre connexion.'));
     } finally {
       setExportingPDF(false);
