@@ -1644,12 +1644,13 @@ async def send_tree_by_email(request: SendTreeEmailRequest, current_user: dict =
             </div>
             """
             
-            resend.emails.send({
+            params = {
                 "from": "AÏLA <noreply@aila.family>",
-                "to": email,
+                "to": [email],
                 "subject": f"🌳 {user_name} partage son arbre généalogique avec vous",
                 "html": html_content,
-            })
+            }
+            resend.Emails.send(params)
             emails_sent += 1
             
         except Exception as e:
