@@ -613,33 +613,6 @@ export default function ProfileScreen() {
   };
 
   // Export PDF - Visual Tree
-    let currentX = 50;
-    rootPersons.forEach((root: any) => {
-      currentX = processNode(root, 0, currentX) + NODE_SPACING * 2;
-    });
-    
-    // Add any unprocessed persons
-    persons.forEach((p: any) => {
-      if (!processedIds.has(p.id)) {
-        nodes.push({
-          person: p,
-          x: currentX,
-          y: 50,
-          width: NODE_WIDTH,
-          height: NODE_HEIGHT
-        });
-        currentX += NODE_WIDTH + NODE_SPACING;
-      }
-    });
-    
-    // Calculate SVG dimensions
-    const maxX = Math.max(...nodes.map((n: any) => n.x + n.width)) + 50;
-    const maxY = Math.max(...nodes.map((n: any) => n.y + n.height)) + 50;
-    
-    return { nodes, connections, width: Math.max(maxX, 800), height: Math.max(maxY, 400) };
-  };
-
-  // Export PDF - Visual Tree
   const handlePrintPDF = async () => {
     if (Platform.OS !== 'web') {
       Alert.alert('Information', 'L\'impression PDF est disponible sur la version web.');
