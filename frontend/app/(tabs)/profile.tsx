@@ -532,6 +532,40 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           )}
 
+          {/* Export PDF - Print */}
+          {user && (
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={handlePrintPDF}
+              disabled={exportingPDF}
+            >
+              {exportingPDF ? (
+                <ActivityIndicator size="small" color="#D4AF37" />
+              ) : (
+                <Ionicons name="print-outline" size={22} color="#E91E63" />
+              )}
+              <Text style={styles.menuItemText}>Imprimer / Exporter PDF</Text>
+              <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+            </TouchableOpacity>
+          )}
+
+          {/* Export Excel */}
+          {user && (
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={handleExportExcel}
+              disabled={exportingExcel}
+            >
+              {exportingExcel ? (
+                <ActivityIndicator size="small" color="#D4AF37" />
+              ) : (
+                <Ionicons name="grid-outline" size={22} color="#217346" />
+              )}
+              <Text style={styles.menuItemText}>Exporter Excel / CSV</Text>
+              <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+            </TouchableOpacity>
+          )}
+
           {/* Import GEDCOM */}
           {user && (
             <TouchableOpacity
