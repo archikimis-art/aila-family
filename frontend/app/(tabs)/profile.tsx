@@ -605,11 +605,13 @@ export default function ProfileScreen() {
       const tree = buildTreeStructure(persons, links);
       const today = new Date().toLocaleDateString('fr-FR');
       
-      // Generate SVG nodes
+      // Generate SVG nodes - Light theme for printing
       const svgNodes = tree.nodes.map((node: any) => {
         const p = node.person;
-        const fillColor = p.gender === 'male' ? '#1a3a5c' : p.gender === 'female' ? '#5c1a3a' : '#3a3a3a';
-        const borderColor = p.gender === 'male' ? '#4A90D9' : p.gender === 'female' ? '#D94A8C' : '#6B7C93';
+        // Light pastel colors for print-friendly output
+        const fillColor = p.gender === 'male' ? '#E3F2FD' : p.gender === 'female' ? '#FCE4EC' : '#F5F5F5';
+        const borderColor = p.gender === 'male' ? '#1976D2' : p.gender === 'female' ? '#C2185B' : '#757575';
+        const textColor = p.gender === 'male' ? '#0D47A1' : p.gender === 'female' ? '#880E4F' : '#424242';
         const birthYear = p.birth_date ? p.birth_date.substring(0, 4) : '';
         const deathYear = p.death_date ? p.death_date.substring(0, 4) : '';
         const years = birthYear ? (deathYear ? `${birthYear} - ${deathYear}` : `né(e) ${birthYear}`) : '';
@@ -617,46 +619,48 @@ export default function ProfileScreen() {
         return `
           <g>
             <rect x="${node.x}" y="${node.y}" width="${node.width}" height="${node.height}" 
-                  rx="12" fill="${fillColor}" stroke="${borderColor}" stroke-width="3"/>
+                  rx="12" fill="${fillColor}" stroke="${borderColor}" stroke-width="2"/>
             <text x="${node.x + node.width/2}" y="${node.y + 28}" text-anchor="middle" 
-                  fill="white" font-size="14" font-weight="bold" font-family="Arial">${p.first_name || ''}</text>
+                  fill="${textColor}" font-size="14" font-weight="bold" font-family="Arial">${p.first_name || ''}</text>
             <text x="${node.x + node.width/2}" y="${node.y + 46}" text-anchor="middle" 
-                  fill="#B8C5D6" font-size="12" font-family="Arial">${p.last_name || ''}</text>
+                  fill="#555" font-size="12" font-family="Arial">${p.last_name || ''}</text>
             ${years ? `<text x="${node.x + node.width/2}" y="${node.y + 62}" text-anchor="middle" 
-                  fill="#888" font-size="10" font-family="Arial">${years}</text>` : ''}
+                  fill="#777" font-size="10" font-family="Arial">${years}</text>` : ''}
           </g>
         `;
       }).join('');
       
-      // Generate SVG connections
+      // Generate SVG connections - Darker lines for light background
       const svgConnections = tree.connections.map((conn: any) => {
         if (conn.type === 'spouse') {
           return `<line x1="${conn.from.x}" y1="${conn.from.y}" x2="${conn.to.x}" y2="${conn.to.y}" 
-                        stroke="#D4AF37" stroke-width="3" stroke-dasharray="8,4"/>`;
+                        stroke="#B8860B" stroke-width="2" stroke-dasharray="6,3"/>`;
         } else {
           const midY = (conn.from.y + conn.to.y) / 2;
           return `
             <line x1="${conn.from.x}" y1="${conn.from.y}" x2="${conn.from.x}" y2="${midY}" 
-                  stroke="#4A6A8A" stroke-width="2"/>
+                  stroke="#666" stroke-width="2"/>
             <line x1="${conn.from.x}" y1="${midY}" x2="${conn.to.x}" y2="${midY}" 
-                  stroke="#4A6A8A" stroke-width="2"/>
+                  stroke="#666" stroke-width="2"/>
             <line x1="${conn.to.x}" y1="${midY}" x2="${conn.to.x}" y2="${conn.to.y}" 
-                  stroke="#4A6A8A" stroke-width="2"/>
+                  stroke="#666" stroke-width="2"/>
           `;
         }
       }).join('');
       
-      // Generate legend
+      // Generate legend - Light theme
       const legend = `
         <g transform="translate(20, ${tree.height + 20})">
-          <rect x="0" y="0" width="200" height="80" rx="8" fill="#f8f9fa" stroke="#ddd"/>
+          <rect x="0" y="0" width="220" height="80" rx="8" fill="white" stroke="#ccc" stroke-width="1"/>
           <text x="10" y="20" font-size="12" font-weight="bold" fill="#333">Légende :</text>
-          <rect x="10" y="30" width="20" height="15" rx="4" fill="#1a3a5c" stroke="#4A90D9" stroke-width="2"/>
+          <rect x="10" y="30" width="20" height="15" rx="4" fill="#E3F2FD" stroke="#1976D2" stroke-width="2"/>
           <text x="40" y="42" font-size="11" fill="#333">Homme</text>
-          <rect x="100" y="30" width="20" height="15" rx="4" fill="#5c1a3a" stroke="#D94A8C" stroke-width="2"/>
-          <text x="130" y="42" font-size="11" fill="#333">Femme</text>
-          <line x1="10" y1="60" x2="50" y2="60" stroke="#D4AF37" stroke-width="2" stroke-dasharray="5,3"/>
+          <rect x="110" y="30" width="20" height="15" rx="4" fill="#FCE4EC" stroke="#C2185B" stroke-width="2"/>
+          <text x="140" y="42" font-size="11" fill="#333">Femme</text>
+          <line x1="10" y1="60" x2="50" y2="60" stroke="#B8860B" stroke-width="2" stroke-dasharray="5,3"/>
           <text x="60" y="64" font-size="11" fill="#333">Couple</text>
+          <line x1="110" y1="60" x2="150" y2="60" stroke="#666" stroke-width="2"/>
+          <text x="160" y="64" font-size="11" fill="#333">Filiation</text>
         </g>
       `;
       
