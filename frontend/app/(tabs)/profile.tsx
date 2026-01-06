@@ -643,31 +643,10 @@ export default function ProfileScreen() {
 
   // Export Excel/CSV
   const handleExportExcel = async () => {
-              font-size: 11px;
-            }
-            
-            /* Print styles */
-            @media print {
-              .controls { display: none !important; }
-              body { background: white; padding: 0; }
-              .tree-wrapper { box-shadow: none; }
-              .tree-container { 
-                max-height: none !important; 
-                overflow: visible !important;
-              }
-              .header { margin: 0 0 15px 0; padding: 15px; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>🌳 Arbre Généalogique</h1>
-            <div class="subtitle">Famille ${user?.last_name || ''}</div>
-            <div class="date">Exporté le ${today}</div>
-          </div>
-          
-          <!-- Zoom Controls -->
-          <div class="controls">
+    if (Platform.OS !== 'web') {
+      Alert.alert('Information', 'L\'export Excel est disponible sur la version web.');
+      return;
+    }
             <button onclick="zoomOut()">➖ Réduire</button>
             <span class="zoom-display" id="zoomLevel">100%</span>
             <button onclick="zoomIn()">➕ Agrandir</button>
