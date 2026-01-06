@@ -1584,12 +1584,15 @@ async def import_tree_gedcom(request: ImportGedcomRequest, current_user: dict = 
 
 class SendTreeEmailRequest(BaseModel):
     recipient_emails: List[str]
-    format: str = "json"  # "json" or "gedcom"
+    format: str = "pdf"  # "json", "pdf", "csv"
     message: Optional[str] = None
 
 @api_router.post("/tree/send-email")
 async def send_tree_by_email(request: SendTreeEmailRequest, current_user: dict = Depends(get_current_user)):
-    """Send the family tree file by email to specified recipients"""
+    """Send the family tree data by email to specified recipients"""
+    import base64
+    import json
+    
     user_id = str(current_user['_id'])
     user_name = f"{current_user['first_name']} {current_user['last_name']}"
     
@@ -1600,62 +1603,200 @@ async def send_tree_by_email(request: SendTreeEmailRequest, current_user: dict =
     if not persons:
         raise HTTPException(status_code=400, detail="Votre arbre est vide")
     
+    # Serialize persons and links for export
+    persons_data = [serialize_object_id(p) for p in persons]
+    links_data = [serialize_object_id(l) for l in links]
+    
+    # Create persons lookup for link display
+    persons_lookup = {p['id']: p for p in persons_data}
+    
+    # Generate HTML table for persons
+    persons_rows = ""
+    for p in persons_data:
+        gender_text = "Homme" if p.get('gender') == 'male' else "Femme" if p.get('gender') == 'female' else "Autre"
+        persons_rows += f"""
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;">{p.get('first_name', '')} {p.get('last_name', '')}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{gender_text}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{p.get('birth_date', '-') or '-'}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{p.get('death_date', '-') or '-'}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{p.get('birth_place', '-') or '-'}</td>
+        </tr>
+        """
+    
+    # Generate HTML table for links
+    links_rows = ""
+    for link in links_data:
+        p1 = persons_lookup.get(link.get('person_id_1'), {})
+        p2 = persons_lookup.get(link.get('person_id_2'), {})
+        p1_name = f"{p1.get('first_name', '')} {p1.get('last_name', '')}".strip() or "Inconnu"
+        p2_name = f"{p2.get('first_name', '')} {p2.get('last_name', '')}".strip() or "Inconnu"
+        
+        link_type = link.get('link_type', 'autre')
+        link_labels = {
+            'parent': 'Parent de',
+            'spouse': 'Conjoint(e)',
+            'sibling': 'Frère/Sœur',
+            'child': 'Enfant de',
+            'grandparent': 'Grand-parent de',
+            'grandchild': 'Petit-enfant de'
+        }
+        link_label = link_labels.get(link_type, link_type)
+        
+        links_rows += f"""
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;">{p1_name}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{link_label}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{p2_name}</td>
+        </tr>
+        """
+    
     # Prepare tree summary
-    tree_summary = f"- {len(persons)} personnes\n- {len(links)} liens familiaux"
+    tree_summary = f"{len(persons)} personnes • {len(links)} liens familiaux"
+    today = datetime.utcnow().strftime("%d/%m/%Y")
     
     custom_message = request.message or ""
+    custom_message_html = ""
     if custom_message:
-        custom_message = f"\n\nMessage de {user_name}:\n{custom_message}"
+        custom_message_html = f"""
+        <div style="background: #f0f0f0; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #D4AF37;">
+            <p style="margin: 0; color: #333;"><strong>Message de {user_name} :</strong></p>
+            <p style="margin: 10px 0 0 0; color: #555;">{custom_message}</p>
+        </div>
+        """
+    
+    # Prepare attachment based on format
+    attachment = None
+    attachment_filename = ""
+    
+    if request.format == "json":
+        tree_json = json.dumps({
+            "exported_by": user_name,
+            "exported_at": datetime.utcnow().isoformat(),
+            "persons": persons_data,
+            "links": links_data
+        }, indent=2, ensure_ascii=False, default=str)
+        attachment = base64.b64encode(tree_json.encode('utf-8')).decode('utf-8')
+        attachment_filename = f"arbre_{user_name.replace(' ', '_')}_{today.replace('/', '-')}.json"
+        
+    elif request.format == "csv":
+        # Create CSV content
+        csv_content = "Prénom,Nom,Genre,Date de naissance,Date de décès,Lieu de naissance,Profession,Notes\n"
+        for p in persons_data:
+            gender_text = "Homme" if p.get('gender') == 'male' else "Femme" if p.get('gender') == 'female' else "Autre"
+            csv_content += f'"{p.get("first_name", "")}","{p.get("last_name", "")}","{gender_text}","{p.get("birth_date", "")}","{p.get("death_date", "")}","{p.get("birth_place", "")}","{p.get("occupation", "")}","{(p.get("notes", "") or "").replace(chr(34), chr(39))}"\n'
+        
+        csv_content += "\n\nLiens familiaux\nPersonne 1,Relation,Personne 2\n"
+        for link in links_data:
+            p1 = persons_lookup.get(link.get('person_id_1'), {})
+            p2 = persons_lookup.get(link.get('person_id_2'), {})
+            p1_name = f"{p1.get('first_name', '')} {p1.get('last_name', '')}".strip() or "Inconnu"
+            p2_name = f"{p2.get('first_name', '')} {p2.get('last_name', '')}".strip() or "Inconnu"
+            link_type = link.get('link_type', 'autre')
+            csv_content += f'"{p1_name}","{link_type}","{p2_name}"\n'
+        
+        # Add BOM for Excel compatibility
+        csv_bytes = ('\ufeff' + csv_content).encode('utf-8')
+        attachment = base64.b64encode(csv_bytes).decode('utf-8')
+        attachment_filename = f"arbre_{user_name.replace(' ', '_')}_{today.replace('/', '-')}.csv"
     
     emails_sent = 0
     errors = []
     
     for email in request.recipient_emails:
         try:
+            # Build HTML email with full tree data
             html_content = f"""
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0A1628; color: #FFFFFF; padding: 20px; border-radius: 12px;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <h1 style="color: #D4AF37; margin: 0;">🌳 AÏLA</h1>
-                    <p style="color: #B8C5D6;">Arbre Généalogique Familial</p>
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset="UTF-8"></head>
+            <body style="font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px;">
+                <div style="max-width: 800px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <div style="background: #0A1628; color: white; padding: 30px; text-align: center;">
+                        <h1 style="color: #D4AF37; margin: 0;">🌳 AÏLA</h1>
+                        <p style="color: #B8C5D6; margin: 10px 0 0 0;">Arbre Généalogique Familial</p>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div style="padding: 30px;">
+                        <p style="font-size: 16px;">Bonjour,</p>
+                        
+                        <p style="font-size: 16px;"><strong style="color: #D4AF37;">{user_name}</strong> vous partage son arbre généalogique complet !</p>
+                        
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                            <p style="margin: 0; font-size: 18px; color: #333;"><strong>{tree_summary}</strong></p>
+                            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">Exporté le {today}</p>
+                        </div>
+                        
+                        {custom_message_html}
+                        
+                        <!-- Persons Table -->
+                        <h2 style="color: #0A1628; border-bottom: 2px solid #D4AF37; padding-bottom: 10px;">👥 Membres de la famille</h2>
+                        <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                            <tr style="background: #0A1628; color: white;">
+                                <th style="padding: 10px; text-align: left;">Nom</th>
+                                <th style="padding: 10px; text-align: left;">Genre</th>
+                                <th style="padding: 10px; text-align: left;">Naissance</th>
+                                <th style="padding: 10px; text-align: left;">Décès</th>
+                                <th style="padding: 10px; text-align: left;">Lieu</th>
+                            </tr>
+                            {persons_rows}
+                        </table>
+                        
+                        <!-- Links Table -->
+                        <h2 style="color: #0A1628; border-bottom: 2px solid #D4AF37; padding-bottom: 10px;">🔗 Liens familiaux</h2>
+                        <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                            <tr style="background: #0A1628; color: white;">
+                                <th style="padding: 10px; text-align: left;">Personne 1</th>
+                                <th style="padding: 10px; text-align: left;">Relation</th>
+                                <th style="padding: 10px; text-align: left;">Personne 2</th>
+                            </tr>
+                            {links_rows if links_rows else '<tr><td colspan="3" style="padding: 10px; text-align: center; color: #999;">Aucun lien enregistré</td></tr>'}
+                        </table>
+                        
+                        <!-- Footer CTA -->
+                        <div style="text-align: center; margin: 30px 0; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                            <p style="margin: 0 0 15px 0;">Créez votre propre arbre généalogique gratuitement :</p>
+                            <a href="{FRONTEND_URL}" style="display: inline-block; background: #D4AF37; color: #0A1628; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                                Découvrir AÏLA
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div style="background: #0A1628; color: #6B7C93; padding: 20px; text-align: center; font-size: 12px;">
+                        <p style="margin: 0;">AÏLA - L'arbre généalogique qui connecte votre famille</p>
+                        <p style="margin: 5px 0 0 0;">www.aila.family</p>
+                    </div>
                 </div>
-                
-                <p>Bonjour,</p>
-                
-                <p><strong>{user_name}</strong> vous partage son arbre généalogique !</p>
-                
-                <div style="background: #1A2F4A; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                    <p style="margin: 0; color: #D4AF37;"><strong>Contenu de l'arbre :</strong></p>
-                    <p style="margin: 10px 0 0 0; white-space: pre-line;">{tree_summary}</p>
-                </div>
-                
-                {f'<div style="background: #2A3F5A; padding: 15px; border-radius: 8px; margin: 20px 0;"><p style="margin: 0; white-space: pre-line;">{custom_message}</p></div>' if custom_message else ''}
-                
-                <p>Pour consulter l'arbre interactif, créez votre compte gratuit sur AÏLA :</p>
-                
-                <div style="text-align: center; margin: 20px 0;">
-                    <a href="{FRONTEND_URL}" style="display: inline-block; background: #D4AF37; color: #0A1628; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">
-                        Découvrir AÏLA
-                    </a>
-                </div>
-                
-                <p style="color: #6B7C93; font-size: 12px; text-align: center;">
-                    AÏLA - L'arbre généalogique qui connecte votre famille
-                </p>
-            </div>
+            </body>
+            </html>
             """
             
             params = {
                 "from": "AÏLA <noreply@aila.family>",
                 "to": [email],
-                "subject": f"🌳 {user_name} partage son arbre généalogique avec vous",
+                "subject": f"🌳 Arbre généalogique de {user_name} - {tree_summary}",
                 "html": html_content,
             }
+            
+            # Add attachment if JSON or CSV format
+            if attachment and attachment_filename:
+                content_type = "application/json" if request.format == "json" else "text/csv"
+                params["attachments"] = [{
+                    "filename": attachment_filename,
+                    "content": attachment,
+                    "content_type": content_type
+                }]
+            
             resend.Emails.send(params)
             emails_sent += 1
+            logger.info(f"✓ Tree email sent to {email} (format: {request.format})")
             
         except Exception as e:
             logger.error(f"Error sending email to {email}: {e}")
-            errors.append(email)
+            errors.append(f"{email}: {str(e)}")
     
     return {
         "message": f"{emails_sent} email(s) envoyé(s) avec succès",
