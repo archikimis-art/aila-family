@@ -668,54 +668,134 @@ export default function ProfileScreen() {
           <title>Arbre Généalogique - AÏLA</title>
           <style>
             @page { size: landscape; margin: 10mm; }
+            * { box-sizing: border-box; }
             body { 
               font-family: Arial, sans-serif; 
               margin: 0; 
               padding: 20px;
-              background: white;
+              background: #f0f0f0;
             }
             .header {
               text-align: center;
-              margin-bottom: 20px;
+              margin-bottom: 15px;
               padding-bottom: 15px;
               border-bottom: 3px solid #D4AF37;
+              background: white;
+              margin: -20px -20px 15px -20px;
+              padding: 20px;
             }
             .header h1 {
               color: #0A1628;
               margin: 0;
-              font-size: 28px;
+              font-size: 24px;
             }
             .header .subtitle {
               color: #D4AF37;
-              font-size: 16px;
+              font-size: 14px;
               margin-top: 5px;
             }
             .header .date {
               color: #666;
-              font-size: 12px;
+              font-size: 11px;
               margin-top: 5px;
+            }
+            
+            /* Zoom Controls */
+            .controls {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              gap: 10px;
+              margin-bottom: 15px;
+              padding: 10px;
+              background: white;
+              border-radius: 8px;
+              box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+              flex-wrap: wrap;
+            }
+            .controls button {
+              padding: 8px 16px;
+              font-size: 14px;
+              cursor: pointer;
+              border: 2px solid #0A1628;
+              background: white;
+              border-radius: 6px;
+              transition: all 0.2s;
+            }
+            .controls button:hover {
+              background: #0A1628;
+              color: white;
+            }
+            .controls button.primary {
+              background: #D4AF37;
+              border-color: #D4AF37;
+              color: #0A1628;
+              font-weight: bold;
+            }
+            .controls button.primary:hover {
+              background: #b8962e;
+            }
+            .zoom-display {
+              font-weight: bold;
+              min-width: 60px;
+              text-align: center;
+            }
+            .controls select {
+              padding: 8px;
+              font-size: 14px;
+              border: 2px solid #0A1628;
+              border-radius: 6px;
+              cursor: pointer;
+            }
+            
+            /* Tree Container */
+            .tree-wrapper {
+              background: white;
+              border-radius: 12px;
+              padding: 10px;
+              box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+              overflow: hidden;
             }
             .tree-container {
               overflow: auto;
               background: #0A1628;
-              border-radius: 12px;
+              border-radius: 8px;
               padding: 20px;
+              max-height: 60vh;
+              cursor: grab;
             }
+            .tree-container:active {
+              cursor: grabbing;
+            }
+            .tree-container svg {
+              transition: transform 0.2s ease;
+              transform-origin: top left;
+            }
+            
             .stats {
               text-align: center;
-              margin-top: 20px;
+              margin-top: 15px;
               padding: 10px;
-              background: #f5f5f5;
+              background: white;
               border-radius: 8px;
             }
             .footer {
               text-align: center;
-              margin-top: 20px;
+              margin-top: 15px;
               color: #888;
               font-size: 11px;
             }
+            
+            /* Print styles */
             @media print {
-              .tree-container { break-inside: avoid; }
+              .controls { display: none !important; }
+              body { background: white; padding: 0; }
+              .tree-wrapper { box-shadow: none; }
+              .tree-container { 
+                max-height: none !important; 
+                overflow: visible !important;
+              }
+              .header { margin: 0 0 15px 0; padding: 15px; }
             }
           </style>
         </head>
@@ -726,13 +806,37 @@ export default function ProfileScreen() {
             <div class="date">Exporté le ${today}</div>
           </div>
           
-          <div class="tree-container">
-            <svg width="${tree.width}" height="${tree.height + 110}" viewBox="0 0 ${tree.width} ${tree.height + 110}">
-              <rect width="100%" height="100%" fill="#0A1628"/>
-              ${svgConnections}
-              ${svgNodes}
-              ${legend}
-            </svg>
+          <!-- Zoom Controls -->
+          <div class="controls">
+            <button onclick="zoomOut()">➖ Réduire</button>
+            <span class="zoom-display" id="zoomLevel">100%</span>
+            <button onclick="zoomIn()">➕ Agrandir</button>
+            <span style="margin: 0 10px; color: #ccc;">|</span>
+            <button onclick="fitToWindow()">📐 Ajuster à l'écran</button>
+            <button onclick="resetZoom()">🔄 Taille réelle</button>
+            <span style="margin: 0 10px; color: #ccc;">|</span>
+            <select onchange="setZoom(this.value)" id="zoomSelect">
+              <option value="0.25">25%</option>
+              <option value="0.5">50%</option>
+              <option value="0.75">75%</option>
+              <option value="1" selected>100%</option>
+              <option value="1.25">125%</option>
+              <option value="1.5">150%</option>
+              <option value="2">200%</option>
+            </select>
+            <span style="margin: 0 10px; color: #ccc;">|</span>
+            <button class="primary" onclick="window.print()">🖨️ Imprimer</button>
+          </div>
+          
+          <div class="tree-wrapper">
+            <div class="tree-container" id="treeContainer">
+              <svg id="treeSvg" width="${tree.width}" height="${tree.height + 110}" viewBox="0 0 ${tree.width} ${tree.height + 110}">
+                <rect width="100%" height="100%" fill="#0A1628"/>
+                ${svgConnections}
+                ${svgNodes}
+                ${legend}
+              </svg>
+            </div>
           </div>
           
           <div class="stats">
@@ -740,8 +844,91 @@ export default function ProfileScreen() {
           </div>
           
           <div class="footer">
-            Généré par AÏLA - www.aila.family
+            Généré par AÏLA - www.aila.family<br>
+            <small>Utilisez les contrôles ci-dessus pour ajuster la vue avant d'imprimer</small>
           </div>
+          
+          <script>
+            let currentZoom = 1;
+            const svg = document.getElementById('treeSvg');
+            const container = document.getElementById('treeContainer');
+            const zoomDisplay = document.getElementById('zoomLevel');
+            const zoomSelect = document.getElementById('zoomSelect');
+            const originalWidth = ${tree.width};
+            const originalHeight = ${tree.height + 110};
+            
+            function updateZoom() {
+              svg.style.transform = 'scale(' + currentZoom + ')';
+              svg.style.width = (originalWidth * currentZoom) + 'px';
+              svg.style.height = (originalHeight * currentZoom) + 'px';
+              zoomDisplay.textContent = Math.round(currentZoom * 100) + '%';
+              
+              // Update select if value exists
+              const selectValue = currentZoom.toFixed(2);
+              for (let option of zoomSelect.options) {
+                if (Math.abs(parseFloat(option.value) - currentZoom) < 0.01) {
+                  zoomSelect.value = option.value;
+                  break;
+                }
+              }
+            }
+            
+            function zoomIn() {
+              currentZoom = Math.min(currentZoom + 0.25, 3);
+              updateZoom();
+            }
+            
+            function zoomOut() {
+              currentZoom = Math.max(currentZoom - 0.25, 0.1);
+              updateZoom();
+            }
+            
+            function setZoom(value) {
+              currentZoom = parseFloat(value);
+              updateZoom();
+            }
+            
+            function resetZoom() {
+              currentZoom = 1;
+              updateZoom();
+              container.scrollLeft = 0;
+              container.scrollTop = 0;
+            }
+            
+            function fitToWindow() {
+              const containerRect = container.getBoundingClientRect();
+              const availableWidth = containerRect.width - 40;
+              const availableHeight = window.innerHeight * 0.55;
+              
+              const scaleX = availableWidth / originalWidth;
+              const scaleY = availableHeight / originalHeight;
+              
+              currentZoom = Math.min(scaleX, scaleY, 1);
+              currentZoom = Math.max(currentZoom, 0.1);
+              updateZoom();
+              container.scrollLeft = 0;
+              container.scrollTop = 0;
+            }
+            
+            // Mouse wheel zoom
+            container.addEventListener('wheel', function(e) {
+              if (e.ctrlKey) {
+                e.preventDefault();
+                if (e.deltaY < 0) {
+                  zoomIn();
+                } else {
+                  zoomOut();
+                }
+              }
+            });
+            
+            // Auto-fit on load if tree is large
+            window.onload = function() {
+              if (originalWidth > window.innerWidth || originalHeight > window.innerHeight * 0.6) {
+                fitToWindow();
+              }
+            };
+          </script>
         </body>
         </html>
       `;
