@@ -558,11 +558,12 @@ export default function ProfileScreen() {
       csv += '\n\nLiens familiaux\nPersonne 1,Relation,Personne 2\n';
       
       links.forEach((link: any) => {
-        const p1 = persons.find((p: any) => p.id === link.person1_id);
-        const p2 = persons.find((p: any) => p.id === link.person2_id);
+        const p1 = persons.find((p: any) => p.id === link.person_id_1);
+        const p2 = persons.find((p: any) => p.id === link.person_id_2);
         const p1Name = p1 ? `${p1.first_name} ${p1.last_name}` : 'Inconnu';
         const p2Name = p2 ? `${p2.first_name} ${p2.last_name}` : 'Inconnu';
-        const rel = link.relationship_type === 'parent' ? 'Parent de' : link.relationship_type === 'spouse' ? 'Conjoint(e)' : 'Frère/Sœur';
+        const linkType = link.link_type || link.relationship_type || 'autre';
+        const rel = linkType === 'parent' ? 'Parent de' : linkType === 'spouse' ? 'Conjoint(e)' : linkType === 'sibling' ? 'Frère/Sœur' : linkType;
         csv += `"${p1Name}","${rel}","${p2Name}"\n`;
       });
       
