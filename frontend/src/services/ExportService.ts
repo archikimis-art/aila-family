@@ -202,8 +202,8 @@ export const generatePDFContent = (data: TreeData): string => {
 };
 
 // Download file (Web only)
-const downloadFile = (content: string, filename: string, mimeType: string) => {
-  if (Platform.OS !== 'web') {
+const downloadFile = (content: string, filename: string, mimeType: string): boolean => {
+  if (Platform.OS !== 'web' || typeof window === 'undefined') {
     console.log('Download only available on web');
     return false;
   }
@@ -211,19 +211,38 @@ const downloadFile = (content: string, filename: string, mimeType: string) => {
   try {
     // Add BOM for Excel UTF-8 compatibility
     const BOM = mimeType.includes('csv') ? '\uFEFF' : '';
-    const blob = new Blob([BOM + content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
+    const fullContent = BOM + content;
+    
+    // Create blob and download
+    const blob = new Blob([fullContent], { type: mimeType + ';charset=utf-8' });
+    const url = window.URL.createObjectURL(blob);
+    
     const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    
+    // Cleanup
+    setTimeout(() => {
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+    
     return true;
   } catch (error) {
     console.error('Download error:', error);
-    return false;
+    
+    // Fallback: open in new tab
+    try {
+      const dataUri = 'data:' + mimeType + ';charset=utf-8,' + encodeURIComponent(content);
+      window.open(dataUri, '_blank');
+      return true;
+    } catch (fallbackError) {
+      console.error('Fallback download error:', fallbackError);
+      return false;
+    }
   }
 };
 
