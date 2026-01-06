@@ -421,19 +421,28 @@ export default function ProfileScreen() {
       return;
     }
     
+    if (!user) {
+      window.alert('Veuillez vous connecter pour exporter votre arbre.');
+      return;
+    }
+    
     setExportingPDF(true);
     try {
+      console.log('[Export PDF] Fetching data...');
+      
       // Fetch data
       const [personsRes, linksRes] = await Promise.all([
         api.get('/persons'),
         api.get('/family-links')
       ]);
       
+      console.log('[Export PDF] Data received:', personsRes.data?.length, 'persons');
+      
       const persons = personsRes.data || [];
       const links = linksRes.data || [];
       
       if (persons.length === 0) {
-        window.alert('Aucune personne dans votre arbre à exporter.');
+        window.alert('Aucune personne dans votre arbre à exporter.\n\nAjoutez d\'abord des membres à votre arbre généalogique.');
         setExportingPDF(false);
         return;
       }
@@ -492,11 +501,12 @@ export default function ProfileScreen() {
         printWindow.document.close();
         setTimeout(() => printWindow.print(), 500);
       } else {
-        window.alert('Veuillez autoriser les popups pour imprimer.');
+        window.alert('Veuillez autoriser les popups pour imprimer.\n\nCliquez sur l\'icône popup bloqué dans la barre d\'adresse.');
       }
-    } catch (error) {
-      console.error('Print PDF error:', error);
-      window.alert('Erreur lors de la génération. Vérifiez votre connexion.');
+    } catch (error: any) {
+      console.error('[Export PDF] Error:', error);
+      console.error('[Export PDF] Response:', error.response?.data);
+      window.alert('Erreur lors de la génération.\n\n' + (error.response?.data?.detail || error.message || 'Vérifiez votre connexion.'));
     } finally {
       setExportingPDF(false);
     }
@@ -509,19 +519,28 @@ export default function ProfileScreen() {
       return;
     }
     
+    if (!user) {
+      window.alert('Veuillez vous connecter pour exporter votre arbre.');
+      return;
+    }
+    
     setExportingExcel(true);
     try {
+      console.log('[Export Excel] Fetching data...');
+      
       // Fetch data
       const [personsRes, linksRes] = await Promise.all([
         api.get('/persons'),
         api.get('/family-links')
       ]);
       
+      console.log('[Export Excel] Data received:', personsRes.data?.length, 'persons');
+      
       const persons = personsRes.data || [];
       const links = linksRes.data || [];
       
       if (persons.length === 0) {
-        window.alert('Aucune personne dans votre arbre à exporter.');
+        window.alert('Aucune personne dans votre arbre à exporter.\n\nAjoutez d\'abord des membres à votre arbre généalogique.');
         setExportingExcel(false);
         return;
       }
@@ -556,10 +575,11 @@ export default function ProfileScreen() {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
       
-      window.alert('Fichier Excel/CSV téléchargé !');
-    } catch (error) {
-      console.error('Export Excel error:', error);
-      window.alert('Erreur lors de l\'export. Vérifiez votre connexion.');
+      window.alert('Fichier Excel/CSV téléchargé avec succès !');
+    } catch (error: any) {
+      console.error('[Export Excel] Error:', error);
+      console.error('[Export Excel] Response:', error.response?.data);
+      window.alert('Erreur lors de l\'export.\n\n' + (error.response?.data?.detail || error.message || 'Vérifiez votre connexion.'));
     } finally {
       setExportingExcel(false);
     }
