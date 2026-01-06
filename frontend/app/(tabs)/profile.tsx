@@ -14,7 +14,6 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import api, { gdprAPI, treeAPI, exportAPI } from '@/services/api';
-import { printPDF, exportToExcel, exportToPDF } from '@/services/ExportService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdBanner from '@/components/AdBanner';
 
