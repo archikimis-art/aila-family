@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import api, { gdprAPI, treeAPI, exportAPI } from '@/services/api';
+import { printPDF, exportToExcel, exportToPDF } from '@/services/ExportService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdBanner from '@/components/AdBanner';
 
@@ -25,6 +26,8 @@ export default function ProfileScreen() {
   const [loggingOut, setLoggingOut] = useState(false);
   const [clearingTree, setClearingTree] = useState(false);
   const [downloadingJSON, setDownloadingJSON] = useState(false);
+  const [exportingPDF, setExportingPDF] = useState(false);
+  const [exportingExcel, setExportingExcel] = useState(false);
 
   const performLogout = async () => {
     setLoggingOut(true);
