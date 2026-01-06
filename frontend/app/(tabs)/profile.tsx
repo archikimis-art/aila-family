@@ -835,7 +835,7 @@ export default function ProfileScreen() {
           <div class="tree-wrapper">
             <div class="tree-container" id="treeContainer">
               <svg id="treeSvg" width="${tree.width}" height="${tree.height + 110}" viewBox="0 0 ${tree.width} ${tree.height + 110}">
-                <rect width="100%" height="100%" fill="#0A1628"/>
+                <rect width="100%" height="100%" fill="#FAFAFA"/>
                 ${svgConnections}
                 ${svgNodes}
                 ${legend}
