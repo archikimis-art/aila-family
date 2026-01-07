@@ -1327,9 +1327,9 @@ export default function TreeScreen() {
     const familyName = user?.last_name || 'Ma Famille';
     const printSvgContent = generatePrintSVG();
     
-    // Calculate exact print dimensions - tight fit without excess space
-    const printWidth = svgWidth + 40;
-    const printHeight = svgHeight + 40;
+    // Calculate exact print dimensions - tight fit
+    const printWidth = svgWidth + 20;
+    const printHeight = svgHeight + 20;
 
     const printHTML = `
 <!DOCTYPE html>
@@ -1343,56 +1343,258 @@ export default function TreeScreen() {
     
     @page { 
       size: landscape; 
-      margin: 10mm; 
+      margin: 8mm; 
     }
     
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f5f5f5;
-    }
-    
-    .print-container {
-      max-width: 100%;
-      margin: 0 auto;
       background: white;
     }
     
+    .print-container {
+      background: white;
+    }
+    
+    /* Header - Light theme for printing */
     .header {
-      background: linear-gradient(135deg, #0A1628 0%, #1a3a5c 100%);
-      color: white;
-      padding: 20px 30px;
+      background: white;
+      padding: 15px 20px;
       text-align: center;
-      border-bottom: 4px solid #D4AF37;
+      border-bottom: 3px solid #1565C0;
     }
     
     .header h1 {
-      font-size: 28px;
-      margin-bottom: 5px;
-      color: #D4AF37;
+      font-size: 22px;
+      color: #1565C0;
+      margin-bottom: 3px;
     }
     
     .header .subtitle {
-      font-size: 18px;
-      color: #B8C5D6;
+      font-size: 16px;
+      color: #333;
+      font-weight: 600;
     }
     
     .header .date {
-      font-size: 12px;
-      color: #8899AA;
-      margin-top: 8px;
+      font-size: 11px;
+      color: #666;
+      margin-top: 5px;
     }
     
+    /* Controls - hidden on print */
     .controls {
-      background: #f8f9fa;
-      padding: 15px 20px;
+      background: #f0f0f0;
+      padding: 12px 15px;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
       flex-wrap: wrap;
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid #ddd;
     }
     
+    .controls button {
+      padding: 8px 16px;
+      font-size: 13px;
+      border: 1px solid #333;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    
+    .controls button:hover {
+      background: #333;
+      color: white;
+    }
+    
+    .controls button.primary {
+      background: #1565C0;
+      border-color: #1565C0;
+      color: white;
+      font-weight: bold;
+      padding: 10px 25px;
+    }
+    
+    .controls button.primary:hover {
+      background: #0D47A1;
+    }
+    
+    .zoom-info {
+      font-weight: bold;
+      min-width: 55px;
+      text-align: center;
+      font-size: 14px;
+      color: #333;
+    }
+    
+    /* Tree area */
+    .tree-wrapper {
+      padding: 10px;
+      background: white;
+      text-align: center;
+    }
+    
+    .tree-svg {
+      display: inline-block;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      background: white;
+    }
+    
+    /* Legend - compact */
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      padding: 10px 15px;
+      background: #f8f8f8;
+      border-top: 1px solid #e0e0e0;
+      flex-wrap: wrap;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #333;
+    }
+    
+    .legend-box {
+      width: 20px;
+      height: 14px;
+      border-radius: 3px;
+      border: 2px solid;
+    }
+    
+    .legend-line {
+      width: 25px;
+      height: 2px;
+    }
+    
+    /* Stats */
+    .stats {
+      text-align: center;
+      padding: 8px;
+      background: white;
+      color: #555;
+      font-size: 12px;
+      border-top: 1px solid #eee;
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 8px;
+      color: #999;
+      font-size: 10px;
+      background: white;
+    }
+    
+    /* Print styles - CLEAN OUTPUT */
+    @media print {
+      body { background: white !important; }
+      .controls { display: none !important; }
+      .print-container { box-shadow: none; }
+      .tree-wrapper { padding: 5px; }
+      .tree-svg { border: none; }
+      .header { 
+        padding: 10px;
+        border-bottom-width: 2px;
+      }
+      .legend { padding: 8px; }
+      .stats { padding: 5px; }
+      .footer { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="print-container">
+    <div class="header">
+      <h1>🌳 Arbre Généalogique</h1>
+      <div class="subtitle">Famille ${familyName}</div>
+      <div class="date">Exporté le ${today} • AÏLA</div>
+    </div>
+    
+    <div class="controls">
+      <button onclick="zoomOut()">➖</button>
+      <span class="zoom-info" id="zoomLevel">100%</span>
+      <button onclick="zoomIn()">➕</button>
+      <button onclick="fitToPage()">📐 Ajuster</button>
+      <button onclick="resetZoom()">🔄 Reset</button>
+      <button class="primary" onclick="window.print()">🖨️ IMPRIMER</button>
+    </div>
+    
+    <div class="tree-wrapper">
+      <svg id="treeSvg" class="tree-svg" 
+           width="${printWidth}" height="${printHeight}" 
+           viewBox="0 0 ${printWidth} ${printHeight}">
+        <rect width="100%" height="100%" fill="white"/>
+        <g transform="translate(10, 10)">
+          ${printSvgContent}
+        </g>
+      </svg>
+    </div>
+    
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-box" style="background: #BBDEFB; border-color: #1565C0;"></div>
+        <span>Homme</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-box" style="background: #F8BBD9; border-color: #AD1457;"></div>
+        <span>Femme</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background: #8B4513; border-top: 2px dashed #8B4513; height: 0;"></div>
+        <span>Couple</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background: #333;"></div>
+        <span>Filiation</span>
+      </div>
+    </div>
+    
+    <div class="stats">
+      ${nodes.length} personnes • ${connections.filter(c => c.type === 'parent').length} liens de filiation • ${connections.filter(c => c.type === 'spouse').length} couples
+    </div>
+    
+    <div class="footer">
+      www.aila.family - L'application de généalogie familiale
+    </div>
+  </div>
+  
+  <script>
+    let zoom = 1;
+    const svg = document.getElementById('treeSvg');
+    const zoomDisplay = document.getElementById('zoomLevel');
+    const baseWidth = ${printWidth};
+    const baseHeight = ${printHeight};
+    
+    function updateZoom() {
+      svg.style.width = (baseWidth * zoom) + 'px';
+      svg.style.height = (baseHeight * zoom) + 'px';
+      zoomDisplay.textContent = Math.round(zoom * 100) + '%';
+    }
+    
+    function zoomIn() { zoom = Math.min(zoom + 0.15, 2.5); updateZoom(); }
+    function zoomOut() { zoom = Math.max(zoom - 0.15, 0.3); updateZoom(); }
+    function resetZoom() { zoom = 1; updateZoom(); }
+    
+    function fitToPage() {
+      const availableWidth = window.innerWidth - 60;
+      const availableHeight = window.innerHeight - 250;
+      zoom = Math.min(availableWidth / baseWidth, availableHeight / baseHeight, 1.2);
+      zoom = Math.max(zoom, 0.3);
+      updateZoom();
+    }
+    
+    // Auto-fit on load
+    fitToPage();
+  </script>
+</body>
+</html>`;
     .controls button {
       padding: 10px 20px;
       font-size: 14px;
