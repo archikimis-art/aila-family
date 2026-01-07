@@ -1327,9 +1327,9 @@ export default function TreeScreen() {
     const familyName = user?.last_name || 'Ma Famille';
     const printSvgContent = generatePrintSVG();
     
-    // Calculate print dimensions with padding
-    const printWidth = svgWidth + 100;
-    const printHeight = svgHeight + 200;
+    // Calculate exact print dimensions - tight fit without excess space
+    const printWidth = svgWidth + 40;
+    const printHeight = svgHeight + 40;
 
     const printHTML = `
 <!DOCTYPE html>
@@ -1343,20 +1343,18 @@ export default function TreeScreen() {
     
     @page { 
       size: landscape; 
-      margin: 15mm; 
+      margin: 10mm; 
     }
     
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: #f5f5f5;
-      min-height: 100vh;
     }
     
     .print-container {
       max-width: 100%;
       margin: 0 auto;
       background: white;
-      min-height: 100vh;
     }
     
     .header {
