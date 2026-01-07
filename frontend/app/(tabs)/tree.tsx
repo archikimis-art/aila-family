@@ -2073,7 +2073,7 @@ export default function TreeScreen() {
                 <Ionicons name="scan-outline" size={16} color="#D4AF37" />
               </TouchableOpacity>
               {Platform.OS === 'web' && (
-                <TouchableOpacity style={[styles.zoomButton, styles.printButton]} onPress={() => window.print()}>
+                <TouchableOpacity style={[styles.zoomButton, styles.printButton]} onPress={handlePrintTree}>
                   <Ionicons name="print-outline" size={16} color="#4CAF50" />
                 </TouchableOpacity>
               )}
