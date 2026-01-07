@@ -1431,23 +1431,23 @@ export default function TreeScreen() {
     }
     
     .tree-wrapper {
-      padding: 20px;
+      padding: 10px;
       overflow: auto;
       background: #fafafa;
     }
     
     .tree-container {
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 15px;
       overflow: auto;
-      max-height: calc(100vh - 280px);
+      display: inline-block;
+      min-width: 100%;
     }
     
     .tree-svg {
       display: block;
-      margin: 0 auto;
       transition: transform 0.2s ease;
     }
     
