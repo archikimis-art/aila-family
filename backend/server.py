@@ -296,6 +296,11 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+class GoogleAuthRequest(BaseModel):
+    """Request model for Google OAuth authentication"""
+    id_token: str  # Google ID token from frontend
+    access_token: Optional[str] = None
+
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
 
