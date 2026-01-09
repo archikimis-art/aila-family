@@ -213,11 +213,15 @@ const TreeSvgContent: React.FC<TreeSvgContentProps> = ({
 export default function TreeScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const isPreviewMode = params.preview === 'true';
   const inviteToken = params.invite as string | undefined;
   const sharedOwnerId = params.sharedOwnerId as string | undefined;
   const sharedOwnerName = params.sharedOwnerName as string | undefined;
+  
+  // Google OAuth callback params
+  const googleToken = params.token as string | undefined;
+  const googleAuthSuccess = params.google_auth === 'success';
 
   const [persons, setPersons] = useState<Person[]>([]);
   const [links, setLinks] = useState<FamilyLink[]>([]);
@@ -227,6 +231,7 @@ export default function TreeScreen() {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   const [sharedTreeOwner, setSharedTreeOwner] = useState<{id: string, name: string, role: string} | null>(null);
   const [inviteMessage, setInviteMessage] = useState<string | null>(null);
+  const [googleAuthHandled, setGoogleAuthHandled] = useState(false);
 
   // Handle shared tree viewing (from share tab)
   useEffect(() => {
