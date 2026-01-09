@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
+import { makeRedirectUri } from 'expo-auth-session';
 
 // Required for web auth session
 WebBrowser.maybeCompleteAuthSession();
@@ -35,10 +36,21 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Google Auth configuration
+  // Generate redirect URI
+  const redirectUri = makeRedirectUri({
+    scheme: 'aila',
+    path: 'auth',
+  });
+  
+  // Log redirectUri for debugging (check console to add to Google Cloud Console)
+  useEffect(() => {
+    console.log('Google OAuth Redirect URI:', redirectUri);
+  }, []);
+
+  // Google Auth configuration with explicit redirectUri
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     clientId: GOOGLE_WEB_CLIENT_ID,
-    // webClientId: GOOGLE_WEB_CLIENT_ID,
+    redirectUri: Platform.OS === 'web' ? `${typeof window !== 'undefined' ? window.location.origin : 'https://www.aila.family'}` : redirectUri,
   });
 
   // Handle Google auth response
@@ -47,7 +59,10 @@ export default function LoginScreen() {
       handleGoogleResponse(response);
     } else if (response?.type === 'error') {
       setGoogleLoading(false);
+      console.error('Google auth error:', response);
       showError('Erreur de connexion Google. Veuillez réessayer.');
+    } else if (response?.type === 'dismiss') {
+      setGoogleLoading(false);
     }
   }, [response]);
 
@@ -72,8 +87,10 @@ export default function LoginScreen() {
     setErrorMessage('');
     setGoogleLoading(true);
     try {
-      await promptAsync();
+      const result = await promptAsync();
+      console.log('Google prompt result:', result);
     } catch (error) {
+      console.error('Google prompt error:', error);
       setGoogleLoading(false);
       showError('Impossible d\'ouvrir la connexion Google.');
     }
