@@ -233,6 +233,48 @@ export default function TreeScreen() {
   const [inviteMessage, setInviteMessage] = useState<string | null>(null);
   const [googleAuthHandled, setGoogleAuthHandled] = useState(false);
 
+  // Handle Google OAuth callback - CRITICAL for Google Sign-In
+  useEffect(() => {
+    const handleGoogleAuth = async () => {
+      if (googleToken && googleAuthSuccess && !googleAuthHandled) {
+        setGoogleAuthHandled(true);
+        console.log('Google OAuth callback detected - processing token...');
+        
+        try {
+          // Store the token in AsyncStorage
+          await AsyncStorage.setItem('auth_token', googleToken);
+          
+          // Set the token in API headers
+          api.defaults.headers.common['Authorization'] = `Bearer ${googleToken}`;
+          
+          // Refresh user data to update AuthContext
+          await refreshUser();
+          
+          console.log('Google OAuth successful - user authenticated');
+          
+          // Show success message
+          setInviteMessage('✅ Connexion Google réussie !');
+          setTimeout(() => setInviteMessage(null), 3000);
+          
+          // Clean URL params by navigating to clean tree page (web only)
+          if (Platform.OS === 'web' && typeof window !== 'undefined') {
+            // Replace URL without query params to clean up
+            window.history.replaceState({}, '', '/(tabs)/tree');
+          }
+          
+          // Reload data for the authenticated user
+          loadData();
+        } catch (error) {
+          console.error('Error handling Google OAuth callback:', error);
+          setInviteMessage('❌ Erreur lors de la connexion Google');
+          setTimeout(() => setInviteMessage(null), 5000);
+        }
+      }
+    };
+    
+    handleGoogleAuth();
+  }, [googleToken, googleAuthSuccess, googleAuthHandled]);
+
   // Handle shared tree viewing (from share tab)
   useEffect(() => {
     const loadSharedTree = async () => {
