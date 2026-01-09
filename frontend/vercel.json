@@ -71,7 +71,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://family-tree-admin.preview.emergentagent.com/api/:path*"
+      "destination": "https://rootshub-signin.preview.emergentagent.com/api/:path*"
     },
     {
       "source": "/ads.txt",
