@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,18 +12,55 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '@/services/api';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login } = useAuth();
+  const params = useLocalSearchParams();
+  const { login, refreshUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Handle Google OAuth callback
+  useEffect(() => {
+    const handleGoogleCallback = async () => {
+      // Check for token in URL params (from Google OAuth callback)
+      if (params.token && params.google_auth === 'success') {
+        setGoogleLoading(true);
+        try {
+          // Store the token
+          await AsyncStorage.setItem('auth_token', params.token as string);
+          api.defaults.headers.common['Authorization'] = `Bearer ${params.token}`;
+          
+          // Refresh user data
+          await refreshUser();
+          
+          // Navigate to tree
+          router.replace('/(tabs)/tree');
+        } catch (error) {
+          console.error('Error handling Google callback:', error);
+          showError('Erreur lors de la connexion Google.');
+        } finally {
+          setGoogleLoading(false);
+        }
+      }
+      
+      // Check for error
+      if (params.error) {
+        showError('La connexion Google a échoué. Veuillez réessayer.');
+      }
+    };
+    
+    handleGoogleCallback();
+  }, [params]);
 
   const showError = (message: string) => {
     setErrorMessage(message);
@@ -55,6 +92,16 @@ export default function LoginScreen() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = () => {
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      setGoogleLoading(true);
+      // Redirect to backend Google OAuth endpoint
+      window.location.href = '/api/auth/google/login';
+    } else {
+      showError('La connexion Google n\'est disponible que sur le web pour le moment.');
     }
   };
 
@@ -128,7 +175,7 @@ export default function LoginScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.loginButton, loading && styles.loginButtonDisabled]}
+              style={[styles.loginButton, loading && styles.buttonDisabled]}
               onPress={handleLogin}
               disabled={loading}
             >
@@ -141,6 +188,33 @@ export default function LoginScreen() {
                 </>
               )}
             </TouchableOpacity>
+
+            {/* Separator */}
+            <View style={styles.separator}>
+              <View style={styles.separatorLine} />
+              <Text style={styles.separatorText}>ou</Text>
+              <View style={styles.separatorLine} />
+            </View>
+
+            {/* Google Sign In Button */}
+            {Platform.OS === 'web' && (
+              <TouchableOpacity
+                style={[styles.googleButton, googleLoading && styles.buttonDisabled]}
+                onPress={handleGoogleLogin}
+                disabled={googleLoading}
+              >
+                {googleLoading ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <>
+                    <View style={styles.googleIconContainer}>
+                      <Text style={styles.googleIcon}>G</Text>
+                    </View>
+                    <Text style={styles.googleButtonText}>Continuer avec Google</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            )}
           </View>
 
           {/* Footer */}
@@ -240,12 +314,54 @@ const styles = StyleSheet.create({
     marginTop: 16,
     gap: 8,
   },
-  loginButtonDisabled: {
+  buttonDisabled: {
     opacity: 0.6,
   },
   loginButtonText: {
     color: '#0A1628',
     fontSize: 18,
+    fontWeight: '600',
+  },
+  separator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  separatorLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#2A3F5A',
+  },
+  separatorText: {
+    color: '#6B7C93',
+    fontSize: 14,
+    paddingHorizontal: 16,
+  },
+  googleButton: {
+    backgroundColor: '#4285F4',
+    borderRadius: 12,
+    height: 56,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  googleIconContainer: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  googleIcon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4285F4',
+  },
+  googleButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
     fontWeight: '600',
   },
   footer: {
