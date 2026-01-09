@@ -123,6 +123,35 @@ export default function RegisterScreen() {
             <Text style={styles.subtitle}>Commencez votre arbre généalogique</Text>
           </View>
 
+          {/* Google Sign Up Button - En premier pour plus de visibilité */}
+          {Platform.OS === 'web' && (
+            <View style={styles.googleSection}>
+              <TouchableOpacity
+                style={[styles.googleButton, googleLoading && styles.buttonDisabled]}
+                onPress={handleGoogleSignUp}
+                disabled={googleLoading}
+              >
+                {googleLoading ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <>
+                    <View style={styles.googleIconContainer}>
+                      <Text style={styles.googleIcon}>G</Text>
+                    </View>
+                    <Text style={styles.googleButtonText}>S'inscrire avec Google</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+              
+              {/* Separator */}
+              <View style={styles.separator}>
+                <View style={styles.separatorLine} />
+                <Text style={styles.separatorText}>ou par email</Text>
+                <View style={styles.separatorLine} />
+              </View>
+            </View>
+          )}
+
           {/* Form */}
           <View style={styles.form}>
             {/* Error Message */}
