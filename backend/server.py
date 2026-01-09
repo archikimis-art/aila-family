@@ -308,7 +308,8 @@ class UserLogin(BaseModel):
 
 class GoogleAuthRequest(BaseModel):
     """Request model for Google OAuth authentication"""
-    id_token: str  # Google ID token from frontend
+    id_token: Optional[str] = None  # Google ID token from frontend
+    token: Optional[str] = None  # Alternative field name (from Google Identity Services)
     access_token: Optional[str] = None
 
 class ForgotPasswordRequest(BaseModel):
