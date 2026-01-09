@@ -249,6 +249,10 @@ export default function RegisterScreen() {
                   </>
                 )}
               </TouchableOpacity>
+              {/* Hidden container for Google's rendered button */}
+              <View style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}>
+                <div id="google-signup-button-hidden" />
+              </View>
               
               {/* Separator */}
               <View style={styles.separator}>
