@@ -27,8 +27,19 @@ export default function RegisterScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [gdprConsent, setGdprConsent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const handleGoogleSignUp = () => {
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      setGoogleLoading(true);
+      // Redirect to backend Google OAuth endpoint
+      window.location.href = '/api/auth/google/login';
+    } else {
+      Alert.alert('Info', 'La connexion Google n\'est disponible que sur le web pour le moment.');
+    }
+  };
 
   const showError = (message: string) => {
     setErrorMessage(message);
