@@ -314,22 +314,28 @@ export default function LoginScreen() {
 
             {/* Google Sign In Button */}
             {Platform.OS === 'web' && (
-              <TouchableOpacity
-                style={[styles.googleButton, googleLoading && styles.buttonDisabled]}
-                onPress={handleGoogleLogin}
-                disabled={googleLoading}
-              >
-                {googleLoading ? (
-                  <ActivityIndicator color="#FFFFFF" />
-                ) : (
-                  <>
-                    <View style={styles.googleIconContainer}>
-                      <Text style={styles.googleIcon}>G</Text>
-                    </View>
-                    <Text style={styles.googleButtonText}>Continuer avec Google</Text>
-                  </>
-                )}
-              </TouchableOpacity>
+              <>
+                <TouchableOpacity
+                  style={[styles.googleButton, googleLoading && styles.buttonDisabled]}
+                  onPress={handleGoogleLogin}
+                  disabled={googleLoading}
+                >
+                  {googleLoading ? (
+                    <ActivityIndicator color="#FFFFFF" />
+                  ) : (
+                    <>
+                      <View style={styles.googleIconContainer}>
+                        <Text style={styles.googleIcon}>G</Text>
+                      </View>
+                      <Text style={styles.googleButtonText}>Continuer avec Google</Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+                {/* Hidden container for Google's rendered button */}
+                <View style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}>
+                  <div id="google-signin-button-hidden" />
+                </View>
+              </>
             )}
           </View>
 
