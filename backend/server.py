@@ -720,6 +720,121 @@ async def google_auth(data: GoogleAuthRequest):
         logger.error(f"Google auth error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# ============================================================================
+# GOOGLE OAUTH SERVER-SIDE FLOW
+# ============================================================================
+
+@api_router.get("/auth/google/login")
+async def google_login_redirect():
+    """Redirect user to Google OAuth consent screen"""
+    import urllib.parse
+    
+    # Build Google OAuth URL
+    params = {
+        'client_id': GOOGLE_CLIENT_ID,
+        'redirect_uri': f"{FRONTEND_URL}/api/auth/google/callback",
+        'response_type': 'code',
+        'scope': 'openid email profile',
+        'access_type': 'offline',
+        'prompt': 'select_account',
+    }
+    
+    google_auth_url = f"https://accounts.google.com/o/oauth2/v2/auth?{urllib.parse.urlencode(params)}"
+    return RedirectResponse(url=google_auth_url)
+
+@api_router.get("/auth/google/callback")
+async def google_callback(code: str = None, error: str = None):
+    """Handle Google OAuth callback"""
+    if error:
+        logger.error(f"Google OAuth error: {error}")
+        return RedirectResponse(url=f"{FRONTEND_URL}/(auth)/login?error=google_auth_failed")
+    
+    if not code:
+        return RedirectResponse(url=f"{FRONTEND_URL}/(auth)/login?error=no_code")
+    
+    try:
+        # Exchange code for tokens
+        async with httpx.AsyncClient() as client:
+            token_response = await client.post(
+                "https://oauth2.googleapis.com/token",
+                data={
+                    'client_id': GOOGLE_CLIENT_ID,
+                    'client_secret': GOOGLE_CLIENT_SECRET,
+                    'code': code,
+                    'grant_type': 'authorization_code',
+                    'redirect_uri': f"{FRONTEND_URL}/api/auth/google/callback",
+                }
+            )
+            
+            if token_response.status_code != 200:
+                logger.error(f"Google token exchange failed: {token_response.text}")
+                return RedirectResponse(url=f"{FRONTEND_URL}/(auth)/login?error=token_exchange_failed")
+            
+            tokens = token_response.json()
+            id_token = tokens.get('id_token')
+            
+            if not id_token:
+                return RedirectResponse(url=f"{FRONTEND_URL}/(auth)/login?error=no_id_token")
+            
+            # Verify and decode the ID token
+            token_info_response = await client.get(
+                f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}"
+            )
+            
+            if token_info_response.status_code != 200:
+                return RedirectResponse(url=f"{FRONTEND_URL}/(auth)/login?error=invalid_token")
+            
+            google_data = token_info_response.json()
+            email = google_data.get('email', '').lower().strip()
+            
+            if not email:
+                return RedirectResponse(url=f"{FRONTEND_URL}/(auth)/login?error=no_email")
+            
+            # Check if user exists
+            user = await db.users.find_one({"email": email})
+            
+            if user:
+                # Existing user - login
+                user = serialize_object_id(user)
+                token = create_token(user['id'])
+                logger.info(f"✓ Google OAuth login successful for {email}")
+            else:
+                # New user - register
+                import secrets
+                first_name = google_data.get('given_name', google_data.get('name', 'Utilisateur'))
+                last_name = google_data.get('family_name', '')
+                random_password = secrets.token_urlsafe(32)
+                
+                new_user = {
+                    "email": email,
+                    "password_hash": hash_password(random_password),
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "created_at": datetime.utcnow(),
+                    "updated_at": datetime.utcnow(),
+                    "gdpr_consent": True,
+                    "gdpr_consent_date": datetime.utcnow(),
+                    "role": "member",
+                    "auth_provider": "google",
+                    "google_id": google_data.get('sub'),
+                    "profile_picture": google_data.get('picture')
+                }
+                
+                result = await db.users.insert_one(new_user)
+                new_user['id'] = str(result.inserted_id)
+                user = new_user
+                token = create_token(user['id'])
+                logger.info(f"✓ New Google OAuth user registered: {email}")
+            
+            # Redirect to frontend with token
+            return RedirectResponse(
+                url=f"{FRONTEND_URL}/(tabs)/tree?token={token}&google_auth=success"
+            )
+            
+    except Exception as e:
+        logger.error(f"Google OAuth callback error: {e}")
+        return RedirectResponse(url=f"{FRONTEND_URL}/(auth)/login?error=server_error")
+
 # Temporary admin endpoint to reset password - REMOVE AFTER USE
 class PasswordReset(BaseModel):
     email: EmailStr
