@@ -442,4 +442,53 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  // Google Sign Up Styles
+  googleSection: {
+    marginBottom: 8,
+  },
+  googleButton: {
+    backgroundColor: '#4285F4',
+    borderRadius: 12,
+    height: 56,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  googleIconContainer: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  googleIcon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4285F4',
+  },
+  googleButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  separator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  separatorLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#2A3F5A',
+  },
+  separatorText: {
+    color: '#6B7C93',
+    fontSize: 14,
+    paddingHorizontal: 16,
+  },
 });
