@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,8 @@ import { useAuth } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '@/services/api';
 
+const GOOGLE_CLIENT_ID = '548263066328-916g2guhpiacu30eu2r2q2r9tvsc5lsm.apps.googleusercontent.com';
+
 export default function LoginScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -28,38 +30,179 @@ export default function LoginScreen() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const googleButtonRef = useRef<HTMLDivElement | null>(null);
+  const [googleInitialized, setGoogleInitialized] = useState(false);
 
-  // Handle Google OAuth callback
+  // Initialize Google Sign-In on mount
   useEffect(() => {
-    const handleGoogleCallback = async () => {
-      // Check for token in URL params (from Google OAuth callback)
+    if (Platform.OS !== 'web' || typeof window === 'undefined') return;
+
+    const initializeGoogle = () => {
+      if ((window as any).google?.accounts?.id) {
+        (window as any).google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleCallback,
+          auto_select: false,
+        });
+        setGoogleInitialized(true);
+        console.log('Google Sign-In initialized');
+      }
+    };
+
+    // Check if script already loaded
+    if ((window as any).google?.accounts?.id) {
+      initializeGoogle();
+    } else {
+      // Load Google Identity Services script
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = initializeGoogle;
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  // Handle Google callback with the credential
+  const handleGoogleCallback = async (response: any) => {
+    console.log('Google callback received');
+    setGoogleLoading(true);
+    setErrorMessage('');
+
+    try {
+      if (!response.credential) {
+        throw new Error('No credential received from Google');
+      }
+
+      // Send the ID token to our backend
+      const result = await api.post('/api/auth/google', {
+        token: response.credential,
+        id_token: response.credential,
+      });
+
+      if (result.data.access_token) {
+        await AsyncStorage.setItem('auth_token', result.data.access_token);
+        api.defaults.headers.common['Authorization'] = `Bearer ${result.data.access_token}`;
+        await refreshUser();
+        router.replace('/(tabs)/tree');
+      } else {
+        throw new Error('No access token received');
+      }
+    } catch (error: any) {
+      console.error('Google login error:', error);
+      const message = error.response?.data?.detail || 'Erreur lors de la connexion Google. Veuillez réessayer.';
+      showError(message);
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  // Handle Google button click
+  const handleGoogleLogin = () => {
+    if (Platform.OS !== 'web' || typeof window === 'undefined') {
+      showError('La connexion Google n\'est disponible que sur le web.');
+      return;
+    }
+
+    if (!googleInitialized || !(window as any).google?.accounts?.id) {
+      showError('Google Sign-In est en cours de chargement. Veuillez patienter...');
+      return;
+    }
+
+    setGoogleLoading(true);
+    setErrorMessage('');
+
+    try {
+      // Trigger Google One Tap
+      (window as any).google.accounts.id.prompt((notification: any) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // One Tap not available, show the standard button popup
+          console.log('One Tap not available, using standard flow');
+          
+          // Create a temporary container for Google button
+          const tempDiv = document.createElement('div');
+          tempDiv.style.position = 'fixed';
+          tempDiv.style.top = '50%';
+          tempDiv.style.left = '50%';
+          tempDiv.style.transform = 'translate(-50%, -50%)';
+          tempDiv.style.zIndex = '9999';
+          tempDiv.style.background = 'white';
+          tempDiv.style.padding = '20px';
+          tempDiv.style.borderRadius = '12px';
+          tempDiv.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+          tempDiv.id = 'google-signin-popup';
+          
+          // Add close button
+          const closeBtn = document.createElement('button');
+          closeBtn.innerHTML = '✕';
+          closeBtn.style.position = 'absolute';
+          closeBtn.style.top = '5px';
+          closeBtn.style.right = '10px';
+          closeBtn.style.border = 'none';
+          closeBtn.style.background = 'none';
+          closeBtn.style.fontSize = '20px';
+          closeBtn.style.cursor = 'pointer';
+          closeBtn.onclick = () => {
+            document.body.removeChild(tempDiv);
+            setGoogleLoading(false);
+          };
+          
+          const title = document.createElement('p');
+          title.innerHTML = 'Connectez-vous avec Google';
+          title.style.marginBottom = '15px';
+          title.style.fontWeight = 'bold';
+          title.style.textAlign = 'center';
+          
+          const btnContainer = document.createElement('div');
+          btnContainer.id = 'google-btn-container';
+          
+          tempDiv.appendChild(closeBtn);
+          tempDiv.appendChild(title);
+          tempDiv.appendChild(btnContainer);
+          document.body.appendChild(tempDiv);
+          
+          // Render Google button
+          (window as any).google.accounts.id.renderButton(btnContainer, {
+            type: 'standard',
+            theme: 'filled_blue',
+            size: 'large',
+            text: 'continue_with',
+            width: 280,
+          });
+        } else if (notification.isDismissedMoment()) {
+          console.log('Google prompt dismissed');
+          setGoogleLoading(false);
+        }
+      });
+    } catch (error) {
+      console.error('Error triggering Google Sign-In:', error);
+      setGoogleLoading(false);
+      showError('Erreur lors de la connexion Google.');
+    }
+  };
+
+  // Handle legacy OAuth callback (from URL params)
+  useEffect(() => {
+    const handleOAuthCallback = async () => {
       if (params.token && params.google_auth === 'success') {
         setGoogleLoading(true);
         try {
-          // Store the token
           await AsyncStorage.setItem('auth_token', params.token as string);
           api.defaults.headers.common['Authorization'] = `Bearer ${params.token}`;
-          
-          // Refresh user data
           await refreshUser();
-          
-          // Navigate to tree
           router.replace('/(tabs)/tree');
         } catch (error) {
-          console.error('Error handling Google callback:', error);
-          showError('Erreur lors de la connexion Google.');
+          console.error('OAuth callback error:', error);
+          showError('Erreur lors de la connexion.');
         } finally {
           setGoogleLoading(false);
         }
       }
-      
-      // Check for error
       if (params.error) {
-        showError('La connexion Google a échoué. Veuillez réessayer.');
+        showError('La connexion Google a échoué.');
       }
     };
-    
-    handleGoogleCallback();
+    handleOAuthCallback();
   }, [params]);
 
   const showError = (message: string) => {
@@ -82,49 +225,16 @@ export default function LoginScreen() {
       await login(email.trim().toLowerCase(), password);
       router.replace('/(tabs)/tree');
     } catch (error: any) {
-      console.error('Login error:', error);
-      if (error.message?.includes('Network') || error.code === 'ERR_NETWORK') {
-        showError('Erreur de connexion au serveur. Vérifiez votre connexion internet.');
-      } else if (error.message?.includes('timeout')) {
-        showError('Le serveur met trop de temps à répondre. Réessayez plus tard.');
+      const detail = error.response?.data?.detail || '';
+      if (detail.includes('Invalid credentials') || detail.includes('Identifiants invalides')) {
+        showError('Email ou mot de passe incorrect.');
+      } else if (detail.includes('User not found')) {
+        showError('Aucun compte trouvé avec cet email.');
       } else {
-        showError(error.response?.data?.detail || 'Email ou mot de passe incorrect.');
+        showError(detail || 'Erreur de connexion. Veuillez réessayer.');
       }
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      setGoogleLoading(true);
-      setErrorMessage('');
-      
-      try {
-        // First, wake up the backend by pinging the health endpoint
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-        
-        try {
-          await fetch('/api/health', { 
-            signal: controller.signal,
-            method: 'GET'
-          });
-          clearTimeout(timeoutId);
-        } catch (pingError) {
-          // If ping fails after timeout, still try to redirect
-          console.log('Backend ping timeout, trying redirect anyway');
-        }
-        
-        // Now redirect to Google OAuth
-        window.location.href = '/api/auth/google/login';
-      } catch (error) {
-        console.error('Error preparing Google login:', error);
-        setGoogleLoading(false);
-        showError('Erreur de connexion au serveur. Veuillez réessayer.');
-      }
-    } else {
-      showError('La connexion Google n\'est disponible que sur le web pour le moment.');
     }
   };
 
@@ -158,13 +268,13 @@ export default function LoginScreen() {
               <Ionicons name="mail-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Adresse email"
+                placeholder="Email"
                 placeholderTextColor="#6B7C93"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
-                autoCorrect={false}
+                autoComplete="email"
               />
             </View>
 
@@ -263,21 +373,21 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
     padding: 24,
+    justifyContent: 'center',
   },
   header: {
     alignItems: 'center',
     marginBottom: 40,
   },
   logo: {
-    fontSize: 64,
+    fontSize: 60,
     marginBottom: 16,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#D4AF37',
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   subtitle: {
@@ -291,18 +401,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 107, 107, 0.1)',
-    padding: 12,
     borderRadius: 8,
+    padding: 12,
     gap: 8,
   },
   errorText: {
     color: '#FF6B6B',
+    fontSize: 14,
     flex: 1,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A2F4A',
+    backgroundColor: '#1A2A44',
     borderRadius: 12,
     paddingHorizontal: 16,
     height: 56,
@@ -320,8 +431,6 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     alignSelf: 'flex-end',
-    marginTop: 4,
-    padding: 4,
   },
   forgotPasswordText: {
     color: '#D4AF37',
@@ -334,7 +443,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 16,
     gap: 8,
   },
   buttonDisabled: {
@@ -342,13 +450,13 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: '#0A1628',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
   },
   separator: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 8,
   },
   separatorLine: {
     flex: 1,
@@ -391,8 +499,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40,
-    gap: 8,
+    marginTop: 32,
+    gap: 4,
   },
   footerText: {
     color: '#6B7C93',
