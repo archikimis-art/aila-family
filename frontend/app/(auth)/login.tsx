@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,9 @@ import { useAuth } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '@/services/api';
 
+// Google Client ID
+const GOOGLE_CLIENT_ID = '548263066328-916g2guhpiacu30eu2r2q2r9tvsc5lsm.apps.googleusercontent.com';
+
 export default function LoginScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -28,8 +31,87 @@ export default function LoginScreen() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
 
-  // Handle Google OAuth callback
+  // Load Google Identity Services script
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      // Check if script already exists
+      if (document.getElementById('google-identity-script')) {
+        setGoogleScriptLoaded(true);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.id = 'google-identity-script';
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        console.log('Google Identity Services loaded');
+        setGoogleScriptLoaded(true);
+      };
+      script.onerror = () => {
+        console.error('Failed to load Google Identity Services');
+      };
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  // Handle Google credential response
+  const handleGoogleCredentialResponse = useCallback(async (response: any) => {
+    console.log('Google credential response received');
+    setGoogleLoading(true);
+    setErrorMessage('');
+    
+    try {
+      // Send the ID token to our backend for verification
+      const result = await api.post('/api/auth/google', {
+        token: response.credential
+      });
+      
+      if (result.data.access_token) {
+        // Store the JWT token
+        await AsyncStorage.setItem('auth_token', result.data.access_token);
+        api.defaults.headers.common['Authorization'] = `Bearer ${result.data.access_token}`;
+        
+        // Refresh user data
+        await refreshUser();
+        
+        console.log('Google login successful');
+        
+        // Navigate to tree
+        router.replace('/(tabs)/tree');
+      } else {
+        throw new Error('No access token received');
+      }
+    } catch (error: any) {
+      console.error('Error processing Google login:', error);
+      const message = error.response?.data?.detail || 'Erreur lors de la connexion Google. Veuillez réessayer.';
+      showError(message);
+    } finally {
+      setGoogleLoading(false);
+    }
+  }, [refreshUser, router]);
+
+  // Initialize Google Sign-In button
+  useEffect(() => {
+    if (Platform.OS === 'web' && googleScriptLoaded && typeof window !== 'undefined' && (window as any).google) {
+      try {
+        (window as any).google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleCredentialResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+        console.log('Google Sign-In initialized');
+      } catch (error) {
+        console.error('Error initializing Google Sign-In:', error);
+      }
+    }
+  }, [googleScriptLoaded, handleGoogleCredentialResponse]);
+
+  // Handle Google OAuth callback (for backward compatibility with redirect flow)
   useEffect(() => {
     const handleGoogleCallback = async () => {
       // Check for token in URL params (from Google OAuth callback)
