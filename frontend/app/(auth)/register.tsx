@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -16,10 +16,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '@/services/api';
+
+const GOOGLE_CLIENT_ID = '548263066328-916g2guhpiacu30eu2r2q2r9tvsc5lsm.apps.googleusercontent.com';
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const { register } = useAuth();
+  const { register, refreshUser } = useAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -30,37 +34,153 @@ export default function RegisterScreen() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [googleInitialized, setGoogleInitialized] = useState(false);
 
-  const handleGoogleSignUp = async () => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      setGoogleLoading(true);
-      setErrorMessage('');
-      
-      try {
-        // First, wake up the backend by pinging the health endpoint
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-        
-        try {
-          await fetch('/api/health', { 
-            signal: controller.signal,
-            method: 'GET'
-          });
-          clearTimeout(timeoutId);
-        } catch (pingError) {
-          // If ping fails after timeout, still try to redirect
-          console.log('Backend ping timeout, trying redirect anyway');
-        }
-        
-        // Now redirect to Google OAuth
-        window.location.href = '/api/auth/google/login';
-      } catch (error) {
-        console.error('Error preparing Google signup:', error);
-        setGoogleLoading(false);
-        showError('Erreur de connexion au serveur. Veuillez réessayer.');
+  // Initialize Google Sign-In on mount
+  useEffect(() => {
+    if (Platform.OS !== 'web' || typeof window === 'undefined') return;
+
+    const initializeGoogle = () => {
+      if ((window as any).google?.accounts?.id) {
+        (window as any).google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleCallback,
+          auto_select: false,
+        });
+        setGoogleInitialized(true);
+        console.log('Google Sign-In initialized for registration');
       }
+    };
+
+    // Check if script already loaded
+    if ((window as any).google?.accounts?.id) {
+      initializeGoogle();
     } else {
-      Alert.alert('Info', 'L\'inscription Google n\'est disponible que sur le web pour le moment.');
+      // Load Google Identity Services script
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = initializeGoogle;
+      document.head.appendChild(script);
+    }
+  }, []);
+
+  // Handle Google callback with the credential
+  const handleGoogleCallback = async (response: any) => {
+    console.log('Google callback received for registration');
+    setGoogleLoading(true);
+    setErrorMessage('');
+
+    try {
+      if (!response.credential) {
+        throw new Error('No credential received from Google');
+      }
+
+      // Send the ID token to our backend
+      const result = await api.post('/api/auth/google', {
+        token: response.credential,
+        id_token: response.credential,
+      });
+
+      if (result.data.access_token) {
+        await AsyncStorage.setItem('auth_token', result.data.access_token);
+        api.defaults.headers.common['Authorization'] = `Bearer ${result.data.access_token}`;
+        await refreshUser();
+        router.replace('/(tabs)/tree');
+      } else {
+        throw new Error('No access token received');
+      }
+    } catch (error: any) {
+      console.error('Google signup error:', error);
+      const message = error.response?.data?.detail || 'Erreur lors de l\'inscription Google. Veuillez réessayer.';
+      showError(message);
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  // Handle Google button click
+  const handleGoogleSignUp = () => {
+    if (Platform.OS !== 'web' || typeof window === 'undefined') {
+      Alert.alert('Info', 'L\'inscription Google n\'est disponible que sur le web.');
+      return;
+    }
+
+    if (!googleInitialized || !(window as any).google?.accounts?.id) {
+      showError('Google Sign-In est en cours de chargement. Veuillez patienter...');
+      return;
+    }
+
+    setGoogleLoading(true);
+    setErrorMessage('');
+
+    try {
+      // Trigger Google One Tap
+      (window as any).google.accounts.id.prompt((notification: any) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // One Tap not available, show the standard button popup
+          console.log('One Tap not available, using standard flow for registration');
+          
+          // Create a temporary container for Google button
+          const tempDiv = document.createElement('div');
+          tempDiv.style.position = 'fixed';
+          tempDiv.style.top = '50%';
+          tempDiv.style.left = '50%';
+          tempDiv.style.transform = 'translate(-50%, -50%)';
+          tempDiv.style.zIndex = '9999';
+          tempDiv.style.background = 'white';
+          tempDiv.style.padding = '20px';
+          tempDiv.style.borderRadius = '12px';
+          tempDiv.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+          tempDiv.id = 'google-signup-popup';
+          
+          // Add close button
+          const closeBtn = document.createElement('button');
+          closeBtn.innerHTML = '✕';
+          closeBtn.style.position = 'absolute';
+          closeBtn.style.top = '5px';
+          closeBtn.style.right = '10px';
+          closeBtn.style.border = 'none';
+          closeBtn.style.background = 'none';
+          closeBtn.style.fontSize = '20px';
+          closeBtn.style.cursor = 'pointer';
+          closeBtn.onclick = () => {
+            document.body.removeChild(tempDiv);
+            setGoogleLoading(false);
+          };
+          
+          const title = document.createElement('p');
+          title.innerHTML = 'Inscrivez-vous avec Google';
+          title.style.marginBottom = '15px';
+          title.style.fontWeight = 'bold';
+          title.style.textAlign = 'center';
+          
+          const btnContainer = document.createElement('div');
+          btnContainer.id = 'google-btn-container';
+          
+          tempDiv.appendChild(closeBtn);
+          tempDiv.appendChild(title);
+          tempDiv.appendChild(btnContainer);
+          document.body.appendChild(tempDiv);
+          
+          // Render Google button
+          (window as any).google.accounts.id.renderButton(btnContainer, {
+            type: 'standard',
+            theme: 'filled_blue',
+            size: 'large',
+            text: 'signup_with',
+            width: 280,
+          });
+        } else if (notification.isDismissedMoment()) {
+          console.log('Google prompt dismissed');
+          setGoogleLoading(false);
+        }
+      });
+    } catch (error) {
+      console.error('Error triggering Google Sign-Up:', error);
+      setGoogleLoading(false);
+      showError('Erreur lors de l\'inscription Google.');
     }
   };
 
@@ -92,7 +212,7 @@ export default function RegisterScreen() {
     }
 
     if (!gdprConsent) {
-      showError('Vous devez accepter la politique de confidentialité pour créer un compte');
+      showError('Vous devez accepter la politique de confidentialité');
       return;
     }
 
@@ -213,7 +333,7 @@ export default function RegisterScreen() {
               <Ionicons name="mail-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Adresse email"
+                placeholder="Email"
                 placeholderTextColor="#6B7C93"
                 value={email}
                 onChangeText={setEmail}
@@ -233,7 +353,10 @@ export default function RegisterScreen() {
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
               />
-              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.eyeIcon}
+              >
                 <Ionicons
                   name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                   size={20}
@@ -256,35 +379,24 @@ export default function RegisterScreen() {
 
             {/* GDPR Consent */}
             <View style={styles.gdprContainer}>
-              <View style={styles.gdprHeader}>
-                <Ionicons name="shield-checkmark-outline" size={24} color="#D4AF37" />
-                <Text style={styles.gdprTitle}>Protection des données (RGPD)</Text>
-              </View>
-              <Text style={styles.gdprText}>
-                En créant un compte, vous consentez au traitement de vos données personnelles 
-                conformément à notre politique de confidentialité. Vous pouvez à tout moment :
-              </Text>
-              <View style={styles.gdprList}>
-                <Text style={styles.gdprListItem}>• Accéder à vos données</Text>
-                <Text style={styles.gdprListItem}>• Rectifier vos informations</Text>
-                <Text style={styles.gdprListItem}>• Demander la suppression de votre compte</Text>
-                <Text style={styles.gdprListItem}>• Exporter vos données</Text>
-              </View>
-              <View style={styles.consentRow}>
-                <Switch
-                  value={gdprConsent}
-                  onValueChange={setGdprConsent}
-                  trackColor={{ false: '#2A3F5A', true: '#D4AF37' }}
-                  thumbColor={gdprConsent ? '#FFFFFF' : '#6B7C93'}
-                />
-                <Text style={styles.consentText}>
-                  J'accepte la politique de confidentialité et le traitement de mes données
+              <Switch
+                value={gdprConsent}
+                onValueChange={setGdprConsent}
+                trackColor={{ false: '#2A3F5A', true: '#D4AF37' }}
+                thumbColor={gdprConsent ? '#FFFFFF' : '#6B7C93'}
+              />
+              <View style={styles.gdprTextContainer}>
+                <Text style={styles.gdprText}>
+                  J'accepte la{' '}
+                  <Text style={styles.gdprLink}>politique de confidentialité</Text>
+                  {' '}et les{' '}
+                  <Text style={styles.gdprLink}>conditions d'utilisation</Text>
                 </Text>
               </View>
             </View>
 
             <TouchableOpacity
-              style={[styles.registerButton, loading && styles.registerButtonDisabled]}
+              style={[styles.registerButton, loading && styles.buttonDisabled]}
               onPress={handleRegister}
               disabled={loading}
             >
@@ -301,7 +413,7 @@ export default function RegisterScreen() {
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Déjà inscrit ?</Text>
+            <Text style={styles.footerText}>Déjà un compte ?</Text>
             <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
               <Text style={styles.loginLink}>Se connecter</Text>
             </TouchableOpacity>
@@ -322,150 +434,26 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+    padding: 24,
   },
   backButton: {
-    marginTop: 16,
-    padding: 8,
-    alignSelf: 'flex-start',
+    marginBottom: 16,
   },
   header: {
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 30,
+    marginBottom: 24,
   },
   title: {
     fontSize: 28,
-    fontWeight: '700',
+    fontWeight: 'bold',
     color: '#FFFFFF',
-    marginTop: 12,
+    marginTop: 16,
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#B8C5D6',
-    marginTop: 8,
-  },
-  form: {
-    gap: 16,
-  },
-  errorContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 107, 107, 0.15)',
-    borderWidth: 1,
-    borderColor: '#FF6B6B',
-    borderRadius: 12,
-    padding: 14,
-    gap: 10,
-  },
-  errorText: {
-    color: '#FF6B6B',
-    fontSize: 14,
-    flex: 1,
-  },
-  row: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1A2F4A',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    height: 56,
-    borderWidth: 1,
-    borderColor: '#2A3F5A',
-  },
-  halfInput: {
-    flex: 1,
-  },
-  inputIcon: {
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  gdprContainer: {
-    backgroundColor: '#1A2F4A',
-    borderRadius: 12,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#2A3F5A',
-  },
-  gdprHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-    gap: 8,
-  },
-  gdprTitle: {
-    color: '#D4AF37',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  gdprText: {
-    color: '#B8C5D6',
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  gdprList: {
-    marginTop: 8,
-    marginBottom: 16,
-  },
-  gdprListItem: {
-    color: '#B8C5D6',
-    fontSize: 13,
-    lineHeight: 22,
-  },
-  consentRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  consentText: {
-    flex: 1,
-    color: '#FFFFFF',
-    fontSize: 14,
-  },
-  registerButton: {
-    backgroundColor: '#D4AF37',
-    borderRadius: 12,
-    height: 56,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 16,
-    gap: 8,
-  },
-  registerButtonDisabled: {
-    opacity: 0.6,
-  },
-  registerButtonText: {
-    color: '#0A1628',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 30,
-    gap: 8,
-  },
-  footerText: {
     color: '#6B7C93',
-    fontSize: 14,
   },
-  loginLink: {
-    color: '#D4AF37',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  // Google Sign Up Styles
   googleSection: {
     marginBottom: 8,
   },
@@ -513,5 +501,96 @@ const styles = StyleSheet.create({
     color: '#6B7C93',
     fontSize: 14,
     paddingHorizontal: 16,
+  },
+  form: {
+    gap: 16,
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 107, 107, 0.1)',
+    borderRadius: 8,
+    padding: 12,
+    gap: 8,
+  },
+  errorText: {
+    color: '#FF6B6B',
+    fontSize: 14,
+    flex: 1,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1A2A44',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    height: 56,
+  },
+  halfInput: {
+    flex: 1,
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
+  input: {
+    flex: 1,
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  eyeIcon: {
+    padding: 4,
+  },
+  gdprContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    marginTop: 8,
+  },
+  gdprTextContainer: {
+    flex: 1,
+  },
+  gdprText: {
+    color: '#6B7C93',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  gdprLink: {
+    color: '#D4AF37',
+    textDecorationLine: 'underline',
+  },
+  registerButton: {
+    backgroundColor: '#D4AF37',
+    borderRadius: 12,
+    height: 56,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 8,
+  },
+  registerButtonText: {
+    color: '#0A1628',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 24,
+    gap: 4,
+  },
+  footerText: {
+    color: '#6B7C93',
+    fontSize: 14,
+  },
+  loginLink: {
+    color: '#D4AF37',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
