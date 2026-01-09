@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -28,67 +28,15 @@ export default function LoginScreen() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
 
-  // Load Google Identity Services script on web
-  useEffect(() => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      // Check if script already loaded
-      if ((window as any).google?.accounts) {
-        setGoogleScriptLoaded(true);
-        initializeGoogleSignIn();
-        return;
-      }
-
-      // Load Google Identity Services script
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        setGoogleScriptLoaded(true);
-        initializeGoogleSignIn();
-      };
-      script.onerror = () => {
-        console.error('Failed to load Google Sign-In script');
-      };
-      document.body.appendChild(script);
-
-      return () => {
-        // Cleanup if needed
-      };
-    }
-  }, []);
-
-  const initializeGoogleSignIn = useCallback(() => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined' && (window as any).google?.accounts) {
-      try {
-        (window as any).google.accounts.id.initialize({
-          client_id: GOOGLE_WEB_CLIENT_ID,
-          callback: handleGoogleCallback,
-          auto_select: false,
-          cancel_on_tap_outside: true,
-        });
-        console.log('Google Sign-In initialized');
-      } catch (error) {
-        console.error('Error initializing Google Sign-In:', error);
-      }
-    }
-  }, []);
-
-  const handleGoogleCallback = async (response: any) => {
-    console.log('Google callback received:', response);
+  // Handle Google callback - defined before useEffect
+  const handleGoogleCredential = async (credential: string) => {
     setGoogleLoading(true);
     setErrorMessage('');
     
     try {
-      if (response.credential) {
-        // Send the ID token to our backend
-        await loginWithGoogle(response.credential);
-        router.replace('/(tabs)/tree');
-      } else {
-        showError('Token Google non reçu. Veuillez réessayer.');
-      }
+      await loginWithGoogle(credential);
+      router.replace('/(tabs)/tree');
     } catch (error: any) {
       console.error('Google login error:', error);
       showError(error.response?.data?.detail || error.message || 'Erreur de connexion avec Google.');
@@ -97,102 +45,118 @@ export default function LoginScreen() {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  // Load Google Identity Services on web
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      // Create a global callback function
+      (window as any).handleGoogleCredentialResponse = (response: any) => {
+        console.log('Google credential received');
+        if (response.credential) {
+          handleGoogleCredential(response.credential);
+        }
+      };
+
+      // Load Google script if not already loaded
+      if (!(window as any).google?.accounts?.id) {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+          initGoogleOneTap();
+        };
+        document.head.appendChild(script);
+      } else {
+        initGoogleOneTap();
+      }
+    }
+
+    return () => {
+      if (Platform.OS === 'web' && typeof window !== 'undefined') {
+        delete (window as any).handleGoogleCredentialResponse;
+      }
+    };
+  }, []);
+
+  const initGoogleOneTap = () => {
+    if (typeof window !== 'undefined' && (window as any).google?.accounts?.id) {
+      (window as any).google.accounts.id.initialize({
+        client_id: GOOGLE_WEB_CLIENT_ID,
+        callback: (window as any).handleGoogleCredentialResponse,
+        auto_select: false,
+      });
+    }
+  };
+
+  const handleGoogleLogin = () => {
     setErrorMessage('');
     
     if (Platform.OS !== 'web') {
-      showError('La connexion Google est disponible uniquement sur le web pour le moment.');
+      showError('La connexion Google est disponible uniquement sur le web.');
       return;
     }
 
-    if (typeof window === 'undefined' || !(window as any).google?.accounts) {
+    if (typeof window === 'undefined' || !(window as any).google?.accounts?.id) {
       showError('Google Sign-In non chargé. Veuillez rafraîchir la page.');
       return;
     }
 
     setGoogleLoading(true);
     
-    try {
-      // Trigger Google One Tap or popup
-      (window as any).google.accounts.id.prompt((notification: any) => {
-        console.log('Google prompt notification:', notification);
-        
-        if (notification.isNotDisplayed()) {
-          console.log('One Tap not displayed, reason:', notification.getNotDisplayedReason());
-          // Fall back to popup
-          openGooglePopup();
-        } else if (notification.isSkippedMoment()) {
-          console.log('One Tap skipped, reason:', notification.getSkippedReason());
-          setGoogleLoading(false);
-        } else if (notification.isDismissedMoment()) {
-          console.log('One Tap dismissed, reason:', notification.getDismissedReason());
-          setGoogleLoading(false);
-        }
-      });
-    } catch (error) {
-      console.error('Google prompt error:', error);
-      openGooglePopup();
-    }
+    // Use Google One Tap prompt
+    (window as any).google.accounts.id.prompt((notification: any) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        // One Tap not available, render the button instead
+        setGoogleLoading(false);
+        renderGoogleButton();
+      } else if (notification.isDismissedMoment()) {
+        setGoogleLoading(false);
+      }
+    });
   };
 
-  const openGooglePopup = () => {
-    // Use OAuth 2.0 popup as fallback
-    const width = 500;
-    const height = 600;
-    const left = window.screenX + (window.outerWidth - width) / 2;
-    const top = window.screenY + (window.outerHeight - height) / 2;
+  const renderGoogleButton = () => {
+    // Find or create a container for Google button
+    let container = document.getElementById('google-signin-button');
+    if (!container) {
+      // Create a modal overlay with Google button
+      const overlay = document.createElement('div');
+      overlay.id = 'google-signin-overlay';
+      overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;';
+      
+      const modal = document.createElement('div');
+      modal.style.cssText = 'background:white;padding:30px;border-radius:16px;text-align:center;max-width:400px;';
+      
+      const title = document.createElement('h3');
+      title.textContent = 'Connexion avec Google';
+      title.style.cssText = 'margin:0 0 20px 0;color:#333;';
+      
+      container = document.createElement('div');
+      container.id = 'google-signin-button';
+      container.style.cssText = 'display:flex;justify-content:center;margin:20px 0;';
+      
+      const closeBtn = document.createElement('button');
+      closeBtn.textContent = 'Annuler';
+      closeBtn.style.cssText = 'margin-top:15px;padding:10px 30px;border:1px solid #ccc;background:white;border-radius:8px;cursor:pointer;';
+      closeBtn.onclick = () => {
+        overlay.remove();
+        setGoogleLoading(false);
+      };
+      
+      modal.appendChild(title);
+      modal.appendChild(container);
+      modal.appendChild(closeBtn);
+      overlay.appendChild(modal);
+      document.body.appendChild(overlay);
+    }
     
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${GOOGLE_WEB_CLIENT_ID}&` +
-      `redirect_uri=${encodeURIComponent(window.location.origin)}&` +
-      `response_type=token id_token&` +
-      `scope=openid email profile&` +
-      `nonce=${Math.random().toString(36).substring(2)}`;
-    
-    const popup = window.open(
-      authUrl,
-      'Google Sign In',
-      `width=${width},height=${height},left=${left},top=${top}`
-    );
-
-    // Listen for the popup to close or redirect
-    const checkPopup = setInterval(() => {
-      try {
-        if (popup?.closed) {
-          clearInterval(checkPopup);
-          setGoogleLoading(false);
-        } else if (popup?.location?.href?.includes(window.location.origin)) {
-          // Get the token from the URL
-          const hash = popup.location.hash;
-          popup.close();
-          clearInterval(checkPopup);
-          
-          if (hash) {
-            const params = new URLSearchParams(hash.substring(1));
-            const idToken = params.get('id_token');
-            if (idToken) {
-              handleGoogleCallback({ credential: idToken });
-            } else {
-              setGoogleLoading(false);
-              showError('Token non reçu de Google.');
-            }
-          } else {
-            setGoogleLoading(false);
-          }
-        }
-      } catch (e) {
-        // Cross-origin error, popup still on Google's domain
-      }
-    }, 500);
-
-    // Timeout after 2 minutes
-    setTimeout(() => {
-      clearInterval(checkPopup);
-      if (!popup?.closed) {
-        popup?.close();
-      }
-      setGoogleLoading(false);
-    }, 120000);
+    // Render Google Sign-In button
+    (window as any).google.accounts.id.renderButton(container, {
+      theme: 'filled_blue',
+      size: 'large',
+      text: 'continue_with',
+      width: 280,
+    });
   };
 
   const showError = (message: string) => {
