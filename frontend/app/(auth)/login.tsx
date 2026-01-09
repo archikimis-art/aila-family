@@ -179,9 +179,43 @@ export default function LoginScreen() {
 
   const handleGoogleLogin = () => {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      if (!googleScriptLoaded || !(window as any).google) {
+        showError('Google Sign-In en cours de chargement. Veuillez réessayer.');
+        return;
+      }
+      
       setGoogleLoading(true);
-      // Redirect to backend Google OAuth endpoint
-      window.location.href = '/api/auth/google/login';
+      setErrorMessage('');
+      
+      try {
+        // Use Google's One Tap or prompt
+        (window as any).google.accounts.id.prompt((notification: any) => {
+          if (notification.isNotDisplayed()) {
+            console.log('Google prompt not displayed, reason:', notification.getNotDisplayedReason());
+            // If One Tap doesn't work, try the standard sign-in
+            (window as any).google.accounts.id.renderButton(
+              document.getElementById('google-signin-button-hidden'),
+              { theme: 'filled_blue', size: 'large', width: 300 }
+            );
+            // Trigger click on the hidden button
+            setTimeout(() => {
+              const btn = document.querySelector('#google-signin-button-hidden div[role="button"]') as HTMLElement;
+              if (btn) btn.click();
+              else setGoogleLoading(false);
+            }, 100);
+          } else if (notification.isSkippedMoment()) {
+            console.log('Google prompt skipped, reason:', notification.getSkippedReason());
+            setGoogleLoading(false);
+          } else if (notification.isDismissedMoment()) {
+            console.log('Google prompt dismissed, reason:', notification.getDismissedReason());
+            setGoogleLoading(false);
+          }
+        });
+      } catch (error) {
+        console.error('Error with Google Sign-In:', error);
+        setGoogleLoading(false);
+        showError('Erreur lors de la connexion Google.');
+      }
     } else {
       showError('La connexion Google n\'est disponible que sur le web pour le moment.');
     }
