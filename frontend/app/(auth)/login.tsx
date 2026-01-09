@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,20 +10,74 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+
+// Required for web auth session
+WebBrowser.maybeCompleteAuthSession();
+
+// Google OAuth Client IDs - Replace with your own from Google Cloud Console
+const GOOGLE_WEB_CLIENT_ID = '812007876653-5jm9pq8qnv7e5k3hq9b7lhvk4q8q8q8q.apps.googleusercontent.com';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Google Auth configuration
+  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+    clientId: GOOGLE_WEB_CLIENT_ID,
+    // webClientId: GOOGLE_WEB_CLIENT_ID,
+  });
+
+  // Handle Google auth response
+  useEffect(() => {
+    if (response?.type === 'success') {
+      handleGoogleResponse(response);
+    } else if (response?.type === 'error') {
+      setGoogleLoading(false);
+      showError('Erreur de connexion Google. Veuillez réessayer.');
+    }
+  }, [response]);
+
+  const handleGoogleResponse = async (response: any) => {
+    try {
+      const { id_token } = response.params;
+      if (id_token) {
+        await loginWithGoogle(id_token);
+        router.replace('/(tabs)/tree');
+      } else {
+        showError('Token Google non reçu. Veuillez réessayer.');
+      }
+    } catch (error: any) {
+      console.error('Google login error:', error);
+      showError(error.response?.data?.detail || 'Erreur de connexion avec Google.');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setErrorMessage('');
+    setGoogleLoading(true);
+    try {
+      await promptAsync();
+    } catch (error) {
+      setGoogleLoading(false);
+      showError('Impossible d\'ouvrir la connexion Google.');
+    }
+  };
 
   const showError = (message: string) => {
     setErrorMessage(message);
