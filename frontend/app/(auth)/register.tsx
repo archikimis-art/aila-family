@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -16,15 +16,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import api from '@/services/api';
-
-// Google Client ID
-const GOOGLE_CLIENT_ID = '548263066328-916g2guhpiacu30eu2r2q2r9tvsc5lsm.apps.googleusercontent.com';
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const { register, refreshUser } = useAuth();
+  const { register } = useAuth();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -35,114 +30,12 @@ export default function RegisterScreen() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false);
-
-  // Load Google Identity Services script
-  useEffect(() => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      // Check if script already exists
-      if (document.getElementById('google-identity-script')) {
-        setGoogleScriptLoaded(true);
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.id = 'google-identity-script';
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      script.onload = () => {
-        console.log('Google Identity Services loaded');
-        setGoogleScriptLoaded(true);
-      };
-      document.head.appendChild(script);
-    }
-  }, []);
-
-  // Handle Google credential response
-  const handleGoogleCredentialResponse = useCallback(async (response: any) => {
-    console.log('Google credential response received');
-    setGoogleLoading(true);
-    setErrorMessage('');
-    
-    try {
-      // Send the ID token to our backend for verification
-      const result = await api.post('/api/auth/google', {
-        token: response.credential
-      });
-      
-      if (result.data.access_token) {
-        // Store the JWT token
-        await AsyncStorage.setItem('auth_token', result.data.access_token);
-        api.defaults.headers.common['Authorization'] = `Bearer ${result.data.access_token}`;
-        
-        // Refresh user data
-        await refreshUser();
-        
-        console.log('Google signup successful');
-        
-        // Navigate to tree
-        router.replace('/(tabs)/tree');
-      } else {
-        throw new Error('No access token received');
-      }
-    } catch (error: any) {
-      console.error('Error processing Google signup:', error);
-      const message = error.response?.data?.detail || 'Erreur lors de l\'inscription Google. Veuillez réessayer.';
-      showError(message);
-    } finally {
-      setGoogleLoading(false);
-    }
-  }, [refreshUser, router]);
-
-  // Initialize Google Sign-In
-  useEffect(() => {
-    if (Platform.OS === 'web' && googleScriptLoaded && typeof window !== 'undefined' && (window as any).google) {
-      try {
-        (window as any).google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: handleGoogleCredentialResponse,
-          auto_select: false,
-          cancel_on_tap_outside: true,
-        });
-      } catch (error) {
-        console.error('Error initializing Google Sign-In:', error);
-      }
-    }
-  }, [googleScriptLoaded, handleGoogleCredentialResponse]);
 
   const handleGoogleSignUp = () => {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      if (!googleScriptLoaded || !(window as any).google) {
-        showError('Google Sign-In en cours de chargement. Veuillez réessayer.');
-        return;
-      }
-      
       setGoogleLoading(true);
-      setErrorMessage('');
-      
-      try {
-        (window as any).google.accounts.id.prompt((notification: any) => {
-          if (notification.isNotDisplayed()) {
-            // If One Tap doesn't work, try the standard sign-in
-            (window as any).google.accounts.id.renderButton(
-              document.getElementById('google-signup-button-hidden'),
-              { theme: 'filled_blue', size: 'large', width: 300 }
-            );
-            setTimeout(() => {
-              const btn = document.querySelector('#google-signup-button-hidden div[role="button"]') as HTMLElement;
-              if (btn) btn.click();
-              else setGoogleLoading(false);
-            }, 100);
-          } else if (notification.isSkippedMoment() || notification.isDismissedMoment()) {
-            setGoogleLoading(false);
-          }
-        });
-      } catch (error) {
-        console.error('Error with Google Sign-Up:', error);
-        setGoogleLoading(false);
-        showError('Erreur lors de l\'inscription Google.');
-      }
+      // Redirect to backend Google OAuth endpoint
+      window.location.href = '/api/auth/google/login';
     } else {
       Alert.alert('Info', 'L\'inscription Google n\'est disponible que sur le web pour le moment.');
     }
