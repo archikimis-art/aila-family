@@ -757,10 +757,17 @@ async def google_callback(code: str = None, error: str = None):
         return RedirectResponse(url=f"{FRONTEND_URL}/(auth)/login?error=no_code")
     
     try:
+        # Log pour déboguer
+        logger.info(f"Google callback - exchanging code for token...")
+        logger.info(f"Using client_id: {GOOGLE_CLIENT_ID[:20]}...")
+        logger.info(f"Using client_secret: {'SET' if GOOGLE_CLIENT_SECRET else 'NOT SET'} ({len(GOOGLE_CLIENT_SECRET)} chars)")
+        logger.info(f"Using redirect_uri: {FRONTEND_URL}/api/auth/google/callback")
+        
         # Exchange code for tokens
         async with httpx.AsyncClient() as client:
             token_response = await client.post(
                 "https://oauth2.googleapis.com/token",
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
                 data={
                     'client_id': GOOGLE_CLIENT_ID,
                     'client_secret': GOOGLE_CLIENT_SECRET,
