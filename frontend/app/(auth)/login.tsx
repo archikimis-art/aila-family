@@ -95,11 +95,34 @@ export default function LoginScreen() {
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       setGoogleLoading(true);
-      // Redirect to backend Google OAuth endpoint
-      window.location.href = '/api/auth/google/login';
+      setErrorMessage('');
+      
+      try {
+        // First, wake up the backend by pinging the health endpoint
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        
+        try {
+          await fetch('/api/health', { 
+            signal: controller.signal,
+            method: 'GET'
+          });
+          clearTimeout(timeoutId);
+        } catch (pingError) {
+          // If ping fails after timeout, still try to redirect
+          console.log('Backend ping timeout, trying redirect anyway');
+        }
+        
+        // Now redirect to Google OAuth
+        window.location.href = '/api/auth/google/login';
+      } catch (error) {
+        console.error('Error preparing Google login:', error);
+        setGoogleLoading(false);
+        showError('Erreur de connexion au serveur. Veuillez réessayer.');
+      }
     } else {
       showError('La connexion Google n\'est disponible que sur le web pour le moment.');
     }
