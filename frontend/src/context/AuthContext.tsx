@@ -67,6 +67,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(userData);
   };
 
+  const loginWithGoogle = async (idToken: string) => {
+    const response = await api.post('/auth/google', { id_token: idToken });
+    const { access_token, user: userData } = response.data;
+    
+    await AsyncStorage.setItem('auth_token', access_token);
+    api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+    setUser(userData);
+  };
+
   const register = async (data: RegisterData) => {
     const response = await api.post('/auth/register', data);
     const { access_token, user: userData } = response.data;
