@@ -630,6 +630,90 @@ async def login(credentials: UserLogin):
         )
     )
 
+@api_router.post("/auth/google", response_model=TokenResponse)
+async def google_auth(data: GoogleAuthRequest):
+    """Authenticate or register user via Google OAuth"""
+    import httpx
+    
+    try:
+        # Verify the Google ID token
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"https://oauth2.googleapis.com/tokeninfo?id_token={data.id_token}"
+            )
+            
+            if response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Invalid Google token")
+            
+            google_data = response.json()
+            
+            # Verify the token is for our app (optional - add your client ID)
+            # if google_data.get('aud') != GOOGLE_CLIENT_ID:
+            #     raise HTTPException(status_code=401, detail="Token not for this app")
+            
+            email = google_data.get('email', '').lower().strip()
+            if not email:
+                raise HTTPException(status_code=400, detail="Email not provided by Google")
+            
+            # Check if user exists
+            user = await db.users.find_one({"email": email})
+            
+            if user:
+                # Existing user - login
+                user = serialize_object_id(user)
+                token = create_token(user['id'])
+                logger.info(f"✓ Google login successful for {email}")
+            else:
+                # New user - register
+                first_name = google_data.get('given_name', google_data.get('name', 'Utilisateur'))
+                last_name = google_data.get('family_name', '')
+                
+                # Generate a random password (user won't need it for Google login)
+                import secrets
+                random_password = secrets.token_urlsafe(32)
+                
+                new_user = {
+                    "email": email,
+                    "password_hash": hash_password(random_password),
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "created_at": datetime.utcnow(),
+                    "updated_at": datetime.utcnow(),
+                    "gdpr_consent": True,
+                    "gdpr_consent_date": datetime.utcnow(),
+                    "role": "member",
+                    "auth_provider": "google",
+                    "google_id": google_data.get('sub'),
+                    "profile_picture": google_data.get('picture')
+                }
+                
+                result = await db.users.insert_one(new_user)
+                new_user['id'] = str(result.inserted_id)
+                user = new_user
+                token = create_token(user['id'])
+                logger.info(f"✓ New Google user registered: {email}")
+            
+            return TokenResponse(
+                access_token=token,
+                user=UserResponse(
+                    id=user['id'],
+                    email=user['email'],
+                    first_name=user['first_name'],
+                    last_name=user['last_name'],
+                    created_at=user.get('created_at', datetime.utcnow()),
+                    gdpr_consent=user.get('gdpr_consent', True),
+                    gdpr_consent_date=user.get('gdpr_consent_date'),
+                    role=user.get('role', 'member')
+                )
+            )
+            
+    except httpx.HTTPError as e:
+        logger.error(f"Google auth HTTP error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to verify Google token")
+    except Exception as e:
+        logger.error(f"Google auth error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Temporary admin endpoint to reset password - REMOVE AFTER USE
 class PasswordReset(BaseModel):
     email: EmailStr
