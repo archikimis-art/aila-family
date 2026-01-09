@@ -22,8 +22,8 @@ import * as WebBrowser from 'expo-web-browser';
 // Required for web auth session
 WebBrowser.maybeCompleteAuthSession();
 
-// Google OAuth Client IDs - Replace with your own from Google Cloud Console
-const GOOGLE_WEB_CLIENT_ID = '812007876653-5jm9pq8qnv7e5k3hq9b7lhvk4q8q8q8q.apps.googleusercontent.com';
+// Google OAuth Client IDs - From Google Cloud Console
+const GOOGLE_WEB_CLIENT_ID = '548263066328-916g23gmboqvmqtd7fi3ejatoseh4h09.apps.googleusercontent.com';
 
 export default function LoginScreen() {
   const router = useRouter();
