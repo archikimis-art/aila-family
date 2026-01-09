@@ -44,7 +44,11 @@ else:
 
 # Google OAuth Configuration
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '548263066328-916g23gmboqvmqtd7fi3ejatoseh4h09.apps.googleusercontent.com')
-GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')  # You need to add this
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
+if GOOGLE_CLIENT_SECRET:
+    logger.info(f"✓ GOOGLE_CLIENT_SECRET configured ({len(GOOGLE_CLIENT_SECRET)} chars)")
+else:
+    logger.warning("⚠ GOOGLE_CLIENT_SECRET not set - Google OAuth will fail!")
 
 # Configure Stripe
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
