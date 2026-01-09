@@ -646,11 +646,16 @@ async def google_auth(data: GoogleAuthRequest):
     """Authenticate or register user via Google OAuth"""
     import httpx
     
+    # Accept either token or id_token field
+    google_token = data.token or data.id_token
+    if not google_token:
+        raise HTTPException(status_code=400, detail="No Google token provided")
+    
     try:
         # Verify the Google ID token
         async with httpx.AsyncClient() as client:
             response = await client.get(
-                f"https://oauth2.googleapis.com/tokeninfo?id_token={data.id_token}"
+                f"https://oauth2.googleapis.com/tokeninfo?id_token={google_token}"
             )
             
             if response.status_code != 200:
