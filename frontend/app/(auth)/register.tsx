@@ -78,7 +78,7 @@ export default function RegisterScreen() {
       }
 
       // Send the ID token to our backend
-      const result = await api.post('/api/auth/google', {
+      const result = await api.post('/auth/google', {
         token: response.credential,
         id_token: response.credential,
       });
