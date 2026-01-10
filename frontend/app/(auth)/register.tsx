@@ -19,7 +19,7 @@ import { useAuth } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '@/services/api';
 
-const GOOGLE_CLIENT_ID = '548263066328-916g2guhpiacu30eu2r2q2r9tvsc5lsm.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '548263066328-916g23gmboqvmqtd7fi3ejatoseh4h09.apps.googleusercontent.com';
 
 export default function RegisterScreen() {
   const router = useRouter();
