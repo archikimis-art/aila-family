@@ -421,18 +421,8 @@ export default function TraditionsFamiliales() {
           </TouchableOpacity>
         </View>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 AILA Famille - Traditions familiales</Text>
-          <View style={styles.footerLinks}>
-            <TouchableOpacity onPress={() => router.push('/arbre-genealogique-gratuit')}>
-              <Text style={styles.footerLink}>Arbre Gratuit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('/organiser-cousinade')}>
-              <Text style={styles.footerLink}>Organiser une Cousinade</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        {/* SEO Footer */}
+        <SEOFooter currentPage="/traditions-familiales" />
       </ScrollView>
     </SafeAreaView>
   );
