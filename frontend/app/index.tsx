@@ -129,8 +129,12 @@ export default function WelcomeScreen() {
   return (
     <View style={styles.mainContainer}>
       <SafeAreaView style={styles.container}>
-        {/* Animated Background */}
-        <AnimatedTreeBackground />
+        {/* Animated Background - Lazy loaded for performance */}
+        {showBackground && (
+          <Suspense fallback={null}>
+            <AnimatedTreeBackground />
+          </Suspense>
+        )}
         
         <LinearGradient
           colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
