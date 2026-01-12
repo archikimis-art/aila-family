@@ -623,4 +623,65 @@ const styles = StyleSheet.create({
     color: '#6B7C93',
     textAlign: 'center',
   },
+  guidesSection: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1E3A5F',
+  },
+  guidesSectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  guidesSectionSubtitle: {
+    fontSize: 13,
+    color: '#6B7C93',
+    marginBottom: 16,
+  },
+  guideLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(212, 175, 55, 0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.2)',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 10,
+  },
+  guideLinkIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  guideLinkEmoji: {
+    fontSize: 22,
+  },
+  guideLinkContent: {
+    flex: 1,
+  },
+  guideLinkTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 2,
+  },
+  guideLinkDesc: {
+    fontSize: 12,
+    color: '#6B7C93',
+  },
+  articlesSectionHeader: {
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 8,
+  },
+  articlesSectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
 });
