@@ -181,6 +181,9 @@ export default function PreserverHistoire() {
           </TouchableOpacity>
         </View>
 
+        {/* Related Articles - Internal Linking */}
+        <RelatedArticles silo="famille" currentPage="/preserver-histoire-famille" />
+
         {/* SEO Footer */}
         <SEOFooter currentPage="/preserver-histoire-famille" />
       </ScrollView>
