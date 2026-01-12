@@ -223,6 +223,9 @@ export default function EcrireHistoire() {
           </TouchableOpacity>
         </View>
 
+        {/* Related Articles - Internal Linking */}
+        <RelatedArticles silo="famille" currentPage="/ecrire-histoire-famille" />
+
         {/* SEO Footer */}
         <SEOFooter currentPage="/ecrire-histoire-famille" />
       </ScrollView>
