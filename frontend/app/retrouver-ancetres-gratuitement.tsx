@@ -420,6 +420,9 @@ export default function RetrouverAncetres() {
           </TouchableOpacity>
         </View>
 
+        {/* Related Articles - Internal Linking */}
+        <RelatedArticles silo="genealogie" currentPage="/retrouver-ancetres-gratuitement" />
+
         {/* SEO Footer */}
         <SEOFooter currentPage="/retrouver-ancetres-gratuitement" />
       </ScrollView>
