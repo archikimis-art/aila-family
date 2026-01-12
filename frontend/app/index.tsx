@@ -223,35 +223,33 @@ export default function WelcomeScreen() {
               <Text style={styles.loginLinkTextBold}>Se connecter</Text>
             </TouchableOpacity>
 
-            {/* Guides SEO Section */}
+            {/* Guides SEO Section - Design épuré */}
             <View style={styles.guidesSection}>
-              <Text style={styles.guidesTitle}>📚 Guides & Ressources</Text>
-              <View style={styles.guidesRow}>
-                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
-                  <Text style={styles.guideEmoji}>🔍</Text>
-                  <Text style={styles.guideText}>Ancêtres</Text>
+              <Text style={styles.guidesTitle}>Guides & Ressources</Text>
+              <View style={styles.guidesContainer}>
+                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
+                  <Ionicons name="search-outline" size={14} color="#D4AF37" />
+                  <Text style={styles.guideChipText}>Ancêtres</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/genealogie-debutant-guide')}>
-                  <Text style={styles.guideEmoji}>🎓</Text>
-                  <Text style={styles.guideText}>Débutant</Text>
+                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/genealogie-debutant-guide')}>
+                  <Ionicons name="school-outline" size={14} color="#D4AF37" />
+                  <Text style={styles.guideChipText}>Débutant</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/traditions-familiales')}>
-                  <Text style={styles.guideEmoji}>🎄</Text>
-                  <Text style={styles.guideText}>Traditions</Text>
+                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/traditions-familiales')}>
+                  <Ionicons name="gift-outline" size={14} color="#D4AF37" />
+                  <Text style={styles.guideChipText}>Traditions</Text>
                 </TouchableOpacity>
-              </View>
-              <View style={styles.guidesRow}>
-                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/organiser-cousinade')}>
-                  <Text style={styles.guideEmoji}>🎉</Text>
-                  <Text style={styles.guideText}>Cousinade</Text>
+                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/organiser-cousinade')}>
+                  <Ionicons name="people-outline" size={14} color="#D4AF37" />
+                  <Text style={styles.guideChipText}>Cousinade</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/ecrire-histoire-famille')}>
-                  <Text style={styles.guideEmoji}>✍️</Text>
-                  <Text style={styles.guideText}>Écrire</Text>
+                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/ecrire-histoire-famille')}>
+                  <Ionicons name="create-outline" size={14} color="#D4AF37" />
+                  <Text style={styles.guideChipText}>Écrire</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/preserver-histoire-famille')}>
-                  <Text style={styles.guideEmoji}>📸</Text>
-                  <Text style={styles.guideText}>Préserver</Text>
+                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/preserver-histoire-famille')}>
+                  <Ionicons name="images-outline" size={14} color="#D4AF37" />
+                  <Text style={styles.guideChipText}>Préserver</Text>
                 </TouchableOpacity>
               </View>
             </View>
