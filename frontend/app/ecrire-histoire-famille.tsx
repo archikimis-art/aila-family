@@ -221,9 +221,8 @@ export default function EcrireHistoire() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 AILA Famille</Text>
-        </View>
+        {/* SEO Footer */}
+        <SEOFooter currentPage="/ecrire-histoire-famille" />
       </ScrollView>
     </SafeAreaView>
   );
