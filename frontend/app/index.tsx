@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   guideText: {
-    color: '#B8C5D6',
+    color: '#8BA1B7',
     fontSize: 10,
     textAlign: 'center',
   },
