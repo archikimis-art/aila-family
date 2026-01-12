@@ -105,109 +105,74 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    console.log('=== handleDeleteAccount START ===');
-    console.log('user:', user);
-    console.log('Platform.OS:', Platform.OS);
-    console.log('typeof window:', typeof window);
-    
+  const handleDeleteAccount = () => {
     if (!user) {
-      console.log('No user found, returning');
       if (typeof window !== 'undefined') {
         window.alert('Vous devez être connecté pour supprimer votre compte.');
       }
       return;
     }
 
-    console.log('User email:', user.email);
-
-    // Detect if we're on web
-    const isWeb = typeof window !== 'undefined' && typeof document !== 'undefined';
-    console.log('isWeb:', isWeb);
+    // Detect web environment
+    const isWeb = typeof window !== 'undefined' && typeof window.confirm === 'function';
 
     if (isWeb) {
-      // WEB: Use window.confirm
-      console.log('Using web confirm dialogs...');
-      
-      try {
-        const confirmed = window.confirm(
-          '⚠️ SUPPRIMER VOTRE COMPTE ?\n\n' +
-          'Cette action est IRRÉVERSIBLE.\n' +
-          'Toutes vos données seront supprimées définitivement.'
-        );
-        
-        console.log('First confirm result:', confirmed);
-        
-        if (!confirmed) {
-          console.log('User cancelled first confirmation');
-          return;
-        }
+      // WEB: Use native browser confirm
+      const confirmed = window.confirm(
+        '⚠️ SUPPRIMER VOTRE COMPTE ?\n\n' +
+        'Cette action est IRRÉVERSIBLE.\n' +
+        'Toutes vos données seront supprimées.'
+      );
 
-        const doubleConfirmed = window.confirm(
-          '🚨 DERNIÈRE CONFIRMATION\n\n' +
-          'Cliquez OK pour supprimer définitivement votre compte.'
-        );
-        
-        console.log('Second confirm result:', doubleConfirmed);
-        
-        if (!doubleConfirmed) {
-          console.log('User cancelled second confirmation');
-          return;
-        }
+      if (!confirmed) return;
 
-        // User confirmed twice - proceed with deletion
-        console.log('User confirmed deletion, proceeding...');
-        setDeleting(true);
-        
-        console.log('Calling gdprAPI.deleteAccount()...');
-        const response = await gdprAPI.deleteAccount();
-        console.log('Delete response:', response);
-        
-        console.log('Calling logout...');
-        await logout();
-        
-        window.alert('✅ Compte supprimé avec succès !');
-        router.replace('/');
-        
-      } catch (error: any) {
-        console.error('Delete account error:', error);
-        console.error('Error response:', error?.response?.data);
-        const errorMsg = error?.response?.data?.detail || error?.message || 'Erreur inconnue';
-        window.alert('❌ Erreur lors de la suppression:\n\n' + errorMsg);
-      } finally {
-        setDeleting(false);
-      }
+      const finalConfirm = window.confirm(
+        '🚨 DERNIÈRE CONFIRMATION\n\n' +
+        'Cliquez OK pour supprimer définitivement.'
+      );
+
+      if (!finalConfirm) return;
+
+      // Proceed with deletion
+      setDeleting(true);
+      gdprAPI.deleteAccount()
+        .then(() => logout())
+        .then(() => {
+          window.alert('✅ Compte supprimé avec succès !');
+          router.replace('/');
+        })
+        .catch((error: any) => {
+          console.error('Delete error:', error);
+          window.alert('❌ Erreur: ' + (error?.response?.data?.detail || 'Échec de la suppression'));
+        })
+        .finally(() => setDeleting(false));
     } else {
-      // MOBILE: Use Alert
-      console.log('Using mobile Alert...');
+      // MOBILE: Use React Native Alert
       Alert.alert(
         '⚠️ Supprimer le compte',
-        'Cette action est irréversible. Toutes vos données seront définitivement supprimées.',
+        'Cette action est irréversible. Toutes vos données seront supprimées.',
         [
           { text: 'Annuler', style: 'cancel' },
           {
             text: 'Supprimer',
             style: 'destructive',
-            onPress: async () => {
+            onPress: () => {
               setDeleting(true);
-              try {
-                await gdprAPI.deleteAccount();
-                await logout();
-                Alert.alert('Compte supprimé', 'Votre compte et toutes vos données ont été supprimés.');
-                router.replace('/');
-              } catch (error: any) {
-                const errorMsg = error?.response?.data?.detail || 'Impossible de supprimer le compte.';
-                Alert.alert('Erreur', errorMsg);
-              } finally {
-                setDeleting(false);
-              }
+              gdprAPI.deleteAccount()
+                .then(() => logout())
+                .then(() => {
+                  Alert.alert('Succès', 'Compte supprimé.');
+                  router.replace('/');
+                })
+                .catch((error: any) => {
+                  Alert.alert('Erreur', error?.response?.data?.detail || 'Échec');
+                })
+                .finally(() => setDeleting(false));
             },
           },
         ]
       );
     }
-    
-    console.log('=== handleDeleteAccount END ===');
   };
 
   const handleClearPreview = async () => {
