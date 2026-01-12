@@ -297,6 +297,101 @@ export default function BlogScreen() {
           </Text>
         </View>
 
+        {/* Guides Complets Section */}
+        <View style={styles.guidesSection}>
+          <Text style={styles.guidesSectionTitle}>📚 Nos Guides Complets</Text>
+          <Text style={styles.guidesSectionSubtitle}>Articles détaillés pour approfondir vos connaissances</Text>
+          
+          <TouchableOpacity 
+            style={styles.guideLink}
+            onPress={() => router.push('/retrouver-ancetres-gratuitement')}
+          >
+            <View style={styles.guideLinkIcon}>
+              <Text style={styles.guideLinkEmoji}>🔍</Text>
+            </View>
+            <View style={styles.guideLinkContent}>
+              <Text style={styles.guideLinkTitle}>Comment retrouver ses ancêtres gratuitement</Text>
+              <Text style={styles.guideLinkDesc}>Guide complet : archives en ligne, registres, méthodes</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.guideLink}
+            onPress={() => router.push('/genealogie-debutant-guide')}
+          >
+            <View style={styles.guideLinkIcon}>
+              <Text style={styles.guideLinkEmoji}>🎓</Text>
+            </View>
+            <View style={styles.guideLinkContent}>
+              <Text style={styles.guideLinkTitle}>Généalogie pour débutant : par où commencer</Text>
+              <Text style={styles.guideLinkDesc}>Les bases pour débuter vos recherches</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.guideLink}
+            onPress={() => router.push('/traditions-familiales')}
+          >
+            <View style={styles.guideLinkIcon}>
+              <Text style={styles.guideLinkEmoji}>🎄</Text>
+            </View>
+            <View style={styles.guideLinkContent}>
+              <Text style={styles.guideLinkTitle}>50 idées de traditions familiales</Text>
+              <Text style={styles.guideLinkDesc}>Créez des souvenirs inoubliables</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.guideLink}
+            onPress={() => router.push('/organiser-cousinade')}
+          >
+            <View style={styles.guideLinkIcon}>
+              <Text style={styles.guideLinkEmoji}>🎉</Text>
+            </View>
+            <View style={styles.guideLinkContent}>
+              <Text style={styles.guideLinkTitle}>Comment organiser une cousinade réussie</Text>
+              <Text style={styles.guideLinkDesc}>Guide + checklist pour réunir la famille</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.guideLink}
+            onPress={() => router.push('/ecrire-histoire-famille')}
+          >
+            <View style={styles.guideLinkIcon}>
+              <Text style={styles.guideLinkEmoji}>✍️</Text>
+            </View>
+            <View style={styles.guideLinkContent}>
+              <Text style={styles.guideLinkTitle}>Écrire l'histoire de sa famille</Text>
+              <Text style={styles.guideLinkDesc}>Transformez vos recherches en récit</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.guideLink}
+            onPress={() => router.push('/preserver-histoire-famille')}
+          >
+            <View style={styles.guideLinkIcon}>
+              <Text style={styles.guideLinkEmoji}>📸</Text>
+            </View>
+            <View style={styles.guideLinkContent}>
+              <Text style={styles.guideLinkTitle}>Préserver l'histoire de sa famille</Text>
+              <Text style={styles.guideLinkDesc}>Numérisation, interviews, conservation</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Articles Section Title */}
+        <View style={styles.articlesSectionHeader}>
+          <Text style={styles.articlesSectionTitle}>📰 Articles du Blog</Text>
+        </View>
+
         {/* Articles List */}
         <View style={styles.articlesList}>
           {articles.map((article) => (
