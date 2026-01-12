@@ -100,7 +100,9 @@ const initSEO = () => {
       { property: 'og:description', content: 'AILA Famille : créez et partagez votre arbre généalogique gratuitement. Application famille collaborative.' },
       { property: 'og:site_name', content: 'AILA Famille' },
       { property: 'og:locale', content: 'fr_FR' },
-      { property: 'og:image', content: 'https://www.aila.family/icons/icon.svg' },
+      { property: 'og:image', content: 'https://www.aila.family/og-image.svg' },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
       { property: 'og:image:alt', content: 'AILA Famille - Arbre Généalogique' },
     ];
     ogTags.forEach(tag => {
