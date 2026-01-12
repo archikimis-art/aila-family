@@ -101,19 +101,30 @@ export default function RegisterScreen() {
     }
   };
 
-  // Close Google popup helper
+  // Close Google popup helper - Clean up ALL Google UI elements
   const closeGooglePopup = () => {
-    // Remove any Google popup elements
-    const popups = document.querySelectorAll('[id^="google-"], [class*="google"]');
-    popups.forEach(el => {
-      if (el.id.includes('popup') || el.id.includes('backdrop')) {
-        el.remove();
-      }
-    });
-    // Also try to cancel Google prompt
+    console.log('[Google SignUp] Cleaning up Google UI elements');
+    
+    // Remove our custom popups
+    const customPopups = document.querySelectorAll('#google-signup-backdrop, #google-signup-popup, #google-btn-signup');
+    customPopups.forEach(el => el.remove());
+    
+    // Remove Google One Tap popup if present
+    const googleContainers = document.querySelectorAll('[id^="credential_picker"], [id^="g_a11y"], .g_id_signin');
+    googleContainers.forEach(el => el.remove());
+    
+    // Remove Google iframe popups
+    const iframes = document.querySelectorAll('iframe[src*="accounts.google.com"]');
+    iframes.forEach(el => el.remove());
+    
+    // Cancel any pending Google prompts
     try {
       (window as any).google?.accounts?.id?.cancel();
-    } catch (e) {}
+    } catch (e) {
+      console.log('[Google SignUp] No prompt to cancel');
+    }
+    
+    console.log('[Google SignUp] Cleanup complete');
   };
 
   // Handle Google button click - ALWAYS show account chooser
