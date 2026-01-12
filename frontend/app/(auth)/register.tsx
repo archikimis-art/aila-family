@@ -124,34 +124,51 @@ export default function RegisterScreen() {
       
       // Calculate popup position (centered)
       const width = 500;
-      const height = 600;
-      const left = window.screenX + (window.outerWidth - width) / 2;
-      const top = window.screenY + (window.outerHeight - height) / 2;
+      const height = 650;
+      const left = Math.max(0, (window.screen.width - width) / 2);
+      const top = Math.max(0, (window.screen.height - height) / 2);
       
-      // Open popup
+      // Open popup with better options for PC
       const popup = window.open(
         authUrl,
-        'google-signin',
-        `width=${width},height=${height},left=${left},top=${top},popup=1`
+        'google-signin-popup',
+        `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,status=yes`
       );
       
-      if (!popup) {
-        showError('Le popup a été bloqué. Veuillez autoriser les popups pour ce site.');
+      // Check if popup was blocked
+      if (!popup || popup.closed || typeof popup.closed === 'undefined') {
         setGoogleLoading(false);
+        // Show a message and offer to open in same window
+        const openInSameWindow = window.confirm(
+          '⚠️ Le popup a été bloqué par votre navigateur.\n\n' +
+          'Options:\n' +
+          '1. Autorisez les popups pour ce site et réessayez\n' +
+          '2. Cliquez OK pour ouvrir Google dans cette fenêtre\n\n' +
+          'Voulez-vous ouvrir Google dans cette fenêtre ?'
+        );
+        if (openInSameWindow) {
+          // Store that we're doing OAuth
+          sessionStorage.setItem('google_oauth_pending', 'signup');
+          window.location.href = authUrl;
+        }
         return;
       }
+      
+      // Focus the popup
+      popup.focus();
       
       // Listen for redirect back with token
       const checkPopup = setInterval(() => {
         try {
-          if (popup.closed) {
+          if (!popup || popup.closed) {
             clearInterval(checkPopup);
             setGoogleLoading(false);
             return;
           }
           
           // Check if popup URL contains our redirect
-          if (popup.location.href.startsWith(window.location.origin)) {
+          const popupUrl = popup.location.href;
+          if (popupUrl && popupUrl.startsWith(window.location.origin)) {
             clearInterval(checkPopup);
             
             // Extract id_token from URL fragment
@@ -166,22 +183,22 @@ export default function RegisterScreen() {
               handleGoogleCallback({ credential: idToken });
             } else {
               setGoogleLoading(false);
-              showError('Aucun token reçu de Google');
+              showError('Aucun token reçu de Google. Veuillez réessayer.');
             }
           }
         } catch (e) {
-          // Cross-origin error - popup is still on Google's domain
+          // Cross-origin error - popup is still on Google's domain, this is normal
         }
-      }, 500);
+      }, 300);
       
-      // Timeout after 2 minutes
+      // Timeout after 3 minutes
       setTimeout(() => {
         clearInterval(checkPopup);
-        if (!popup.closed) {
+        if (popup && !popup.closed) {
           popup.close();
         }
         setGoogleLoading(false);
-      }, 120000);
+      }, 180000);
       
     } catch (error) {
       console.error('Google signup error:', error);
@@ -189,6 +206,24 @@ export default function RegisterScreen() {
       setGoogleLoading(false);
     }
   };
+  
+  // Check for OAuth callback on page load (for same-window flow)
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      const pending = sessionStorage.getItem('google_oauth_pending');
+      if (pending === 'signup' && window.location.hash) {
+        sessionStorage.removeItem('google_oauth_pending');
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const idToken = params.get('id_token');
+        if (idToken) {
+          // Clear the hash from URL
+          window.history.replaceState(null, '', window.location.pathname);
+          handleGoogleCallback({ credential: idToken });
+        }
+      }
+    }
+  }, []);
 
   const showError = (message: string) => {
     setErrorMessage(message);
