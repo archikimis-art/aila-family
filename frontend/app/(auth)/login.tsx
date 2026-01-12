@@ -43,17 +43,16 @@ export default function LoginScreen() {
           client_id: GOOGLE_CLIENT_ID,
           callback: handleGoogleCallback,
           auto_select: false,
+          cancel_on_tap_outside: true,
         });
         setGoogleInitialized(true);
-        console.log('Google Sign-In initialized');
+        console.log('Google Sign-In initialized for login');
       }
     };
 
-    // Check if script already loaded
     if ((window as any).google?.accounts?.id) {
       initializeGoogle();
     } else {
-      // Load Google Identity Services script
       const script = document.createElement('script');
       script.src = 'https://accounts.google.com/gsi/client';
       script.async = true;
@@ -63,18 +62,21 @@ export default function LoginScreen() {
     }
   }, []);
 
-  // Handle Google callback with the credential
+  // Handle Google callback
   const handleGoogleCallback = async (response: any) => {
     console.log('Google callback received');
+    
+    // Close any open Google popups
+    closeGooglePopup();
+    
     setGoogleLoading(true);
     setErrorMessage('');
 
     try {
       if (!response.credential) {
-        throw new Error('No credential received from Google');
+        throw new Error('No credential received');
       }
 
-      // Send the ID token to our backend
       const result = await api.post('/auth/google', {
         token: response.credential,
         id_token: response.credential,
@@ -85,19 +87,29 @@ export default function LoginScreen() {
         api.defaults.headers.common['Authorization'] = `Bearer ${result.data.access_token}`;
         await refreshUser();
         router.replace('/(tabs)/tree');
-      } else {
-        throw new Error('No access token received');
       }
     } catch (error: any) {
       console.error('Google login error:', error);
-      const message = error.response?.data?.detail || 'Erreur lors de la connexion Google. Veuillez réessayer.';
-      showError(message);
+      showError(error.response?.data?.detail || 'Erreur de connexion Google');
     } finally {
       setGoogleLoading(false);
     }
   };
 
-  // Handle Google button click - Use Google Identity Services with account selection
+  // Close Google popup helper
+  const closeGooglePopup = () => {
+    const popups = document.querySelectorAll('[id^="google-"]');
+    popups.forEach(el => {
+      if (el.id.includes('popup') || el.id.includes('backdrop')) {
+        el.remove();
+      }
+    });
+    try {
+      (window as any).google?.accounts?.id?.cancel();
+    } catch (e) {}
+  };
+
+  // Handle Google button click
   const handleGoogleLogin = () => {
     if (Platform.OS !== 'web' || typeof window === 'undefined') {
       showError('La connexion Google n\'est disponible que sur le web.');
@@ -106,8 +118,7 @@ export default function LoginScreen() {
 
     const google = (window as any).google;
     if (!google?.accounts?.id) {
-      showError('Google Sign-In est en cours de chargement. Veuillez patienter...');
-      // Retry after a short delay
+      showError('Google Sign-In charge. Patientez...');
       setTimeout(() => handleGoogleLogin(), 1000);
       return;
     }
@@ -115,125 +126,68 @@ export default function LoginScreen() {
     setGoogleLoading(true);
     setErrorMessage('');
 
-    try {
-      // First, disable auto-select to force account chooser
-      google.accounts.id.disableAutoSelect();
-      
-      // Re-initialize with fresh settings
-      google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleCallback,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
+    google.accounts.id.disableAutoSelect();
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCallback,
+      auto_select: false,
+      cancel_on_tap_outside: true,
+    });
 
-      // Try to show the One Tap prompt
-      google.accounts.id.prompt((notification: any) => {
-        console.log('Google prompt notification:', notification);
-        
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // One Tap blocked or unavailable, show button popup
-          showGoogleButtonPopup();
-        } else if (notification.isDismissedMoment()) {
-          console.log('User dismissed Google prompt');
-          setGoogleLoading(false);
-        }
-      });
-    } catch (error) {
-      console.error('Google login error:', error);
-      showError('Erreur lors de l\'ouverture de Google. Veuillez réessayer.');
-      setGoogleLoading(false);
-    }
+    google.accounts.id.prompt((notification: any) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        showGoogleButtonFallback();
+      } else if (notification.isDismissedMoment()) {
+        setGoogleLoading(false);
+      }
+    });
   };
 
-  // Show Google button in a popup when One Tap fails
-  const showGoogleButtonPopup = () => {
-    const google = (window as any).google;
-    
-    // Remove any existing popup
-    const existingPopup = document.getElementById('google-login-popup');
-    if (existingPopup) existingPopup.remove();
-    const existingBackdrop = document.getElementById('google-login-backdrop');
-    if (existingBackdrop) existingBackdrop.remove();
-    
-    // Create popup container
-    const popup = document.createElement('div');
-    popup.id = 'google-login-popup';
-    popup.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 10000;
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      text-align: center;
-      min-width: 320px;
-    `;
-    
-    // Add backdrop
+  // Fallback Google button modal
+  const showGoogleButtonFallback = () => {
+    closeGooglePopup();
+
     const backdrop = document.createElement('div');
     backdrop.id = 'google-login-backdrop';
     backdrop.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 9999;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6); z-index: 9998;
     `;
     backdrop.onclick = () => {
-      backdrop.remove();
-      popup.remove();
+      closeGooglePopup();
       setGoogleLoading(false);
     };
-    
-    // Title
-    const title = document.createElement('h3');
-    title.textContent = '🔐 Choisissez votre compte Google';
-    title.style.cssText = 'margin: 0 0 20px 0; color: #333; font-size: 18px;';
-    popup.appendChild(title);
-    
-    // Button container
-    const btnContainer = document.createElement('div');
-    btnContainer.id = 'google-btn-container';
-    btnContainer.style.cssText = 'display: flex; justify-content: center;';
-    popup.appendChild(btnContainer);
-    
-    // Cancel button
-    const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = 'Annuler';
-    cancelBtn.style.cssText = `
-      margin-top: 20px;
-      padding: 10px 24px;
-      border: none;
-      background: #f0f0f0;
-      border-radius: 8px;
-      cursor: pointer;
-      color: #666;
-      font-size: 14px;
+
+    const popup = document.createElement('div');
+    popup.id = 'google-login-popup';
+    popup.style.cssText = `
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: white; padding: 32px; border-radius: 16px; z-index: 9999;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2); text-align: center; min-width: 300px;
     `;
-    cancelBtn.onclick = () => {
-      backdrop.remove();
-      popup.remove();
-      setGoogleLoading(false);
-    };
-    popup.appendChild(cancelBtn);
-    
+
+    popup.innerHTML = `
+      <h3 style="margin: 0 0 8px 0; color: #333; font-size: 18px;">Se connecter avec Google</h3>
+      <p style="margin: 0 0 20px 0; color: #666; font-size: 14px;">Choisissez votre compte</p>
+      <div id="google-btn-login" style="display: flex; justify-content: center;"></div>
+      <button id="google-cancel-login" style="
+        margin-top: 16px; padding: 10px 24px; border: none; background: #f5f5f5;
+        border-radius: 8px; cursor: pointer; color: #666; font-size: 14px;
+      ">Annuler</button>
+    `;
+
     document.body.appendChild(backdrop);
     document.body.appendChild(popup);
-    
-    // Render Google Sign In button
-    google.accounts.id.renderButton(btnContainer, {
-      type: 'standard',
-      theme: 'outline',
-      size: 'large',
-      text: 'continue_with',
-      width: 280,
+
+    document.getElementById('google-cancel-login')?.addEventListener('click', () => {
+      closeGooglePopup();
+      setGoogleLoading(false);
     });
+
+    (window as any).google.accounts.id.renderButton(
+      document.getElementById('google-btn-login'),
+      { theme: 'outline', size: 'large', text: 'continue_with', width: 250 }
+    );
   };
 
   // Handle legacy OAuth callback (from URL params)
