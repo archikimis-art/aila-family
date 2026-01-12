@@ -434,9 +434,19 @@ export default function RootLayout() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Performance: Preconnect first (fastest)
+    initPreconnect();
+    
+    // Critical: SEO meta tags
     initSEO();
+    
+    // Important: PWA setup
     initPWA();
+    
+    // Deferred: Analytics (2s delay)
     initGoogleAnalytics();
+    
+    // Deferred: AdSense (4s delay)
     initGoogleAdSense();
     
     // Initialize AdMob for native apps
