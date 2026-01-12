@@ -188,32 +188,34 @@ export default function WelcomeScreen() {
             {/* Guides SEO Section */}
             <View style={styles.guidesSection}>
               <Text style={styles.guidesTitle}>📚 Guides & Ressources</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.guidesScroll}>
+              <View style={styles.guidesRow}>
                 <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
                   <Text style={styles.guideEmoji}>🔍</Text>
-                  <Text style={styles.guideText}>Retrouver ses ancêtres</Text>
+                  <Text style={styles.guideText}>Ancêtres</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/genealogie-debutant-guide')}>
                   <Text style={styles.guideEmoji}>🎓</Text>
-                  <Text style={styles.guideText}>Guide débutant</Text>
+                  <Text style={styles.guideText}>Débutant</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/traditions-familiales')}>
                   <Text style={styles.guideEmoji}>🎄</Text>
-                  <Text style={styles.guideText}>Traditions familiales</Text>
+                  <Text style={styles.guideText}>Traditions</Text>
                 </TouchableOpacity>
+              </View>
+              <View style={styles.guidesRow}>
                 <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/organiser-cousinade')}>
                   <Text style={styles.guideEmoji}>🎉</Text>
-                  <Text style={styles.guideText}>Organiser une cousinade</Text>
+                  <Text style={styles.guideText}>Cousinade</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/ecrire-histoire-famille')}>
                   <Text style={styles.guideEmoji}>✍️</Text>
-                  <Text style={styles.guideText}>Écrire son histoire</Text>
+                  <Text style={styles.guideText}>Écrire</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/preserver-histoire-famille')}>
                   <Text style={styles.guideEmoji}>📸</Text>
-                  <Text style={styles.guideText}>Préserver l'histoire</Text>
+                  <Text style={styles.guideText}>Préserver</Text>
                 </TouchableOpacity>
-              </ScrollView>
+              </View>
             </View>
 
             {/* Footer text only */}
