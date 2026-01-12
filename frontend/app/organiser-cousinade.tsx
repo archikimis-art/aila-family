@@ -205,6 +205,9 @@ export default function OrganiserCousinade() {
           </TouchableOpacity>
         </View>
 
+        {/* Related Articles - Internal Linking */}
+        <RelatedArticles silo="famille" currentPage="/organiser-cousinade" />
+
         {/* SEO Footer */}
         <SEOFooter currentPage="/organiser-cousinade" />
       </ScrollView>
