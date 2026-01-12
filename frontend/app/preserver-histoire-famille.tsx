@@ -179,9 +179,8 @@ export default function PreserverHistoire() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 AILA Famille</Text>
-        </View>
+        {/* SEO Footer */}
+        <SEOFooter currentPage="/preserver-histoire-famille" />
       </ScrollView>
     </SafeAreaView>
   );
