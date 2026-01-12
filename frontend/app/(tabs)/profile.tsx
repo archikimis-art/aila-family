@@ -108,30 +108,66 @@ export default function ProfileScreen() {
   const handleDeleteAccount = async () => {
     if (!user) return;
 
-    Alert.alert(
-      'Supprimer le compte',
-      'Cette action est irréversible. Toutes vos données seront définitivement supprimées.',
-      [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Supprimer',
-          style: 'destructive',
-          onPress: async () => {
-            setDeleting(true);
-            try {
-              await gdprAPI.deleteAccount();
-              await logout();
-              Alert.alert('Compte supprimé', 'Votre compte et toutes vos données ont été supprimés.');
-              router.replace('/');
-            } catch (error) {
-              Alert.alert('Erreur', 'Impossible de supprimer le compte.');
-            } finally {
-              setDeleting(false);
-            }
+    const performDelete = async () => {
+      setDeleting(true);
+      try {
+        await gdprAPI.deleteAccount();
+        await logout();
+        if (Platform.OS === 'web') {
+          window.alert('Votre compte et toutes vos données ont été supprimés.');
+        } else {
+          Alert.alert('Compte supprimé', 'Votre compte et toutes vos données ont été supprimés.');
+        }
+        router.replace('/');
+      } catch (error) {
+        console.error('Delete account error:', error);
+        if (Platform.OS === 'web') {
+          window.alert('Impossible de supprimer le compte. Veuillez réessayer.');
+        } else {
+          Alert.alert('Erreur', 'Impossible de supprimer le compte.');
+        }
+      } finally {
+        setDeleting(false);
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      // On web, use window.confirm
+      const confirmed = window.confirm(
+        '⚠️ ATTENTION ⚠️\n\n' +
+        'Cette action est IRRÉVERSIBLE.\n' +
+        'Toutes vos données seront définitivement supprimées :\n' +
+        '• Votre profil\n' +
+        '• Votre arbre généalogique\n' +
+        '• Tous les membres ajoutés\n\n' +
+        'Êtes-vous absolument sûr de vouloir supprimer votre compte ?'
+      );
+      if (confirmed) {
+        // Double confirmation for safety
+        const doubleConfirmed = window.confirm(
+          '🚨 DERNIÈRE CONFIRMATION 🚨\n\n' +
+          'Cliquez sur OK pour supprimer définitivement votre compte.\n' +
+          'Cette action ne peut pas être annulée.'
+        );
+        if (doubleConfirmed) {
+          await performDelete();
+        }
+      }
+    } else {
+      // On mobile, use Alert
+      Alert.alert(
+        '⚠️ Supprimer le compte',
+        'Cette action est irréversible. Toutes vos données seront définitivement supprimées.',
+        [
+          { text: 'Annuler', style: 'cancel' },
+          {
+            text: 'Supprimer',
+            style: 'destructive',
+            onPress: performDelete,
           },
-        },
-      ]
-    );
+        ]
+      );
+    }
   };
 
   const handleClearPreview = async () => {
