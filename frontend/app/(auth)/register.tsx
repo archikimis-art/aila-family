@@ -116,8 +116,10 @@ export default function RegisterScreen() {
     } catch (e) {}
   };
 
-  // Handle Google button click - Simple and reliable
+  // Handle Google button click - ALWAYS show account chooser
   const handleGoogleSignUp = () => {
+    console.log('[Google SignUp] Button clicked');
+    
     if (Platform.OS !== 'web' || typeof window === 'undefined') {
       Alert.alert('Info', 'L\'inscription Google n\'est disponible que sur le web.');
       return;
@@ -125,6 +127,7 @@ export default function RegisterScreen() {
 
     const google = (window as any).google;
     if (!google?.accounts?.id) {
+      console.log('[Google SignUp] Google SDK not loaded, retrying...');
       showError('Google Sign-In est en cours de chargement. Veuillez patienter...');
       setTimeout(() => handleGoogleSignUp(), 1000);
       return;
@@ -133,33 +136,29 @@ export default function RegisterScreen() {
     setGoogleLoading(true);
     setErrorMessage('');
 
-    // Always disable auto-select to force account chooser
+    // Cancel any existing prompts
+    try {
+      google.accounts.id.cancel();
+    } catch (e) {
+      console.log('[Google SignUp] No existing prompt to cancel');
+    }
+
+    // Clear stored credentials to force account chooser
     google.accounts.id.disableAutoSelect();
 
-    // Re-initialize to ensure fresh state
+    // Reinitialize with fresh settings
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
       callback: handleGoogleCallback,
       auto_select: false,
       cancel_on_tap_outside: true,
+      prompt_parent_id: undefined,
+      ux_mode: 'popup',  // Force popup mode
     });
 
-    // Show Google One Tap - this will show account chooser
-    google.accounts.id.prompt((notification: any) => {
-      console.log('Google prompt status:', notification);
-      
-      if (notification.isNotDisplayed()) {
-        console.log('One Tap not displayed, reason:', notification.getNotDisplayedReason());
-        // Fallback: render a Google button
-        showGoogleButtonFallback();
-      } else if (notification.isSkippedMoment()) {
-        console.log('One Tap skipped, reason:', notification.getSkippedReason());
-        showGoogleButtonFallback();
-      } else if (notification.isDismissedMoment()) {
-        console.log('User dismissed Google prompt');
-        setGoogleLoading(false);
-      }
-    });
+    console.log('[Google SignUp] Showing account chooser fallback directly');
+    // Skip One Tap and go directly to button fallback for reliable account chooser
+    showGoogleButtonFallback();
   };
 
   // Fallback: Show Google Sign-In button in a modal
