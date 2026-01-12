@@ -1032,11 +1032,11 @@ export default function ProfileScreen() {
           {user && (
             <TouchableOpacity
               style={[styles.menuItem, styles.dangerItem]}
-              onPress={() => {
-                console.log('Delete button pressed, user:', user?.email);
-                handleDeleteAccount();
-              }}
+              onPress={handleDeleteAccount}
               disabled={deleting}
+              activeOpacity={0.7}
+              accessibilityLabel="Supprimer mon compte"
+              accessibilityRole="button"
             >
               {deleting ? (
                 <ActivityIndicator size="small" color="#FF6B6B" />
