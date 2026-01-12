@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SEOFooter } from '@/components/SEOFooter';
+import { SEOBreadcrumbs, BREADCRUMB_CONFIGS } from '@/components/SEOBreadcrumbs';
+import { RelatedArticles } from '@/components/RelatedArticles';
 
 const SEOHead = () => {
   useEffect(() => {
