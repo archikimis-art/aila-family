@@ -97,15 +97,10 @@ export default function LoginScreen() {
     }
   };
 
-  // Handle Google button click
+  // Handle Google button click - Force account selection
   const handleGoogleLogin = () => {
     if (Platform.OS !== 'web' || typeof window === 'undefined') {
       showError('La connexion Google n\'est disponible que sur le web.');
-      return;
-    }
-
-    if (!googleInitialized || !(window as any).google?.accounts?.id) {
-      showError('Google Sign-In est en cours de chargement. Veuillez patienter...');
       return;
     }
 
@@ -113,71 +108,86 @@ export default function LoginScreen() {
     setErrorMessage('');
 
     try {
-      // Trigger Google One Tap
-      (window as any).google.accounts.id.prompt((notification: any) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // One Tap not available, show the standard button popup
-          console.log('One Tap not available, using standard flow');
-          
-          // Create a temporary container for Google button
-          const tempDiv = document.createElement('div');
-          tempDiv.style.position = 'fixed';
-          tempDiv.style.top = '50%';
-          tempDiv.style.left = '50%';
-          tempDiv.style.transform = 'translate(-50%, -50%)';
-          tempDiv.style.zIndex = '9999';
-          tempDiv.style.background = 'white';
-          tempDiv.style.padding = '20px';
-          tempDiv.style.borderRadius = '12px';
-          tempDiv.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
-          tempDiv.id = 'google-signin-popup';
-          
-          // Add close button
-          const closeBtn = document.createElement('button');
-          closeBtn.innerHTML = '✕';
-          closeBtn.style.position = 'absolute';
-          closeBtn.style.top = '5px';
-          closeBtn.style.right = '10px';
-          closeBtn.style.border = 'none';
-          closeBtn.style.background = 'none';
-          closeBtn.style.fontSize = '20px';
-          closeBtn.style.cursor = 'pointer';
-          closeBtn.onclick = () => {
-            document.body.removeChild(tempDiv);
+      // Use OAuth 2.0 popup flow with account selection prompt
+      const clientId = GOOGLE_CLIENT_ID;
+      const redirectUri = encodeURIComponent(window.location.origin);
+      const scope = encodeURIComponent('openid email profile');
+      const nonce = Math.random().toString(36).substring(2, 15);
+      
+      // Build OAuth URL with prompt=select_account to ALWAYS show account chooser
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${clientId}` +
+        `&redirect_uri=${redirectUri}` +
+        `&response_type=id_token` +
+        `&scope=${scope}` +
+        `&nonce=${nonce}` +
+        `&prompt=select_account`;  // Force account selection every time
+      
+      // Calculate popup position (centered)
+      const width = 500;
+      const height = 600;
+      const left = window.screenX + (window.outerWidth - width) / 2;
+      const top = window.screenY + (window.outerHeight - height) / 2;
+      
+      // Open popup
+      const popup = window.open(
+        authUrl,
+        'google-signin',
+        `width=${width},height=${height},left=${left},top=${top},popup=1`
+      );
+      
+      if (!popup) {
+        showError('Le popup a été bloqué. Veuillez autoriser les popups pour ce site.');
+        setGoogleLoading(false);
+        return;
+      }
+      
+      // Listen for redirect back with token
+      const checkPopup = setInterval(() => {
+        try {
+          if (popup.closed) {
+            clearInterval(checkPopup);
             setGoogleLoading(false);
-          };
+            return;
+          }
           
-          const title = document.createElement('p');
-          title.innerHTML = 'Connectez-vous avec Google';
-          title.style.marginBottom = '15px';
-          title.style.fontWeight = 'bold';
-          title.style.textAlign = 'center';
-          
-          const btnContainer = document.createElement('div');
-          btnContainer.id = 'google-btn-container';
-          
-          tempDiv.appendChild(closeBtn);
-          tempDiv.appendChild(title);
-          tempDiv.appendChild(btnContainer);
-          document.body.appendChild(tempDiv);
-          
-          // Render Google button
-          (window as any).google.accounts.id.renderButton(btnContainer, {
-            type: 'standard',
-            theme: 'filled_blue',
-            size: 'large',
-            text: 'continue_with',
-            width: 280,
-          });
-        } else if (notification.isDismissedMoment()) {
-          console.log('Google prompt dismissed');
-          setGoogleLoading(false);
+          // Check if popup URL contains our redirect
+          if (popup.location.href.startsWith(window.location.origin)) {
+            clearInterval(checkPopup);
+            
+            // Extract id_token from URL fragment
+            const hash = popup.location.hash.substring(1);
+            const params = new URLSearchParams(hash);
+            const idToken = params.get('id_token');
+            
+            popup.close();
+            
+            if (idToken) {
+              // Process the token
+              handleGoogleCallback({ credential: idToken });
+            } else {
+              setGoogleLoading(false);
+              showError('Aucun token reçu de Google');
+            }
+          }
+        } catch (e) {
+          // Cross-origin error - popup is still on Google's domain
         }
-      });
+      }, 500);
+      
+      // Timeout after 2 minutes
+      setTimeout(() => {
+        clearInterval(checkPopup);
+        if (!popup.closed) {
+          popup.close();
+        }
+        setGoogleLoading(false);
+      }, 120000);
+      
     } catch (error) {
-      console.error('Error triggering Google Sign-In:', error);
+      console.error('Google login error:', error);
+      showError('Erreur lors de l\'ouverture de Google. Veuillez réessayer.');
       setGoogleLoading(false);
-      showError('Erreur lors de la connexion Google.');
     }
   };
 
