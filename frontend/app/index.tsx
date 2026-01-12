@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Share, Platform, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
-import { AnimatedTreeBackground } from '@/components/AnimatedTreeBackground';
+
+// Lazy load the animated background for better LCP
+const AnimatedTreeBackground = lazy(() => import('@/components/AnimatedTreeBackground').then(m => ({ default: m.AnimatedTreeBackground })));
 
 const { width, height } = Dimensions.get('window');
 const isWeb = Platform.OS === 'web';
@@ -16,6 +18,15 @@ export default function WelcomeScreen() {
   const router = useRouter();
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
+  const [showBackground, setShowBackground] = useState(false);
+
+  // Defer animated background loading for better performance
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowBackground(true);
+    }, 100); // Load background after 100ms
+    return () => clearTimeout(timer);
+  }, []);
 
   // PWA Install prompt
   useEffect(() => {
