@@ -26,6 +26,27 @@
     <priority>0.95</priority>
   </url>
   
+  <url>
+    <loc>https://www.aila.family/questions-grands-parents</loc>
+    <lastmod>2025-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.aila.family/arbre-genealogique-famille-recomposee</loc>
+    <lastmod>2025-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.aila.family/rappel-anniversaires-famille</loc>
+    <lastmod>2025-01-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  
   <!-- Pages principales -->
   <url>
     <loc>https://www.aila.family/about</loc>
