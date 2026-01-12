@@ -209,25 +209,6 @@ export default function ProfileScreen() {
     
     console.log('=== handleDeleteAccount END ===');
   };
-            onPress: async () => {
-              setDeleting(true);
-              try {
-                await gdprAPI.deleteAccount();
-                await logout();
-                Alert.alert('Compte supprimé', 'Votre compte et toutes vos données ont été supprimés.');
-                router.replace('/');
-              } catch (error: any) {
-                const errorMsg = error?.response?.data?.detail || 'Impossible de supprimer le compte.';
-                Alert.alert('Erreur', errorMsg);
-              } finally {
-                setDeleting(false);
-              }
-            },
-          },
-        ]
-      );
-    }
-  };
 
   const handleClearPreview = async () => {
     Alert.alert(
