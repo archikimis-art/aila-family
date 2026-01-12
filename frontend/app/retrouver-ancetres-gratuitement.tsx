@@ -420,18 +420,8 @@ export default function RetrouverAncetres() {
           </TouchableOpacity>
         </View>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 AILA Famille - Guide de généalogie</Text>
-          <View style={styles.footerLinks}>
-            <TouchableOpacity onPress={() => router.push('/arbre-genealogique-gratuit')}>
-              <Text style={styles.footerLink}>Arbre Gratuit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('/questions-grands-parents')}>
-              <Text style={styles.footerLink}>Questions Grands-Parents</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        {/* SEO Footer */}
+        <SEOFooter currentPage="/retrouver-ancetres-gratuitement" />
       </ScrollView>
     </SafeAreaView>
   );
