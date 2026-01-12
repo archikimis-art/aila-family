@@ -668,3 +668,4 @@ const styles = StyleSheet.create({
   },
 });
 // Trigger Vercel deployment
+// Force rebuild Mon Jan 12 14:50:50 UTC 2026
