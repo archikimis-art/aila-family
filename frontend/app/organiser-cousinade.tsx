@@ -203,9 +203,8 @@ export default function OrganiserCousinade() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>© 2025 AILA Famille</Text>
-        </View>
+        {/* SEO Footer */}
+        <SEOFooter currentPage="/organiser-cousinade" />
       </ScrollView>
     </SafeAreaView>
   );
