@@ -185,6 +185,37 @@ export default function WelcomeScreen() {
               <Text style={styles.loginButtonTextBold}>Se connecter</Text>
             </TouchableOpacity>
 
+            {/* Guides SEO Section */}
+            <View style={styles.guidesSection}>
+              <Text style={styles.guidesTitle}>📚 Guides & Ressources</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.guidesScroll}>
+                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
+                  <Text style={styles.guideEmoji}>🔍</Text>
+                  <Text style={styles.guideText}>Retrouver ses ancêtres</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/genealogie-debutant-guide')}>
+                  <Text style={styles.guideEmoji}>🎓</Text>
+                  <Text style={styles.guideText}>Guide débutant</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/traditions-familiales')}>
+                  <Text style={styles.guideEmoji}>🎄</Text>
+                  <Text style={styles.guideText}>Traditions familiales</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/organiser-cousinade')}>
+                  <Text style={styles.guideEmoji}>🎉</Text>
+                  <Text style={styles.guideText}>Organiser une cousinade</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/ecrire-histoire-famille')}>
+                  <Text style={styles.guideEmoji}>✍️</Text>
+                  <Text style={styles.guideText}>Écrire son histoire</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.guideCard} onPress={() => router.push('/preserver-histoire-famille')}>
+                  <Text style={styles.guideEmoji}>📸</Text>
+                  <Text style={styles.guideText}>Préserver l'histoire</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+
             {/* Footer text only */}
             <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
             
