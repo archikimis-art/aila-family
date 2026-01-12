@@ -298,7 +298,7 @@ export default function RegisterScreen() {
             </View>
           )}
 
-          {/* Form */}
+          {/* Form - Simplifié */}
           <View style={styles.form}>
             {/* Error Message */}
             {errorMessage ? (
@@ -308,57 +308,41 @@ export default function RegisterScreen() {
               </View>
             ) : null}
 
-            <View style={styles.row}>
-              <View style={[styles.inputContainer, styles.halfInput]}>
-                <Ionicons name="person-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Prénom"
-                  placeholderTextColor="#6B7C93"
-                  value={firstName}
-                  onChangeText={setFirstName}
-                  autoCapitalize="words"
-                />
-              </View>
-              <View style={[styles.inputContainer, styles.halfInput]}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Nom"
-                  placeholderTextColor="#6B7C93"
-                  value={lastName}
-                  onChangeText={setLastName}
-                  autoCapitalize="words"
-                />
-              </View>
-            </View>
-
+            {/* Email */}
             <View style={styles.inputContainer}>
               <Ionicons name="mail-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder="Votre email"
                 placeholderTextColor="#6B7C93"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoComplete="email"
+                accessibilityLabel="Adresse email"
+                accessibilityHint="Entrez votre adresse email pour créer un compte"
               />
             </View>
 
+            {/* Password */}
             <View style={styles.inputContainer}>
               <Ionicons name="lock-closed-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Mot de passe"
+                placeholder="Mot de passe (6 caractères min.)"
                 placeholderTextColor="#6B7C93"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
+                accessibilityLabel="Mot de passe"
+                accessibilityHint="Créez un mot de passe d'au moins 6 caractères"
               />
               <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.eyeIcon}
+                accessibilityLabel={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                accessibilityRole="button"
               >
                 <Ionicons
                   name={showPassword ? 'eye-off-outline' : 'eye-outline'}
@@ -368,50 +352,47 @@ export default function RegisterScreen() {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.inputContainer}>
-              <Ionicons name="lock-closed-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder="Confirmer le mot de passe"
-                placeholderTextColor="#6B7C93"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry={!showPassword}
-              />
-            </View>
-
-            {/* GDPR Consent */}
-            <View style={styles.gdprContainer}>
-              <Switch
-                value={gdprConsent}
-                onValueChange={setGdprConsent}
-                trackColor={{ false: '#2A3F5A', true: '#D4AF37' }}
-                thumbColor={gdprConsent ? '#FFFFFF' : '#6B7C93'}
-              />
-              <View style={styles.gdprTextContainer}>
-                <Text style={styles.gdprText}>
-                  J'accepte la{' '}
-                  <Text style={styles.gdprLink}>politique de confidentialité</Text>
-                  {' '}et les{' '}
-                  <Text style={styles.gdprLink}>conditions d'utilisation</Text>
-                </Text>
+            {/* GDPR Consent - Checkbox style */}
+            <TouchableOpacity 
+              style={styles.gdprContainer}
+              onPress={() => setGdprConsent(!gdprConsent)}
+              accessibilityLabel="Accepter la politique de confidentialité"
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: gdprConsent }}
+            >
+              <View style={[styles.checkbox, gdprConsent && styles.checkboxChecked]}>
+                {gdprConsent && <Ionicons name="checkmark" size={16} color="#0A1628" />}
               </View>
-            </View>
+              <Text style={styles.gdprText}>
+                J'accepte la{' '}
+                <Text style={styles.gdprLink} onPress={() => router.push('/privacy')}>politique de confidentialité</Text>
+              </Text>
+            </TouchableOpacity>
 
+            {/* Register Button */}
             <TouchableOpacity
               style={[styles.registerButton, loading && styles.buttonDisabled]}
               onPress={handleRegister}
               disabled={loading}
+              accessibilityLabel="Créer mon compte"
+              accessibilityRole="button"
+              accessibilityHint="Crée votre compte et accède à votre arbre généalogique"
             >
               {loading ? (
                 <ActivityIndicator color="#0A1628" />
               ) : (
                 <>
-                  <Text style={styles.registerButtonText}>Créer mon compte</Text>
+                  <Text style={styles.registerButtonText}>Créer mon compte gratuit</Text>
                   <Ionicons name="arrow-forward" size={20} color="#0A1628" />
                 </>
               )}
             </TouchableOpacity>
+
+            {/* Reassurance */}
+            <View style={styles.reassurance}>
+              <Ionicons name="shield-checkmark-outline" size={16} color="#4CAF50" />
+              <Text style={styles.reassuranceText}>Gratuit • Sans pub • Données protégées</Text>
+            </View>
           </View>
 
           {/* Footer */}
