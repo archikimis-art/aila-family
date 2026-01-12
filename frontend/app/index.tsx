@@ -190,7 +190,7 @@ export default function WelcomeScreen() {
               </View>
               <View style={styles.reassuranceItem}>
                 <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
-                <Text style={styles.reassuranceText}>Sans pub</Text>
+                <Text style={styles.reassuranceText}>Simple</Text>
               </View>
               <View style={styles.reassuranceItem}>
                 <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
