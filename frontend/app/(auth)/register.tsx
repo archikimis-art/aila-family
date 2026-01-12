@@ -193,13 +193,15 @@ export default function RegisterScreen() {
   const handleRegister = async () => {
     setErrorMessage('');
     
-    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+    if (!email || !password) {
       showError('Veuillez remplir tous les champs');
       return;
     }
 
-    if (password !== confirmPassword) {
-      showError('Les mots de passe ne correspondent pas');
+    // Validation email simple
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showError('Adresse email invalide');
       return;
     }
 
@@ -215,11 +217,15 @@ export default function RegisterScreen() {
 
     setLoading(true);
     try {
+      // Extraire prénom de l'email pour le profil initial
+      const emailName = email.split('@')[0];
+      const firstName = emailName.charAt(0).toUpperCase() + emailName.slice(1).split(/[._-]/)[0];
+      
       await register({
         email,
         password,
         first_name: firstName,
-        last_name: lastName,
+        last_name: '',
         gdpr_consent: gdprConsent,
       });
       router.replace('/(tabs)/tree');
