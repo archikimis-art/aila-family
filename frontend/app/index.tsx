@@ -631,40 +631,40 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   guidesSection: {
-    marginTop: 8,
+    marginTop: 16,
     marginBottom: 12,
   },
   guidesTitle: {
-    color: '#FFFFFF',
-    fontSize: 14,
+    color: '#6B7C93',
+    fontSize: 11,
     fontWeight: '600',
     marginBottom: 10,
     textAlign: 'center',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
-  guidesRow: {
+  guidesContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'center',
     gap: 8,
-    marginBottom: 8,
+    paddingHorizontal: 16,
   },
-  guideCard: {
-    backgroundColor: 'rgba(212, 175, 55, 0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(212, 175, 55, 0.2)',
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+  guideChip: {
+    flexDirection: 'row',
     alignItems: 'center',
-    minWidth: 80,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.25)',
+    borderRadius: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    gap: 6,
   },
-  guideEmoji: {
-    fontSize: 18,
-    marginBottom: 2,
-  },
-  guideText: {
+  guideChipText: {
     color: '#8BA1B7',
-    fontSize: 10,
-    textAlign: 'center',
+    fontSize: 12,
+    fontWeight: '500',
   },
 });
 // Trigger Vercel deployment
