@@ -109,8 +109,10 @@ export default function LoginScreen() {
     } catch (e) {}
   };
 
-  // Handle Google button click
+  // Handle Google button click - ALWAYS show account chooser
   const handleGoogleLogin = () => {
+    console.log('[Google Login] Button clicked');
+    
     if (Platform.OS !== 'web' || typeof window === 'undefined') {
       showError('La connexion Google n\'est disponible que sur le web.');
       return;
@@ -118,6 +120,7 @@ export default function LoginScreen() {
 
     const google = (window as any).google;
     if (!google?.accounts?.id) {
+      console.log('[Google Login] Google SDK not loaded, retrying...');
       showError('Google Sign-In charge. Patientez...');
       setTimeout(() => handleGoogleLogin(), 1000);
       return;
@@ -126,21 +129,29 @@ export default function LoginScreen() {
     setGoogleLoading(true);
     setErrorMessage('');
 
+    // Cancel any existing prompts
+    try {
+      google.accounts.id.cancel();
+    } catch (e) {
+      console.log('[Google Login] No existing prompt to cancel');
+    }
+
+    // Clear stored credentials to force account chooser
     google.accounts.id.disableAutoSelect();
+
+    // Reinitialize with fresh settings
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
       callback: handleGoogleCallback,
       auto_select: false,
       cancel_on_tap_outside: true,
+      prompt_parent_id: undefined,
+      ux_mode: 'popup',  // Force popup mode
     });
 
-    google.accounts.id.prompt((notification: any) => {
-      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        showGoogleButtonFallback();
-      } else if (notification.isDismissedMoment()) {
-        setGoogleLoading(false);
-      }
-    });
+    console.log('[Google Login] Showing account chooser fallback directly');
+    // Skip One Tap and go directly to button fallback for reliable account chooser
+    showGoogleButtonFallback();
   };
 
   // Fallback Google button modal
