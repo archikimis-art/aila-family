@@ -327,16 +327,18 @@ const initPWA = () => {
     appleMeta3.content = 'AÏLA';
     document.head.appendChild(appleMeta3);
     
-    // Register service worker
+    // Register service worker - delayed to not block initial render
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then((registration) => {
-            console.log('AÏLA: Service Worker registered', registration.scope);
-          })
-          .catch((error) => {
-            console.log('AÏLA: Service Worker registration failed', error);
-          });
+        setTimeout(() => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('AÏLA: Service Worker registered', registration.scope);
+            })
+            .catch((error) => {
+              console.log('AÏLA: Service Worker registration failed', error);
+            });
+        }, 3000); // Delay SW registration by 3s
       });
     }
     
@@ -344,44 +346,87 @@ const initPWA = () => {
   }
 };
 
-// Google Analytics initialization
-const initGoogleAnalytics = () => {
+// Performance optimization - Preconnect to external domains
+const initPreconnect = () => {
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
-    // Add gtag script
-    const script1 = document.createElement('script');
-    script1.async = true;
-    script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-C2MS83P8ZW';
-    document.head.appendChild(script1);
-
-    // Add gtag config
-    const script2 = document.createElement('script');
-    script2.innerHTML = `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-C2MS83P8ZW');
-    `;
-    document.head.appendChild(script2);
+    const preconnects = [
+      'https://www.googletagmanager.com',
+      'https://www.google-analytics.com',
+      'https://pagead2.googlesyndication.com',
+      'https://aila-backend-hc1m.onrender.com',
+    ];
     
-    console.log('Google Analytics initialized');
+    preconnects.forEach(url => {
+      const link = document.createElement('link');
+      link.rel = 'preconnect';
+      link.href = url;
+      link.crossOrigin = 'anonymous';
+      document.head.appendChild(link);
+      
+      // Also add dns-prefetch as fallback
+      const dnsPrefetch = document.createElement('link');
+      dnsPrefetch.rel = 'dns-prefetch';
+      dnsPrefetch.href = url;
+      document.head.appendChild(dnsPrefetch);
+    });
   }
 };
 
-// Google AdSense initialization for web ads
+// Google Analytics initialization - DEFERRED for performance
+const initGoogleAnalytics = () => {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    // Defer GA loading to after page is interactive
+    const loadGA = () => {
+      const script1 = document.createElement('script');
+      script1.async = true;
+      script1.src = 'https://www.googletagmanager.com/gtag/js?id=G-C2MS83P8ZW';
+      document.head.appendChild(script1);
+
+      const script2 = document.createElement('script');
+      script2.innerHTML = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-C2MS83P8ZW', { 'send_page_view': true });
+      `;
+      document.head.appendChild(script2);
+      
+      console.log('Google Analytics initialized (deferred)');
+    };
+    
+    // Load after 2 seconds or on user interaction
+    if (document.readyState === 'complete') {
+      setTimeout(loadGA, 2000);
+    } else {
+      window.addEventListener('load', () => setTimeout(loadGA, 2000));
+    }
+  }
+};
+
+// Google AdSense initialization - DEFERRED for performance
 const initGoogleAdSense = () => {
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
-    // Check if script already exists
-    const existingScript = document.querySelector('script[src*="pagead2.googlesyndication.com"]');
-    if (existingScript) return;
+    const loadAdSense = () => {
+      // Check if script already exists
+      const existingScript = document.querySelector('script[src*="pagead2.googlesyndication.com"]');
+      if (existingScript) return;
+      
+      // Add AdSense script
+      const adsenseScript = document.createElement('script');
+      adsenseScript.async = true;
+      adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309745338282834';
+      adsenseScript.crossOrigin = 'anonymous';
+      document.head.appendChild(adsenseScript);
+      
+      console.log('Google AdSense initialized (deferred)');
+    };
     
-    // Add AdSense script
-    const adsenseScript = document.createElement('script');
-    adsenseScript.async = true;
-    adsenseScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309745338282834';
-    adsenseScript.crossOrigin = 'anonymous';
-    document.head.appendChild(adsenseScript);
-    
-    console.log('Google AdSense initialized');
+    // Load after 4 seconds to prioritize content
+    if (document.readyState === 'complete') {
+      setTimeout(loadAdSense, 4000);
+    } else {
+      window.addEventListener('load', () => setTimeout(loadAdSense, 4000));
+    }
   }
 };
 
