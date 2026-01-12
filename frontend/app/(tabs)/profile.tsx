@@ -1018,7 +1018,10 @@ export default function ProfileScreen() {
           {user && (
             <TouchableOpacity
               style={[styles.menuItem, styles.dangerItem]}
-              onPress={handleDeleteAccount}
+              onPress={() => {
+                console.log('Delete button pressed, user:', user?.email);
+                handleDeleteAccount();
+              }}
               disabled={deleting}
             >
               {deleting ? (
