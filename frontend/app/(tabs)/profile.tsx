@@ -155,12 +155,6 @@ export default function ProfileScreen() {
       );
     }
   };
-            onPress: performDelete,
-          },
-        ]
-      );
-    }
-  };
 
   const handleClearPreview = async () => {
     Alert.alert(
