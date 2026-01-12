@@ -6,44 +6,66 @@
   <!-- Page d'accueil - Priorité maximale -->
   <url>
     <loc>https://www.aila.family/</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+  
+  <!-- Landing Pages SEO - Priorité haute -->
+  <url>
+    <loc>https://www.aila.family/arbre-genealogique-gratuit</loc>
+    <lastmod>2025-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.aila.family/application-genealogie</loc>
+    <lastmod>2025-01-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
   </url>
   
   <!-- Pages principales -->
   <url>
     <loc>https://www.aila.family/about</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://www.aila.family/blog</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
     <loc>https://www.aila.family/faq</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
     <loc>https://www.aila.family/pricing</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-12</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.aila.family/download</loc>
+    <lastmod>2025-01-12</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <!-- Pages légales -->
   <url>
     <loc>https://www.aila.family/privacy</loc>
-    <lastmod>2025-01-02</lastmod>
+    <lastmod>2025-01-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
