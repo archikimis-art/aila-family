@@ -530,21 +530,45 @@ const styles = StyleSheet.create({
   },
   gdprContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: 12,
     marginTop: 8,
+    paddingVertical: 8,
   },
-  gdprTextContainer: {
-    flex: 1,
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#D4AF37',
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: '#D4AF37',
   },
   gdprText: {
-    color: '#6B7C93',
+    color: '#8BA1B7',
     fontSize: 14,
     lineHeight: 20,
+    flex: 1,
   },
   gdprLink: {
     color: '#D4AF37',
     textDecorationLine: 'underline',
+  },
+  reassurance: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 16,
+    paddingVertical: 8,
+  },
+  reassuranceText: {
+    color: '#8BA1B7',
+    fontSize: 13,
   },
   registerButton: {
     backgroundColor: '#D4AF37',
