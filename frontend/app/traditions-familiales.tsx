@@ -47,10 +47,8 @@ export default function TraditionsFamiliales() {
           </TouchableOpacity>
         </View>
 
-        {/* Breadcrumb */}
-        <View style={styles.breadcrumb}>
-          <Text style={styles.breadcrumbText}>Accueil → Blog → Traditions familiales</Text>
-        </View>
+        {/* Breadcrumb SEO */}
+        <SEOBreadcrumbs items={BREADCRUMB_CONFIGS['traditions-familiales']} />
 
         {/* Hero */}
         <View style={styles.hero}>
