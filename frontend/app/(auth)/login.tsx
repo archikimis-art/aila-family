@@ -97,10 +97,18 @@ export default function LoginScreen() {
     }
   };
 
-  // Handle Google button click - Force account selection
+  // Handle Google button click - Use Google Identity Services with account selection
   const handleGoogleLogin = () => {
     if (Platform.OS !== 'web' || typeof window === 'undefined') {
       showError('La connexion Google n\'est disponible que sur le web.');
+      return;
+    }
+
+    const google = (window as any).google;
+    if (!google?.accounts?.id) {
+      showError('Google Sign-In est en cours de chargement. Veuillez patienter...');
+      // Retry after a short delay
+      setTimeout(() => handleGoogleLogin(), 1000);
       return;
     }
 
@@ -108,123 +116,125 @@ export default function LoginScreen() {
     setErrorMessage('');
 
     try {
-      // Use OAuth 2.0 popup flow with account selection prompt
-      const clientId = GOOGLE_CLIENT_ID;
-      const redirectUri = encodeURIComponent(window.location.origin);
-      const scope = encodeURIComponent('openid email profile');
-      const nonce = Math.random().toString(36).substring(2, 15);
+      // First, disable auto-select to force account chooser
+      google.accounts.id.disableAutoSelect();
       
-      // Build OAuth URL with prompt=select_account to ALWAYS show account chooser
-      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-        `client_id=${clientId}` +
-        `&redirect_uri=${redirectUri}` +
-        `&response_type=id_token` +
-        `&scope=${scope}` +
-        `&nonce=${nonce}` +
-        `&prompt=select_account`;  // Force account selection every time
-      
-      // Calculate popup position (centered)
-      const width = 500;
-      const height = 650;
-      const left = Math.max(0, (window.screen.width - width) / 2);
-      const top = Math.max(0, (window.screen.height - height) / 2);
-      
-      // Open popup with better options for PC
-      const popup = window.open(
-        authUrl,
-        'google-login-popup',
-        `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,status=yes`
-      );
-      
-      // Check if popup was blocked
-      if (!popup || popup.closed || typeof popup.closed === 'undefined') {
-        setGoogleLoading(false);
-        // Show a message and offer to open in same window
-        const openInSameWindow = window.confirm(
-          '⚠️ Le popup a été bloqué par votre navigateur.\n\n' +
-          'Options:\n' +
-          '1. Autorisez les popups pour ce site et réessayez\n' +
-          '2. Cliquez OK pour ouvrir Google dans cette fenêtre\n\n' +
-          'Voulez-vous ouvrir Google dans cette fenêtre ?'
-        );
-        if (openInSameWindow) {
-          // Store that we're doing OAuth
-          sessionStorage.setItem('google_oauth_pending', 'login');
-          window.location.href = authUrl;
+      // Re-initialize with fresh settings
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCallback,
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+
+      // Try to show the One Tap prompt
+      google.accounts.id.prompt((notification: any) => {
+        console.log('Google prompt notification:', notification);
+        
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // One Tap blocked or unavailable, show button popup
+          showGoogleButtonPopup();
+        } else if (notification.isDismissedMoment()) {
+          console.log('User dismissed Google prompt');
+          setGoogleLoading(false);
         }
-        return;
-      }
-      
-      // Focus the popup
-      popup.focus();
-      
-      // Listen for redirect back with token
-      const checkPopup = setInterval(() => {
-        try {
-          if (!popup || popup.closed) {
-            clearInterval(checkPopup);
-            setGoogleLoading(false);
-            return;
-          }
-          
-          // Check if popup URL contains our redirect
-          const popupUrl = popup.location.href;
-          if (popupUrl && popupUrl.startsWith(window.location.origin)) {
-            clearInterval(checkPopup);
-            
-            // Extract id_token from URL fragment
-            const hash = popup.location.hash.substring(1);
-            const params = new URLSearchParams(hash);
-            const idToken = params.get('id_token');
-            
-            popup.close();
-            
-            if (idToken) {
-              // Process the token
-              handleGoogleCallback({ credential: idToken });
-            } else {
-              setGoogleLoading(false);
-              showError('Aucun token reçu de Google. Veuillez réessayer.');
-            }
-          }
-        } catch (e) {
-          // Cross-origin error - popup is still on Google's domain, this is normal
-        }
-      }, 300);
-      
-      // Timeout after 3 minutes
-      setTimeout(() => {
-        clearInterval(checkPopup);
-        if (popup && !popup.closed) {
-          popup.close();
-        }
-        setGoogleLoading(false);
-      }, 180000);
-      
+      });
     } catch (error) {
       console.error('Google login error:', error);
       showError('Erreur lors de l\'ouverture de Google. Veuillez réessayer.');
       setGoogleLoading(false);
     }
   };
-  
-  // Check for OAuth callback on page load (for same-window flow)
-  useEffect(() => {
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      const pending = sessionStorage.getItem('google_oauth_pending');
-      if (pending === 'login' && window.location.hash) {
-        sessionStorage.removeItem('google_oauth_pending');
-        const hash = window.location.hash.substring(1);
-        const params = new URLSearchParams(hash);
-        const idToken = params.get('id_token');
-        if (idToken) {
-          // Clear the hash from URL
-          window.history.replaceState(null, '', window.location.pathname);
-          handleGoogleCallback({ credential: idToken });
-        }
-      }
-    }
-  }, []);
+
+  // Show Google button in a popup when One Tap fails
+  const showGoogleButtonPopup = () => {
+    const google = (window as any).google;
+    
+    // Remove any existing popup
+    const existingPopup = document.getElementById('google-login-popup');
+    if (existingPopup) existingPopup.remove();
+    const existingBackdrop = document.getElementById('google-login-backdrop');
+    if (existingBackdrop) existingBackdrop.remove();
+    
+    // Create popup container
+    const popup = document.createElement('div');
+    popup.id = 'google-login-popup';
+    popup.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10000;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      text-align: center;
+      min-width: 320px;
+    `;
+    
+    // Add backdrop
+    const backdrop = document.createElement('div');
+    backdrop.id = 'google-login-backdrop';
+    backdrop.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+    `;
+    backdrop.onclick = () => {
+      backdrop.remove();
+      popup.remove();
+      setGoogleLoading(false);
+    };
+    
+    // Title
+    const title = document.createElement('h3');
+    title.textContent = '🔐 Choisissez votre compte Google';
+    title.style.cssText = 'margin: 0 0 20px 0; color: #333; font-size: 18px;';
+    popup.appendChild(title);
+    
+    // Button container
+    const btnContainer = document.createElement('div');
+    btnContainer.id = 'google-btn-container';
+    btnContainer.style.cssText = 'display: flex; justify-content: center;';
+    popup.appendChild(btnContainer);
+    
+    // Cancel button
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Annuler';
+    cancelBtn.style.cssText = `
+      margin-top: 20px;
+      padding: 10px 24px;
+      border: none;
+      background: #f0f0f0;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #666;
+      font-size: 14px;
+    `;
+    cancelBtn.onclick = () => {
+      backdrop.remove();
+      popup.remove();
+      setGoogleLoading(false);
+    };
+    popup.appendChild(cancelBtn);
+    
+    document.body.appendChild(backdrop);
+    document.body.appendChild(popup);
+    
+    // Render Google Sign In button
+    google.accounts.id.renderButton(btnContainer, {
+      type: 'standard',
+      theme: 'outline',
+      size: 'large',
+      text: 'continue_with',
+      width: 280,
+    });
+  };
 
   // Handle legacy OAuth callback (from URL params)
   useEffect(() => {
