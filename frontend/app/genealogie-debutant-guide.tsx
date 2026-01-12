@@ -151,6 +151,9 @@ export default function GenealogieDebutant() {
           </TouchableOpacity>
         </View>
 
+        {/* Related Articles - Internal Linking */}
+        <RelatedArticles silo="genealogie" currentPage="/genealogie-debutant-guide" />
+
         {/* SEO Footer */}
         <SEOFooter currentPage="/genealogie-debutant-guide" />
       </ScrollView>
