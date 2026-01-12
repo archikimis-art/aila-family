@@ -48,10 +48,8 @@ export default function RetrouverAncetres() {
           </TouchableOpacity>
         </View>
 
-        {/* Breadcrumb */}
-        <View style={styles.breadcrumb}>
-          <Text style={styles.breadcrumbText}>Accueil → Blog → Retrouver ses ancêtres</Text>
-        </View>
+        {/* Breadcrumb SEO */}
+        <SEOBreadcrumbs items={BREADCRUMB_CONFIGS['retrouver-ancetres-gratuitement']} />
 
         {/* Hero */}
         <View style={styles.hero}>
