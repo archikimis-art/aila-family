@@ -118,7 +118,7 @@ const initSEO = () => {
       { name: 'twitter:site', content: '@aila_family' },
       { name: 'twitter:title', content: 'AILA Famille - Arbre Généalogique' },
       { name: 'twitter:description', content: 'AILA Famille : créez votre arbre généalogique gratuitement et partagez-le avec votre famille.' },
-      { name: 'twitter:image', content: 'https://www.aila.family/icons/icon.svg' },
+      { name: 'twitter:image', content: 'https://www.aila.family/og-image.svg' },
     ];
     twitterTags.forEach(tag => {
       const meta = document.createElement('meta');
