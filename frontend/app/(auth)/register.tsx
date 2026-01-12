@@ -42,6 +42,7 @@ export default function RegisterScreen() {
           client_id: GOOGLE_CLIENT_ID,
           callback: handleGoogleCallback,
           auto_select: false,
+          cancel_on_tap_outside: true,
         });
         setGoogleInitialized(true);
         console.log('Google Sign-In initialized for registration');
@@ -65,6 +66,10 @@ export default function RegisterScreen() {
   // Handle Google callback with the credential
   const handleGoogleCallback = async (response: any) => {
     console.log('Google callback received for registration');
+    
+    // Close any open Google popups
+    closeGooglePopup();
+    
     setGoogleLoading(true);
     setErrorMessage('');
 
@@ -96,7 +101,22 @@ export default function RegisterScreen() {
     }
   };
 
-  // Handle Google button click - Use Google Identity Services with account selection
+  // Close Google popup helper
+  const closeGooglePopup = () => {
+    // Remove any Google popup elements
+    const popups = document.querySelectorAll('[id^="google-"], [class*="google"]');
+    popups.forEach(el => {
+      if (el.id.includes('popup') || el.id.includes('backdrop')) {
+        el.remove();
+      }
+    });
+    // Also try to cancel Google prompt
+    try {
+      (window as any).google?.accounts?.id?.cancel();
+    } catch (e) {}
+  };
+
+  // Handle Google button click - Simple and reliable
   const handleGoogleSignUp = () => {
     if (Platform.OS !== 'web' || typeof window === 'undefined') {
       Alert.alert('Info', 'L\'inscription Google n\'est disponible que sur le web.');
@@ -106,7 +126,6 @@ export default function RegisterScreen() {
     const google = (window as any).google;
     if (!google?.accounts?.id) {
       showError('Google Sign-In est en cours de chargement. Veuillez patienter...');
-      // Retry after a short delay
       setTimeout(() => handleGoogleSignUp(), 1000);
       return;
     }
@@ -114,123 +133,85 @@ export default function RegisterScreen() {
     setGoogleLoading(true);
     setErrorMessage('');
 
-    try {
-      // First, disable auto-select to force account chooser
-      google.accounts.id.disableAutoSelect();
-      
-      // Re-initialize with fresh settings
-      google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleCallback,
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
+    // Always disable auto-select to force account chooser
+    google.accounts.id.disableAutoSelect();
 
-      // Try to show the One Tap prompt
-      google.accounts.id.prompt((notification: any) => {
-        console.log('Google prompt notification:', notification);
-        
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // One Tap blocked or unavailable, show button popup
-          showGoogleButtonPopup();
-        } else if (notification.isDismissedMoment()) {
-          console.log('User dismissed Google prompt');
-          setGoogleLoading(false);
-        }
-      });
-    } catch (error) {
-      console.error('Google signup error:', error);
-      showError('Erreur lors de l\'ouverture de Google. Veuillez réessayer.');
-      setGoogleLoading(false);
-    }
+    // Re-initialize to ensure fresh state
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCallback,
+      auto_select: false,
+      cancel_on_tap_outside: true,
+    });
+
+    // Show Google One Tap - this will show account chooser
+    google.accounts.id.prompt((notification: any) => {
+      console.log('Google prompt status:', notification);
+      
+      if (notification.isNotDisplayed()) {
+        console.log('One Tap not displayed, reason:', notification.getNotDisplayedReason());
+        // Fallback: render a Google button
+        showGoogleButtonFallback();
+      } else if (notification.isSkippedMoment()) {
+        console.log('One Tap skipped, reason:', notification.getSkippedReason());
+        showGoogleButtonFallback();
+      } else if (notification.isDismissedMoment()) {
+        console.log('User dismissed Google prompt');
+        setGoogleLoading(false);
+      }
+    });
   };
 
-  // Show Google button in a popup when One Tap fails
-  const showGoogleButtonPopup = () => {
-    const google = (window as any).google;
-    
-    // Remove any existing popup
-    const existingPopup = document.getElementById('google-signup-popup');
-    if (existingPopup) existingPopup.remove();
-    
-    // Create popup container
-    const popup = document.createElement('div');
-    popup.id = 'google-signup-popup';
-    popup.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 10000;
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      text-align: center;
-      min-width: 320px;
-    `;
-    
-    // Add backdrop
+  // Fallback: Show Google Sign-In button in a modal
+  const showGoogleButtonFallback = () => {
+    // Remove existing popup if any
+    closeGooglePopup();
+
+    // Create backdrop
     const backdrop = document.createElement('div');
     backdrop.id = 'google-signup-backdrop';
     backdrop.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 9999;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6); z-index: 9998;
     `;
     backdrop.onclick = () => {
-      backdrop.remove();
-      popup.remove();
+      closeGooglePopup();
       setGoogleLoading(false);
     };
-    
-    // Title
-    const title = document.createElement('h3');
-    title.textContent = '🔐 Choisissez votre compte Google';
-    title.style.cssText = 'margin: 0 0 20px 0; color: #333; font-size: 18px;';
-    popup.appendChild(title);
-    
-    // Button container
-    const btnContainer = document.createElement('div');
-    btnContainer.id = 'google-btn-container';
-    btnContainer.style.cssText = 'display: flex; justify-content: center;';
-    popup.appendChild(btnContainer);
-    
-    // Cancel button
-    const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = 'Annuler';
-    cancelBtn.style.cssText = `
-      margin-top: 20px;
-      padding: 10px 24px;
-      border: none;
-      background: #f0f0f0;
-      border-radius: 8px;
-      cursor: pointer;
-      color: #666;
-      font-size: 14px;
+
+    // Create popup
+    const popup = document.createElement('div');
+    popup.id = 'google-signup-popup';
+    popup.style.cssText = `
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: white; padding: 32px; border-radius: 16px; z-index: 9999;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2); text-align: center; min-width: 300px;
     `;
-    cancelBtn.onclick = () => {
-      backdrop.remove();
-      popup.remove();
-      setGoogleLoading(false);
-    };
-    popup.appendChild(cancelBtn);
-    
+
+    popup.innerHTML = `
+      <h3 style="margin: 0 0 8px 0; color: #333; font-size: 18px;">S'inscrire avec Google</h3>
+      <p style="margin: 0 0 20px 0; color: #666; font-size: 14px;">Choisissez votre compte</p>
+      <div id="google-btn-signup" style="display: flex; justify-content: center;"></div>
+      <button id="google-cancel-btn" style="
+        margin-top: 16px; padding: 10px 24px; border: none; background: #f5f5f5;
+        border-radius: 8px; cursor: pointer; color: #666; font-size: 14px;
+      ">Annuler</button>
+    `;
+
     document.body.appendChild(backdrop);
     document.body.appendChild(popup);
-    
-    // Render Google Sign In button
-    google.accounts.id.renderButton(btnContainer, {
-      type: 'standard',
-      theme: 'outline',
-      size: 'large',
-      text: 'continue_with',
-      width: 280,
+
+    // Add cancel handler
+    document.getElementById('google-cancel-btn')?.addEventListener('click', () => {
+      closeGooglePopup();
+      setGoogleLoading(false);
     });
+
+    // Render Google button
+    (window as any).google.accounts.id.renderButton(
+      document.getElementById('google-btn-signup'),
+      { theme: 'outline', size: 'large', text: 'continue_with', width: 250 }
+    );
   };
 
   const showError = (message: string) => {
