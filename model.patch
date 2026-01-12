@@ -1,459 +1,632 @@
-diff --git a/frontend/app/index.tsx b/frontend/app/index.tsx
-index 845e9655..7e950414 100644
---- a/frontend/app/index.tsx
-+++ b/frontend/app/index.tsx
-@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
-     marginBottom: 2,
-   },
-   guideText: {
--    color: '#B8C5D6',
-+    color: '#8BA1B7',
-     fontSize: 10,
-     textAlign: 'center',
-   },
+diff --git a/frontend/app/(auth)/register.tsx b/frontend/app/(auth)/register.tsx
+index 5abd5203..0fc898f6 100644
+--- a/frontend/app/(auth)/register.tsx
++++ b/frontend/app/(auth)/register.tsx
+@@ -96,87 +96,97 @@ export default function RegisterScreen() {
+     }
+   };
+ 
+-  // Handle Google button click
++  // Handle Google button click - Force account selection
+   const handleGoogleSignUp = () => {
+     if (Platform.OS !== 'web' || typeof window === 'undefined') {
+       Alert.alert('Info', 'L\'inscription Google n\'est disponible que sur le web.');
+       return;
+     }
+ 
+-    if (!googleInitialized || !(window as any).google?.accounts?.id) {
+-      showError('Google Sign-In est en cours de chargement. Veuillez patienter...');
+-      return;
+-    }
+-
+     setGoogleLoading(true);
+     setErrorMessage('');
+ 
+     try {
+-      // Trigger Google One Tap
+-      (window as any).google.accounts.id.prompt((notification: any) => {
+-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+-          // One Tap not available, show the standard button popup
+-          console.log('One Tap not available, using standard flow for registration');
+-          
+-          // Create a temporary container for Google button
+-          const tempDiv = document.createElement('div');
+-          tempDiv.style.position = 'fixed';
+-          tempDiv.style.top = '50%';
+-          tempDiv.style.left = '50%';
+-          tempDiv.style.transform = 'translate(-50%, -50%)';
+-          tempDiv.style.zIndex = '9999';
+-          tempDiv.style.background = 'white';
+-          tempDiv.style.padding = '20px';
+-          tempDiv.style.borderRadius = '12px';
+-          tempDiv.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+-          tempDiv.id = 'google-signup-popup';
+-          
+-          // Add close button
+-          const closeBtn = document.createElement('button');
+-          closeBtn.innerHTML = '✕';
+-          closeBtn.style.position = 'absolute';
+-          closeBtn.style.top = '5px';
+-          closeBtn.style.right = '10px';
+-          closeBtn.style.border = 'none';
+-          closeBtn.style.background = 'none';
+-          closeBtn.style.fontSize = '20px';
+-          closeBtn.style.cursor = 'pointer';
+-          closeBtn.onclick = () => {
+-            document.body.removeChild(tempDiv);
++      // Use OAuth 2.0 popup flow with account selection prompt
++      const clientId = GOOGLE_CLIENT_ID;
++      const redirectUri = encodeURIComponent(window.location.origin);
++      const scope = encodeURIComponent('openid email profile');
++      const nonce = Math.random().toString(36).substring(2, 15);
++      
++      // Build OAuth URL with prompt=select_account to ALWAYS show account chooser
++      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
++        `client_id=${clientId}` +
++        `&redirect_uri=${redirectUri}` +
++        `&response_type=id_token` +
++        `&scope=${scope}` +
++        `&nonce=${nonce}` +
++        `&prompt=select_account`;  // Force account selection every time
++      
++      // Calculate popup position (centered)
++      const width = 500;
++      const height = 600;
++      const left = window.screenX + (window.outerWidth - width) / 2;
++      const top = window.screenY + (window.outerHeight - height) / 2;
++      
++      // Open popup
++      const popup = window.open(
++        authUrl,
++        'google-signin',
++        `width=${width},height=${height},left=${left},top=${top},popup=1`
++      );
++      
++      if (!popup) {
++        showError('Le popup a été bloqué. Veuillez autoriser les popups pour ce site.');
++        setGoogleLoading(false);
++        return;
++      }
++      
++      // Listen for redirect back with token
++      const checkPopup = setInterval(() => {
++        try {
++          if (popup.closed) {
++            clearInterval(checkPopup);
+             setGoogleLoading(false);
+-          };
+-          
+-          const title = document.createElement('p');
+-          title.innerHTML = 'Inscrivez-vous avec Google';
+-          title.style.marginBottom = '15px';
+-          title.style.fontWeight = 'bold';
+-          title.style.textAlign = 'center';
+-          
+-          const btnContainer = document.createElement('div');
+-          btnContainer.id = 'google-btn-container';
++            return;
++          }
+           
+-          tempDiv.appendChild(closeBtn);
+-          tempDiv.appendChild(title);
+-          tempDiv.appendChild(btnContainer);
+-          document.body.appendChild(tempDiv);
+-          
+-          // Render Google button
+-          (window as any).google.accounts.id.renderButton(btnContainer, {
+-            type: 'standard',
+-            theme: 'filled_blue',
+-            size: 'large',
+-            text: 'signup_with',
+-            width: 280,
+-          });
+-        } else if (notification.isDismissedMoment()) {
+-          console.log('Google prompt dismissed');
+-          setGoogleLoading(false);
++          // Check if popup URL contains our redirect
++          if (popup.location.href.startsWith(window.location.origin)) {
++            clearInterval(checkPopup);
++            
++            // Extract id_token from URL fragment
++            const hash = popup.location.hash.substring(1);
++            const params = new URLSearchParams(hash);
++            const idToken = params.get('id_token');
++            
++            popup.close();
++            
++            if (idToken) {
++              // Process the token
++              handleGoogleCallback({ credential: idToken });
++            } else {
++              setGoogleLoading(false);
++              showError('Aucun token reçu de Google');
++            }
++          }
++        } catch (e) {
++          // Cross-origin error - popup is still on Google's domain
+         }
+-      });
++      }, 500);
++      
++      // Timeout after 2 minutes
++      setTimeout(() => {
++        clearInterval(checkPopup);
++        if (!popup.closed) {
++          popup.close();
++        }
++        setGoogleLoading(false);
++      }, 120000);
++      
+     } catch (error) {
+-      console.error('Error triggering Google Sign-Up:', error);
++      console.error('Google signup error:', error);
++      showError('Erreur lors de l\'ouverture de Google. Veuillez réessayer.');
+       setGoogleLoading(false);
+-      showError('Erreur lors de l\'inscription Google.');
+     }
+   };
+ 
 diff --git a/model.patch b/model.patch
-index e4db0904..e69de29b 100644
+index 515eada8..966efdf8 100644
 --- a/model.patch
 +++ b/model.patch
-@@ -1,441 +0,0 @@
+@@ -1,459 +0,0 @@
 -diff --git a/frontend/app/index.tsx b/frontend/app/index.tsx
--index 72624a38..845e9655 100644
+-index 845e9655..7e950414 100644
 ---- a/frontend/app/index.tsx
 -+++ b/frontend/app/index.tsx
--@@ -487,67 +487,10 @@ const styles = StyleSheet.create({
--     fontSize: 14,
--     fontWeight: '600',
+-@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
+-     marginBottom: 2,
 -   },
---  previewButton: {
---    backgroundColor: 'rgba(212, 175, 55, 0.1)',
---    borderWidth: 2,
---    borderColor: '#D4AF37',
---    borderRadius: 16,
---    paddingVertical: 14,
---    paddingHorizontal: 24,
---    marginBottom: 12,
---    alignItems: 'center',
---  },
---  previewButtonText: {
---    color: '#D4AF37',
---    fontSize: 18,
---    fontWeight: '600',
---    marginTop: 8,
---  },
--   previewNote: {
+-   guideText: {
 --    color: '#B8C5D6',
---    fontSize: 12,
---    marginTop: 4,
---  },
---  primaryButton: {
---    backgroundColor: '#D4AF37',
---    borderRadius: 16,
---    paddingVertical: 14,
---    paddingHorizontal: 24,
---    marginBottom: 12,
---    flexDirection: 'row',
---    alignItems: 'center',
---    justifyContent: 'center',
---  },
---  primaryButtonText: {
---    color: '#0A1628',
---    fontSize: 18,
---    fontWeight: '600',
---    marginLeft: 10,
---  },
---  loginButton: {
---    backgroundColor: '#1A2F4A',
---    borderWidth: 1,
---    borderColor: '#D4AF37',
---    borderRadius: 16,
---    paddingVertical: 14,
---    paddingHorizontal: 24,
---    marginBottom: 12,
---    flexDirection: 'row',
---    alignItems: 'center',
---    justifyContent: 'center',
---  },
---  loginTextRow: {
---    flexDirection: 'row',
---    marginLeft: 10,
---  },
---  loginButtonText: {
---    color: '#D4AF37',
---    fontSize: 16,
---  },
---  loginButtonTextBold: {
---    color: '#D4AF37',
---    fontSize: 16,
---    fontWeight: '700',
--+    color: '#6B7C93',
--+    fontSize: 11,
--+    marginTop: 2,
+-+    color: '#8BA1B7',
+-     fontSize: 10,
+-     textAlign: 'center',
 -   },
--   footerInline: {
--     alignItems: 'center',
 -diff --git a/model.patch b/model.patch
--index d99d254c..e69de29b 100644
+-index e4db0904..e69de29b 100644
 ---- a/model.patch
 -+++ b/model.patch
--@@ -1,361 +0,0 @@
---diff --git a/frontend/app/add-link.tsx b/frontend/app/add-link.tsx
---index 072463b..d00c24f 100644
------ a/frontend/app/add-link.tsx
---+++ b/frontend/app/add-link.tsx
---@@ -7,6 +7,7 @@ import {
---   ScrollView,
---   Alert,
---   ActivityIndicator,
---+  Platform,
--- } from 'react-native';
--- import { SafeAreaView } from 'react-native-safe-area-context';
--- import { useRouter, useLocalSearchParams } from 'expo-router';
+-@@ -1,441 +0,0 @@
+--diff --git a/frontend/app/index.tsx b/frontend/app/index.tsx
+--index 72624a38..845e9655 100644
+----- a/frontend/app/index.tsx
+--+++ b/frontend/app/index.tsx
+--@@ -487,67 +487,10 @@ const styles = StyleSheet.create({
+--     fontSize: 14,
+--     fontWeight: '600',
+--   },
+---  previewButton: {
+---    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+---    borderWidth: 2,
+---    borderColor: '#D4AF37',
+---    borderRadius: 16,
+---    paddingVertical: 14,
+---    paddingHorizontal: 24,
+---    marginBottom: 12,
+---    alignItems: 'center',
+---  },
+---  previewButtonText: {
+---    color: '#D4AF37',
+---    fontSize: 18,
+---    fontWeight: '600',
+---    marginTop: 8,
+---  },
+--   previewNote: {
+---    color: '#B8C5D6',
+---    fontSize: 12,
+---    marginTop: 4,
+---  },
+---  primaryButton: {
+---    backgroundColor: '#D4AF37',
+---    borderRadius: 16,
+---    paddingVertical: 14,
+---    paddingHorizontal: 24,
+---    marginBottom: 12,
+---    flexDirection: 'row',
+---    alignItems: 'center',
+---    justifyContent: 'center',
+---  },
+---  primaryButtonText: {
+---    color: '#0A1628',
+---    fontSize: 18,
+---    fontWeight: '600',
+---    marginLeft: 10,
+---  },
+---  loginButton: {
+---    backgroundColor: '#1A2F4A',
+---    borderWidth: 1,
+---    borderColor: '#D4AF37',
+---    borderRadius: 16,
+---    paddingVertical: 14,
+---    paddingHorizontal: 24,
+---    marginBottom: 12,
+---    flexDirection: 'row',
+---    alignItems: 'center',
+---    justifyContent: 'center',
+---  },
+---  loginTextRow: {
+---    flexDirection: 'row',
+---    marginLeft: 10,
+---  },
+---  loginButtonText: {
+---    color: '#D4AF37',
+---    fontSize: 16,
+---  },
+---  loginButtonTextBold: {
+---    color: '#D4AF37',
+---    fontSize: 16,
+---    fontWeight: '700',
+--+    color: '#6B7C93',
+--+    fontSize: 11,
+--+    marginTop: 2,
+--   },
+--   footerInline: {
+--     alignItems: 'center',
 --diff --git a/model.patch b/model.patch
---index cdfc6a9..e69de29 100644
+--index d99d254c..e69de29b 100644
 ----- a/model.patch
 --+++ b/model.patch
---@@ -1,344 +0,0 @@
----diff --git a/frontend/app/(tabs)/tree.tsx b/frontend/app/(tabs)/tree.tsx
----index 99cf59e..f1f4dca 100644
------- a/frontend/app/(tabs)/tree.tsx
----+++ b/frontend/app/(tabs)/tree.tsx
----@@ -289,7 +289,10 @@ export default function TreeScreen() {
----     <SafeAreaView style={styles.container}>
----       {/* Header */}
----       <View style={styles.header}>
-----        <TouchableOpacity onPress={() => router.replace('/')} style={styles.homeButton}>
----+        <TouchableOpacity onPress={() => {
----+          // Clear any preview mode params and go to root
----+          router.replace('/');
----+        }} style={styles.homeButton}>
----           <Ionicons name="home-outline" size={24} color="#D4AF37" />
----         </TouchableOpacity>
----         <View style={styles.headerLeft}>
+--@@ -1,361 +0,0 @@
+---diff --git a/frontend/app/add-link.tsx b/frontend/app/add-link.tsx
+---index 072463b..d00c24f 100644
+------ a/frontend/app/add-link.tsx
+---+++ b/frontend/app/add-link.tsx
+---@@ -7,6 +7,7 @@ import {
+---   ScrollView,
+---   Alert,
+---   ActivityIndicator,
+---+  Platform,
+--- } from 'react-native';
+--- import { SafeAreaView } from 'react-native-safe-area-context';
+--- import { useRouter, useLocalSearchParams } from 'expo-router';
 ---diff --git a/model.patch b/model.patch
----index f95b52c..e69de29 100644
+---index cdfc6a9..e69de29 100644
 ------ a/model.patch
 ---+++ b/model.patch
----@@ -1,323 +0,0 @@
+---@@ -1,344 +0,0 @@
 ----diff --git a/frontend/app/(tabs)/tree.tsx b/frontend/app/(tabs)/tree.tsx
-----index 9b8b56d..99cf59e 100644
+----index 99cf59e..f1f4dca 100644
 ------- a/frontend/app/(tabs)/tree.tsx
 ----+++ b/frontend/app/(tabs)/tree.tsx
-----@@ -289,7 +289,7 @@ export default function TreeScreen() {
+----@@ -289,7 +289,10 @@ export default function TreeScreen() {
 ----     <SafeAreaView style={styles.container}>
 ----       {/* Header */}
 ----       <View style={styles.header}>
------        <TouchableOpacity onPress={() => router.push('/')} style={styles.homeButton}>
-----+        <TouchableOpacity onPress={() => router.replace('/')} style={styles.homeButton}>
+-----        <TouchableOpacity onPress={() => router.replace('/')} style={styles.homeButton}>
+----+        <TouchableOpacity onPress={() => {
+----+          // Clear any preview mode params and go to root
+----+          router.replace('/');
+----+        }} style={styles.homeButton}>
 ----           <Ionicons name="home-outline" size={24} color="#D4AF37" />
 ----         </TouchableOpacity>
 ----         <View style={styles.headerLeft}>
 ----diff --git a/model.patch b/model.patch
-----index 1a1e8f8..e69de29 100644
+----index f95b52c..e69de29 100644
 ------- a/model.patch
 ----+++ b/model.patch
-----@@ -1,305 +0,0 @@
+----@@ -1,323 +0,0 @@
 -----diff --git a/frontend/app/(tabs)/tree.tsx b/frontend/app/(tabs)/tree.tsx
------index 7ff9cc4..9b8b56d 100644
+-----index 9b8b56d..99cf59e 100644
 -------- a/frontend/app/(tabs)/tree.tsx
 -----+++ b/frontend/app/(tabs)/tree.tsx
------@@ -289,6 +289,9 @@ export default function TreeScreen() {
+-----@@ -289,7 +289,7 @@ export default function TreeScreen() {
 -----     <SafeAreaView style={styles.container}>
 -----       {/* Header */}
 -----       <View style={styles.header}>
------+        <TouchableOpacity onPress={() => router.push('/')} style={styles.homeButton}>
------+          <Ionicons name="home-outline" size={24} color="#D4AF37" />
------+        </TouchableOpacity>
+------        <TouchableOpacity onPress={() => router.push('/')} style={styles.homeButton}>
+-----+        <TouchableOpacity onPress={() => router.replace('/')} style={styles.homeButton}>
+-----           <Ionicons name="home-outline" size={24} color="#D4AF37" />
+-----         </TouchableOpacity>
 -----         <View style={styles.headerLeft}>
------           <Ionicons name="leaf" size={28} color="#D4AF37" />
------           <Text style={styles.headerTitle}>
------@@ -494,6 +497,10 @@ const styles = StyleSheet.create({
------     borderBottomWidth: 1,
------     borderBottomColor: '#1A2F4A',
------   },
------+  homeButton: {
------+    padding: 8,
------+    borderRadius: 8,
------+  },
------   headerLeft: {
------     flexDirection: 'row',
------     alignItems: 'center',
 -----diff --git a/model.patch b/model.patch
------index 6e9ac65..e69de29 100644
+-----index 1a1e8f8..e69de29 100644
 -------- a/model.patch
 -----+++ b/model.patch
------@@ -1,275 +0,0 @@
-------diff --git a/frontend/src/services/api.ts b/frontend/src/services/api.ts
-------index 708b5f1..328fb53 100644
---------- a/frontend/src/services/api.ts
-------+++ b/frontend/src/services/api.ts
-------@@ -108,3 +108,9 @@ export const notificationsAPI = {
-------   markRead: (id: string) => api.put(`/notifications/${id}/read`),
-------   markAllRead: () => api.put('/notifications/read-all'),
------- };
-------+
-------+export const chatAPI = {
-------+  getMessages: (limit = 50, skip = 0) => api.get(`/chat/messages?limit=${limit}&skip=${skip}`),
-------+  sendMessage: (data: { message: string; mentioned_person_id?: string }) => api.post('/chat/messages', data),
-------+  deleteMessage: (id: string) => api.delete(`/chat/messages/${id}`),
-------+};
+-----@@ -1,305 +0,0 @@
+------diff --git a/frontend/app/(tabs)/tree.tsx b/frontend/app/(tabs)/tree.tsx
+------index 7ff9cc4..9b8b56d 100644
+--------- a/frontend/app/(tabs)/tree.tsx
+------+++ b/frontend/app/(tabs)/tree.tsx
+------@@ -289,6 +289,9 @@ export default function TreeScreen() {
+------     <SafeAreaView style={styles.container}>
+------       {/* Header */}
+------       <View style={styles.header}>
+------+        <TouchableOpacity onPress={() => router.push('/')} style={styles.homeButton}>
+------+          <Ionicons name="home-outline" size={24} color="#D4AF37" />
+------+        </TouchableOpacity>
+------         <View style={styles.headerLeft}>
+------           <Ionicons name="leaf" size={28} color="#D4AF37" />
+------           <Text style={styles.headerTitle}>
+------@@ -494,6 +497,10 @@ const styles = StyleSheet.create({
+------     borderBottomWidth: 1,
+------     borderBottomColor: '#1A2F4A',
+------   },
+------+  homeButton: {
+------+    padding: 8,
+------+    borderRadius: 8,
+------+  },
+------   headerLeft: {
+------     flexDirection: 'row',
+------     alignItems: 'center',
 ------diff --git a/model.patch b/model.patch
-------index 3db5fd0..e69de29 100644
+------index 6e9ac65..e69de29 100644
 --------- a/model.patch
 ------+++ b/model.patch
-------@@ -1,256 +0,0 @@
--------diff --git a/frontend/app/add-link.tsx b/frontend/app/add-link.tsx
--------index 72a5d7d..20a9b73 100644
----------- a/frontend/app/add-link.tsx
--------+++ b/frontend/app/add-link.tsx
--------@@ -449,29 +449,88 @@ const styles = StyleSheet.create({
--------   },
--------   linkTypeContainer: {
--------     flexDirection: 'row',
---------    gap: 12,
--------+    flexWrap: 'wrap',
--------+    gap: 10,
--------   },
---------  linkTypeButton: {
---------    flex: 1,
--------+  categorySection: {
--------+    marginBottom: 20,
--------+  },
--------+  categoryHeader: {
--------+    flexDirection: 'row',
--------+    alignItems: 'center',
--------+    marginBottom: 12,
--------+    paddingHorizontal: 4,
--------+  },
--------+  categoryIndicator: {
--------+    width: 4,
--------+    height: 16,
--------+    borderRadius: 2,
--------+    marginRight: 10,
--------+  },
--------+  categoryTitle: {
--------+    fontSize: 14,
--------+    fontWeight: '600',
--------+    color: '#B8C5D6',
--------+    textTransform: 'uppercase',
--------+    letterSpacing: 0.5,
--------+  },
--------+  linkTypeGrid: {
--------+    flexDirection: 'row',
--------+    flexWrap: 'wrap',
--------+    gap: 10,
--------+  },
--------+  linkTypeCard: {
--------+    flexDirection: 'row',
--------+    alignItems: 'center',
--------     backgroundColor: '#1A2F4A',
--------+    paddingHorizontal: 14,
--------+    paddingVertical: 12,
--------     borderRadius: 12,
---------    paddingVertical: 16,
---------    alignItems: 'center',
--------     borderWidth: 2,
--------+    borderColor: '#1A2F4A',
--------+    gap: 10,
--------+    minWidth: '47%',
--------+    position: 'relative',
--------+  },
--------+  linkTypeCardActive: {
--------+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
--------+    borderColor: '#D4AF37',
--------+  },
--------+  linkTypeIconContainer: {
--------+    width: 36,
--------+    height: 36,
--------+    borderRadius: 18,
--------+    alignItems: 'center',
--------+    justifyContent: 'center',
--------+  },
--------+  linkTypeButton: {
--------+    flexDirection: 'row',
--------+    alignItems: 'center',
--------+    backgroundColor: '#1A2F4A',
--------+    paddingHorizontal: 16,
--------+    paddingVertical: 10,
--------+    borderRadius: 20,
--------+    borderWidth: 1,
--------     borderColor: '#2A3F5A',
--------+    gap: 8,
--------   },
--------   linkTypeButtonActive: {
---------    backgroundColor: 'rgba(212, 175, 55, 0.1)',
--------+    backgroundColor: 'rgba(212, 175, 55, 0.2)',
--------     borderColor: '#D4AF37',
--------   },
--------   linkTypeText: {
---------    color: '#6B7C93',
---------    fontSize: 12,
---------    marginTop: 6,
---------    textAlign: 'center',
--------+    color: '#B8C5D6',
--------+    fontSize: 14,
--------+    flex: 1,
--------   },
--------   linkTypeTextActive: {
---------    color: '#D4AF37',
--------+    color: '#FFFFFF',
--------+    fontWeight: '600',
--------+  },
--------+  checkmark: {
--------+    position: 'absolute',
--------+    top: -4,
--------+    right: -4,
--------   },
--------   linkDescription: {
--------     color: '#6B7C93',
+------@@ -1,275 +0,0 @@
+-------diff --git a/frontend/src/services/api.ts b/frontend/src/services/api.ts
+-------index 708b5f1..328fb53 100644
+---------- a/frontend/src/services/api.ts
+-------+++ b/frontend/src/services/api.ts
+-------@@ -108,3 +108,9 @@ export const notificationsAPI = {
+-------   markRead: (id: string) => api.put(`/notifications/${id}/read`),
+-------   markAllRead: () => api.put('/notifications/read-all'),
+------- };
+-------+
+-------+export const chatAPI = {
+-------+  getMessages: (limit = 50, skip = 0) => api.get(`/chat/messages?limit=${limit}&skip=${skip}`),
+-------+  sendMessage: (data: { message: string; mentioned_person_id?: string }) => api.post('/chat/messages', data),
+-------+  deleteMessage: (id: string) => api.delete(`/chat/messages/${id}`),
+-------+};
 -------diff --git a/model.patch b/model.patch
--------index 2241d65..e69de29 100644
+-------index 3db5fd0..e69de29 100644
 ---------- a/model.patch
 -------+++ b/model.patch
--------@@ -1,147 +0,0 @@
---------diff --git a/frontend/app/(tabs)/members.tsx b/frontend/app/(tabs)/members.tsx
---------index 4871c0b..fdf1b39 100644
------------ a/frontend/app/(tabs)/members.tsx
---------+++ b/frontend/app/(tabs)/members.tsx
---------@@ -127,9 +127,9 @@ export default function MembersScreen() {
---------               <Ionicons name="calendar-outline" size={12} color="#6B7C93" /> {item.birth_date}
---------             </Text>
---------           )}
----------          {item.algerian_branch && (
---------+          {item.geographic_branch && (
---------             <Text style={styles.personBranch}>
----------              <Ionicons name="location-outline" size={12} color="#D4AF37" /> {item.algerian_branch}
---------+              <Ionicons name="location-outline" size={12} color="#D4AF37" /> {item.geographic_branch}
---------             </Text>
---------           )}
---------         </View>
+-------@@ -1,256 +0,0 @@
+--------diff --git a/frontend/app/add-link.tsx b/frontend/app/add-link.tsx
+--------index 72a5d7d..20a9b73 100644
+----------- a/frontend/app/add-link.tsx
+--------+++ b/frontend/app/add-link.tsx
+--------@@ -449,29 +449,88 @@ const styles = StyleSheet.create({
+--------   },
+--------   linkTypeContainer: {
+--------     flexDirection: 'row',
+---------    gap: 12,
+--------+    flexWrap: 'wrap',
+--------+    gap: 10,
+--------   },
+---------  linkTypeButton: {
+---------    flex: 1,
+--------+  categorySection: {
+--------+    marginBottom: 20,
+--------+  },
+--------+  categoryHeader: {
+--------+    flexDirection: 'row',
+--------+    alignItems: 'center',
+--------+    marginBottom: 12,
+--------+    paddingHorizontal: 4,
+--------+  },
+--------+  categoryIndicator: {
+--------+    width: 4,
+--------+    height: 16,
+--------+    borderRadius: 2,
+--------+    marginRight: 10,
+--------+  },
+--------+  categoryTitle: {
+--------+    fontSize: 14,
+--------+    fontWeight: '600',
+--------+    color: '#B8C5D6',
+--------+    textTransform: 'uppercase',
+--------+    letterSpacing: 0.5,
+--------+  },
+--------+  linkTypeGrid: {
+--------+    flexDirection: 'row',
+--------+    flexWrap: 'wrap',
+--------+    gap: 10,
+--------+  },
+--------+  linkTypeCard: {
+--------+    flexDirection: 'row',
+--------+    alignItems: 'center',
+--------     backgroundColor: '#1A2F4A',
+--------+    paddingHorizontal: 14,
+--------+    paddingVertical: 12,
+--------     borderRadius: 12,
+---------    paddingVertical: 16,
+---------    alignItems: 'center',
+--------     borderWidth: 2,
+--------+    borderColor: '#1A2F4A',
+--------+    gap: 10,
+--------+    minWidth: '47%',
+--------+    position: 'relative',
+--------+  },
+--------+  linkTypeCardActive: {
+--------+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+--------+    borderColor: '#D4AF37',
+--------+  },
+--------+  linkTypeIconContainer: {
+--------+    width: 36,
+--------+    height: 36,
+--------+    borderRadius: 18,
+--------+    alignItems: 'center',
+--------+    justifyContent: 'center',
+--------+  },
+--------+  linkTypeButton: {
+--------+    flexDirection: 'row',
+--------+    alignItems: 'center',
+--------+    backgroundColor: '#1A2F4A',
+--------+    paddingHorizontal: 16,
+--------+    paddingVertical: 10,
+--------+    borderRadius: 20,
+--------+    borderWidth: 1,
+--------     borderColor: '#2A3F5A',
+--------+    gap: 8,
+--------   },
+--------   linkTypeButtonActive: {
+---------    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+--------+    backgroundColor: 'rgba(212, 175, 55, 0.2)',
+--------     borderColor: '#D4AF37',
+--------   },
+--------   linkTypeText: {
+---------    color: '#6B7C93',
+---------    fontSize: 12,
+---------    marginTop: 6,
+---------    textAlign: 'center',
+--------+    color: '#B8C5D6',
+--------+    fontSize: 14,
+--------+    flex: 1,
+--------   },
+--------   linkTypeTextActive: {
+---------    color: '#D4AF37',
+--------+    color: '#FFFFFF',
+--------+    fontWeight: '600',
+--------+  },
+--------+  checkmark: {
+--------+    position: 'absolute',
+--------+    top: -4,
+--------+    right: -4,
+--------   },
+--------   linkDescription: {
+--------     color: '#6B7C93',
 --------diff --git a/model.patch b/model.patch
---------index 712fbd4..e69de29 100644
+--------index 2241d65..e69de29 100644
 ----------- a/model.patch
 --------+++ b/model.patch
---------@@ -1,126 +0,0 @@
+--------@@ -1,147 +0,0 @@
+---------diff --git a/frontend/app/(tabs)/members.tsx b/frontend/app/(tabs)/members.tsx
+---------index 4871c0b..fdf1b39 100644
+------------ a/frontend/app/(tabs)/members.tsx
+---------+++ b/frontend/app/(tabs)/members.tsx
+---------@@ -127,9 +127,9 @@ export default function MembersScreen() {
+---------               <Ionicons name="calendar-outline" size={12} color="#6B7C93" /> {item.birth_date}
+---------             </Text>
+---------           )}
+----------          {item.algerian_branch && (
+---------+          {item.geographic_branch && (
+---------             <Text style={styles.personBranch}>
+----------              <Ionicons name="location-outline" size={12} color="#D4AF37" /> {item.algerian_branch}
+---------+              <Ionicons name="location-outline" size={12} color="#D4AF37" /> {item.geographic_branch}
+---------             </Text>
+---------           )}
+---------         </View>
 ---------diff --git a/model.patch b/model.patch
----------index f9414df..e69de29 100644
+---------index 712fbd4..e69de29 100644
 ------------ a/model.patch
 ---------+++ b/model.patch
----------@@ -1,121 +0,0 @@
+---------@@ -1,126 +0,0 @@
 ----------diff --git a/model.patch b/model.patch
-----------index c038579..e69de29 100644
+----------index f9414df..e69de29 100644
 ------------- a/model.patch
 ----------+++ b/model.patch
-----------@@ -1,116 +0,0 @@
+----------@@ -1,121 +0,0 @@
 -----------diff --git a/model.patch b/model.patch
------------index bf34ee7..e69de29 100644
+-----------index c038579..e69de29 100644
 -------------- a/model.patch
 -----------+++ b/model.patch
------------@@ -1,111 +0,0 @@
+-----------@@ -1,116 +0,0 @@
 ------------diff --git a/model.patch b/model.patch
-------------index bf7a483..e69de29 100644
+------------index bf34ee7..e69de29 100644
 --------------- a/model.patch
 ------------+++ b/model.patch
-------------@@ -1,106 +0,0 @@
+------------@@ -1,111 +0,0 @@
 -------------diff --git a/model.patch b/model.patch
--------------index 76777f8..e69de29 100644
+-------------index bf7a483..e69de29 100644
 ---------------- a/model.patch
 -------------+++ b/model.patch
--------------@@ -1,101 +0,0 @@
---------------diff --git a/test_result.md b/test_result.md
---------------index 0b182a2..f9c7be9 100644
------------------ a/test_result.md
---------------+++ b/test_result.md
---------------@@ -131,15 +131,18 @@ backend:
--------------- 
---------------   - task: "User Login"
---------------     implemented: true
----------------    working: NA
---------------+    working: true
---------------     file: "server.py"
---------------     stuck_count: 0
---------------     priority: "high"
----------------    needs_retesting: true
---------------+    needs_retesting: false
---------------     status_history:
---------------       - working: NA
---------------         agent: "main"
---------------         comment: "Implemented, needs testing"
---------------+      - working: true
---------------+        agent: "testing"
---------------+        comment: "✅ TESTED: Login endpoint working correctly. User registration and login flow tested with JWT token generation and validation. Auth token properly returned and accepted for authenticated endpoints."
--------------- 
---------------   - task: "Preview Session Creation"
---------------     implemented: true
---------------@@ -167,39 +170,48 @@ backend:
--------------- 
---------------   - task: "Person CRUD (authenticated)"
---------------     implemented: true
----------------    working: NA
---------------+    working: true
---------------     file: "server.py"
---------------     stuck_count: 0
---------------     priority: "high"
----------------    needs_retesting: true
---------------+    needs_retesting: false
---------------     status_history:
---------------       - working: NA
---------------         agent: "main"
---------------         comment: "Implemented, needs testing"
---------------+      - working: true
---------------+        agent: "testing"
---------------+        comment: "✅ TESTED: All Person CRUD operations working correctly. Create, Read (single/all), Update, and Delete operations tested successfully with proper authentication. Person data includes Algerian branch fields and proper validation."
--------------- 
---------------   - task: "Family Link CRUD"
---------------     implemented: true
----------------    working: NA
---------------+    working: true
---------------     file: "server.py"
---------------     stuck_count: 0
---------------     priority: "medium"
----------------    needs_retesting: true
---------------+    needs_retesting: false
---------------     status_history:
---------------       - working: NA
---------------         agent: "main"
---------------         comment: "Implemented, needs testing"
---------------+      - working: true
---------------+        agent: "testing"
---------------+        comment: "✅ TESTED: Family Link CRUD operations working correctly. Create, Read, and Delete operations tested successfully. Link types (parent/child/spouse) validation working. Proper authentication and user isolation verified."
--------------- 
---------------   - task: "GDPR Export Data"
---------------     implemented: true
----------------    working: NA
---------------+    working: true
---------------     file: "server.py"
---------------     stuck_count: 0
---------------     priority: "medium"
----------------    needs_retesting: true
---------------+    needs_retesting: false
---------------     status_history:
---------------       - working: NA
---------------         agent: "main"
---------------         comment: "Implemented, needs testing"
---------------+      - working: true
---------------+        agent: "testing"
---------------+        comment: "✅ TESTED: GDPR Export endpoint working correctly. Successfully exports user data including user profile, persons, and family links. Password hash properly excluded from export for security. Authentication required and working."
--------------- 
--------------- frontend:
---------------   - task: "Welcome Screen"
---------------@@ -257,14 +269,13 @@ metadata:
---------------   run_ui: false
--------------- 
--------------- test_plan:
----------------  current_focus:
----------------    - "User Login"
----------------    - "Person CRUD (authenticated)"
----------------    - "Family Link CRUD"
---------------+  current_focus: []
---------------   stuck_tasks: []
---------------   test_all: false
---------------   test_priority: "high_first"
--------------- 
--------------- agent_communication:
---------------   - agent: "main"
----------------    message: "MVP implementation complete. Backend API functional with preview mode and auth. Frontend screens created. Need to test full authentication flow and CRUD operations."
---------------\ No newline at end of file
---------------+    message: "MVP implementation complete. Backend API functional with preview mode and auth. Frontend screens created. Need to test full authentication flow and CRUD operations."
---------------+  - agent: "testing"
---------------+    message: "✅ BACKEND TESTING COMPLETE: All backend APIs tested successfully with 100% pass rate (21/21 tests). Comprehensive testing performed including health checks, preview mode (with 10-person limit), authentication flow, Person CRUD, Family Link CRUD, Tree endpoint, and GDPR export. All endpoints working correctly with proper authentication, validation, and data handling. Backend is fully functional and ready for production use."
---------------\ No newline at end of file
+-------------@@ -1,106 +0,0 @@
+--------------diff --git a/model.patch b/model.patch
+--------------index 76777f8..e69de29 100644
+----------------- a/model.patch
+--------------+++ b/model.patch
+--------------@@ -1,101 +0,0 @@
+---------------diff --git a/test_result.md b/test_result.md
+---------------index 0b182a2..f9c7be9 100644
+------------------ a/test_result.md
+---------------+++ b/test_result.md
+---------------@@ -131,15 +131,18 @@ backend:
+--------------- 
+---------------   - task: "User Login"
+---------------     implemented: true
+----------------    working: NA
+---------------+    working: true
+---------------     file: "server.py"
+---------------     stuck_count: 0
+---------------     priority: "high"
+----------------    needs_retesting: true
+---------------+    needs_retesting: false
+---------------     status_history:
+---------------       - working: NA
+---------------         agent: "main"
+---------------         comment: "Implemented, needs testing"
+---------------+      - working: true
+---------------+        agent: "testing"
+---------------+        comment: "✅ TESTED: Login endpoint working correctly. User registration and login flow tested with JWT token generation and validation. Auth token properly returned and accepted for authenticated endpoints."
+--------------- 
+---------------   - task: "Preview Session Creation"
+---------------     implemented: true
+---------------@@ -167,39 +170,48 @@ backend:
+--------------- 
+---------------   - task: "Person CRUD (authenticated)"
+---------------     implemented: true
+----------------    working: NA
+---------------+    working: true
+---------------     file: "server.py"
+---------------     stuck_count: 0
+---------------     priority: "high"
+----------------    needs_retesting: true
+---------------+    needs_retesting: false
+---------------     status_history:
+---------------       - working: NA
+---------------         agent: "main"
+---------------         comment: "Implemented, needs testing"
+---------------+      - working: true
+---------------+        agent: "testing"
+---------------+        comment: "✅ TESTED: All Person CRUD operations working correctly. Create, Read (single/all), Update, and Delete operations tested successfully with proper authentication. Person data includes Algerian branch fields and proper validation."
+--------------- 
+---------------   - task: "Family Link CRUD"
+---------------     implemented: true
+----------------    working: NA
+---------------+    working: true
+---------------     file: "server.py"
+---------------     stuck_count: 0
+---------------     priority: "medium"
+----------------    needs_retesting: true
+---------------+    needs_retesting: false
+---------------     status_history:
+---------------       - working: NA
+---------------         agent: "main"
+---------------         comment: "Implemented, needs testing"
+---------------+      - working: true
+---------------+        agent: "testing"
+---------------+        comment: "✅ TESTED: Family Link CRUD operations working correctly. Create, Read, and Delete operations tested successfully. Link types (parent/child/spouse) validation working. Proper authentication and user isolation verified."
+--------------- 
+---------------   - task: "GDPR Export Data"
+---------------     implemented: true
+----------------    working: NA
+---------------+    working: true
+---------------     file: "server.py"
+---------------     stuck_count: 0
+---------------     priority: "medium"
+----------------    needs_retesting: true
+---------------+    needs_retesting: false
+---------------     status_history:
+---------------       - working: NA
+---------------         agent: "main"
+---------------         comment: "Implemented, needs testing"
+---------------+      - working: true
+---------------+        agent: "testing"
+---------------+        comment: "✅ TESTED: GDPR Export endpoint working correctly. Successfully exports user data including user profile, persons, and family links. Password hash properly excluded from export for security. Authentication required and working."
+--------------- 
+--------------- frontend:
+---------------   - task: "Welcome Screen"
+---------------@@ -257,14 +269,13 @@ metadata:
+---------------   run_ui: false
+--------------- 
+--------------- test_plan:
+----------------  current_focus:
+----------------    - "User Login"
+----------------    - "Person CRUD (authenticated)"
+----------------    - "Family Link CRUD"
+---------------+  current_focus: []
+---------------   stuck_tasks: []
+---------------   test_all: false
+---------------   test_priority: "high_first"
+--------------- 
+--------------- agent_communication:
+---------------   - agent: "main"
+----------------    message: "MVP implementation complete. Backend API functional with preview mode and auth. Frontend screens created. Need to test full authentication flow and CRUD operations."
+---------------\ No newline at end of file
+---------------+    message: "MVP implementation complete. Backend API functional with preview mode and auth. Frontend screens created. Need to test full authentication flow and CRUD operations."
+---------------+  - agent: "testing"
+---------------+    message: "✅ BACKEND TESTING COMPLETE: All backend APIs tested successfully with 100% pass rate (21/21 tests). Comprehensive testing performed including health checks, preview mode (with 10-person limit), authentication flow, Person CRUD, Family Link CRUD, Tree endpoint, and GDPR export. All endpoints working correctly with proper authentication, validation, and data handling. Backend is fully functional and ready for production use."
+---------------\ No newline at end of file
