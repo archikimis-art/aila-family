@@ -299,7 +299,17 @@ export default function WelcomeScreen() {
       </ScrollView>
       
       {/* Bannière publicitaire fixée en bas avec boutons intégrés */}
-      <View style={styles.adContainer}>
+      <View style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#1E3A5F',
+        borderTopWidth: 1,
+        borderTopColor: '#2D4A6F',
+        alignItems: 'center',
+        zIndex: 100,
+      }}>
         <View style={styles.adBannerContent}>
           {/* Bouton Partager */}
           <TouchableOpacity 
