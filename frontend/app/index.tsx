@@ -354,13 +354,17 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 100, // Espace pour la barre du bas fixe
   },
-  gradient: {
+  contentContainer: {
     paddingHorizontal: isLargeScreen ? 48 : 24,
     paddingTop: isLargeScreen ? 20 : 10,
     paddingBottom: 20,
     maxWidth: isLargeScreen ? 600 : '100%',
     alignSelf: 'center',
     width: '100%',
+  },
+  gradientBackground: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: -1,
   },
   bottomSpacer: {
     height: 20, // Un peu d'espace supplémentaire
