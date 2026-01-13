@@ -338,11 +338,15 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#1E3A5F', // Même couleur que la bannière pub pour éviter la bande blanche
-  },
-  container: {
-    flex: 1,
     backgroundColor: '#0A1628',
+  },
+  backgroundContainer: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
+  },
+  safeArea: {
+    flex: 1,
+    zIndex: 1,
   },
   scrollView: {
     flex: 1,
