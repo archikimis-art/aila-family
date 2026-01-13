@@ -341,12 +341,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0A1628',
   },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
   gradient: {
     flex: 1,
     paddingHorizontal: isLargeScreen ? 48 : 24,
     maxWidth: isLargeScreen ? 600 : '100%',
     alignSelf: 'center',
     width: '100%',
+  },
+  bottomSpacer: {
+    height: 80, // Espace pour la barre du bas sur mobile
   },
   loadingContainer: {
     flex: 1,
