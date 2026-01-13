@@ -78,14 +78,23 @@ export default function WelcomeScreen() {
   // Fix pour la barre du bas en position fixed sur web
   useEffect(() => {
     if (Platform.OS === 'web' && typeof document !== 'undefined') {
-      // Appliquer le style fixed à la barre du bas après le rendu
-      setTimeout(() => {
-        const adBars = document.querySelectorAll('[data-testid="ad-container"]');
-        adBars.forEach((bar: any) => {
-          bar.style.position = 'fixed';
-          bar.style.zIndex = '9999';
-        });
-      }, 100);
+      // Injecter du CSS global pour la barre fixe
+      const styleId = 'aila-fixed-bar-style';
+      if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+          /* Force la barre du bas en position fixed */
+          [class*="r-1p0dtai"][class*="r-1d2f490"] {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 9999 !important;
+          }
+        `;
+        document.head.appendChild(style);
+      }
     }
   }, []);
 
