@@ -292,8 +292,8 @@ export default function WelcomeScreen() {
             {/* Spacer for bottom bar */}
             <View style={styles.bottomSpacer} />
           </View>
-        </ScrollView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </ScrollView>
       
       {/* Bannière publicitaire fixée en bas avec boutons intégrés */}
       <View style={styles.adContainer}>
