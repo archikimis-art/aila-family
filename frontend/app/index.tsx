@@ -345,8 +345,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    flexGrow: 1,
-    minHeight: '100%',
     paddingBottom: 100, // Espace pour la barre du bas fixe
   },
   gradient: {
