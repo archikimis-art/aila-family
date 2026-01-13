@@ -11,7 +11,7 @@ from datetime import datetime
 import time
 
 # Configuration
-BASE_URL = "https://auth-system-repair-8.preview.emergentagent.com/api"
+BASE_URL = "https://seo-site-rescue.preview.emergentagent.com/api"
 TIMEOUT = 30
 
 class GenealogyAPITester:
