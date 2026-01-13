@@ -77,6 +77,28 @@ export default function WelcomeScreen() {
 
   // Supprimé le useEffect qui causait des problèmes
 
+  // Injecter CSS pour forcer la barre en fixed
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      const styleId = 'aila-bottom-bar-fix';
+      if (!document.getElementById(styleId)) {
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+          /* Force bottom bar to be fixed */
+          #aila-bottom-bar {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 9999 !important;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+  }, []);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
