@@ -231,6 +231,7 @@ export default function WelcomeScreen() {
               <Text style={styles.loginLinkText}>Déjà inscrit ? </Text>
               <Text style={styles.loginLinkTextBold}>Se connecter</Text>
             </TouchableOpacity>
+          </View>
 
             {/* Guides SEO Section - Design épuré */}
             <View style={styles.guidesSection}>
