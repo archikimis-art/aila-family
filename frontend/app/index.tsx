@@ -78,38 +78,25 @@ export default function WelcomeScreen() {
   // Fix pour la barre du bas en position fixed sur web
   useEffect(() => {
     if (Platform.OS === 'web' && typeof document !== 'undefined') {
-      // Chercher et fixer la barre du bas après le rendu
       const fixBottomBar = () => {
-        // Trouver l'élément contenant "Partager"
-        const walker = document.createTreeWalker(
-          document.body,
-          NodeFilter.SHOW_TEXT,
-          null
-        );
-        let node;
-        while (node = walker.nextNode()) {
-          if (node.textContent?.trim() === 'Partager') {
-            // Remonter jusqu'au conteneur de la barre
-            let container = node.parentElement;
-            for (let i = 0; i < 5 && container; i++) {
-              if (container.style) {
-                const computed = window.getComputedStyle(container);
-                if (computed.position === 'absolute' && computed.bottom === '0px') {
-                  container.style.position = 'fixed';
-                  container.style.zIndex = '9999';
-                  console.log('Fixed bottom bar applied');
-                  return;
-                }
-              }
-              container = container.parentElement;
-            }
+        // Trouver tous les éléments avec backgroundColor #1E3A5F (rgb(30, 58, 95))
+        const allElements = document.querySelectorAll('div');
+        allElements.forEach((el: any) => {
+          const style = window.getComputedStyle(el);
+          // Chercher un élément avec position absolute, bottom 0, et backgroundColor correspondant
+          if (style.position === 'absolute' && 
+              (style.bottom === '0px' || el.style.bottom === '0') &&
+              el.innerText?.includes('Partager')) {
+            el.style.setProperty('position', 'fixed', 'important');
+            el.style.setProperty('z-index', '9999', 'important');
+            console.log('✅ Fixed bottom bar applied!');
           }
-        }
+        });
       };
       
-      // Appliquer après un court délai pour laisser le rendu se faire
-      setTimeout(fixBottomBar, 200);
-      setTimeout(fixBottomBar, 500);
+      setTimeout(fixBottomBar, 300);
+      setTimeout(fixBottomBar, 800);
+      setTimeout(fixBottomBar, 1500);
     }
   }, []);
 
