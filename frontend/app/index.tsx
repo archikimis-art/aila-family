@@ -231,9 +231,10 @@ export default function WelcomeScreen() {
               <Text style={styles.loginLinkText}>Déjà inscrit ? </Text>
               <Text style={styles.loginLinkTextBold}>Se connecter</Text>
             </TouchableOpacity>
+          </View>
 
-            {/* Guides SEO Section - Design épuré */}
-            <View style={styles.guidesSection}>
+          {/* Guides SEO Section - Design épuré */}
+          <View style={styles.guidesSection}>
               <Text style={styles.guidesTitle}>Guides & Ressources</Text>
               <View style={styles.guidesContainer}>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
