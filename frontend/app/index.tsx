@@ -136,13 +136,18 @@ export default function WelcomeScreen() {
           </Suspense>
         )}
         
-        <LinearGradient
-          colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
-          style={styles.gradient}
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
         >
-          {/* Header Logo */}
-          <View style={styles.logoContainer}>
-            <Ionicons name="leaf" size={80} color="#D4AF37" />
+          <LinearGradient
+            colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
+            style={styles.gradient}
+          >
+            {/* Header Logo */}
+            <View style={styles.logoContainer}>
+              <Ionicons name="leaf" size={80} color="#D4AF37" />
             <Text style={styles.title}>AÏLA</Text>
             <Text style={styles.subtitle}>FAMILLE</Text>
             <View style={styles.sloganContainer}>
