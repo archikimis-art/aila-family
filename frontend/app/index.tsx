@@ -78,23 +78,38 @@ export default function WelcomeScreen() {
   // Fix pour la barre du bas en position fixed sur web
   useEffect(() => {
     if (Platform.OS === 'web' && typeof document !== 'undefined') {
-      // Injecter du CSS global pour la barre fixe
-      const styleId = 'aila-fixed-bar-style';
-      if (!document.getElementById(styleId)) {
-        const style = document.createElement('style');
-        style.id = styleId;
-        style.textContent = `
-          /* Force la barre du bas en position fixed */
-          [class*="r-1p0dtai"][class*="r-1d2f490"] {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            z-index: 9999 !important;
+      // Chercher et fixer la barre du bas après le rendu
+      const fixBottomBar = () => {
+        // Trouver l'élément contenant "Partager"
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          null
+        );
+        let node;
+        while (node = walker.nextNode()) {
+          if (node.textContent?.trim() === 'Partager') {
+            // Remonter jusqu'au conteneur de la barre
+            let container = node.parentElement;
+            for (let i = 0; i < 5 && container; i++) {
+              if (container.style) {
+                const computed = window.getComputedStyle(container);
+                if (computed.position === 'absolute' && computed.bottom === '0px') {
+                  container.style.position = 'fixed';
+                  container.style.zIndex = '9999';
+                  console.log('Fixed bottom bar applied');
+                  return;
+                }
+              }
+              container = container.parentElement;
+            }
           }
-        `;
-        document.head.appendChild(style);
-      }
+        }
+      };
+      
+      // Appliquer après un court délai pour laisser le rendu se faire
+      setTimeout(fixBottomBar, 200);
+      setTimeout(fixBottomBar, 500);
     }
   }, []);
 
