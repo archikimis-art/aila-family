@@ -348,8 +348,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   gradient: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: isLargeScreen ? 48 : 24,
+    paddingTop: isLargeScreen ? 20 : 10,
+    paddingBottom: 20,
     maxWidth: isLargeScreen ? 600 : '100%',
     alignSelf: 'center',
     width: '100%',
