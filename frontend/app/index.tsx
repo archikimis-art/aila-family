@@ -128,18 +128,21 @@ export default function WelcomeScreen() {
 
   return (
     <View style={styles.mainContainer}>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.backgroundContainer}>
         {/* Animated Background - Lazy loaded for performance */}
         {showBackground && (
           <Suspense fallback={null}>
             <AnimatedTreeBackground />
           </Suspense>
         )}
-        
+      </View>
+      
+      <SafeAreaView style={styles.safeArea}>
         <ScrollView 
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          bounces={true}
         >
           <LinearGradient
             colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
