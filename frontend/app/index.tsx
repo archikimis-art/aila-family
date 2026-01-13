@@ -342,6 +342,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: '#0A1628',
+    position: 'relative', // Important pour que absolute fonctionne
   },
   backgroundContainer: {
     ...StyleSheet.absoluteFillObject,
