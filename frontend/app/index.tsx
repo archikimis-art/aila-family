@@ -346,6 +346,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    minHeight: '100%',
+    paddingBottom: 100, // Espace pour la barre du bas fixe
   },
   gradient: {
     flexGrow: 1,
@@ -357,7 +359,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   bottomSpacer: {
-    height: 80, // Espace pour la barre du bas sur mobile
+    height: 20, // Un peu d'espace supplémentaire
   },
   loadingContainer: {
     flex: 1,
