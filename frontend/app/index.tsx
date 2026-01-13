@@ -618,10 +618,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   adContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: '#1E3A5F',
     borderTopWidth: 1,
     borderTopColor: '#2D4A6F',
     alignItems: 'center',
+    zIndex: 100,
   },
   adBannerContent: {
     flexDirection: 'row',
