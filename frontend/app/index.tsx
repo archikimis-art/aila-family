@@ -292,7 +292,6 @@ export default function WelcomeScreen() {
             {/* Spacer for bottom bar */}
             <View style={styles.bottomSpacer} />
           </View>
-        </LinearGradient>
         </ScrollView>
       </SafeAreaView>
       
