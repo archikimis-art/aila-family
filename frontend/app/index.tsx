@@ -344,12 +344,9 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     zIndex: 0,
   },
-  safeArea: {
-    flex: 1,
-    zIndex: 1,
-  },
   scrollView: {
     flex: 1,
+    zIndex: 1,
   },
   scrollContent: {
     paddingBottom: 100, // Espace pour la barre du bas fixe
