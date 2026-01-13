@@ -162,19 +162,17 @@ export default function WelcomeScreen() {
         )}
       </View>
       
-      {/* Conteneur principal avec flex pour la barre du bas */}
-      <View style={styles.mainContentWrapper}>
-        <ScrollView 
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={true}
-          bounces={true}
-        >
-          <SafeAreaView>
-            <View style={styles.contentContainer}>
-              <LinearGradient
-                colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
-                style={styles.gradientBackground}
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={true}
+        bounces={true}
+      >
+        <SafeAreaView>
+          <View style={styles.contentContainer}>
+            <LinearGradient
+              colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
+              style={styles.gradientBackground}
             />
             {/* Header Logo */}
             <View style={styles.logoContainer}>
