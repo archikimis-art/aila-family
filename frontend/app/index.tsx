@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   bottomSpacer: {
-    height: 10, // Petit espace avant la barre du bas
+    height: 70, // Espace pour la barre du bas (60px) + marge
   },
   loadingContainer: {
     flex: 1,
