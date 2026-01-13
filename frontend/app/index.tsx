@@ -144,10 +144,11 @@ export default function WelcomeScreen() {
           showsVerticalScrollIndicator={false}
           bounces={true}
         >
-          <LinearGradient
-            colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
-            style={styles.gradient}
-          >
+          <View style={styles.contentContainer}>
+            <LinearGradient
+              colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
+              style={styles.gradientBackground}
+            />
             {/* Header Logo */}
             <View style={styles.logoContainer}>
               <Ionicons name="leaf" size={80} color="#D4AF37" />
