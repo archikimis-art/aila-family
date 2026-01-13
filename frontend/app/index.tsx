@@ -284,8 +284,12 @@ export default function WelcomeScreen() {
                 <Text style={styles.legalLink}>CGU</Text>
               </TouchableOpacity>
             </View>
+            
+            {/* Spacer for bottom bar */}
+            <View style={styles.bottomSpacer} />
           </View>
         </LinearGradient>
+        </ScrollView>
       </SafeAreaView>
       
       {/* Bannière publicitaire fixée en bas avec boutons intégrés */}
