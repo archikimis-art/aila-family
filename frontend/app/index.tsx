@@ -350,7 +350,6 @@ const styles = StyleSheet.create({
     paddingBottom: 100, // Espace pour la barre du bas fixe
   },
   gradient: {
-    flexGrow: 1,
     paddingHorizontal: isLargeScreen ? 48 : 24,
     paddingTop: isLargeScreen ? 20 : 10,
     paddingBottom: 20,
