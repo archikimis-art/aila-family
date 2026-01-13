@@ -90,32 +90,6 @@ const seoMetaTags = `
 }
 </script>
 
-<!-- Structured Data - FAQ -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "Qu'est-ce que AILA Famille ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "AILA Famille (AÏLA) est une application gratuite pour créer, visualiser et partager votre arbre généalogique familial."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "AILA Famille est-il gratuit ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Oui, AILA Famille propose une version gratuite complète permettant de créer votre arbre généalogique."
-      }
-    }
-  ]
-}
-</script>
-
 <!-- Google Analytics (deferred) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-C2MS83P8ZW"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-C2MS83P8ZW');</script>
