@@ -322,12 +322,10 @@ export default function WelcomeScreen() {
           </View>
         </SafeAreaView>
       </ScrollView>
+      </View>
       
       {/* Bannière publicitaire fixée en bas avec boutons intégrés */}
-      <View 
-        style={[styles.adContainer, Platform.OS === 'web' && { position: 'fixed' as any, zIndex: 9999 }]}
-        {...(Platform.OS === 'web' ? { 'data-testid': 'ad-container' } : {})}
-      >
+      <View style={styles.adContainer}>
         <View style={styles.adBannerContent}>
           {/* Bouton Partager */}
           <TouchableOpacity 
