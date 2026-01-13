@@ -1,19 +1,32 @@
 #!/usr/bin/env node
 
 /**
- * Post-build script to inject SEO content into Expo-generated index.html
- * This ensures crawlers (Google, ChatGPT, etc.) see content without JavaScript
+ * CRITICAL SEO INJECTION SCRIPT
+ * 
+ * This script injects SEO content into Expo-generated HTML files.
+ * Without this, crawlers (Google, ChatGPT, etc.) see an empty page.
+ * 
+ * Run after: npx expo export -p web
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const distPath = path.join(__dirname, '..', 'dist');
-const indexPath = path.join(distPath, 'index.html');
+console.log('🔧 SEO Injection Script Starting...');
+console.log('   Working directory:', process.cwd());
 
-// SEO content to inject (visible to crawlers, hidden when JS loads)
-const seoContent = `
-<!-- SEO Meta Tags -->
+const distPath = path.join(process.cwd(), 'dist');
+console.log('   Looking for dist at:', distPath);
+
+if (!fs.existsSync(distPath)) {
+  console.error('❌ ERROR: dist folder not found!');
+  console.log('   Make sure to run: npx expo export -p web');
+  process.exit(1);
+}
+
+// SEO Meta Tags to inject in <head>
+const seoMetaTags = `
+<!-- ==================== AILA FAMILLE SEO ==================== -->
 <title>AILA Famille - Arbre Généalogique Gratuit en Ligne | AÏLA Family App</title>
 <meta name="description" content="AILA Famille : créez votre arbre généalogique gratuitement en ligne. Application collaborative pour visualiser, partager et préserver votre histoire familiale. Rejoignez la communauté AILA !" />
 <meta name="keywords" content="AILA famille, AILA family, aila.family, AÏLA famille, arbre généalogique AILA, application AILA, généalogie AILA, arbre familial AILA, AILA généalogie gratuit, créer arbre AILA, arbre généalogique gratuit, généalogie en ligne" />
@@ -42,7 +55,7 @@ const seoContent = `
 <meta name="twitter:description" content="AILA Famille : créez votre arbre généalogique gratuitement et partagez-le avec votre famille." />
 <meta name="twitter:image" content="https://www.aila.family/og-image.svg" />
 
-<!-- Structured Data -->
+<!-- Structured Data - Website -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -54,6 +67,8 @@ const seoContent = `
   "inLanguage": "fr-FR"
 }
 </script>
+
+<!-- Structured Data - Software Application -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -74,6 +89,8 @@ const seoContent = `
   }
 }
 </script>
+
+<!-- Structured Data - FAQ -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -99,12 +116,9 @@ const seoContent = `
 }
 </script>
 
-<!-- Google Analytics -->
+<!-- Google Analytics (deferred) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-C2MS83P8ZW"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-C2MS83P8ZW');</script>
-
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8309745338282834" crossorigin="anonymous"></script>
 
 <!-- PWA -->
 <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
@@ -113,125 +127,265 @@ const seoContent = `
 <meta name="theme-color" content="#D4AF37" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="AILA Famille" />
-
-<style>
-  .seo-fallback {
-    background: #0A1628;
-    color: #fff;
-    padding: 40px 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-  .seo-fallback h1 { color: #D4AF37; font-size: 2em; margin-bottom: 10px; }
-  .seo-fallback h2 { font-size: 1.2em; font-weight: normal; color: #8BA1B7; margin-bottom: 30px; }
-  .seo-fallback p { color: #B8C5D6; line-height: 1.8; margin-bottom: 20px; }
-  .seo-fallback ul { color: #B8C5D6; line-height: 2; padding-left: 20px; }
-  .seo-fallback a { color: #D4AF37; }
-  .seo-fallback .cta { background: #D4AF37; color: #0A1628; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block; margin: 10px 5px; }
-  .seo-fallback .cta-outline { border: 2px solid #D4AF37; background: transparent; color: #D4AF37; }
-  .seo-fallback footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #2A3F5A; font-size: 0.9em; color: #6B7C93; }
-</style>
+<!-- ==================== END AILA SEO ==================== -->
 `;
 
+// Noscript fallback content for crawlers
 const noscriptContent = `
 <noscript>
-  <div class="seo-fallback">
+<style>
+  .seo-fallback {
+    background: linear-gradient(135deg, #0A1628 0%, #1A2F4A 50%, #0A1628 100%);
+    color: #fff;
+    padding: 40px 20px;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  .seo-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .seo-fallback h1 { 
+    color: #D4AF37; 
+    font-size: 2.5em; 
+    margin-bottom: 10px; 
+    text-align: center;
+  }
+  .seo-fallback h2 { 
+    font-size: 1.3em; 
+    font-weight: normal; 
+    color: #8BA1B7; 
+    margin-bottom: 30px; 
+    text-align: center;
+  }
+  .seo-fallback h3 {
+    color: #D4AF37;
+    margin-top: 30px;
+    margin-bottom: 15px;
+  }
+  .seo-fallback p { 
+    color: #B8C5D6; 
+    line-height: 1.8; 
+    margin-bottom: 20px; 
+  }
+  .seo-fallback ul { 
+    color: #B8C5D6; 
+    line-height: 2; 
+    padding-left: 20px;
+    margin-bottom: 20px;
+  }
+  .seo-fallback a { 
+    color: #D4AF37; 
+    text-decoration: none;
+  }
+  .seo-fallback a:hover {
+    text-decoration: underline;
+  }
+  .cta-container {
+    text-align: center;
+    margin: 30px 0;
+  }
+  .seo-fallback .cta { 
+    background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%);
+    color: #0A1628; 
+    padding: 15px 30px; 
+    border-radius: 25px; 
+    text-decoration: none; 
+    font-weight: bold; 
+    display: inline-block; 
+    margin: 10px 5px;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  }
+  .seo-fallback .cta-outline { 
+    border: 2px solid #D4AF37; 
+    background: transparent; 
+    color: #D4AF37;
+    box-shadow: none;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+  }
+  .feature-card {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .feature-card h4 {
+    color: #D4AF37;
+    margin-bottom: 10px;
+  }
+  .seo-fallback footer { 
+    margin-top: 50px; 
+    padding-top: 20px; 
+    border-top: 1px solid #2A3F5A; 
+    font-size: 0.9em; 
+    color: #6B7C93;
+    text-align: center;
+  }
+  .footer-links {
+    margin-bottom: 15px;
+  }
+  .footer-links a {
+    margin: 0 10px;
+  }
+</style>
+<div class="seo-fallback">
+  <div class="seo-container">
     <h1>🌳 AILA Famille</h1>
     <h2>L'arbre généalogique qui connecte votre famille</h2>
     
     <p>
-      <strong>AILA Famille</strong> (AÏLA) est une application gratuite pour créer, visualiser et partager votre arbre généalogique familial. 
-      Rejoignez des milliers de familles qui utilisent AILA pour préserver leur histoire.
+      <strong>AILA Famille</strong> (aussi appelé <strong>AÏLA</strong>) est l'application gratuite de référence pour créer, 
+      visualiser et partager votre arbre généalogique familial. Rejoignez des milliers de familles qui utilisent 
+      AILA pour préserver et transmettre leur histoire.
     </p>
     
-    <h3 style="color: #D4AF37;">✨ Fonctionnalités AILA Famille</h3>
-    <ul>
-      <li>📊 <strong>Créez votre arbre généalogique</strong> - Ajoutez facilement vos ancêtres et descendants</li>
-      <li>👨‍👩‍👧‍👦 <strong>Collaborez en famille</strong> - Invitez vos proches à enrichir l'arbre ensemble</li>
-      <li>📅 <strong>Rappels d'anniversaires</strong> - Ne manquez plus aucune date importante</li>
-      <li>💬 <strong>Discutez en famille</strong> - Partagez des souvenirs et des histoires</li>
-      <li>📤 <strong>Export GEDCOM</strong> - Compatible avec les autres logiciels de généalogie</li>
-      <li>🔒 <strong>Données sécurisées</strong> - Vos informations sont protégées</li>
-    </ul>
-    
-    <h3 style="color: #D4AF37;">🚀 Commencez gratuitement</h3>
-    <p>
-      Créez votre compte AILA Famille gratuitement et commencez à construire votre arbre généalogique dès aujourd'hui.
-    </p>
-    <p>
-      <a href="/(auth)/register" class="cta">Créer un compte gratuit</a>
+    <div class="cta-container">
+      <a href="/(auth)/register" class="cta">✨ Créer mon arbre gratuit</a>
       <a href="/(auth)/login" class="cta cta-outline">Se connecter</a>
-    </p>
+    </div>
+
+    <h3>✨ Pourquoi choisir AILA Famille ?</h3>
     
-    <h3 style="color: #D4AF37;">❓ Questions fréquentes sur AILA Famille</h3>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h4>📊 Arbre généalogique visuel</h4>
+        <p>Créez et visualisez votre arbre familial de manière intuitive avec notre interface moderne.</p>
+      </div>
+      <div class="feature-card">
+        <h4>👨‍👩‍👧‍👦 Collaboration familiale</h4>
+        <p>Invitez vos proches à enrichir l'arbre ensemble et partagez vos découvertes.</p>
+      </div>
+      <div class="feature-card">
+        <h4>📅 Rappels d'anniversaires</h4>
+        <p>Ne manquez plus jamais une date importante avec les notifications automatiques.</p>
+      </div>
+      <div class="feature-card">
+        <h4>💬 Discussion en famille</h4>
+        <p>Partagez des souvenirs, des histoires et des photos avec tous vos proches.</p>
+      </div>
+      <div class="feature-card">
+        <h4>📤 Export GEDCOM</h4>
+        <p>Exportez vos données au format standard pour compatibilité avec d'autres logiciels.</p>
+      </div>
+      <div class="feature-card">
+        <h4>🔒 Données sécurisées</h4>
+        <p>Vos informations familiales sont protégées et restent privées.</p>
+      </div>
+    </div>
+
+    <h3>❓ Questions fréquentes sur AILA Famille</h3>
     
     <p><strong>Qu'est-ce que AILA Famille ?</strong><br>
-    AILA Famille (aussi appelé AÏLA) est une application web et mobile gratuite pour créer et gérer votre arbre généalogique familial.</p>
+    AILA Famille (également connu sous le nom AÏLA) est une application web et mobile gratuite permettant de créer 
+    et gérer votre arbre généalogique familial de manière collaborative.</p>
     
     <p><strong>AILA Famille est-il vraiment gratuit ?</strong><br>
-    Oui ! AILA Famille offre une version gratuite complète. Une version Premium existe pour des fonctionnalités avancées.</p>
+    Oui ! AILA Famille offre une version gratuite complète avec toutes les fonctionnalités essentielles. 
+    Une version Premium existe pour des fonctionnalités avancées.</p>
     
-    <p><strong>Comment accéder à AILA Famille ?</strong><br>
-    Rendez-vous sur <a href="https://www.aila.family">www.aila.family</a> et créez votre compte en quelques secondes.</p>
+    <p><strong>Comment commencer avec AILA Famille ?</strong><br>
+    C'est simple : créez un compte gratuit sur <a href="https://www.aila.family">www.aila.family</a>, 
+    puis commencez à ajouter les membres de votre famille pour construire votre arbre.</p>
     
+    <p><strong>Puis-je utiliser AILA Famille sur mobile ?</strong><br>
+    Oui, AILA Famille est disponible sur web, iOS et Android. Votre arbre est synchronisé sur tous vos appareils.</p>
+    
+    <p><strong>Mes données sont-elles sécurisées ?</strong><br>
+    Absolument. AILA Famille utilise des protocoles de sécurité modernes pour protéger vos informations familiales.</p>
+
     <footer>
-      © 2024 AILA Famille - Application de généalogie collaborative<br>
-      <a href="/about">À propos</a> • <a href="/blog">Blog</a> • <a href="/faq">FAQ</a> • <a href="/privacy">Confidentialité</a> • <a href="/terms">CGU</a>
+      <div class="footer-links">
+        <a href="/about">À propos</a>
+        <a href="/blog">Blog</a>
+        <a href="/faq">FAQ</a>
+        <a href="/privacy">Confidentialité</a>
+        <a href="/terms">CGU</a>
+      </div>
+      <p>© 2024 AILA Famille - Application de généalogie collaborative</p>
+      <p>Visitez <a href="https://www.aila.family">www.aila.family</a> pour créer votre arbre généalogique gratuit.</p>
     </footer>
   </div>
+</div>
 </noscript>
 `;
 
-function injectSEO() {
-  console.log('🔧 Injecting SEO content into index.html...');
-
-  if (!fs.existsSync(indexPath)) {
-    console.error('❌ index.html not found at:', indexPath);
-    process.exit(1);
+function injectIntoHTML(filePath) {
+  try {
+    let html = fs.readFileSync(filePath, 'utf8');
+    
+    // Skip if already injected
+    if (html.includes('AILA FAMILLE SEO')) {
+      console.log(`   ⏭️  Skipping ${path.basename(filePath)} (already injected)`);
+      return false;
+    }
+    
+    // Change lang to French
+    html = html.replace(/lang="en"/g, 'lang="fr"');
+    
+    // Remove empty title if present
+    html = html.replace(/<title[^>]*><\/title>/g, '');
+    
+    // Inject SEO meta tags before </head>
+    html = html.replace('</head>', seoMetaTags + '</head>');
+    
+    // Inject noscript content after <body> (or after first <body...>)
+    html = html.replace(/<body([^>]*)>/, '<body$1>' + noscriptContent);
+    
+    fs.writeFileSync(filePath, html, 'utf8');
+    return true;
+  } catch (error) {
+    console.error(`   ❌ Error processing ${filePath}:`, error.message);
+    return false;
   }
-
-  let html = fs.readFileSync(indexPath, 'utf8');
-
-  // Change lang attribute to French
-  html = html.replace('lang="en"', 'lang="fr"');
-
-  // Inject SEO meta tags in <head>
-  html = html.replace('</head>', seoContent + '</head>');
-
-  // Inject noscript content after <body>
-  html = html.replace('<body>', '<body>' + noscriptContent);
-
-  // Write back
-  fs.writeFileSync(indexPath, html, 'utf8');
-
-  console.log('✅ SEO content injected successfully!');
-  console.log('   - Meta tags added to <head>');
-  console.log('   - Noscript fallback content added to <body>');
 }
 
-// Run for all HTML files in dist
-function injectSEOToAllPages() {
-  const files = fs.readdirSync(distPath);
+function processAllHTMLFiles(dir) {
+  let processed = 0;
+  let skipped = 0;
   
-  files.forEach(file => {
-    if (file.endsWith('.html')) {
-      const filePath = path.join(distPath, file);
-      let html = fs.readFileSync(filePath, 'utf8');
+  function walkDir(currentDir) {
+    const files = fs.readdirSync(currentDir);
+    
+    for (const file of files) {
+      const filePath = path.join(currentDir, file);
+      const stat = fs.statSync(filePath);
       
-      // Only inject if not already injected
-      if (!html.includes('google-adsense-account')) {
-        html = html.replace('lang="en"', 'lang="fr"');
-        html = html.replace('</head>', seoContent + '</head>');
-        fs.writeFileSync(filePath, html, 'utf8');
-        console.log(`  ✅ Injected SEO into ${file}`);
+      if (stat.isDirectory()) {
+        walkDir(filePath);
+      } else if (file.endsWith('.html')) {
+        if (injectIntoHTML(filePath)) {
+          console.log(`   ✅ Injected SEO into ${path.relative(distPath, filePath)}`);
+          processed++;
+        } else {
+          skipped++;
+        }
       }
     }
-  });
+  }
+  
+  walkDir(dir);
+  return { processed, skipped };
 }
 
-// Main
-injectSEO();
-injectSEOToAllPages();
-console.log('🎉 SEO injection complete!');
-// SEO fix 1768281566
+// Main execution
+console.log('📁 Processing HTML files in dist/...');
+const result = processAllHTMLFiles(distPath);
+
+console.log('');
+console.log('🎉 SEO Injection Complete!');
+console.log(`   ✅ Files processed: ${result.processed}`);
+console.log(`   ⏭️  Files skipped: ${result.skipped}`);
+console.log('');
+console.log('📋 Injected content:');
+console.log('   - Meta tags: title, description, keywords, robots');
+console.log('   - Open Graph tags for social sharing');
+console.log('   - Twitter Card tags');
+console.log('   - Structured Data (JSON-LD)');
+console.log('   - Noscript fallback content for crawlers');
+console.log('   - Google Analytics');
+console.log('   - PWA meta tags');
