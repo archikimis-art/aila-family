@@ -75,30 +75,7 @@ export default function WelcomeScreen() {
     setDeferredPrompt(null);
   };
 
-  // Fix pour la barre du bas en position fixed sur web
-  useEffect(() => {
-    if (Platform.OS === 'web' && typeof document !== 'undefined') {
-      const fixBottomBar = () => {
-        // Trouver tous les éléments avec backgroundColor #1E3A5F (rgb(30, 58, 95))
-        const allElements = document.querySelectorAll('div');
-        allElements.forEach((el: any) => {
-          const style = window.getComputedStyle(el);
-          // Chercher un élément avec position absolute, bottom 0, et backgroundColor correspondant
-          if (style.position === 'absolute' && 
-              (style.bottom === '0px' || el.style.bottom === '0') &&
-              el.innerText?.includes('Partager')) {
-            el.style.setProperty('position', 'fixed', 'important');
-            el.style.setProperty('z-index', '9999', 'important');
-            console.log('✅ Fixed bottom bar applied!');
-          }
-        });
-      };
-      
-      setTimeout(fixBottomBar, 300);
-      setTimeout(fixBottomBar, 800);
-      setTimeout(fixBottomBar, 1500);
-    }
-  }, []);
+  // Supprimé le useEffect qui causait des problèmes
 
   if (loading) {
     return (
