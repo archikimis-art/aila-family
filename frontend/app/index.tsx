@@ -75,6 +75,20 @@ export default function WelcomeScreen() {
     setDeferredPrompt(null);
   };
 
+  // Fix pour la barre du bas en position fixed sur web
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      // Appliquer le style fixed à la barre du bas après le rendu
+      setTimeout(() => {
+        const adBars = document.querySelectorAll('[data-testid="ad-container"]');
+        adBars.forEach((bar: any) => {
+          bar.style.position = 'fixed';
+          bar.style.zIndex = '9999';
+        });
+      }, 100);
+    }
+  }, []);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
