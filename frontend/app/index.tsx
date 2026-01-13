@@ -323,7 +323,6 @@ export default function WelcomeScreen() {
         </SafeAreaView>
       </ScrollView>
       </View>
-    </View>
       
       {/* Bannière publicitaire fixée en bas avec boutons intégrés */}
       <View style={styles.adContainer}>
