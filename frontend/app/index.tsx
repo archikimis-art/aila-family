@@ -594,7 +594,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E3A5F',
     borderTopWidth: 1,
     borderTopColor: '#2D4A6F',
-    alignItems: 'center', // Centre le contenu sur web
+    alignItems: 'center',
+    zIndex: 100, // S'assurer que la barre est au-dessus du contenu
   },
   adBannerContent: {
     flexDirection: 'row',
