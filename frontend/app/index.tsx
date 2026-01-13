@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   adContainer: {
-    position: 'absolute',
+    position: Platform.OS === 'web' ? 'fixed' as any : 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
@@ -596,7 +596,6 @@ const styles = StyleSheet.create({
     borderTopColor: '#2D4A6F',
     alignItems: 'center',
     zIndex: 100,
-    ...(Platform.OS === 'web' ? { position: 'fixed' } : {}), // Fixed sur web pour rester visible
   },
   adBannerContent: {
     flexDirection: 'row',
