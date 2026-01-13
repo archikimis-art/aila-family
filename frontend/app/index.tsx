@@ -137,13 +137,13 @@ export default function WelcomeScreen() {
         )}
       </View>
       
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView 
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          bounces={true}
-        >
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={true}
+        bounces={true}
+      >
+        <SafeAreaView>
           <View style={styles.contentContainer}>
             <LinearGradient
               colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
