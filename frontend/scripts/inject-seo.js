@@ -346,14 +346,344 @@ function processAllHTMLFiles(dir) {
   return { processed, skipped };
 }
 
+// Static HTML pages for legal pages (crawlers can read these)
+const staticPages = {
+  'privacy': {
+    title: 'Politique de Confidentialité - AILA Famille | Protection des Données RGPD',
+    description: 'Politique de confidentialité AILA Famille. Découvrez comment nous protégeons vos données personnelles et généalogiques conformément au RGPD.',
+    h1: 'Politique de Confidentialité AILA Famille',
+    content: `
+      <article>
+        <p><em>Dernière mise à jour : Janvier 2025</em></p>
+        
+        <h2>1. Introduction</h2>
+        <p>Bienvenue sur AÏLA Famille ("nous", "notre", "nos"). Nous nous engageons à protéger votre vie privée et vos données personnelles. Cette politique de confidentialité explique comment nous collectons, utilisons, stockons et protégeons vos informations lorsque vous utilisez notre application de gestion d'arbre généalogique.</p>
+        
+        <h2>2. Responsable du Traitement</h2>
+        <p><strong>AILA Famille</strong><br>
+        Site web : <a href="https://www.aila.family">www.aila.family</a><br>
+        Email : contact@aila.family</p>
+        
+        <h2>3. Données Collectées</h2>
+        <h3>Données de compte :</h3>
+        <ul>
+          <li>Nom et prénom</li>
+          <li>Adresse email</li>
+          <li>Mot de passe (crypté avec bcrypt)</li>
+        </ul>
+        <h3>Données généalogiques :</h3>
+        <ul>
+          <li>Informations sur les membres de la famille (noms, dates de naissance, lieux)</li>
+          <li>Relations familiales</li>
+          <li>Photos de famille (optionnel)</li>
+        </ul>
+        <h3>Données d'utilisation :</h3>
+        <ul>
+          <li>Statistiques d'utilisation de l'application</li>
+          <li>Préférences et paramètres</li>
+        </ul>
+        
+        <h2>4. Finalités du Traitement</h2>
+        <p>Vos données sont utilisées pour :</p>
+        <ul>
+          <li>Créer et gérer votre compte utilisateur</li>
+          <li>Construire et afficher votre arbre généalogique</li>
+          <li>Vous envoyer des notifications importantes (anniversaires, événements)</li>
+          <li>Améliorer nos services et votre expérience utilisateur</li>
+          <li>Assurer la sécurité de votre compte</li>
+        </ul>
+        
+        <h2>5. Base Juridique (RGPD)</h2>
+        <p>Le traitement de vos données repose sur :</p>
+        <ul>
+          <li><strong>Exécution du contrat :</strong> Pour fournir nos services</li>
+          <li><strong>Consentement :</strong> Pour les communications marketing</li>
+          <li><strong>Intérêt légitime :</strong> Pour améliorer nos services</li>
+        </ul>
+        
+        <h2>6. Stockage et Sécurité</h2>
+        <p>Vos données sont stockées de manière sécurisée :</p>
+        <ul>
+          <li>Serveurs sécurisés avec cryptage SSL/TLS</li>
+          <li>Mots de passe hashés avec bcrypt</li>
+          <li>Accès restreint aux données personnelles</li>
+          <li>Sauvegardes régulières et sécurisées</li>
+          <li>Hébergement : MongoDB Atlas (certifié SOC 2, GDPR compliant)</li>
+        </ul>
+        
+        <h2>7. Partage des Données</h2>
+        <p><strong>Nous ne vendons jamais vos données personnelles.</strong></p>
+        <p>Vos données peuvent être partagées uniquement :</p>
+        <ul>
+          <li>Avec les membres de votre famille que vous avez explicitement invités</li>
+          <li>Avec nos prestataires techniques sous contrat de confidentialité</li>
+          <li>Si requis par la loi ou une autorité judiciaire</li>
+        </ul>
+        
+        <h2>8. Vos Droits (RGPD)</h2>
+        <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+        <ul>
+          <li><strong>Droit d'accès :</strong> Obtenir une copie de vos données</li>
+          <li><strong>Droit de rectification :</strong> Corriger vos données inexactes</li>
+          <li><strong>Droit à l'effacement :</strong> Supprimer votre compte et vos données</li>
+          <li><strong>Droit à la portabilité :</strong> Exporter vos données (format JSON/GEDCOM)</li>
+          <li><strong>Droit d'opposition :</strong> Vous opposer au traitement de vos données</li>
+          <li><strong>Droit de retirer votre consentement</strong> à tout moment</li>
+        </ul>
+        <p>Pour exercer ces droits : <a href="mailto:privacy@aila.family">privacy@aila.family</a></p>
+        
+        <h2>9. Cookies</h2>
+        <p>Notre application utilise :</p>
+        <ul>
+          <li><strong>Cookies techniques :</strong> Nécessaires au fonctionnement (session, authentification)</li>
+          <li><strong>Google Analytics :</strong> Pour comprendre l'utilisation de notre service</li>
+          <li><strong>Google AdSense :</strong> Pour afficher des publicités (désactivable avec Premium)</li>
+        </ul>
+        
+        <h2>10. Conservation des Données</h2>
+        <p>Vos données sont conservées tant que votre compte est actif. En cas de suppression de compte, vos données sont définitivement effacées dans un délai de 30 jours, sauf obligation légale de conservation.</p>
+        
+        <h2>11. Transferts Internationaux</h2>
+        <p>Vos données peuvent être traitées par des sous-traitants situés hors de l'UE (ex: MongoDB Atlas - USA). Ces transferts sont encadrés par des clauses contractuelles types approuvées par la Commission européenne.</p>
+        
+        <h2>12. Contact et Réclamations</h2>
+        <p>Pour toute question : <a href="mailto:privacy@aila.family">privacy@aila.family</a></p>
+        <p>En cas de litige, vous pouvez déposer une réclamation auprès de la CNIL : <a href="https://www.cnil.fr" target="_blank">www.cnil.fr</a></p>
+      </article>
+    `
+  },
+  'terms': {
+    title: 'Conditions Générales d\'Utilisation - AILA Famille | CGU',
+    description: 'Conditions générales d\'utilisation de AILA Famille. Règles d\'utilisation de l\'application d\'arbre généalogique.',
+    h1: 'Conditions Générales d\'Utilisation AILA Famille',
+    content: `
+      <article>
+        <p><em>Dernière mise à jour : Janvier 2025</em></p>
+        
+        <h2>1. Objet</h2>
+        <p>Les présentes Conditions Générales d'Utilisation (CGU) régissent l'utilisation de l'application AILA Famille, accessible sur <a href="https://www.aila.family">www.aila.family</a> et via les applications mobiles iOS et Android.</p>
+        
+        <h2>2. Acceptation des CGU</h2>
+        <p>En créant un compte sur AILA Famille, vous acceptez sans réserve les présentes CGU. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre service.</p>
+        
+        <h2>3. Description du Service</h2>
+        <p>AILA Famille propose :</p>
+        <ul>
+          <li>Création et gestion d'arbres généalogiques</li>
+          <li>Partage et collaboration familiale</li>
+          <li>Rappels d'anniversaires et événements</li>
+          <li>Export de données (JSON, GEDCOM)</li>
+          <li>Discussion en famille</li>
+        </ul>
+        
+        <h2>4. Inscription</h2>
+        <p>Pour utiliser AILA Famille, vous devez :</p>
+        <ul>
+          <li>Avoir au moins 16 ans</li>
+          <li>Fournir des informations exactes</li>
+          <li>Maintenir la confidentialité de votre mot de passe</li>
+        </ul>
+        
+        <h2>5. Utilisation du Service</h2>
+        <p>Vous vous engagez à :</p>
+        <ul>
+          <li>Ne pas publier de contenu illégal ou offensant</li>
+          <li>Respecter la vie privée des autres utilisateurs</li>
+          <li>Ne pas utiliser le service à des fins commerciales non autorisées</li>
+          <li>Ne pas tenter de pirater ou perturber le service</li>
+        </ul>
+        
+        <h2>6. Propriété Intellectuelle</h2>
+        <p>L'application AILA Famille, son design, son code et son contenu sont protégés par le droit d'auteur. Vos données généalogiques restent votre propriété.</p>
+        
+        <h2>7. Abonnement Premium</h2>
+        <p>L'offre Premium offre des fonctionnalités supplémentaires moyennant un abonnement payant. Les conditions de paiement et de résiliation sont précisées lors de la souscription.</p>
+        
+        <h2>8. Responsabilité</h2>
+        <p>AILA Famille s'efforce de maintenir le service disponible et sécurisé, mais ne peut garantir une disponibilité continue. Nous ne sommes pas responsables des dommages indirects liés à l'utilisation du service.</p>
+        
+        <h2>9. Modification des CGU</h2>
+        <p>Nous nous réservons le droit de modifier ces CGU. Les utilisateurs seront informés des changements significatifs par email ou notification dans l'application.</p>
+        
+        <h2>10. Résiliation</h2>
+        <p>Vous pouvez supprimer votre compte à tout moment depuis les paramètres de l'application. Nous nous réservons le droit de suspendre ou supprimer un compte en cas de violation des CGU.</p>
+        
+        <h2>11. Droit Applicable</h2>
+        <p>Les présentes CGU sont régies par le droit français. Tout litige sera soumis aux tribunaux compétents de Paris, France.</p>
+        
+        <h2>12. Contact</h2>
+        <p>Pour toute question : <a href="mailto:contact@aila.family">contact@aila.family</a></p>
+      </article>
+    `
+  }
+};
+
+function createStaticPage(pageName, pageData) {
+  const pageDir = path.join(distPath, pageName);
+  const pageFile = path.join(pageDir, 'index.html');
+  
+  // Create directory if needed
+  if (!fs.existsSync(pageDir)) {
+    fs.mkdirSync(pageDir, { recursive: true });
+  }
+  
+  const staticHTML = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- ==================== AILA FAMILLE SEO - ${pageName.toUpperCase()} ==================== -->
+  <title>${pageData.title}</title>
+  <meta name="description" content="${pageData.description}" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.aila.family/${pageName}" />
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.aila.family/${pageName}" />
+  <meta property="og:title" content="${pageData.title}" />
+  <meta property="og:description" content="${pageData.description}" />
+  <meta property="og:site_name" content="AILA Famille" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="${pageData.title}" />
+  <meta name="twitter:description" content="${pageData.description}" />
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: linear-gradient(135deg, #0A1628 0%, #1A2F4A 50%, #0A1628 100%);
+      color: #E2E8F0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #2A3F5A;
+    }
+    .logo { color: #D4AF37; font-size: 2em; margin-bottom: 10px; }
+    h1 {
+      color: #D4AF37;
+      font-size: 1.8em;
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: #D4AF37;
+      font-size: 1.3em;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #2A3F5A;
+    }
+    h3 {
+      color: #B8C5D6;
+      font-size: 1.1em;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    p {
+      margin-bottom: 15px;
+      color: #B8C5D6;
+    }
+    ul {
+      margin-bottom: 15px;
+      padding-left: 25px;
+    }
+    li {
+      margin-bottom: 8px;
+      color: #B8C5D6;
+    }
+    a {
+      color: #D4AF37;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    strong {
+      color: #FFFFFF;
+    }
+    em {
+      color: #6B7C93;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 20px;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid #D4AF37;
+      border-radius: 8px;
+    }
+    footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid #2A3F5A;
+      text-align: center;
+      color: #6B7C93;
+      font-size: 0.9em;
+    }
+    .footer-links a {
+      margin: 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">🌳 AILA Famille</div>
+      <a href="/" class="back-link">← Retour à l'accueil</a>
+    </header>
+    
+    <main>
+      <h1>${pageData.h1}</h1>
+      ${pageData.content}
+    </main>
+    
+    <footer>
+      <div class="footer-links">
+        <a href="/">Accueil</a>
+        <a href="/privacy">Confidentialité</a>
+        <a href="/terms">CGU</a>
+        <a href="/about">À propos</a>
+        <a href="/faq">FAQ</a>
+      </div>
+      <p style="margin-top: 15px;">© 2025 AILA Famille - Application de généalogie</p>
+    </footer>
+  </div>
+</body>
+</html>`;
+  
+  fs.writeFileSync(pageFile, staticHTML, 'utf8');
+  return true;
+}
+
 // Main execution
 console.log('📁 Processing HTML files in dist/...');
 const result = processAllHTMLFiles(distPath);
+
+// Create static legal pages
+console.log('');
+console.log('📄 Creating static legal pages...');
+for (const [pageName, pageData] of Object.entries(staticPages)) {
+  if (createStaticPage(pageName, pageData)) {
+    console.log(`   ✅ Created static page: /${pageName}`);
+  }
+}
 
 console.log('');
 console.log('🎉 SEO Injection Complete!');
 console.log(`   ✅ Files processed: ${result.processed}`);
 console.log(`   ⏭️  Files skipped: ${result.skipped}`);
+console.log(`   📄 Static pages created: ${Object.keys(staticPages).length}`);
 console.log('');
 console.log('📋 Injected content:');
 console.log('   - Meta tags: title, description, keywords, robots');
@@ -363,5 +693,4 @@ console.log('   - Structured Data (JSON-LD)');
 console.log('   - Noscript fallback content for crawlers');
 console.log('   - Google Analytics');
 console.log('   - PWA meta tags');
-// SEO Fix 1768284719
-// Fix FAQ 1768286561
+console.log('   - Static legal pages (Privacy, Terms)');
