@@ -24,6 +24,86 @@ interface Article {
 
 const articles: Article[] = [
   {
+    id: '6',
+    title: "Comment retrouver ses ancêtres gratuitement en 2025 : Guide complet",
+    excerpt: "Découvrez toutes les méthodes et ressources gratuites pour retrouver vos ancêtres sans dépenser un centime. Archives en ligne, astuces et outils.",
+    content: `Vous souhaitez découvrir vos origines familiales sans vous ruiner ? Bonne nouvelle : il existe de nombreuses ressources gratuites pour retrouver vos ancêtres. Voici le guide complet pour 2025.
+
+**🎯 Par où commencer ?**
+
+Avant de vous lancer dans les archives, commencez par exploiter les informations que vous possédez déjà :
+
+1. **Interrogez votre famille** : Parents, grands-parents, oncles et tantes détiennent souvent des informations précieuses. Posez des questions sur les noms de jeune fille, les lieux de naissance, les professions.
+
+2. **Rassemblez les documents familiaux** : Livrets de famille, actes de naissance, photos anciennes, lettres. Chaque document est une piste.
+
+3. **Créez votre arbre en ligne** : Utilisez une application gratuite comme AÏLA Famille pour organiser vos découvertes et visualiser les liens familiaux.
+
+**📚 Les Archives Départementales en ligne (100% GRATUIT)**
+
+La France dispose d'un trésor numérique : les archives départementales numérisées. Chaque département a son site d'archives avec accès gratuit à :
+
+- **Registres paroissiaux** (avant 1792) : baptêmes, mariages, sépultures
+- **État civil** (depuis 1792) : naissances, mariages, décès  
+- **Recensements de population** : retrouvez vos ancêtres dans leur contexte familial
+- **Registres matricules militaires** : photos et descriptions physiques de vos aïeux
+
+➡️ Tapez "archives départementales + nom du département" sur Google pour trouver le site de votre région.
+
+**🌐 Les sites gratuits incontournables**
+
+1. **FamilySearch.org** : Le site gratuit des Mormons propose des milliards de documents du monde entier. Inscription gratuite.
+
+2. **Geneanet.org** : Version gratuite avec accès aux arbres partagés par d'autres généalogistes. Idéal pour trouver des cousins éloignés.
+
+3. **Archives Nationales** (siv.archives-nationales.culture.gouv.fr) : Documents de l'État central, notaires parisiens.
+
+4. **Mémoire des Hommes** : Archives militaires, morts pour la France des deux guerres mondiales.
+
+5. **Base Léonore** : Dossiers des décorés de la Légion d'Honneur.
+
+**💡 Astuces pour optimiser vos recherches gratuites**
+
+- **Utilisez les tables décennales** : Ces index par période de 10 ans accélèrent considérablement les recherches dans l'état civil.
+
+- **Variez l'orthographe** : Avant le XXe siècle, l'orthographe des noms n'était pas fixe. MARTIN, MARTEN, MARTAIN peuvent désigner la même personne.
+
+- **Cherchez les frères et sœurs** : Les actes de mariage des frères/sœurs de vos ancêtres mentionnent souvent les parents.
+
+- **Exploitez les témoins** : Les témoins aux mariages sont souvent des proches (oncles, cousins, amis). Notez leurs noms !
+
+**🔧 Outils gratuits pour organiser vos recherches**
+
+- **AÏLA Famille** (aila.family) : Application gratuite pour créer et partager votre arbre. Interface moderne, collaboration familiale, rappels d'anniversaires.
+
+- **Gramps** : Logiciel open source à télécharger (pour experts).
+
+- **WeRelate** : Wiki généalogique collaboratif gratuit.
+
+**📱 L'avantage du numérique**
+
+Avec une application comme AÏLA, vous pouvez :
+- Créer votre arbre depuis votre smartphone
+- Inviter vos proches à contribuer
+- Accéder à vos données n'importe où
+- Exporter au format GEDCOM (version Premium)
+
+**⚠️ Pièges à éviter**
+
+- **Ne copiez pas aveuglément** : Les arbres en ligne contiennent des erreurs. Vérifiez toujours avec les documents originaux.
+
+- **Méfiez-vous des sites "tout gratuit"** : Certains promettent des résultats miraculeux mais sont payants ou peu fiables.
+
+- **Allez-y progressivement** : Validez chaque génération avant de passer à la suivante.
+
+**🚀 Commencez maintenant !**
+
+La généalogie gratuite est à portée de clic. Créez votre arbre sur AÏLA Famille et commencez à découvrir vos ancêtres dès aujourd'hui !`,
+    date: "15 janvier 2025",
+    readTime: "10 min",
+    icon: "gift-outline"
+  },
+  {
     id: '1',
     title: "Comment commencer votre arbre généalogique : Le guide complet",
     excerpt: "Découvrez les étapes essentielles pour débuter vos recherches généalogiques et créer un arbre familial complet.",
