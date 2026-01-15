@@ -515,6 +515,155 @@ const staticPages = {
         <p>Pour toute question : <a href="mailto:contact@aila.family">contact@aila.family</a></p>
       </article>
     `
+  },
+  'about': {
+    title: 'À Propos de AILA Famille - Notre Histoire et Mission | Généalogie',
+    description: 'Découvrez AILA Famille, l\'application gratuite de généalogie. Notre mission : aider les familles à créer, partager et préserver leur histoire familiale.',
+    h1: 'À Propos de AILA Famille',
+    content: `
+      <article>
+        <h2>Notre Mission</h2>
+        <p><strong>AILA Famille</strong> (AÏLA) est née d'une conviction simple : chaque famille mérite de préserver et transmettre son histoire. Notre mission est de rendre la généalogie accessible à tous, gratuitement et simplement.</p>
+        
+        <p>Dans un monde de plus en plus connecté mais paradoxalement déconnecté de ses racines, nous croyons que connaître son histoire familiale est essentiel pour construire son identité et renforcer les liens intergénérationnels.</p>
+        
+        <h2>Pourquoi AILA ?</h2>
+        <p>Le nom <strong>AÏLA</strong> évoque à la fois "aïeul" (ancêtre) et "aile" (protection familiale). C'est un hommage à nos ancêtres qui nous ont transmis leur histoire et leurs valeurs.</p>
+        
+        <h2>Ce Qui Nous Différencie</h2>
+        
+        <h3>🌳 Simplicité</h3>
+        <p>Créer votre arbre généalogique ne devrait pas être compliqué. Notre interface intuitive permet à tous, même sans connaissances techniques, de construire leur arbre en quelques minutes.</p>
+        
+        <h3>👨‍👩‍👧‍👦 Collaboration Familiale</h3>
+        <p>La généalogie est une affaire de famille ! Invitez vos proches à enrichir l'arbre ensemble. Chaque membre peut ajouter des informations, des photos et des souvenirs.</p>
+        
+        <h3>🔒 Confidentialité</h3>
+        <p>Vos données familiales sont précieuses et sensibles. Nous les protégeons avec les plus hauts standards de sécurité et ne les partageons jamais avec des tiers.</p>
+        
+        <h3>💰 Gratuité</h3>
+        <p>Les fonctionnalités essentielles sont et resteront gratuites. Nous croyons que préserver son histoire familiale ne devrait pas être un luxe.</p>
+        
+        <h2>Nos Fonctionnalités</h2>
+        <ul>
+          <li><strong>Arbre généalogique visuel</strong> - Visualisez votre famille sur une interface moderne et interactive</li>
+          <li><strong>Fiches détaillées</strong> - Ajoutez photos, dates, lieux et anecdotes pour chaque membre</li>
+          <li><strong>Rappels d'anniversaires</strong> - Ne manquez plus jamais une date importante</li>
+          <li><strong>Discussion familiale</strong> - Partagez des souvenirs et histoires avec vos proches</li>
+          <li><strong>Export GEDCOM</strong> - Exportez vos données au format standard de généalogie</li>
+          <li><strong>Multi-plateforme</strong> - Accédez à votre arbre sur web, iOS et Android</li>
+        </ul>
+        
+        <h2>Notre Équipe</h2>
+        <p>AILA Famille est développée par une équipe passionnée de généalogie et de technologie, basée en France. Nous travaillons chaque jour pour améliorer l'application et ajouter de nouvelles fonctionnalités.</p>
+        
+        <h2>Nous Contacter</h2>
+        <p>Une question, une suggestion, un partenariat ?<br>
+        Email : <a href="mailto:contact@aila.family">contact@aila.family</a><br>
+        Site web : <a href="https://www.aila.family">www.aila.family</a></p>
+        
+        <h2>Rejoignez la Communauté AILA</h2>
+        <p>Des milliers de familles utilisent déjà AILA pour préserver leur histoire. Rejoignez-les et commencez à créer votre arbre généalogique gratuitement dès aujourd'hui !</p>
+        
+        <p style="text-align: center; margin-top: 30px;">
+          <a href="/(auth)/register" style="background: #D4AF37; color: #0A1628; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">✨ Créer mon arbre gratuit</a>
+        </p>
+      </article>
+    `
+  },
+  'faq': {
+    title: 'FAQ - Questions Fréquentes sur AILA Famille | Aide Généalogie',
+    description: 'Toutes les réponses à vos questions sur AILA Famille : création d\'arbre généalogique, fonctionnalités, tarifs, sécurité des données et plus.',
+    h1: 'Questions Fréquentes (FAQ)',
+    content: `
+      <article>
+        <h2>🌳 Général</h2>
+        
+        <h3>Qu'est-ce que AILA Famille ?</h3>
+        <p>AILA Famille (aussi appelé AÏLA) est une application gratuite permettant de créer, visualiser et partager votre arbre généalogique familial. Disponible sur web, iOS et Android.</p>
+        
+        <h3>AILA Famille est-il vraiment gratuit ?</h3>
+        <p><strong>Oui !</strong> La version gratuite inclut toutes les fonctionnalités essentielles : création d'arbre, ajout de membres illimités, photos, partage familial. Une version Premium existe pour des fonctionnalités avancées comme l'export GEDCOM et la suppression des publicités.</p>
+        
+        <h3>Comment créer mon arbre généalogique ?</h3>
+        <p>C'est simple :<br>
+        1. Créez un compte gratuit sur <a href="https://www.aila.family">www.aila.family</a><br>
+        2. Ajoutez-vous comme premier membre<br>
+        3. Ajoutez vos parents, grands-parents, enfants...<br>
+        4. Votre arbre se construit automatiquement !</p>
+        
+        <h3>Puis-je essayer sans créer de compte ?</h3>
+        <p>Oui ! Vous pouvez tester l'application en mode "aperçu" sans inscription. Cependant, vos données ne seront pas sauvegardées. Pour conserver votre arbre, créez un compte gratuit.</p>
+        
+        <h2>👨‍👩‍👧‍👦 Partage et Collaboration</h2>
+        
+        <h3>Comment inviter ma famille à collaborer ?</h3>
+        <p>Depuis votre arbre, vous pouvez inviter des membres par email. Ils recevront un lien pour rejoindre votre arbre et pourront ajouter des informations ou consulter l'arbre selon les permissions que vous définissez.</p>
+        
+        <h3>Qui peut voir mon arbre généalogique ?</h3>
+        <p>Par défaut, votre arbre est <strong>privé</strong>. Seules les personnes que vous invitez peuvent le voir. Vous gardez le contrôle total sur les permissions d'accès.</p>
+        
+        <h3>Peut-on avoir plusieurs arbres ?</h3>
+        <p>En version gratuite, vous pouvez gérer un arbre principal. La version Premium permet de créer plusieurs arbres distincts (famille maternelle, paternelle, etc.).</p>
+        
+        <h2>📱 Utilisation</h2>
+        
+        <h3>L'application fonctionne-t-elle sur mobile ?</h3>
+        <p>Oui ! AILA Famille est disponible sur :<br>
+        • <strong>Web</strong> : www.aila.family (tous navigateurs)<br>
+        • <strong>iOS</strong> : iPhone et iPad<br>
+        • <strong>Android</strong> : Smartphones et tablettes<br>
+        Votre arbre est synchronisé automatiquement entre tous vos appareils.</p>
+        
+        <h3>Puis-je ajouter des photos ?</h3>
+        <p>Absolument ! Vous pouvez ajouter une photo pour chaque membre de votre arbre. Les photos sont stockées de manière sécurisée sur nos serveurs.</p>
+        
+        <h3>Comment exporter mon arbre ?</h3>
+        <p>La version Premium permet d'exporter votre arbre au format GEDCOM (standard de généalogie) et JSON. Vous pouvez ainsi sauvegarder vos données ou les importer dans d'autres logiciels.</p>
+        
+        <h2>🔒 Sécurité et Confidentialité</h2>
+        
+        <h3>Mes données sont-elles sécurisées ?</h3>
+        <p>Oui, la sécurité est notre priorité :<br>
+        • Chiffrement SSL/TLS pour toutes les communications<br>
+        • Mots de passe hashés avec bcrypt<br>
+        • Serveurs sécurisés et sauvegardes régulières<br>
+        • Conformité RGPD</p>
+        
+        <h3>Vendez-vous mes données ?</h3>
+        <p><strong>Non, jamais.</strong> Vos données généalogiques sont personnelles et sensibles. Nous ne les vendons ni ne les partageons avec des tiers. Consultez notre <a href="/privacy">Politique de Confidentialité</a>.</p>
+        
+        <h3>Comment supprimer mon compte ?</h3>
+        <p>Vous pouvez supprimer votre compte à tout moment depuis les paramètres de l'application. Toutes vos données seront définitivement effacées sous 30 jours.</p>
+        
+        <h2>💳 Tarifs et Premium</h2>
+        
+        <h3>Quels sont les avantages Premium ?</h3>
+        <p>L'abonnement Premium offre :<br>
+        • Aucune publicité<br>
+        • Export GEDCOM et JSON<br>
+        • Arbres illimités<br>
+        • Collaborateurs illimités<br>
+        • Événements familiaux<br>
+        • Support prioritaire</p>
+        
+        <h3>Combien coûte l'abonnement Premium ?</h3>
+        <p>• <strong>Mensuel</strong> : 2,99€/mois<br>
+        • <strong>Annuel</strong> : 24,99€/an (économie de 11,89€)</p>
+        
+        <h3>Puis-je annuler mon abonnement ?</h3>
+        <p>Oui, vous pouvez annuler à tout moment. Votre accès Premium reste actif jusqu'à la fin de la période payée.</p>
+        
+        <h2>📞 Support</h2>
+        
+        <h3>Comment contacter le support ?</h3>
+        <p>Email : <a href="mailto:support@aila.family">support@aila.family</a><br>
+        Nous répondons généralement sous 24-48h.</p>
+        
+        <h3>J'ai trouvé un bug, que faire ?</h3>
+        <p>Merci de nous aider à améliorer AILA ! Envoyez-nous un email à <a href="mailto:support@aila.family">support@aila.family</a> en décrivant le problème et les étapes pour le reproduire.</p>
+      </article>
+    `
   }
 };
 
