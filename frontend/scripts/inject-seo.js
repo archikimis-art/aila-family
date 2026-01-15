@@ -664,6 +664,147 @@ const staticPages = {
         <p>Merci de nous aider à améliorer AILA ! Envoyez-nous un email à <a href="mailto:support@aila.family">support@aila.family</a> en décrivant le problème et les étapes pour le reproduire.</p>
       </article>
     `
+  },
+  'blog': {
+    title: 'Blog Généalogie - Conseils et Astuces | AILA Famille',
+    description: 'Découvrez nos articles sur la généalogie : guides pratiques, astuces pour retrouver vos ancêtres, ressources gratuites et conseils d\'experts.',
+    h1: 'Blog Généalogie - AILA Famille',
+    content: `
+      <article>
+        <p>Bienvenue sur le blog d'AILA Famille ! Retrouvez ici tous nos conseils et guides pour vous aider dans vos recherches généalogiques.</p>
+        
+        <h2>📰 Derniers Articles</h2>
+        
+        <div style="margin: 20px 0; padding: 20px; background: rgba(212, 175, 55, 0.1); border-radius: 12px; border-left: 4px solid #D4AF37;">
+          <h3><a href="/retrouver-ancetres-gratuitement" style="color: #D4AF37;">Comment retrouver ses ancêtres gratuitement en 2025</a></h3>
+          <p><em>10 min de lecture • Janvier 2025</em></p>
+          <p>Découvrez toutes les méthodes et ressources gratuites pour retrouver vos ancêtres : archives en ligne, sites gratuits, astuces d'experts.</p>
+        </div>
+        
+        <div style="margin: 20px 0; padding: 20px; background: rgba(212, 175, 55, 0.1); border-radius: 12px; border-left: 4px solid #D4AF37;">
+          <h3><a href="/genealogie-debutant-guide" style="color: #D4AF37;">Comment commencer votre arbre généalogique : Guide complet</a></h3>
+          <p><em>8 min de lecture • Janvier 2025</em></p>
+          <p>Les étapes essentielles pour débuter vos recherches généalogiques et créer un arbre familial complet.</p>
+        </div>
+        
+        <div style="margin: 20px 0; padding: 20px; background: rgba(212, 175, 55, 0.1); border-radius: 12px; border-left: 4px solid #D4AF37;">
+          <h3><a href="/erreurs-genealogie" style="color: #D4AF37;">Les erreurs à éviter en généalogie</a></h3>
+          <p><em>6 min de lecture • Janvier 2025</em></p>
+          <p>Évitez les pièges courants qui peuvent fausser vos recherches et compromettre la fiabilité de votre arbre.</p>
+        </div>
+        
+        <div style="margin: 20px 0; padding: 20px; background: rgba(212, 175, 55, 0.1); border-radius: 12px; border-left: 4px solid #D4AF37;">
+          <h3><a href="/liens-parente-cousinage" style="color: #D4AF37;">Comprendre les liens de parenté et degrés de cousinage</a></h3>
+          <p><em>7 min de lecture • Janvier 2025</em></p>
+          <p>Maîtrisez le vocabulaire de la généalogie : cousins germains, issus de germains, et plus encore.</p>
+        </div>
+        
+        <div style="margin: 20px 0; padding: 20px; background: rgba(212, 175, 55, 0.1); border-radius: 12px; border-left: 4px solid #D4AF37;">
+          <h3><a href="/archives-en-ligne" style="color: #D4AF37;">Les archives en ligne : où chercher vos ancêtres</a></h3>
+          <p><em>9 min de lecture • Décembre 2024</em></p>
+          <p>Découvrez les meilleures ressources en ligne pour retrouver la trace de vos ancêtres dans les archives.</p>
+        </div>
+        
+        <h2>🏷️ Catégories</h2>
+        <ul>
+          <li><strong>Guides pratiques</strong> - Tutoriels étape par étape</li>
+          <li><strong>Ressources gratuites</strong> - Sites et outils gratuits</li>
+          <li><strong>Astuces d'experts</strong> - Conseils avancés</li>
+          <li><strong>Histoire familiale</strong> - Préserver et transmettre</li>
+        </ul>
+        
+        <h2>✨ Commencez Votre Arbre</h2>
+        <p>Prêt à découvrir vos ancêtres ? Créez votre arbre généalogique gratuitement sur AILA Famille !</p>
+        <p style="text-align: center; margin-top: 20px;">
+          <a href="/(auth)/register" style="background: #D4AF37; color: #0A1628; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">🌳 Créer mon arbre gratuit</a>
+        </p>
+      </article>
+    `
+  },
+  'retrouver-ancetres-gratuitement': {
+    title: 'Comment Retrouver ses Ancêtres Gratuitement en 2025 | Guide Complet',
+    description: 'Découvrez toutes les méthodes et ressources 100% gratuites pour retrouver vos ancêtres : archives départementales en ligne, FamilySearch, astuces d\'experts.',
+    h1: 'Comment Retrouver ses Ancêtres Gratuitement en 2025',
+    content: `
+      <article>
+        <p><em>Mis à jour en janvier 2025 • 10 min de lecture</em></p>
+        
+        <p>Vous souhaitez découvrir vos origines familiales sans vous ruiner ? <strong>Bonne nouvelle</strong> : il existe de nombreuses ressources gratuites pour retrouver vos ancêtres. Voici le guide complet pour 2025.</p>
+        
+        <h2>🎯 Par où commencer ?</h2>
+        <p>Avant de vous lancer dans les archives, commencez par exploiter les informations que vous possédez déjà :</p>
+        <ol>
+          <li><strong>Interrogez votre famille</strong> : Parents, grands-parents, oncles et tantes détiennent souvent des informations précieuses. Posez des questions sur les noms de jeune fille, les lieux de naissance, les professions.</li>
+          <li><strong>Rassemblez les documents familiaux</strong> : Livrets de famille, actes de naissance, photos anciennes, lettres. Chaque document est une piste.</li>
+          <li><strong>Créez votre arbre en ligne</strong> : Utilisez une application gratuite comme <a href="https://www.aila.family">AÏLA Famille</a> pour organiser vos découvertes et visualiser les liens familiaux.</li>
+        </ol>
+        
+        <h2>📚 Les Archives Départementales en ligne (100% GRATUIT)</h2>
+        <p>La France dispose d'un <strong>trésor numérique</strong> : les archives départementales numérisées. Chaque département a son site d'archives avec accès gratuit à :</p>
+        <ul>
+          <li><strong>Registres paroissiaux</strong> (avant 1792) : baptêmes, mariages, sépultures</li>
+          <li><strong>État civil</strong> (depuis 1792) : naissances, mariages, décès</li>
+          <li><strong>Recensements de population</strong> : retrouvez vos ancêtres dans leur contexte familial</li>
+          <li><strong>Registres matricules militaires</strong> : photos et descriptions physiques de vos aïeux</li>
+        </ul>
+        <p>💡 <em>Astuce : Tapez "archives départementales + nom du département" sur Google pour trouver le site de votre région.</em></p>
+        
+        <h2>🌐 Les 5 Sites Gratuits Incontournables</h2>
+        
+        <h3>1. FamilySearch.org</h3>
+        <p>Le site gratuit des Mormons propose des <strong>milliards de documents</strong> du monde entier. Inscription gratuite, base de données massive.</p>
+        
+        <h3>2. Geneanet.org</h3>
+        <p>Version gratuite avec accès aux arbres partagés par d'autres généalogistes. <strong>Idéal pour trouver des cousins éloignés</strong> qui ont déjà fait le travail !</p>
+        
+        <h3>3. Archives Nationales</h3>
+        <p>Documents de l'État central, notaires parisiens. Site : siv.archives-nationales.culture.gouv.fr</p>
+        
+        <h3>4. Mémoire des Hommes</h3>
+        <p>Archives militaires, <strong>morts pour la France</strong> des deux guerres mondiales. Fiches individuelles avec photos.</p>
+        
+        <h3>5. Base Léonore</h3>
+        <p>Dossiers complets des décorés de la <strong>Légion d'Honneur</strong> depuis 1802.</p>
+        
+        <h2>💡 Astuces pour Optimiser vos Recherches Gratuites</h2>
+        <ul>
+          <li><strong>Utilisez les tables décennales</strong> : Ces index par période de 10 ans accélèrent considérablement les recherches dans l'état civil.</li>
+          <li><strong>Variez l'orthographe</strong> : Avant le XXe siècle, l'orthographe des noms n'était pas fixe. MARTIN, MARTEN, MARTAIN peuvent désigner la même personne.</li>
+          <li><strong>Cherchez les frères et sœurs</strong> : Les actes de mariage des collatéraux mentionnent souvent les parents.</li>
+          <li><strong>Exploitez les témoins</strong> : Les témoins aux mariages sont souvent des proches (oncles, cousins). Notez leurs noms !</li>
+        </ul>
+        
+        <h2>🔧 Outils Gratuits pour Organiser vos Recherches</h2>
+        <ul>
+          <li><strong><a href="https://www.aila.family">AÏLA Famille</a></strong> : Application gratuite pour créer et partager votre arbre. Interface moderne, collaboration familiale, rappels d'anniversaires.</li>
+          <li><strong>Gramps</strong> : Logiciel open source à télécharger (pour utilisateurs avancés).</li>
+          <li><strong>WeRelate</strong> : Wiki généalogique collaboratif gratuit.</li>
+        </ul>
+        
+        <h2>⚠️ Pièges à Éviter</h2>
+        <ul>
+          <li><strong>Ne copiez pas aveuglément</strong> : Les arbres en ligne contiennent des erreurs. Vérifiez toujours avec les documents originaux.</li>
+          <li><strong>Méfiez-vous des sites "tout gratuit"</strong> : Certains promettent des résultats miraculeux mais cachent des frais.</li>
+          <li><strong>Allez-y progressivement</strong> : Validez chaque génération avant de passer à la suivante.</li>
+        </ul>
+        
+        <h2>🚀 Commencez Maintenant !</h2>
+        <p>La généalogie gratuite est à portée de clic. <strong>Créez votre arbre sur AÏLA Famille</strong> et commencez à découvrir vos ancêtres dès aujourd'hui !</p>
+        
+        <p style="text-align: center; margin-top: 30px;">
+          <a href="/(auth)/register" style="background: #D4AF37; color: #0A1628; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold;">✨ Créer mon arbre gratuit</a>
+        </p>
+        
+        <hr style="margin: 40px 0; border-color: #2A3F5A;">
+        
+        <h2>📚 Articles Connexes</h2>
+        <ul>
+          <li><a href="/genealogie-debutant-guide">Guide complet pour débuter en généalogie</a></li>
+          <li><a href="/archives-en-ligne">Les meilleures archives en ligne</a></li>
+          <li><a href="/erreurs-genealogie">Erreurs à éviter en généalogie</a></li>
+        </ul>
+      </article>
+    `
   }
 };
 
