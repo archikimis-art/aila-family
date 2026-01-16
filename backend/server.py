@@ -3993,6 +3993,376 @@ async def admin_remove_user_admin(user_id: str, admin: dict = Depends(verify_adm
     return {"message": "Admin role removed", "user_email": user.get('email')}
 
 
+# ===================== EXCEL IMPORT/EXPORT =====================
+
+@api_router.get("/excel/template")
+async def download_excel_template():
+    """Download Excel template for importing family tree"""
+    
+    # Create workbook
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Arbre Généalogique"
+    
+    # Styles
+    header_font = Font(bold=True, color="FFFFFF", size=12)
+    header_fill = PatternFill(start_color="0A1628", end_color="0A1628", fill_type="solid")
+    gold_fill = PatternFill(start_color="D4AF37", end_color="D4AF37", fill_type="solid")
+    border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+    
+    # Headers
+    headers = ["Prénom *", "Nom *", "Date Naissance", "Genre *", "Relation *", "Lieu Naissance", "Date Décès", "Notes"]
+    for col, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col, value=header)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = Alignment(horizontal='center', vertical='center')
+        cell.border = border
+    
+    # Example data
+    examples = [
+        ["Jean", "Dupont", "15/03/1950", "H", "MOI", "Paris", "", "La personne principale"],
+        ["Marie", "Martin", "20/07/1952", "F", "CONJOINT", "Lyon", "", "Conjoint(e) de Jean"],
+        ["Pierre", "Dupont", "10/01/1975", "H", "ENFANT", "Paris", "", "Fils de Jean et Marie"],
+        ["Sophie", "Dupont", "22/05/1978", "F", "ENFANT", "Paris", "", "Fille de Jean et Marie"],
+        ["Paul", "Dupont", "22/08/1920", "H", "PÈRE", "Marseille", "05/12/2000", "Père de Jean"],
+        ["Jeanne", "Leblanc", "05/06/1925", "F", "MÈRE", "Nice", "", "Mère de Jean"],
+    ]
+    
+    for row_idx, row_data in enumerate(examples, 2):
+        for col_idx, value in enumerate(row_data, 1):
+            cell = ws.cell(row=row_idx, column=col_idx, value=value)
+            cell.border = border
+            if col_idx == 5:  # Relation column
+                cell.fill = gold_fill
+    
+    # Adjust column widths
+    ws.column_dimensions['A'].width = 15
+    ws.column_dimensions['B'].width = 15
+    ws.column_dimensions['C'].width = 15
+    ws.column_dimensions['D'].width = 10
+    ws.column_dimensions['E'].width = 15
+    ws.column_dimensions['F'].width = 20
+    ws.column_dimensions['G'].width = 15
+    ws.column_dimensions['H'].width = 30
+    
+    # Instructions sheet
+    ws2 = wb.create_sheet("Instructions")
+    instructions = [
+        "📋 INSTRUCTIONS POUR L'IMPORT EXCEL",
+        "",
+        "COLONNES OBLIGATOIRES (*) :",
+        "• Prénom : Le prénom de la personne",
+        "• Nom : Le nom de famille",
+        "• Genre : H (Homme) ou F (Femme)",
+        "• Relation : Le lien avec la personne principale (voir liste ci-dessous)",
+        "",
+        "COLONNES OPTIONNELLES :",
+        "• Date Naissance : Format JJ/MM/AAAA (ex: 15/03/1950)",
+        "• Lieu Naissance : Ville ou région de naissance",
+        "• Date Décès : Format JJ/MM/AAAA (laisser vide si vivant)",
+        "• Notes : Informations supplémentaires",
+        "",
+        "RELATIONS DISPONIBLES :",
+        "• MOI : La personne principale (vous-même ou la racine de l'arbre)",
+        "• CONJOINT : Époux/épouse de MOI",
+        "• PÈRE : Père de MOI",
+        "• MÈRE : Mère de MOI",
+        "• ENFANT : Enfant de MOI",
+        "• FRÈRE : Frère de MOI",
+        "• SŒUR : Sœur de MOI",
+        "• GRAND-PÈRE PATERNEL : Grand-père côté père",
+        "• GRAND-MÈRE PATERNELLE : Grand-mère côté père",
+        "• GRAND-PÈRE MATERNEL : Grand-père côté mère",
+        "• GRAND-MÈRE MATERNELLE : Grand-mère côté mère",
+        "",
+        "⚠️ IMPORTANT :",
+        "• Il doit y avoir exactement UNE personne avec la relation 'MOI'",
+        "• Les dates doivent être au format JJ/MM/AAAA",
+        "• Ne modifiez pas les en-têtes de colonnes",
+        "",
+        "🌳 AILA Famille - www.aila.family"
+    ]
+    
+    for row_idx, text in enumerate(instructions, 1):
+        cell = ws2.cell(row=row_idx, column=1, value=text)
+        if row_idx == 1:
+            cell.font = Font(bold=True, size=14)
+        elif text.startswith("•"):
+            cell.font = Font(size=11)
+        elif text.startswith("COLONNES") or text.startswith("RELATIONS") or text.startswith("⚠️"):
+            cell.font = Font(bold=True, size=12)
+    
+    ws2.column_dimensions['A'].width = 60
+    
+    # Save to BytesIO
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    return StreamingResponse(
+        output,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=aila_template_import.xlsx"}
+    )
+
+
+class ExcelImportResponse(BaseModel):
+    success: bool
+    message: str
+    imported_count: int
+    persons: List[dict] = []
+    errors: List[str] = []
+
+
+@api_router.post("/excel/import", response_model=ExcelImportResponse)
+async def import_excel_tree(
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """Import family tree from Excel file"""
+    
+    # Validate file type
+    if not file.filename.endswith(('.xlsx', '.xls')):
+        raise HTTPException(status_code=400, detail="Le fichier doit être au format Excel (.xlsx ou .xls)")
+    
+    try:
+        # Read file content
+        content = await file.read()
+        wb = load_workbook(filename=io.BytesIO(content))
+        ws = wb.active
+        
+        # Parse headers
+        headers = [cell.value for cell in ws[1]]
+        required_headers = ["Prénom", "Nom", "Genre", "Relation"]
+        
+        # Map headers to indices (case-insensitive, remove asterisks)
+        header_map = {}
+        for idx, h in enumerate(headers):
+            if h:
+                clean_header = h.replace(" *", "").replace("*", "").strip()
+                header_map[clean_header.lower()] = idx
+        
+        # Check required headers
+        for req in required_headers:
+            if req.lower() not in header_map:
+                raise HTTPException(status_code=400, detail=f"Colonne obligatoire manquante: {req}")
+        
+        # Parse rows
+        persons_data = []
+        errors = []
+        main_person = None
+        
+        for row_idx, row in enumerate(ws.iter_rows(min_row=2, values_only=True), 2):
+            # Skip empty rows
+            if not any(row):
+                continue
+            
+            # Extract data
+            def get_value(key):
+                idx = header_map.get(key.lower())
+                if idx is not None and idx < len(row):
+                    return row[idx]
+                return None
+            
+            first_name = get_value("prénom")
+            last_name = get_value("nom")
+            gender_raw = get_value("genre")
+            relation = get_value("relation")
+            birth_date = get_value("date naissance")
+            birth_place = get_value("lieu naissance")
+            death_date = get_value("date décès")
+            notes = get_value("notes")
+            
+            # Validate required fields
+            if not first_name:
+                errors.append(f"Ligne {row_idx}: Prénom manquant")
+                continue
+            if not last_name:
+                errors.append(f"Ligne {row_idx}: Nom manquant")
+                continue
+            if not relation:
+                errors.append(f"Ligne {row_idx}: Relation manquante")
+                continue
+            
+            # Parse gender
+            gender = "unknown"
+            if gender_raw:
+                gender_str = str(gender_raw).upper().strip()
+                if gender_str in ["H", "M", "HOMME", "MALE"]:
+                    gender = "male"
+                elif gender_str in ["F", "FEMME", "FEMALE"]:
+                    gender = "female"
+            
+            # Parse dates (handle various formats)
+            def parse_date(date_val):
+                if not date_val:
+                    return None
+                if isinstance(date_val, datetime):
+                    return date_val.strftime("%Y-%m-%d")
+                date_str = str(date_val).strip()
+                for fmt in ["%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%d.%m.%Y"]:
+                    try:
+                        return datetime.strptime(date_str, fmt).strftime("%Y-%m-%d")
+                    except:
+                        pass
+                return None
+            
+            person_data = {
+                "first_name": str(first_name).strip(),
+                "last_name": str(last_name).strip(),
+                "gender": gender,
+                "relation": str(relation).upper().strip(),
+                "birth_date": parse_date(birth_date),
+                "birth_place": str(birth_place).strip() if birth_place else None,
+                "death_date": parse_date(death_date),
+                "notes": str(notes).strip() if notes else None
+            }
+            
+            persons_data.append(person_data)
+            
+            if person_data["relation"] == "MOI":
+                main_person = person_data
+        
+        # Validate main person
+        if not main_person:
+            raise HTTPException(status_code=400, detail="Aucune personne avec la relation 'MOI' trouvée. Vous devez désigner la personne principale.")
+        
+        # Check for multiple MOI
+        moi_count = sum(1 for p in persons_data if p["relation"] == "MOI")
+        if moi_count > 1:
+            raise HTTPException(status_code=400, detail="Il ne peut y avoir qu'une seule personne avec la relation 'MOI'")
+        
+        user_id = str(current_user['_id'])
+        
+        # Create persons in database
+        created_persons = []
+        person_id_map = {}  # relation -> person_id
+        
+        # First, create the main person (MOI)
+        main_doc = {
+            "user_id": user_id,
+            "first_name": main_person["first_name"],
+            "last_name": main_person["last_name"],
+            "gender": main_person["gender"],
+            "birth_date": main_person["birth_date"],
+            "birth_place": main_person["birth_place"],
+            "death_date": main_person["death_date"],
+            "notes": main_person["notes"],
+            "created_at": datetime.utcnow(),
+            "is_preview": False
+        }
+        result = await db.persons.insert_one(main_doc)
+        main_person_id = str(result.inserted_id)
+        person_id_map["MOI"] = main_person_id
+        created_persons.append({**main_doc, "id": main_person_id, "relation": "MOI"})
+        
+        # Then create other persons and links
+        relation_to_link_type = {
+            "CONJOINT": "spouse",
+            "PÈRE": "parent",
+            "MÈRE": "parent",
+            "ENFANT": "child",
+            "FRÈRE": "sibling",
+            "SŒUR": "sibling",
+            "GRAND-PÈRE PATERNEL": "grandparent",
+            "GRAND-MÈRE PATERNELLE": "grandparent",
+            "GRAND-PÈRE MATERNEL": "grandparent",
+            "GRAND-MÈRE MATERNELLE": "grandparent",
+        }
+        
+        for person_data in persons_data:
+            if person_data["relation"] == "MOI":
+                continue
+            
+            # Create person
+            person_doc = {
+                "user_id": user_id,
+                "first_name": person_data["first_name"],
+                "last_name": person_data["last_name"],
+                "gender": person_data["gender"],
+                "birth_date": person_data["birth_date"],
+                "birth_place": person_data["birth_place"],
+                "death_date": person_data["death_date"],
+                "notes": person_data["notes"],
+                "created_at": datetime.utcnow(),
+                "is_preview": False
+            }
+            result = await db.persons.insert_one(person_doc)
+            person_id = str(result.inserted_id)
+            created_persons.append({**person_doc, "id": person_id, "relation": person_data["relation"]})
+            
+            # Create family link
+            relation = person_data["relation"]
+            link_type = relation_to_link_type.get(relation, "other")
+            
+            # Determine link direction
+            if relation in ["PÈRE", "MÈRE", "GRAND-PÈRE PATERNEL", "GRAND-MÈRE PATERNELLE", "GRAND-PÈRE MATERNEL", "GRAND-MÈRE MATERNELLE"]:
+                # Parent/grandparent -> MOI
+                link_doc = {
+                    "user_id": user_id,
+                    "person_id_1": person_id,
+                    "person_id_2": main_person_id,
+                    "link_type": "parent",
+                    "created_at": datetime.utcnow()
+                }
+            elif relation == "ENFANT":
+                # MOI -> Child
+                link_doc = {
+                    "user_id": user_id,
+                    "person_id_1": main_person_id,
+                    "person_id_2": person_id,
+                    "link_type": "parent",
+                    "created_at": datetime.utcnow()
+                }
+            elif relation == "CONJOINT":
+                link_doc = {
+                    "user_id": user_id,
+                    "person_id_1": main_person_id,
+                    "person_id_2": person_id,
+                    "link_type": "spouse",
+                    "created_at": datetime.utcnow()
+                }
+            elif relation in ["FRÈRE", "SŒUR"]:
+                link_doc = {
+                    "user_id": user_id,
+                    "person_id_1": main_person_id,
+                    "person_id_2": person_id,
+                    "link_type": "sibling",
+                    "created_at": datetime.utcnow()
+                }
+            else:
+                link_doc = {
+                    "user_id": user_id,
+                    "person_id_1": main_person_id,
+                    "person_id_2": person_id,
+                    "link_type": "other",
+                    "created_at": datetime.utcnow()
+                }
+            
+            await db.family_links.insert_one(link_doc)
+        
+        logger.info(f"User {user_id} imported {len(created_persons)} persons from Excel")
+        
+        return ExcelImportResponse(
+            success=True,
+            message=f"Import réussi ! {len(created_persons)} membres ajoutés à votre arbre.",
+            imported_count=len(created_persons),
+            persons=[{"id": p["id"], "name": f"{p['first_name']} {p['last_name']}", "relation": p.get("relation", "")} for p in created_persons],
+            errors=errors
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Excel import error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur lors de l'import: {str(e)}")
+
 
 # ===================== INCLUDE ROUTER AT END =====================
 # This must be at the end to include all routes defined above
