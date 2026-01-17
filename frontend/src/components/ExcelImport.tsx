@@ -300,9 +300,9 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImportSuccess, onClo
 
   return (
     <>
-      {/* Trigger Button - Compact icon only */}
+      {/* Trigger Button - Compact icon only, matches zoom buttons style */}
       <TouchableOpacity style={styles.triggerButton} onPress={openModal}>
-        <Ionicons name="document-text-outline" size={22} color="#D4AF37" />
+        <Ionicons name="document-text-outline" size={16} color="#D4AF37" />
       </TouchableOpacity>
 
       {/* Modal */}
