@@ -2104,12 +2104,6 @@ export default function TreeScreen() {
           <Ionicons name="git-merge" size={22} color="#D4AF37" />
           <Text style={styles.actionButtonTextSecondary}>Lien</Text>
         </TouchableOpacity>
-        <ExcelImport 
-          onImportSuccess={(count) => {
-            Alert.alert('Import réussi', `${count} membres ajoutés à votre arbre !`);
-            onRefresh();
-          }}
-        />
         <TouchableOpacity style={styles.actionButtonSecondary} onPress={onRefresh}>
           <Ionicons name="refresh" size={22} color="#D4AF37" />
           <Text style={styles.actionButtonTextSecondary}>Actualiser</Text>
