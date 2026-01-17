@@ -2078,6 +2078,12 @@ export default function TreeScreen() {
                   <Ionicons name="print-outline" size={16} color="#4CAF50" />
                 </TouchableOpacity>
               )}
+              <ExcelImport 
+                onImportSuccess={(count) => {
+                  Alert.alert('Import réussi', `${count} membres ajoutés à votre arbre !`);
+                  onRefresh();
+                }}
+              />
             </View>
 
             {/* Zoom hint */}
