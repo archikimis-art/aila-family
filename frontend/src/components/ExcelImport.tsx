@@ -335,20 +335,14 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImportSuccess, onClo
 
 const styles = StyleSheet.create({
   triggerButton: {
-    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'rgba(212, 175, 55, 0.1)',
     borderWidth: 1,
     borderColor: '#D4AF37',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    gap: 8,
-  },
-  triggerButtonText: {
-    color: '#D4AF37',
-    fontSize: 14,
-    fontWeight: '600',
+    borderRadius: 10,
+    width: 44,
+    height: 44,
   },
   modalOverlay: {
     flex: 1,
