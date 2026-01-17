@@ -337,12 +337,10 @@ const styles = StyleSheet.create({
   triggerButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(212, 175, 55, 0.1)',
-    borderWidth: 1,
-    borderColor: '#D4AF37',
-    borderRadius: 10,
-    width: 44,
-    height: 44,
+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+    borderRadius: 8,
+    width: 36,
+    height: 36,
   },
   modalOverlay: {
     flex: 1,
