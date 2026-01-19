@@ -1215,6 +1215,195 @@ async def create_preview_session():
         expires_at=expires_at
     )
 
+@api_router.post("/preview/demo", response_model=PreviewSessionResponse)
+async def create_demo_session():
+    """
+    Crée une session de démonstration avec une famille exemple pré-remplie.
+    Permet aux nouveaux utilisateurs de voir immédiatement la valeur de l'application.
+    """
+    session_token = str(uuid.uuid4())
+    expires_at = datetime.utcnow() + timedelta(hours=24)
+    now = datetime.utcnow()
+    
+    # Famille Martin - Exemple réaliste sur 3 générations
+    # IDs uniques pour chaque personne
+    gp_henri_id = str(uuid.uuid4())
+    gp_marie_id = str(uuid.uuid4())
+    gp_jean_id = str(uuid.uuid4())
+    gp_jeanne_id = str(uuid.uuid4())
+    
+    p_pierre_id = str(uuid.uuid4())
+    p_sophie_id = str(uuid.uuid4())
+    
+    c_lucas_id = str(uuid.uuid4())
+    c_emma_id = str(uuid.uuid4())
+    c_leo_id = str(uuid.uuid4())
+    
+    demo_persons = [
+        # Génération 1 - Grands-parents paternels
+        {
+            "id": gp_henri_id,
+            "first_name": "Henri",
+            "last_name": "Martin",
+            "gender": "male",
+            "birth_date": "1945-03-15",
+            "birth_place": "Lyon",
+            "notes": "Grand-père paternel - Ancien instituteur",
+            "created_at": now
+        },
+        {
+            "id": gp_marie_id,
+            "first_name": "Marie",
+            "last_name": "Martin",
+            "gender": "female",
+            "birth_date": "1948-07-22",
+            "birth_place": "Lyon",
+            "notes": "Grand-mère paternelle - Née Dubois",
+            "created_at": now
+        },
+        # Génération 1 - Grands-parents maternels
+        {
+            "id": gp_jean_id,
+            "first_name": "Jean",
+            "last_name": "Bernard",
+            "gender": "male",
+            "birth_date": "1942-11-08",
+            "birth_place": "Paris",
+            "death_date": "2020-04-12",
+            "notes": "Grand-père maternel - Ingénieur",
+            "created_at": now
+        },
+        {
+            "id": gp_jeanne_id,
+            "first_name": "Jeanne",
+            "last_name": "Bernard",
+            "gender": "female",
+            "birth_date": "1946-02-28",
+            "birth_place": "Paris",
+            "notes": "Grand-mère maternelle - Née Petit",
+            "created_at": now
+        },
+        # Génération 2 - Parents
+        {
+            "id": p_pierre_id,
+            "first_name": "Pierre",
+            "last_name": "Martin",
+            "gender": "male",
+            "birth_date": "1975-06-10",
+            "birth_place": "Lyon",
+            "notes": "Père - Médecin généraliste",
+            "created_at": now
+        },
+        {
+            "id": p_sophie_id,
+            "first_name": "Sophie",
+            "last_name": "Martin",
+            "gender": "female",
+            "birth_date": "1978-09-03",
+            "birth_place": "Paris",
+            "notes": "Mère - Avocate - Née Bernard",
+            "created_at": now
+        },
+        # Génération 3 - Enfants
+        {
+            "id": c_lucas_id,
+            "first_name": "Lucas",
+            "last_name": "Martin",
+            "gender": "male",
+            "birth_date": "2005-01-20",
+            "birth_place": "Lyon",
+            "notes": "Fils aîné - Étudiant",
+            "created_at": now
+        },
+        {
+            "id": c_emma_id,
+            "first_name": "Emma",
+            "last_name": "Martin",
+            "gender": "female",
+            "birth_date": "2008-04-14",
+            "birth_place": "Lyon",
+            "notes": "Fille - Lycéenne",
+            "created_at": now
+        },
+        {
+            "id": c_leo_id,
+            "first_name": "Léo",
+            "last_name": "Martin",
+            "gender": "male",
+            "birth_date": "2012-08-30",
+            "birth_place": "Lyon",
+            "notes": "Fils cadet - Collégien",
+            "created_at": now
+        },
+    ]
+    
+    demo_links = [
+        # Couples
+        {"id": str(uuid.uuid4()), "person_id_1": gp_henri_id, "person_id_2": gp_marie_id, "link_type": "spouse", "created_at": now},
+        {"id": str(uuid.uuid4()), "person_id_1": gp_jean_id, "person_id_2": gp_jeanne_id, "link_type": "spouse", "created_at": now},
+        {"id": str(uuid.uuid4()), "person_id_1": p_pierre_id, "person_id_2": p_sophie_id, "link_type": "spouse", "created_at": now},
+        
+        # Henri & Marie -> Pierre
+        {"id": str(uuid.uuid4()), "person_id_1": gp_henri_id, "person_id_2": p_pierre_id, "link_type": "parent", "created_at": now},
+        {"id": str(uuid.uuid4()), "person_id_1": gp_marie_id, "person_id_2": p_pierre_id, "link_type": "parent", "created_at": now},
+        
+        # Jean & Jeanne -> Sophie
+        {"id": str(uuid.uuid4()), "person_id_1": gp_jean_id, "person_id_2": p_sophie_id, "link_type": "parent", "created_at": now},
+        {"id": str(uuid.uuid4()), "person_id_1": gp_jeanne_id, "person_id_2": p_sophie_id, "link_type": "parent", "created_at": now},
+        
+        # Pierre & Sophie -> Lucas, Emma, Léo
+        {"id": str(uuid.uuid4()), "person_id_1": p_pierre_id, "person_id_2": c_lucas_id, "link_type": "parent", "created_at": now},
+        {"id": str(uuid.uuid4()), "person_id_1": p_sophie_id, "person_id_2": c_lucas_id, "link_type": "parent", "created_at": now},
+        {"id": str(uuid.uuid4()), "person_id_1": p_pierre_id, "person_id_2": c_emma_id, "link_type": "parent", "created_at": now},
+        {"id": str(uuid.uuid4()), "person_id_1": p_sophie_id, "person_id_2": c_emma_id, "link_type": "parent", "created_at": now},
+        {"id": str(uuid.uuid4()), "person_id_1": p_pierre_id, "person_id_2": c_leo_id, "link_type": "parent", "created_at": now},
+        {"id": str(uuid.uuid4()), "person_id_1": p_sophie_id, "person_id_2": c_leo_id, "link_type": "parent", "created_at": now},
+    ]
+    
+    session_doc = {
+        "session_token": session_token,
+        "persons": demo_persons,
+        "links": demo_links,
+        "created_at": now,
+        "expires_at": expires_at,
+        "is_demo": True
+    }
+    
+    await db.preview_sessions.insert_one(session_doc)
+    
+    # Convert to response format
+    persons_response = [PersonResponse(
+        id=p['id'],
+        first_name=p['first_name'],
+        last_name=p['last_name'],
+        gender=p.get('gender', 'unknown'),
+        birth_date=p.get('birth_date'),
+        birth_place=p.get('birth_place'),
+        death_date=p.get('death_date'),
+        death_place=p.get('death_place'),
+        photo=p.get('photo'),
+        notes=p.get('notes'),
+        geographic_branch=p.get('geographic_branch'),
+        created_at=p.get('created_at', now),
+        is_preview=True
+    ) for p in demo_persons]
+    
+    links_response = [FamilyLinkResponse(
+        id=l['id'],
+        person_id_1=l['person_id_1'],
+        person_id_2=l['person_id_2'],
+        link_type=l['link_type'],
+        created_at=l.get('created_at', now)
+    ) for l in demo_links]
+    
+    return PreviewSessionResponse(
+        session_token=session_token,
+        persons=persons_response,
+        links=links_response,
+        created_at=now,
+        expires_at=expires_at
+    )
+
 @api_router.get("/preview/{session_token}", response_model=PreviewSessionResponse)
 async def get_preview_session(session_token: str):
     session = await db.preview_sessions.find_one({"session_token": session_token})
