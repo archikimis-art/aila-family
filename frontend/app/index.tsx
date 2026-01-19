@@ -257,6 +257,61 @@ export default function WelcomeScreen() {
             </TouchableOpacity>
           </View>
 
+          {/* Section Pourquoi AILA - Vrais arguments */}
+          <View style={styles.whySection}>
+            <Text style={styles.whySectionTitle}>Pourquoi choisir AÏLA ?</Text>
+            
+            <View style={styles.whyGrid}>
+              <View style={styles.whyItem}>
+                <View style={styles.whyIconContainer}>
+                  <Ionicons name="flash" size={20} color="#D4AF37" />
+                </View>
+                <Text style={styles.whyItemTitle}>Simple & intuitif</Text>
+                <Text style={styles.whyItemText}>Créez votre arbre en 5 min</Text>
+              </View>
+              
+              <View style={styles.whyItem}>
+                <View style={styles.whyIconContainer}>
+                  <Ionicons name="people" size={20} color="#D4AF37" />
+                </View>
+                <Text style={styles.whyItemTitle}>Collaboratif</Text>
+                <Text style={styles.whyItemText}>Invitez votre famille</Text>
+              </View>
+              
+              <View style={styles.whyItem}>
+                <View style={styles.whyIconContainer}>
+                  <Ionicons name="chatbubbles" size={20} color="#D4AF37" />
+                </View>
+                <Text style={styles.whyItemTitle}>Chat sécurisé</Text>
+                <Text style={styles.whyItemText}>Discutez en privé</Text>
+              </View>
+              
+              <View style={styles.whyItem}>
+                <View style={styles.whyIconContainer}>
+                  <Ionicons name="document-text" size={20} color="#D4AF37" />
+                </View>
+                <Text style={styles.whyItemTitle}>Import/Export</Text>
+                <Text style={styles.whyItemText}>Excel & PDF inclus</Text>
+              </View>
+              
+              <View style={styles.whyItem}>
+                <View style={styles.whyIconContainer}>
+                  <Ionicons name="shield-checkmark" size={20} color="#D4AF37" />
+                </View>
+                <Text style={styles.whyItemTitle}>RGPD</Text>
+                <Text style={styles.whyItemText}>Données protégées</Text>
+              </View>
+              
+              <View style={styles.whyItem}>
+                <View style={styles.whyIconContainer}>
+                  <Ionicons name="close-circle" size={20} color="#D4AF37" />
+                </View>
+                <Text style={styles.whyItemTitle}>Sans engagement</Text>
+                <Text style={styles.whyItemText}>Supprimez quand vous voulez</Text>
+              </View>
+            </View>
+          </View>
+
           {/* Guides SEO Section - Design épuré */}
           <View style={styles.guidesSection}>
               <Text style={styles.guidesTitle}>Guides & Ressources</Text>
