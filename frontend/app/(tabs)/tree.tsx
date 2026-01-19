@@ -2686,6 +2686,50 @@ const styles = StyleSheet.create({
     fontSize: 13,
     flex: 1,
   },
+  // Styles pour la bannière du mode démo
+  demoBanner: {
+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(212, 175, 55, 0.3)',
+  },
+  demoBannerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  demoBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 10,
+  },
+  demoBannerTextContainer: {
+    flex: 1,
+  },
+  demoBannerTitle: {
+    color: '#D4AF37',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  demoBannerSubtitle: {
+    color: '#8BA1B7',
+    fontSize: 12,
+    marginTop: 2,
+  },
+  demoBannerButton: {
+    backgroundColor: '#D4AF37',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 8,
+    marginLeft: 12,
+  },
+  demoBannerButtonText: {
+    color: '#0A1628',
+    fontSize: 13,
+    fontWeight: '700',
+  },
   treeContainer: {
     flex: 1,
     overflow: 'hidden',
