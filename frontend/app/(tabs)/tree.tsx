@@ -360,9 +360,21 @@ export default function TreeScreen() {
       if (isPreviewMode) {
         let token: string | null = await AsyncStorage.getItem('preview_token');
         if (!token) {
-          const response = await previewAPI.createSession();
+          // Créer une session DEMO avec une famille exemple pré-remplie
+          console.log('Creating demo session with sample family...');
+          const response = await previewAPI.createDemoSession();
           token = response.data.session_token;
-          if (token) await AsyncStorage.setItem('preview_token', token);
+          if (token) {
+            await AsyncStorage.setItem('preview_token', token);
+            // Utiliser directement les données de la réponse (famille exemple)
+            setPersons(response.data.persons || []);
+            setLinks(response.data.links || []);
+            setPreviewToken(token);
+            console.log('Demo session created with', response.data.persons?.length, 'persons');
+            setLoading(false);
+            setRefreshing(false);
+            return;
+          }
         }
         if (token) {
           setPreviewToken(token);
@@ -372,14 +384,16 @@ export default function TreeScreen() {
             setLinks(sessionData.data.links || []);
           } catch (e: any) {
             if (e.response?.status === 404 || e.response?.status === 410) {
-              const response = await previewAPI.createSession();
+              // Session expirée - créer une nouvelle session DEMO
+              console.log('Session expired, creating new demo session...');
+              const response = await previewAPI.createDemoSession();
               token = response.data.session_token;
               if (token) {
                 await AsyncStorage.setItem('preview_token', token);
                 setPreviewToken(token);
+                setPersons(response.data.persons || []);
+                setLinks(response.data.links || []);
               }
-              setPersons([]);
-              setLinks([]);
             }
           }
         }
