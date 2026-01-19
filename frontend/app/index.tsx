@@ -803,3 +803,4 @@ const styles = StyleSheet.create({
 // Layout fix 1768284734
 // Homepage simplified Mon Jan 19 12:40:24 UTC 2026
 // Deploy fix 1768832382
+// Mobile layout 1768833604
