@@ -70,11 +70,13 @@ const Home = () => {
 
         {/* Title */}
         <h1 className="main-title">AÏLA</h1>
-        <p className="subtitle">F A M I L L E</p>
         
-        {/* New Tagline */}
-        <p className="tagline" data-testid="main-tagline">
-          AÏLA, l'application qui connecte votre famille
+        {/* Taglines */}
+        <p className="tagline-primary" data-testid="main-tagline">
+          Créez votre arbre généalogique
+        </p>
+        <p className="tagline-secondary" data-testid="secondary-tagline">
+          L'application qui connecte votre famille
         </p>
 
         {/* Features */}
