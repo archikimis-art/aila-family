@@ -785,3 +785,4 @@ const styles = StyleSheet.create({
 // Force rebuild Mon Jan 12 14:50:50 UTC 2026
 // Deploy: 1768281249
 // Layout fix 1768284734
+// Homepage simplified Mon Jan 19 12:40:24 UTC 2026
