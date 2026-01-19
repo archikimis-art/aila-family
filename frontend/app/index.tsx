@@ -212,7 +212,10 @@ export default function WelcomeScreen() {
               accessibilityHint="Créez un arbre de démonstration sans inscription"
             >
               <Ionicons name="play-outline" size={24} color="#0A1628" />
-              <Text style={styles.primaryButtonText}>Essayer maintenant</Text>
+              <View style={styles.primaryButtonTextContainer}>
+                <Text style={styles.primaryButtonText}>Essayer maintenant</Text>
+                <Text style={styles.primaryButtonSubtext}>Créez votre arbre en 5 min</Text>
+              </View>
             </TouchableOpacity>
 
             {/* Réassurance sous le CTA principal */}
