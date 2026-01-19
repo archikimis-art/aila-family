@@ -422,22 +422,23 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: isLargeScreen ? 10 : height * 0.02,
-    marginBottom: isLargeScreen ? 10 : 15,
+    marginTop: isLargeScreen ? 8 : height * 0.015,
+    marginBottom: isLargeScreen ? 8 : 10,
   },
   title: {
-    fontSize: isLargeScreen ? 52 : 42,
+    fontSize: isLargeScreen ? 48 : 38,
     fontWeight: '700',
     color: '#FFFFFF',
-    marginTop: 16,
+    marginTop: 10,
     letterSpacing: 2,
   },
   subtitle: {
-    fontSize: isLargeScreen ? 18 : 14,
-    fontWeight: '600',
+    fontSize: isLargeScreen ? 15 : 13,
+    fontWeight: '500',
     color: '#D4AF37',
-    letterSpacing: 6,
-    marginTop: 4,
+    marginTop: 6,
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
   sloganContainer: {
     alignItems: 'center',
@@ -462,12 +463,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   featuresContainer: {
-    marginBottom: isLargeScreen ? 10 : 15,
+    marginBottom: isLargeScreen ? 8 : 10,
   },
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
     paddingHorizontal: 16,
   },
   featureText: {
