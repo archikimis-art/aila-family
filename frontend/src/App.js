@@ -87,8 +87,8 @@ const Home = () => {
             <span>Collaborez en famille</span>
           </div>
           <div className="feature">
-            <Lock className="feature-icon" />
-            <span>Vos données protégées</span>
+            <Gift className="feature-icon" />
+            <span>Votre arbre généalogique gratuit</span>
           </div>
         </div>
 
