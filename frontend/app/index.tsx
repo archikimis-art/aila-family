@@ -257,57 +257,37 @@ export default function WelcomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Section Pourquoi AILA - Vrais arguments */}
+          {/* Section Pourquoi AILA - Version compacte horizontale */}
           <View style={styles.whySection}>
-            <Text style={styles.whySectionTitle}>Pourquoi choisir AÏLA ?</Text>
+            <Text style={styles.whySectionTitle}>Pourquoi AÏLA ?</Text>
             
-            <View style={styles.whyGrid}>
-              <View style={styles.whyItem}>
-                <View style={styles.whyIconContainer}>
-                  <Ionicons name="flash" size={14} color="#D4AF37" />
-                </View>
-                <Text style={styles.whyItemTitle}>Simple & intuitif</Text>
-                <Text style={styles.whyItemText}>Créez votre arbre en 5 min</Text>
+            <View style={styles.whyRow}>
+              <View style={styles.whyChip}>
+                <Ionicons name="flash" size={12} color="#D4AF37" />
+                <Text style={styles.whyChipText}>Simple</Text>
               </View>
-              
-              <View style={styles.whyItem}>
-                <View style={styles.whyIconContainer}>
-                  <Ionicons name="people" size={14} color="#D4AF37" />
-                </View>
-                <Text style={styles.whyItemTitle}>Collaboratif</Text>
-                <Text style={styles.whyItemText}>Invitez votre famille</Text>
+              <View style={styles.whyChip}>
+                <Ionicons name="people" size={12} color="#D4AF37" />
+                <Text style={styles.whyChipText}>Collaboratif</Text>
               </View>
-              
-              <View style={styles.whyItem}>
-                <View style={styles.whyIconContainer}>
-                  <Ionicons name="chatbubbles" size={14} color="#D4AF37" />
-                </View>
-                <Text style={styles.whyItemTitle}>Chat sécurisé</Text>
-                <Text style={styles.whyItemText}>Discutez en privé</Text>
+              <View style={styles.whyChip}>
+                <Ionicons name="chatbubbles" size={12} color="#D4AF37" />
+                <Text style={styles.whyChipText}>Chat</Text>
               </View>
-              
-              <View style={styles.whyItem}>
-                <View style={styles.whyIconContainer}>
-                  <Ionicons name="document-text" size={14} color="#D4AF37" />
-                </View>
-                <Text style={styles.whyItemTitle}>Import/Export</Text>
-                <Text style={styles.whyItemText}>Excel & PDF inclus</Text>
+            </View>
+            
+            <View style={styles.whyRow}>
+              <View style={styles.whyChip}>
+                <Ionicons name="document-text" size={12} color="#D4AF37" />
+                <Text style={styles.whyChipText}>Excel/PDF</Text>
               </View>
-              
-              <View style={styles.whyItem}>
-                <View style={styles.whyIconContainer}>
-                  <Ionicons name="shield-checkmark" size={14} color="#D4AF37" />
-                </View>
-                <Text style={styles.whyItemTitle}>RGPD</Text>
-                <Text style={styles.whyItemText}>Données protégées</Text>
+              <View style={styles.whyChip}>
+                <Ionicons name="shield-checkmark" size={12} color="#D4AF37" />
+                <Text style={styles.whyChipText}>RGPD</Text>
               </View>
-              
-              <View style={styles.whyItem}>
-                <View style={styles.whyIconContainer}>
-                  <Ionicons name="close-circle" size={14} color="#D4AF37" />
-                </View>
-                <Text style={styles.whyItemTitle}>Sans engagement</Text>
-                <Text style={styles.whyItemText}>Supprimez quand vous voulez</Text>
+              <View style={styles.whyChip}>
+                <Ionicons name="checkmark-circle" size={12} color="#D4AF37" />
+                <Text style={styles.whyChipText}>Gratuit</Text>
               </View>
             </View>
           </View>
