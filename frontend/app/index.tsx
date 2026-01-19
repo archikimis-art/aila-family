@@ -175,27 +175,23 @@ export default function WelcomeScreen() {
             />
             {/* Header Logo */}
             <View style={styles.logoContainer}>
-              <Ionicons name="leaf" size={70} color="#D4AF37" />
+              <Ionicons name="leaf" size={60} color="#D4AF37" />
               <Text style={styles.title}>AÏLA</Text>
-              <Text style={styles.subtitle}>FAMILLE</Text>
-              <View style={styles.sloganContainer}>
-                <Text style={styles.sloganLine1}>L'arbre généalogique simple</Text>
-                <Text style={styles.sloganLine2}>que toute la famille peut créer ensemble</Text>
-              </View>
+              <Text style={styles.subtitle}>L'application qui connecte votre famille</Text>
             </View>
 
           {/* Features - Vrais arguments */}
           <View style={styles.featuresContainer}>
             <View style={styles.featureItem}>
-              <Ionicons name="flash-outline" size={26} color="#D4AF37" />
+              <Ionicons name="flash-outline" size={22} color="#D4AF37" />
               <Text style={styles.featureText}>Simple & intuitif</Text>
             </View>
             <View style={styles.featureItem}>
-              <Ionicons name="people-outline" size={26} color="#D4AF37" />
+              <Ionicons name="people-outline" size={22} color="#D4AF37" />
               <Text style={styles.featureText}>Collaborez en famille</Text>
             </View>
             <View style={styles.featureItem}>
-              <Ionicons name="lock-closed-outline" size={26} color="#D4AF37" />
+              <Ionicons name="lock-closed-outline" size={22} color="#D4AF37" />
               <Text style={styles.featureText}>Vos données protégées</Text>
             </View>
           </View>
