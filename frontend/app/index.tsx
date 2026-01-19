@@ -200,48 +200,48 @@ export default function WelcomeScreen() {
             </View>
           </View>
 
-          {/* Buttons - Hiérarchie optimisée */}
+          {/* Buttons - CTA inversés pour conversion */}
           <View style={styles.buttonsContainer}>
-            {/* CTA Principal - Inscription */}
+            {/* CTA Principal - Essayer SANS inscription */}
             <TouchableOpacity 
               style={styles.primaryButton} 
-              onPress={goToRegister}
+              onPress={goToPreview}
               activeOpacity={0.7}
-              accessibilityLabel="Créer mon arbre généalogique gratuitement"
+              accessibilityLabel="Essayer gratuitement sans créer de compte"
               accessibilityRole="button"
-              accessibilityHint="Ouvre le formulaire d'inscription pour créer votre arbre"
+              accessibilityHint="Créez un arbre de démonstration sans inscription"
             >
-              <Ionicons name="leaf-outline" size={24} color="#0A1628" />
-              <Text style={styles.primaryButtonText}>Créer mon arbre gratuit</Text>
+              <Ionicons name="play-outline" size={24} color="#0A1628" />
+              <Text style={styles.primaryButtonText}>Essayer maintenant</Text>
             </TouchableOpacity>
 
             {/* Réassurance sous le CTA principal */}
             <View style={styles.reassuranceRow}>
               <View style={styles.reassuranceItem}>
                 <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
+                <Text style={styles.reassuranceText}>Sans compte</Text>
+              </View>
+              <View style={styles.reassuranceItem}>
+                <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
                 <Text style={styles.reassuranceText}>Gratuit</Text>
               </View>
               <View style={styles.reassuranceItem}>
                 <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
-                <Text style={styles.reassuranceText}>Simple</Text>
-              </View>
-              <View style={styles.reassuranceItem}>
-                <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
-                <Text style={styles.reassuranceText}>Sécurisé</Text>
+                <Text style={styles.reassuranceText}>Sans engagement</Text>
               </View>
             </View>
 
-            {/* CTA Secondaire - Aperçu */}
+            {/* CTA Secondaire - Créer un compte */}
             <TouchableOpacity 
               style={styles.secondaryButton} 
-              onPress={goToPreview}
+              onPress={goToRegister}
               activeOpacity={0.7}
-              accessibilityLabel="Essayer sans inscription"
+              accessibilityLabel="Créer un compte pour sauvegarder son arbre"
               accessibilityRole="button"
-              accessibilityHint="Tester l'application avec un arbre limité à 10 membres"
+              accessibilityHint="Inscription gratuite avec Google ou email"
             >
-              <Ionicons name="eye-outline" size={18} color="#D4AF37" />
-              <Text style={styles.secondaryButtonText}>Essayer sans inscription</Text>
+              <Ionicons name="person-add-outline" size={18} color="#D4AF37" />
+              <Text style={styles.secondaryButtonText}>Créer un compte gratuit</Text>
             </TouchableOpacity>
 
             {/* Login Link - Discret */}
