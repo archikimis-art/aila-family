@@ -71,12 +71,9 @@ const Home = () => {
         {/* Title */}
         <h1 className="main-title">AÏLA</h1>
         
-        {/* Taglines */}
-        <p className="tagline-primary" data-testid="main-tagline">
-          Créez votre arbre généalogique
-        </p>
-        <p className="tagline-secondary" data-testid="secondary-tagline">
-          L'application qui connecte votre famille
+        {/* Tagline */}
+        <p className="tagline" data-testid="main-tagline">
+          L'arbre généalogique qui connecte votre famille
         </p>
 
         {/* Features */}
