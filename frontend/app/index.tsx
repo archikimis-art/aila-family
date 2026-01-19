@@ -533,10 +533,20 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 6,
   },
+  primaryButtonTextContainer: {
+    alignItems: 'center',
+  },
   primaryButtonText: {
     color: '#0A1628',
     fontSize: 18,
     fontWeight: '700',
+  },
+  primaryButtonSubtext: {
+    color: '#0A1628',
+    fontSize: 12,
+    fontWeight: '500',
+    opacity: 0.7,
+    marginTop: 2,
   },
   reassuranceRow: {
     flexDirection: 'row',
