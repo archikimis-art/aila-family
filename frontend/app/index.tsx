@@ -746,14 +746,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   guidesSection: {
-    marginTop: 16,
-    marginBottom: 12,
+    marginTop: 8,
+    marginBottom: 8,
   },
   guidesTitle: {
     color: '#6B7C93',
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '600',
-    marginBottom: 10,
+    marginBottom: 8,
     textAlign: 'center',
     textTransform: 'uppercase',
     letterSpacing: 1,
