@@ -107,6 +107,7 @@ export const treeAPI = {
 
 export const previewAPI = {
   createSession: () => api.post('/preview/session'),
+  createDemoSession: () => api.post('/preview/demo'),
   getSession: (token: string) => api.get(`/preview/${token}`),
   addPerson: (token: string, data: any) => api.post(`/preview/${token}/person`, data),
   updatePerson: (token: string, personId: string, data: any) => api.put(`/preview/${token}/person/${personId}`, data),
