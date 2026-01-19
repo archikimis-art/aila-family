@@ -262,8 +262,13 @@ export default function WelcomeScreen() {
 
           {/* Guides SEO Section - Design épuré */}
           <View style={styles.guidesSection}>
-              <Text style={styles.guidesTitle}>Guides & Ressources</Text>
+              <Text style={styles.guidesTitle}>Découvrir AÏLA</Text>
               <View style={styles.guidesContainer}>
+                {/* Bouton principal Pourquoi AÏLA */}
+                <TouchableOpacity style={styles.guideChipHighlight} onPress={() => router.push('/pourquoi-aila')}>
+                  <Ionicons name="sparkles" size={14} color="#0A1628" />
+                  <Text style={styles.guideChipTextHighlight}>Pourquoi AÏLA ?</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
                   <Ionicons name="search-outline" size={14} color="#D4AF37" />
                   <Text style={styles.guideChipText}>Ancêtres</Text>
