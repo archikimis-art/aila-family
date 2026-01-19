@@ -264,7 +264,7 @@ export default function WelcomeScreen() {
             <View style={styles.whyGrid}>
               <View style={styles.whyItem}>
                 <View style={styles.whyIconContainer}>
-                  <Ionicons name="flash" size={20} color="#D4AF37" />
+                  <Ionicons name="flash" size={14} color="#D4AF37" />
                 </View>
                 <Text style={styles.whyItemTitle}>Simple & intuitif</Text>
                 <Text style={styles.whyItemText}>Créez votre arbre en 5 min</Text>
@@ -272,7 +272,7 @@ export default function WelcomeScreen() {
               
               <View style={styles.whyItem}>
                 <View style={styles.whyIconContainer}>
-                  <Ionicons name="people" size={20} color="#D4AF37" />
+                  <Ionicons name="people" size={14} color="#D4AF37" />
                 </View>
                 <Text style={styles.whyItemTitle}>Collaboratif</Text>
                 <Text style={styles.whyItemText}>Invitez votre famille</Text>
@@ -280,7 +280,7 @@ export default function WelcomeScreen() {
               
               <View style={styles.whyItem}>
                 <View style={styles.whyIconContainer}>
-                  <Ionicons name="chatbubbles" size={20} color="#D4AF37" />
+                  <Ionicons name="chatbubbles" size={14} color="#D4AF37" />
                 </View>
                 <Text style={styles.whyItemTitle}>Chat sécurisé</Text>
                 <Text style={styles.whyItemText}>Discutez en privé</Text>
@@ -288,7 +288,7 @@ export default function WelcomeScreen() {
               
               <View style={styles.whyItem}>
                 <View style={styles.whyIconContainer}>
-                  <Ionicons name="document-text" size={20} color="#D4AF37" />
+                  <Ionicons name="document-text" size={14} color="#D4AF37" />
                 </View>
                 <Text style={styles.whyItemTitle}>Import/Export</Text>
                 <Text style={styles.whyItemText}>Excel & PDF inclus</Text>
@@ -296,7 +296,7 @@ export default function WelcomeScreen() {
               
               <View style={styles.whyItem}>
                 <View style={styles.whyIconContainer}>
-                  <Ionicons name="shield-checkmark" size={20} color="#D4AF37" />
+                  <Ionicons name="shield-checkmark" size={14} color="#D4AF37" />
                 </View>
                 <Text style={styles.whyItemTitle}>RGPD</Text>
                 <Text style={styles.whyItemText}>Données protégées</Text>
@@ -304,7 +304,7 @@ export default function WelcomeScreen() {
               
               <View style={styles.whyItem}>
                 <View style={styles.whyIconContainer}>
-                  <Ionicons name="close-circle" size={20} color="#D4AF37" />
+                  <Ionicons name="close-circle" size={14} color="#D4AF37" />
                 </View>
                 <Text style={styles.whyItemTitle}>Sans engagement</Text>
                 <Text style={styles.whyItemText}>Supprimez quand vous voulez</Text>
