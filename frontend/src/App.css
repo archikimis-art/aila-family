@@ -1,34 +1,478 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+:root {
+  --gold: #D4A93C;
+  --gold-light: #E8C55B;
+  --navy: #1a2744;
+  --navy-light: #243552;
+  --navy-dark: #0f1a2e;
+  --text-light: #e8e8e8;
+  --text-muted: #8a9ab0;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.app-container {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: linear-gradient(180deg, var(--navy) 0%, var(--navy-dark) 100%);
+  position: relative;
+  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
 }
 
-.App-link {
-    color: #61dafb;
+/* Kanji Background */
+.kanji-background {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.kanji {
+  position: absolute;
+  font-size: clamp(1rem, 3vw, 2rem);
+  color: rgba(212, 169, 60, 0.15);
+  font-family: serif;
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+/* Floating Leaves */
+.leaves-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.leaf {
+  position: absolute;
+  top: -20px;
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50% 0 50% 0;
+  opacity: 0.4;
+  animation: falling linear infinite;
+}
+
+@keyframes falling {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Main Content */
+.main-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 6rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Logo */
+.logo-container {
+  margin-bottom: 0.5rem;
+}
+
+.leaf-logo {
+  width: 50px;
+  height: 45px;
+}
+
+.leaf-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Typography */
+.main-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 10vw, 4rem);
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+  color: var(--gold);
+  letter-spacing: 0.4em;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.tagline {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(0.95rem, 3.5vw, 1.2rem);
+  color: var(--gold-light);
+  text-align: center;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  padding: 0 1rem;
+}
+
+/* Features */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  max-width: 280px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-light);
+  font-size: clamp(0.85rem, 3vw, 1rem);
+}
+
+.feature-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+/* CTA Buttons */
+.cta-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 320px;
+  padding: 0.875rem 1.5rem;
+  background: var(--gold);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 0.75rem;
+}
+
+.cta-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(212, 169, 60, 0.3);
+}
+
+.cta-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--navy);
+}
+
+.cta-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cta-main {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.cta-sub {
+  font-size: 0.75rem;
+  color: var(--navy);
+  opacity: 0.8;
+}
+
+/* Trust Badges */
+.trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+  color: var(--text-muted);
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.badge-dot.green {
+  background: #4ade80;
+}
+
+/* Secondary CTA */
+.cta-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 320px;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  color: var(--gold);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 0.75rem;
+}
+
+.cta-secondary:hover {
+  background: rgba(212, 169, 60, 0.1);
+}
+
+.cta-icon-small {
+  width: 18px;
+  height: 18px;
+}
+
+/* Login Link */
+.login-link {
+  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.login-link a {
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Discover Section */
+.discover-section {
+  width: 100%;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.discover-title {
+  font-size: clamp(0.65rem, 2vw, 0.75rem);
+  letter-spacing: 0.3em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.tabs-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(212, 169, 60, 0.3);
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.tab.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+}
+
+.tab-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(180deg, transparent 0%, var(--navy-dark) 30%);
+  z-index: 100;
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--gold);
+  font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  opacity: 0.8;
+}
+
+.nav-btn.outline {
+  border: 1px solid rgba(212, 169, 60, 0.5);
+  border-radius: 6px;
+  color: var(--text-light);
+}
+
+.nav-btn.premium {
+  background: var(--gold);
+  border-radius: 6px;
+  color: var(--navy);
+  font-weight: 500;
+}
+
+.nav-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 1rem 0.75rem 5.5rem;
+  }
+  
+  .logo-container {
+    margin-bottom: 0.25rem;
+  }
+  
+  .leaf-logo {
+    width: 40px;
+    height: 36px;
+  }
+  
+  .main-title {
+    margin-bottom: 0.15rem;
+  }
+  
+  .subtitle {
+    margin-bottom: 0.35rem;
+  }
+  
+  .tagline {
+    margin-bottom: 0.75rem;
+  }
+  
+  .features {
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .cta-primary {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .trust-badges {
+    margin-bottom: 0.5rem;
+  }
+  
+  .cta-secondary {
+    padding: 0.6rem 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .login-link {
+    margin-bottom: 0.75rem;
+  }
+  
+  .discover-section {
+    margin-top: 0.25rem;
+  }
+  
+  .discover-title {
+    margin-bottom: 0.5rem;
+  }
+  
+  .tabs-container {
+    gap: 0.35rem;
+  }
+  
+  .tab {
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .bottom-nav {
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .nav-btn {
+    padding: 0.4rem 0.75rem;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .main-content {
+    padding: 0.75rem 0.5rem 5rem;
+  }
+  
+  .features {
+    max-width: 240px;
+  }
+  
+  .cta-primary,
+  .cta-secondary {
+    max-width: 280px;
+  }
 }
