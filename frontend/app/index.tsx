@@ -751,6 +751,53 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 4,
   },
+  // Section "Pourquoi AILA"
+  whySection: {
+    marginTop: 24,
+    marginBottom: 16,
+    paddingHorizontal: 16,
+  },
+  whySectionTitle: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  whyGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  whyItem: {
+    width: '48%',
+    backgroundColor: 'rgba(212, 175, 55, 0.08)',
+    borderRadius: 12,
+    padding: 12,
+    alignItems: 'center',
+  },
+  whyIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  whyItemTitle: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 2,
+    textAlign: 'center',
+  },
+  whyItemText: {
+    color: '#8BA1B7',
+    fontSize: 11,
+    textAlign: 'center',
+  },
   guidesSection: {
     marginTop: 16,
     marginBottom: 12,
