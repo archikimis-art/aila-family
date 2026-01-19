@@ -74,7 +74,7 @@ const Home = () => {
         
         {/* New Tagline */}
         <p className="tagline" data-testid="main-tagline">
-          L'application qui connecte votre famille
+          AÏLA, l'application qui connecte votre famille
         </p>
 
         {/* Features */}
