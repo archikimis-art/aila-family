@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   scrollContent: {
-    paddingBottom: 100, // Espace pour la barre du bas fixe
+    paddingBottom: 140, // Espace pour la barre du bas fixe sur mobile
   },
   contentContainer: {
     paddingHorizontal: isLargeScreen ? 48 : 24,
