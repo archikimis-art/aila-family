@@ -175,28 +175,28 @@ export default function WelcomeScreen() {
             />
             {/* Header Logo */}
             <View style={styles.logoContainer}>
-              <Ionicons name="leaf" size={80} color="#D4AF37" />
+              <Ionicons name="leaf" size={70} color="#D4AF37" />
               <Text style={styles.title}>AÏLA</Text>
               <Text style={styles.subtitle}>FAMILLE</Text>
               <View style={styles.sloganContainer}>
-                <Text style={styles.sloganLine1}>L'arbre généalogique</Text>
-                <Text style={styles.sloganLine2}>qui connecte votre famille</Text>
+                <Text style={styles.sloganLine1}>L'arbre généalogique simple</Text>
+                <Text style={styles.sloganLine2}>que toute la famille peut créer ensemble</Text>
               </View>
             </View>
 
-          {/* Features */}
+          {/* Features - Vrais arguments */}
           <View style={styles.featuresContainer}>
             <View style={styles.featureItem}>
-              <Ionicons name="git-branch-outline" size={28} color="#D4AF37" />
-              <Text style={styles.featureText}>Créez votre arbre généalogique</Text>
+              <Ionicons name="flash-outline" size={26} color="#D4AF37" />
+              <Text style={styles.featureText}>Simple & intuitif</Text>
             </View>
             <View style={styles.featureItem}>
-              <Ionicons name="chatbubbles-outline" size={28} color="#D4AF37" />
-              <Text style={styles.featureText}>Discutez en famille</Text>
+              <Ionicons name="people-outline" size={26} color="#D4AF37" />
+              <Text style={styles.featureText}>Collaborez en famille</Text>
             </View>
             <View style={styles.featureItem}>
-              <Ionicons name="calendar-outline" size={28} color="#D4AF37" />
-              <Text style={styles.featureText}>Partagez vos souvenirs</Text>
+              <Ionicons name="lock-closed-outline" size={26} color="#D4AF37" />
+              <Text style={styles.featureText}>Vos données protégées</Text>
             </View>
           </View>
 
