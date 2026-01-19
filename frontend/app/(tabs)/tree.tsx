@@ -1995,11 +1995,25 @@ export default function TreeScreen() {
 
       {/* Preview Banner */}
       {isPreviewMode && (
-        <View style={styles.previewBanner}>
-          <Ionicons name="information-circle" size={20} color="#D4AF37" />
-          <Text style={styles.previewBannerText}>
-            Mode aperçu : {persons.length}/10 membres • Les données seront supprimées après 24h
-          </Text>
+        <View style={styles.demoBanner}>
+          <View style={styles.demoBannerContent}>
+            <View style={styles.demoBannerLeft}>
+              <Ionicons name="sparkles" size={20} color="#D4AF37" />
+              <View style={styles.demoBannerTextContainer}>
+                <Text style={styles.demoBannerTitle}>Mode Démo - Famille Martin</Text>
+                <Text style={styles.demoBannerSubtitle}>
+                  Explorez librement • Ajoutez des membres • Créez des liens
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity 
+              style={styles.demoBannerButton} 
+              onPress={handleConvertToAccount}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.demoBannerButtonText}>Créer mon arbre</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
 
