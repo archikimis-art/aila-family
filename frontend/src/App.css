@@ -128,23 +128,14 @@
   font-weight: 500;
 }
 
-.tagline-primary {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1rem, 4vw, 1.3rem);
-  color: var(--gold);
-  text-align: center;
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-}
-
-.tagline-secondary {
+.tagline {
   font-family: 'Playfair Display', serif;
   font-style: italic;
-  font-size: clamp(0.85rem, 3vw, 1rem);
+  font-size: clamp(0.95rem, 3.5vw, 1.1rem);
   color: var(--gold-light);
   text-align: center;
   margin-bottom: 1rem;
-  opacity: 0.9;
+  line-height: 1.4;
 }
 
 /* Features */
