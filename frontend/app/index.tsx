@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   bottomSpacer: {
-    height: 80, // Espace pour la barre du bas (absolute) + marge
+    height: 120, // Espace pour la barre du bas sur mobile
   },
   loadingContainer: {
     flex: 1,
