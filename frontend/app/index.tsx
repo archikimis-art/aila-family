@@ -780,10 +780,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     gap: 6,
   },
+  guideChipHighlight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#D4AF37',
+    borderRadius: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    gap: 6,
+  },
   guideChipText: {
     color: '#8BA1B7',
     fontSize: 12,
     fontWeight: '500',
+  },
+  guideChipTextHighlight: {
+    color: '#0A1628',
+    fontSize: 12,
+    fontWeight: '600',
   },
 });
 // Trigger Vercel deployment
