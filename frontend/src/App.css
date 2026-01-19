@@ -416,9 +416,17 @@
     margin-bottom: 0.35rem;
   }
   
-  .tagline {
-    margin-bottom: 0.75rem;
-  }
+  .subtitle {
+  margin-bottom: 0.35rem;
+}
+
+.tagline-primary {
+  margin-bottom: 0.15rem;
+}
+
+.tagline-secondary {
+  margin-bottom: 0.75rem;
+}
   
   .features {
     gap: 0.35rem;
