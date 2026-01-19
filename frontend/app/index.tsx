@@ -260,41 +260,6 @@ export default function WelcomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Section Pourquoi AILA - Version compacte horizontale */}
-          <View style={styles.whySection}>
-            <Text style={styles.whySectionTitle}>Pourquoi AÏLA ?</Text>
-            
-            <View style={styles.whyRow}>
-              <View style={styles.whyChip}>
-                <Ionicons name="flash" size={12} color="#D4AF37" />
-                <Text style={styles.whyChipText}>Simple</Text>
-              </View>
-              <View style={styles.whyChip}>
-                <Ionicons name="people" size={12} color="#D4AF37" />
-                <Text style={styles.whyChipText}>Collaboratif</Text>
-              </View>
-              <View style={styles.whyChip}>
-                <Ionicons name="chatbubbles" size={12} color="#D4AF37" />
-                <Text style={styles.whyChipText}>Chat</Text>
-              </View>
-            </View>
-            
-            <View style={styles.whyRow}>
-              <View style={styles.whyChip}>
-                <Ionicons name="document-text" size={12} color="#D4AF37" />
-                <Text style={styles.whyChipText}>Excel/PDF</Text>
-              </View>
-              <View style={styles.whyChip}>
-                <Ionicons name="shield-checkmark" size={12} color="#D4AF37" />
-                <Text style={styles.whyChipText}>RGPD</Text>
-              </View>
-              <View style={styles.whyChip}>
-                <Ionicons name="checkmark-circle" size={12} color="#D4AF37" />
-                <Text style={styles.whyChipText}>Gratuit</Text>
-              </View>
-            </View>
-          </View>
-
           {/* Guides SEO Section - Design épuré */}
           <View style={styles.guidesSection}>
               <Text style={styles.guidesTitle}>Guides & Ressources</Text>
