@@ -177,7 +177,7 @@ export default function WelcomeScreen() {
             <View style={styles.logoContainer}>
               <Ionicons name="leaf" size={60} color="#D4AF37" />
               <Text style={styles.title}>AÏLA</Text>
-              <Text style={styles.subtitle}>L'application qui connecte votre famille</Text>
+              <Text style={styles.subtitle}>L'arbre généalogique qui connecte votre famille</Text>
             </View>
 
           {/* Features - Vrais arguments */}
@@ -266,7 +266,7 @@ export default function WelcomeScreen() {
                   <Text style={styles.guideChipTextHighlight}>Pourquoi AÏLA ?</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChipBlog} onPress={() => router.push('/blog')}>
-                  <Ionicons name="newspaper-outline" size={14} color="#FFFFFF" />
+                  <Ionicons name="newspaper-outline" size={14} color="#D4AF37" />
                   <Text style={styles.guideChipTextBlog}>Blog</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
@@ -825,16 +825,16 @@ const styles = StyleSheet.create({
   guideChipBlog: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2D4A6F',
+    backgroundColor: 'transparent',
     borderRadius: 16,
     paddingVertical: 6,
     paddingHorizontal: 12,
     gap: 6,
     borderWidth: 1,
-    borderColor: '#D4AF37',
+    borderColor: 'rgba(212, 175, 55, 0.5)',
   },
   guideChipTextBlog: {
-    color: '#FFFFFF',
+    color: '#D4AF37',
     fontSize: 12,
     fontWeight: '600',
   },
