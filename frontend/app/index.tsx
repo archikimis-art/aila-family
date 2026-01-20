@@ -299,7 +299,10 @@ export default function WelcomeScreen() {
             {/* Bouton Donner son avis - compact */}
             <TouchableOpacity 
               style={styles.feedbackButton}
-              onPress={() => router.push('/blog')}
+              onPress={() => {
+                // Ouvre le blog - l'utilisateur peut commenter sur n'importe quel article
+                router.push('/blog');
+              }}
             >
               <Ionicons name="chatbubble-ellipses-outline" size={16} color="#D4AF37" />
               <Text style={styles.feedbackButtonText}>Donner mon avis</Text>

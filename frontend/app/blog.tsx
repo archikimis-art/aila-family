@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  ActivityIndicator,
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,8 +12,6 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import BlogComments from '../src/components/BlogComments';
 import ShareButtons from '../src/components/ShareButtons';
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://www.aila.family/api';
 
 interface Article {
   id: string;
@@ -26,13 +23,52 @@ interface Article {
   icon: string;
 }
 
-// Articles par défaut (fallback si API indisponible)
-const defaultArticles: Article[] = [
+// Articles complets
+const articles: Article[] = [
   {
     id: '7',
     title: "Partagez l'histoire de votre région d'origine",
-    excerpt: "Racontez l'histoire, la géographie, la culture et les traditions de votre région.",
-    content: "Chaque famille porte en elle l'histoire d'une région...",
+    excerpt: "Racontez l'histoire, la géographie, la culture et les traditions de votre région. Un espace d'échange pour découvrir les richesses de nos territoires.",
+    content: `Chaque famille porte en elle l'histoire d'une région, d'un terroir, d'une culture. Aujourd'hui, nous vous invitons à partager ces trésors avec la communauté AÏLA.
+
+**🌍 D'où venez-vous ?**
+
+La France compte 18 régions, mais aussi des centaines de "pays" traditionnels, chacun avec son identité propre. Et au-delà de nos frontières, les origines de nos familles nous relient aux quatre coins du monde.
+
+Que vos ancêtres soient bretons, alsaciens, provençaux, antillais, italiens, portugais, algériens ou d'ailleurs... chaque histoire mérite d'être racontée.
+
+**📜 L'histoire de votre région**
+
+Partagez avec nous :
+- Les grands événements historiques qui ont marqué votre région
+- Les personnages célèbres qui en sont originaires
+- Les guerres, migrations ou transformations économiques
+
+**🎭 La culture et les traditions**
+
+Racontez-nous :
+- Les fêtes locales et célébrations traditionnelles
+- Les costumes régionaux
+- La musique, les danses, les chants
+- Les légendes et contes populaires
+
+**🍽️ La gastronomie**
+
+Partagez vos recettes familiales :
+- Les plats traditionnels de votre région
+- Les spécialités transmises de génération en génération
+- Les produits du terroir
+
+**💬 Participez à la discussion !**
+
+Dans les commentaires, présentez votre région d'origine :
+
+📍 **Région/Pays** : 
+📜 **Un fait historique** : 
+🎭 **Une tradition** : 
+🍽️ **Un plat typique** : 
+
+Nous avons hâte de vous lire !`,
     date: "20 janvier 2025",
     read_time: "5 min",
     icon: "earth-outline"
@@ -40,40 +76,139 @@ const defaultArticles: Article[] = [
   {
     id: '6',
     title: "Comment retrouver ses ancêtres gratuitement en 2025",
-    excerpt: "Découvrez toutes les méthodes et ressources gratuites pour retrouver vos ancêtres.",
-    content: "La généalogie gratuite est à portée de clic...",
+    excerpt: "Découvrez toutes les méthodes et ressources gratuites pour retrouver vos ancêtres. Archives en ligne, astuces et outils.",
+    content: `**🎯 Par où commencer ?**
+
+1. **Interrogez votre famille** : Parents, grands-parents détiennent des informations précieuses.
+2. **Rassemblez les documents** : Livrets de famille, actes de naissance, photos anciennes.
+3. **Créez votre arbre** : Utilisez AÏLA pour organiser vos découvertes.
+
+**📚 Les Archives Départementales (GRATUIT)**
+
+Chaque département a son site d'archives avec accès gratuit :
+- Registres paroissiaux (avant 1792)
+- État civil (depuis 1792)
+- Recensements de population
+- Registres matricules militaires
+
+**🌐 Sites gratuits incontournables**
+
+1. **FamilySearch.org** : Milliards de documents gratuits
+2. **Geneanet.org** : Arbres partagés par d'autres généalogistes
+3. **Mémoire des Hommes** : Archives militaires
+
+**💡 Astuces**
+
+- Utilisez les tables décennales
+- Variez l'orthographe des noms
+- Cherchez les frères et sœurs
+- Exploitez les témoins de mariage
+
+**🚀 Commencez maintenant !**
+
+Créez votre arbre sur AÏLA et découvrez vos ancêtres dès aujourd'hui !`,
     date: "15 janvier 2025",
     read_time: "8 min",
-    icon: "gift-outline"
+    icon: "search-outline"
+  },
+  {
+    id: '1',
+    title: "Comment commencer votre arbre généalogique",
+    excerpt: "Découvrez les étapes essentielles pour débuter vos recherches généalogiques et créer un arbre familial complet.",
+    content: `**1. Commencez par ce que vous connaissez**
+
+Rassemblez les informations que vous possédez déjà. Interrogez vos parents, grands-parents. Notez les noms, dates, lieux et professions.
+
+**2. Organisez vos informations**
+
+Utilisez AÏLA pour organiser vos données. Un arbre numérique permet de visualiser les liens familiaux.
+
+**3. Consultez les documents familiaux**
+
+Recherchez : actes de naissance, certificats de mariage, photos anciennes, lettres, livrets de famille.
+
+**4. Explorez les archives en ligne**
+
+De nombreuses archives sont numérisées : registres paroissiaux, recensements, actes d'état civil.
+
+**5. Vérifiez vos sources**
+
+Recoupez les informations. Une même personne peut avoir des variations d'orthographe.
+
+**6. Partagez avec votre famille**
+
+Avec AÏLA, invitez vos proches à consulter et contribuer à l'arbre familial.`,
+    date: "15 janvier 2025",
+    read_time: "6 min",
+    icon: "book-outline"
+  },
+  {
+    id: '2',
+    title: "Les erreurs à éviter en généalogie",
+    excerpt: "Évitez les pièges courants qui peuvent fausser vos recherches et compromettre la fiabilité de votre arbre.",
+    content: `**1. Ne pas vérifier les sources**
+
+Ne copiez pas d'autres arbres sans vérification. Les erreurs se propagent.
+
+**2. Confondre les homonymes**
+
+Deux Jean Dupont peuvent être différents. Croisez les informations !
+
+**3. Ignorer les variations d'orthographe**
+
+MARTIN, MARTEN, MARTAIN peuvent désigner la même famille.
+
+**4. Aller trop vite**
+
+Documentez bien chaque génération avant de passer à la suivante.
+
+**5. Négliger les collatéraux**
+
+Les frères, sœurs, oncles peuvent fournir des informations précieuses.
+
+**6. Oublier de sauvegarder**
+
+Avec AÏLA, vos données sont automatiquement sauvegardées.`,
+    date: "10 janvier 2025",
+    read_time: "5 min",
+    icon: "warning-outline"
+  },
+  {
+    id: '3',
+    title: "Comprendre les liens de parenté",
+    excerpt: "Maîtrisez le vocabulaire : cousins germains, cousins issus de germains, et plus encore.",
+    content: `**Les liens directs**
+
+- Parents : père et mère
+- Grands-parents : parents de vos parents
+- Arrière-grands-parents : parents de vos grands-parents
+
+**Les liens collatéraux**
+
+- Frères et sœurs : mêmes parents
+- Demi-frères/sœurs : un seul parent en commun
+- Oncles et tantes : frères et sœurs de vos parents
+
+**Les cousins**
+
+- Cousins germains : enfants de vos oncles/tantes
+- Cousins issus de germains : enfants de cousins germains
+
+**Termes à connaître**
+
+- Ascendants : ancêtres
+- Descendants : enfants, petits-enfants
+- Collatéraux : frères, sœurs, cousins
+- Alliés : famille par mariage`,
+    date: "5 janvier 2025",
+    read_time: "5 min",
+    icon: "people-outline"
   },
 ];
 
 export default function BlogScreen() {
   const router = useRouter();
-  const [articles, setArticles] = useState<Article[]>(defaultArticles);
-  const [loading, setLoading] = useState(true);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-
-  useEffect(() => {
-    fetchArticles();
-  }, []);
-
-  const fetchArticles = async () => {
-    try {
-      const response = await fetch(`${API_URL}/articles`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.length > 0) {
-          setArticles(data);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching articles:', error);
-      // Keep default articles on error
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (selectedArticle) {
     return (
@@ -110,7 +245,7 @@ export default function BlogScreen() {
           {/* Share Buttons */}
           <ShareButtons 
             title={selectedArticle.title}
-            url={`https://www.aila.family/blog#${selectedArticle.id}`}
+            url={`https://www.aila.family/blog`}
           />
 
           {/* Comments Section */}
@@ -139,7 +274,7 @@ export default function BlogScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Blog Généalogie</Text>
@@ -156,91 +291,83 @@ export default function BlogScreen() {
           </Text>
         </View>
 
-        {loading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#D4AF37" />
-          </View>
-        ) : (
-          <>
-            {/* Guides Section */}
-            <View style={styles.guidesSection}>
-              <Text style={styles.guidesSectionTitle}>📚 Nos Guides</Text>
-              
-              <TouchableOpacity 
-                style={styles.guideLink}
-                onPress={() => router.push('/retrouver-ancetres-gratuitement')}
-              >
-                <View style={styles.guideLinkIcon}>
-                  <Text style={styles.guideLinkEmoji}>🔍</Text>
-                </View>
-                <View style={styles.guideLinkContent}>
-                  <Text style={styles.guideLinkTitle}>Retrouver ses ancêtres gratuitement</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={styles.guideLink}
-                onPress={() => router.push('/genealogie-debutant-guide')}
-              >
-                <View style={styles.guideLinkIcon}>
-                  <Text style={styles.guideLinkEmoji}>🎓</Text>
-                </View>
-                <View style={styles.guideLinkContent}>
-                  <Text style={styles.guideLinkTitle}>Généalogie pour débutant</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={[styles.guideLink, { backgroundColor: 'rgba(212, 175, 55, 0.15)', borderColor: '#D4AF37' }]}
-                onPress={() => {
-                  const regionArticle = articles.find(a => a.id === '7');
-                  if (regionArticle) setSelectedArticle(regionArticle);
-                }}
-              >
-                <View style={styles.guideLinkIcon}>
-                  <Text style={styles.guideLinkEmoji}>🌍</Text>
-                </View>
-                <View style={styles.guideLinkContent}>
-                  <Text style={styles.guideLinkTitle}>Partagez l'histoire de votre région</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
-              </TouchableOpacity>
+        {/* Guides Section */}
+        <View style={styles.guidesSection}>
+          <Text style={styles.guidesSectionTitle}>📚 Nos Guides</Text>
+          
+          <TouchableOpacity 
+            style={styles.guideLink}
+            onPress={() => router.push('/retrouver-ancetres-gratuitement')}
+          >
+            <View style={styles.guideLinkIcon}>
+              <Text style={styles.guideLinkEmoji}>🔍</Text>
             </View>
-
-            {/* Articles Section */}
-            <View style={styles.articlesSectionHeader}>
-              <Text style={styles.articlesSectionTitle}>📰 Articles</Text>
+            <View style={styles.guideLinkContent}>
+              <Text style={styles.guideLinkTitle}>Retrouver ses ancêtres gratuitement</Text>
             </View>
+            <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          </TouchableOpacity>
 
-            <View style={styles.articlesList}>
-              {articles.map((article) => (
-                <TouchableOpacity
-                  key={article.id}
-                  style={styles.articleCard}
-                  onPress={() => setSelectedArticle(article)}
-                  activeOpacity={0.7}
-                >
-                  <View style={styles.articleIcon}>
-                    <Ionicons name={article.icon as any} size={28} color="#D4AF37" />
-                  </View>
-                  <View style={styles.articleInfo}>
-                    <View style={styles.articleMetaRow}>
-                      <Text style={styles.articleDate}>{article.date}</Text>
-                      <Text style={styles.articleReadTime}>{article.read_time}</Text>
-                    </View>
-                    <Text style={styles.articleTitle}>{article.title}</Text>
-                    <Text style={styles.articleExcerpt} numberOfLines={2}>
-                      {article.excerpt}
-                    </Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
-                </TouchableOpacity>
-              ))}
+          <TouchableOpacity 
+            style={styles.guideLink}
+            onPress={() => router.push('/genealogie-debutant-guide')}
+          >
+            <View style={styles.guideLinkIcon}>
+              <Text style={styles.guideLinkEmoji}>🎓</Text>
             </View>
-          </>
-        )}
+            <View style={styles.guideLinkContent}>
+              <Text style={styles.guideLinkTitle}>Généalogie pour débutant</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.guideLink, { backgroundColor: 'rgba(212, 175, 55, 0.15)', borderColor: '#D4AF37' }]}
+            onPress={() => {
+              const regionArticle = articles.find(a => a.id === '7');
+              if (regionArticle) setSelectedArticle(regionArticle);
+            }}
+          >
+            <View style={styles.guideLinkIcon}>
+              <Text style={styles.guideLinkEmoji}>🌍</Text>
+            </View>
+            <View style={styles.guideLinkContent}>
+              <Text style={styles.guideLinkTitle}>Partagez l'histoire de votre région</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Articles Section */}
+        <View style={styles.articlesSectionHeader}>
+          <Text style={styles.articlesSectionTitle}>📰 Articles</Text>
+        </View>
+
+        <View style={styles.articlesList}>
+          {articles.map((article) => (
+            <TouchableOpacity
+              key={article.id}
+              style={styles.articleCard}
+              onPress={() => setSelectedArticle(article)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.articleIcon}>
+                <Ionicons name={article.icon as any} size={28} color="#D4AF37" />
+              </View>
+              <View style={styles.articleInfo}>
+                <View style={styles.articleMetaRow}>
+                  <Text style={styles.articleDate}>{article.date}</Text>
+                  <Text style={styles.articleReadTime}>{article.read_time}</Text>
+                </View>
+                <Text style={styles.articleTitle}>{article.title}</Text>
+                <Text style={styles.articleExcerpt} numberOfLines={2}>
+                  {article.excerpt}
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
+            </TouchableOpacity>
+          ))}
+        </View>
 
         {/* CTA Section */}
         <View style={styles.ctaSection}>
@@ -299,10 +426,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-  },
-  loadingContainer: {
-    padding: 60,
-    alignItems: 'center',
   },
   introSection: {
     alignItems: 'center',
