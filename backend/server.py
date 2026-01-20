@@ -4851,9 +4851,9 @@ class ArticleResponse(BaseModel):
 class AdminLogin(BaseModel):
     password: str
 
-@api_router.post("/admin/login")
-async def admin_login(login: AdminLogin):
-    """Admin login - returns a simple token"""
+@api_router.post("/admin/blog-login")
+async def admin_blog_login(login: AdminLogin):
+    """Admin blog login - returns a simple token"""
     if login.password == ADMIN_PASSWORD:
         # Simple token (in production, use proper JWT)
         import hashlib
