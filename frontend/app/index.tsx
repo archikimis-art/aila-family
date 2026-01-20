@@ -296,16 +296,13 @@ export default function WelcomeScreen() {
               </View>
             </View>
 
-            {/* Bouton Donner son avis - compact */}
+            {/* Bouton Communauté - visible */}
             <TouchableOpacity 
-              style={styles.feedbackButton}
-              onPress={() => {
-                // Ouvre le blog - l'utilisateur peut commenter sur n'importe quel article
-                router.push('/blog');
-              }}
+              style={styles.communityButton}
+              onPress={() => router.push('/community')}
             >
-              <Ionicons name="chatbubble-ellipses-outline" size={16} color="#D4AF37" />
-              <Text style={styles.feedbackButtonText}>Donner mon avis</Text>
+              <Ionicons name="chatbubbles" size={18} color="#0A1628" />
+              <Text style={styles.communityButtonText}>Rejoindre la communauté</Text>
             </TouchableOpacity>
 
             {/* Footer text only */}
@@ -749,6 +746,24 @@ const styles = StyleSheet.create({
     color: '#D4AF37',
     fontSize: 13,
     fontWeight: '500',
+  },
+  communityButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 16,
+    marginBottom: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    backgroundColor: '#D4AF37',
+    borderRadius: 25,
+    alignSelf: 'center',
+  },
+  communityButtonText: {
+    color: '#0A1628',
+    fontSize: 14,
+    fontWeight: '600',
   },
   // Section "Pourquoi AILA" - Version compacte
   whySection: {
