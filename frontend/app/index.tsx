@@ -5,7 +5,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
-import Testimonials from '../src/components/Testimonials';
 
 // Lazy load the animated background for better LCP
 const AnimatedTreeBackground = lazy(() => import('@/components/AnimatedTreeBackground').then(m => ({ default: m.AnimatedTreeBackground })));
@@ -297,8 +296,14 @@ export default function WelcomeScreen() {
               </View>
             </View>
 
-            {/* Testimonials Section */}
-            <Testimonials />
+            {/* Bouton Donner son avis - compact */}
+            <TouchableOpacity 
+              style={styles.feedbackButton}
+              onPress={() => router.push('/blog')}
+            >
+              <Ionicons name="chatbubble-ellipses-outline" size={16} color="#D4AF37" />
+              <Text style={styles.feedbackButtonText}>Donner mon avis</Text>
+            </TouchableOpacity>
 
             {/* Footer text only */}
             <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
@@ -718,6 +723,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     marginLeft: 4,
+  },
+  feedbackButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 16,
+    marginBottom: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.4)',
+    borderRadius: 20,
+    alignSelf: 'center',
+  },
+  feedbackButtonText: {
+    color: '#D4AF37',
+    fontSize: 13,
+    fontWeight: '500',
   },
   // Section "Pourquoi AILA" - Version compacte
   whySection: {
