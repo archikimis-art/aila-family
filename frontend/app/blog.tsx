@@ -28,47 +28,64 @@ const articles: Article[] = [
   {
     id: '7',
     title: "Partagez l'histoire de votre région d'origine",
-    excerpt: "Racontez l'histoire, la géographie, la culture et les traditions de votre région. Un espace d'échange pour découvrir les richesses de nos territoires.",
+    excerpt: "Racontez l'histoire, la géographie, la culture et les traditions de votre région, où que vous soyez dans le monde.",
     content: `Chaque famille porte en elle l'histoire d'une région, d'un terroir, d'une culture. Aujourd'hui, nous vous invitons à partager ces trésors avec la communauté AÏLA.
 
 **🌍 D'où venez-vous ?**
 
-La France compte 18 régions, mais aussi des centaines de "pays" traditionnels, chacun avec son identité propre. Et au-delà de nos frontières, les origines de nos familles nous relient aux quatre coins du monde.
+Que vos origines soient en Europe, en Afrique, en Amérique, en Asie ou en Océanie, chaque histoire mérite d'être racontée. AÏLA est une communauté internationale qui célèbre la diversité de nos origines.
 
-Que vos ancêtres soient bretons, alsaciens, provençaux, antillais, italiens, portugais, algériens ou d'ailleurs... chaque histoire mérite d'être racontée.
+**🌎 Amérique du Nord & du Sud**
+États-Unis, Canada, Mexique, Brésil, Argentine, Colombie, Pérou, Chili...
+
+**🌍 Europe**
+France, Italie, Espagne, Portugal, Allemagne, Belgique, Suisse, Pologne, Royaume-Uni, Irlande...
+
+**🌍 Afrique**
+Algérie, Maroc, Tunisie, Sénégal, Côte d'Ivoire, Cameroun, Congo, Madagascar, Afrique du Sud...
+
+**🌏 Asie & Océanie**
+Chine, Inde, Japon, Vietnam, Philippines, Liban, Turquie, Australie, Nouvelle-Zélande...
+
+**🏝️ Îles & Territoires**
+Antilles, Réunion, Mayotte, Polynésie, Nouvelle-Calédonie, Maurice, Haïti, Cuba...
 
 **📜 L'histoire de votre région**
 
 Partagez avec nous :
 - Les grands événements historiques qui ont marqué votre région
 - Les personnages célèbres qui en sont originaires
-- Les guerres, migrations ou transformations économiques
+- Les migrations et diasporas
+- L'évolution de votre pays ou région
 
 **🎭 La culture et les traditions**
 
 Racontez-nous :
-- Les fêtes locales et célébrations traditionnelles
-- Les costumes régionaux
+- Les fêtes et célébrations traditionnelles
+- Les costumes et habits traditionnels
 - La musique, les danses, les chants
 - Les légendes et contes populaires
+- Les croyances et rituels familiaux
 
 **🍽️ La gastronomie**
 
 Partagez vos recettes familiales :
 - Les plats traditionnels de votre région
 - Les spécialités transmises de génération en génération
-- Les produits du terroir
+- Les ingrédients typiques et épices locales
 
 **💬 Participez à la discussion !**
 
 Dans les commentaires, présentez votre région d'origine :
 
-📍 **Région/Pays** : 
+📍 **Pays / Région** : 
+🌍 **Continent** : 
 📜 **Un fait historique** : 
 🎭 **Une tradition** : 
 🍽️ **Un plat typique** : 
+🗣️ **Une expression locale** :
 
-Nous avons hâte de vous lire !`,
+Nous avons hâte de découvrir vos origines !`,
     date: "20 janvier 2025",
     read_time: "5 min",
     icon: "earth-outline"
