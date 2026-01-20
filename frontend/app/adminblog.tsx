@@ -303,7 +303,7 @@ export default function AdminBlogScreen() {
             <>
               <Text style={styles.resetTitle}>Réinitialisation</Text>
               <Text style={styles.resetSubtitle}>
-                Entrez le code de réinitialisation pour restaurer le mot de passe par défaut
+                Entrez le code de réinitialisation fourni par le développeur
               </Text>
               
               <TextInput
@@ -331,10 +331,6 @@ export default function AdminBlogScreen() {
               >
                 <Text style={styles.forgotButtonText}>Retour à la connexion</Text>
               </TouchableOpacity>
-              
-              <Text style={styles.hintText}>
-                Code : AILA-RESET-2025
-              </Text>
             </>
           )}
         </View>
