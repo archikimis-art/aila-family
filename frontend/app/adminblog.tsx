@@ -13,8 +13,24 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://www.aila.family/api';
+// Backend API URL (même que admin.tsx)
+const PRODUCTION_API_URL = 'https://aila-backend-hc1m.onrender.com/api';
+const getApiUrl = () => {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:8001/api';
+    }
+    return PRODUCTION_API_URL;
+  }
+  return PRODUCTION_API_URL;
+};
+
+// Mot de passe par défaut (peut être changé via l'interface)
+const DEFAULT_PASSWORD = 'aila2025blog';
+const PASSWORD_STORAGE_KEY = 'adminblog_password';
 
 interface Article {
   id: string;
@@ -31,10 +47,11 @@ export default function AdminBlogScreen() {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState('');
-  const [adminToken, setAdminToken] = useState('');
+  const [storedPassword, setStoredPassword] = useState(DEFAULT_PASSWORD);
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
   const [showEditor, setShowEditor] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   
   // Form fields
@@ -43,58 +60,75 @@ export default function AdminBlogScreen() {
   const [content, setContent] = useState('');
   const [icon, setIcon] = useState('document-text-outline');
   const [readTime, setReadTime] = useState('5 min');
+  
+  // Settings
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleLogin = async () => {
-    setLoading(true);
+  const API_URL = getApiUrl();
+
+  useEffect(() => {
+    loadStoredPassword();
+  }, []);
+
+  const loadStoredPassword = async () => {
     try {
-      const response = await fetch(`${API_URL}/admin/blog-login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setAdminToken(data.token);
-        setIsLoggedIn(true);
-        fetchArticles();
+      const saved = await AsyncStorage.getItem(PASSWORD_STORAGE_KEY);
+      if (saved) {
+        setStoredPassword(saved);
+      }
+    } catch (e) {
+      console.error('Error loading password:', e);
+    }
+  };
+
+  const handleLogin = () => {
+    if (password === storedPassword) {
+      setIsLoggedIn(true);
+      fetchArticles();
+    } else {
+      if (Platform.OS === 'web') {
+        alert('Mot de passe incorrect');
       } else {
         Alert.alert('Erreur', 'Mot de passe incorrect');
       }
-    } catch (error) {
-      Alert.alert('Erreur', 'Connexion impossible');
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (!newPassword || newPassword.length < 6) {
+      Alert.alert('Erreur', 'Le mot de passe doit contenir au moins 6 caractères');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      Alert.alert('Erreur', 'Les mots de passe ne correspondent pas');
+      return;
+    }
+    
+    try {
+      await AsyncStorage.setItem(PASSWORD_STORAGE_KEY, newPassword);
+      setStoredPassword(newPassword);
+      setNewPassword('');
+      setConfirmPassword('');
+      setShowSettings(false);
+      Alert.alert('Succès', 'Mot de passe modifié');
+    } catch (e) {
+      Alert.alert('Erreur', 'Impossible de sauvegarder');
     }
   };
 
   const fetchArticles = async () => {
+    setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/articles?published_only=false`);
+      const response = await fetch(`${API_URL}/blog/articles`);
       if (response.ok) {
         const data = await response.json();
         setArticles(data);
       }
     } catch (error) {
       console.error('Error fetching articles:', error);
-    }
-  };
-
-  const initDefaultArticles = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_URL}/articles/init-default?admin_token=${adminToken}`, {
-        method: 'POST'
-      });
-      if (response.ok) {
-        const data = await response.json();
-        Alert.alert('Succès', data.message);
-        fetchArticles();
-      } else {
-        Alert.alert('Erreur', 'Impossible d\'initialiser');
-      }
-    } catch (e) {
-      Alert.alert('Erreur', 'Erreur de connexion');
+      // Articles de démo si API non disponible
+      setArticles([]);
     } finally {
       setLoading(false);
     }
@@ -108,15 +142,19 @@ export default function AdminBlogScreen() {
 
     setLoading(true);
     try {
+      const token = await AsyncStorage.getItem('admin_token');
       const url = editingArticle 
-        ? `${API_URL}/articles/${editingArticle.id}?admin_token=${adminToken}`
-        : `${API_URL}/articles?admin_token=${adminToken}`;
+        ? `${API_URL}/blog/articles/${editingArticle.id}`
+        : `${API_URL}/blog/articles`;
       
       const method = editingArticle ? 'PUT' : 'POST';
       
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
         body: JSON.stringify({
           title,
           excerpt,
@@ -131,10 +169,12 @@ export default function AdminBlogScreen() {
         resetForm();
         fetchArticles();
       } else {
-        Alert.alert('Erreur', 'Impossible de sauvegarder');
+        Alert.alert('Info', 'Fonctionnalité bientôt disponible. Les articles sont gérés dans le code pour l\'instant.');
+        resetForm();
       }
     } catch (error) {
-      Alert.alert('Erreur', 'Erreur de connexion');
+      Alert.alert('Info', 'API non disponible. Contactez le développeur pour ajouter des articles.');
+      resetForm();
     } finally {
       setLoading(false);
     }
@@ -146,16 +186,21 @@ export default function AdminBlogScreen() {
     }
     
     try {
-      const response = await fetch(
-        `${API_URL}/articles/${articleId}?admin_token=${adminToken}`,
-        { method: 'DELETE' }
-      );
+      const token = await AsyncStorage.getItem('admin_token');
+      const response = await fetch(`${API_URL}/blog/articles/${articleId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
+      });
       
       if (response.ok) {
         fetchArticles();
+      } else {
+        Alert.alert('Info', 'Fonctionnalité bientôt disponible');
       }
     } catch (error) {
-      Alert.alert('Erreur', 'Impossible de supprimer');
+      Alert.alert('Info', 'API non disponible');
     }
   };
 
@@ -179,12 +224,17 @@ export default function AdminBlogScreen() {
     setShowEditor(false);
   };
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setPassword('');
+  };
+
   // Login screen
   if (!isLoggedIn) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loginContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <TouchableOpacity style={styles.backButtonAbs} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={24} color="#D4AF37" />
           </TouchableOpacity>
           
@@ -199,20 +249,66 @@ export default function AdminBlogScreen() {
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            onSubmitEditing={handleLogin}
           />
           
           <TouchableOpacity 
             style={styles.loginButton}
             onPress={handleLogin}
-            disabled={loading}
           >
-            {loading ? (
-              <ActivityIndicator color="#0A1628" />
-            ) : (
-              <Text style={styles.loginButtonText}>Se connecter</Text>
-            )}
+            <Text style={styles.loginButtonText}>Se connecter</Text>
           </TouchableOpacity>
+          
+          <Text style={styles.hintText}>
+            Mot de passe par défaut : aila2025blog
+          </Text>
         </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Settings screen
+  if (showSettings) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => setShowSettings(false)}>
+            <Ionicons name="arrow-back" size={24} color="#D4AF37" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Paramètres</Text>
+          <View style={{ width: 24 }} />
+        </View>
+
+        <ScrollView style={styles.content}>
+          <Text style={styles.sectionTitle}>Changer le mot de passe</Text>
+          
+          <Text style={styles.label}>Nouveau mot de passe</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Minimum 6 caractères"
+            placeholderTextColor="#6B7C93"
+            value={newPassword}
+            onChangeText={setNewPassword}
+            secureTextEntry
+          />
+          
+          <Text style={styles.label}>Confirmer le mot de passe</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Répétez le mot de passe"
+            placeholderTextColor="#6B7C93"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+          />
+          
+          <TouchableOpacity 
+            style={styles.saveButton}
+            onPress={handleChangePassword}
+          >
+            <Text style={styles.saveButtonText}>Enregistrer</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -291,6 +387,11 @@ export default function AdminBlogScreen() {
               />
             </View>
           </View>
+          
+          <Text style={styles.noteText}>
+            Note : Pour l'instant, les articles sont gérés dans le code source. 
+            Cette interface sera connectée à la base de données prochainement.
+          </Text>
         </ScrollView>
       </SafeAreaView>
     );
@@ -304,30 +405,52 @@ export default function AdminBlogScreen() {
           <Ionicons name="arrow-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Admin Blog</Text>
-        <TouchableOpacity onPress={() => setShowEditor(true)}>
-          <Ionicons name="add-circle" size={28} color="#D4AF37" />
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity onPress={() => setShowSettings(true)} style={styles.headerButton}>
+            <Ionicons name="settings-outline" size={22} color="#D4AF37" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowEditor(true)} style={styles.headerButton}>
+            <Ionicons name="add-circle" size={26} color="#D4AF37" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView style={styles.content}>
-        <View style={styles.statsCard}>
-          <Text style={styles.statsNumber}>{articles.length}</Text>
-          <Text style={styles.statsLabel}>Articles</Text>
+        <View style={styles.statsRow}>
+          <View style={styles.statCard}>
+            <Text style={styles.statsNumber}>{articles.length}</Text>
+            <Text style={styles.statsLabel}>Articles</Text>
+          </View>
+          <TouchableOpacity style={styles.logoutCard} onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={24} color="#FF6B6B" />
+            <Text style={styles.logoutText}>Déconnexion</Text>
+          </TouchableOpacity>
         </View>
 
-        {articles.length === 0 && (
-          <TouchableOpacity style={styles.initButton} onPress={initDefaultArticles}>
-            <Ionicons name="cloud-download-outline" size={20} color="#0A1628" />
-            <Text style={styles.initButtonText}>Charger articles par défaut</Text>
-          </TouchableOpacity>
-        )}
+        <View style={styles.infoCard}>
+          <Ionicons name="information-circle-outline" size={20} color="#D4AF37" />
+          <Text style={styles.infoText}>
+            Les articles du blog sont actuellement gérés dans le code source (blog.tsx). 
+            Une interface de gestion complète sera disponible prochainement.
+          </Text>
+        </View>
 
-        <Text style={styles.sectionTitle}>Articles</Text>
+        <Text style={styles.sectionTitle}>Articles existants</Text>
         
-        {articles.length === 0 ? (
+        {loading ? (
+          <ActivityIndicator color="#D4AF37" style={{ marginTop: 20 }} />
+        ) : articles.length === 0 ? (
           <View style={styles.emptyState}>
             <Ionicons name="document-text-outline" size={48} color="#6B7C93" />
-            <Text style={styles.emptyText}>Aucun article</Text>
+            <Text style={styles.emptyText}>
+              Les articles sont dans le fichier blog.tsx
+            </Text>
+            <TouchableOpacity 
+              style={styles.createButton}
+              onPress={() => router.push('/blog')}
+            >
+              <Text style={styles.createButtonText}>Voir le blog</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           articles.map((article) => (
@@ -382,7 +505,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
-  backButton: {
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  headerButton: {
+    padding: 4,
+  },
+  backButtonAbs: {
     position: 'absolute',
     top: 20,
     left: 20,
@@ -431,15 +562,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  statsCard: {
-    backgroundColor: '#1E3A5F',
-    borderRadius: 12,
-    padding: 20,
-    alignItems: 'center',
+  hintText: {
+    color: '#6B7C93',
+    fontSize: 12,
+    marginTop: 20,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    gap: 12,
     marginBottom: 16,
   },
+  statCard: {
+    flex: 1,
+    backgroundColor: '#1E3A5F',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
   statsNumber: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#D4AF37',
   },
@@ -448,26 +589,38 @@ const styles = StyleSheet.create({
     color: '#B8C5D6',
     marginTop: 4,
   },
-  initButton: {
-    flexDirection: 'row',
+  logoutCard: {
+    backgroundColor: '#1E3A5F',
+    borderRadius: 12,
+    padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#D4AF37',
-    borderRadius: 8,
-    padding: 14,
-    marginBottom: 16,
-    gap: 8,
   },
-  initButtonText: {
-    color: '#0A1628',
-    fontSize: 14,
-    fontWeight: '600',
+  logoutText: {
+    fontSize: 12,
+    color: '#FF6B6B',
+    marginTop: 4,
+  },
+  infoCard: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    gap: 10,
+  },
+  infoText: {
+    flex: 1,
+    fontSize: 13,
+    color: '#B8C5D6',
+    lineHeight: 18,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
     marginBottom: 12,
+    marginTop: 8,
   },
   emptyState: {
     alignItems: 'center',
@@ -476,6 +629,18 @@ const styles = StyleSheet.create({
   emptyText: {
     color: '#6B7C93',
     marginTop: 12,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  createButton: {
+    backgroundColor: '#D4AF37',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  createButtonText: {
+    color: '#0A1628',
+    fontWeight: '600',
   },
   articleCard: {
     backgroundColor: '#1E3A5F',
@@ -545,5 +710,24 @@ const styles = StyleSheet.create({
   halfField: {
     flex: 1,
   },
+  noteText: {
+    color: '#6B7C93',
+    fontSize: 12,
+    marginTop: 20,
+    marginBottom: 40,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  saveButton: {
+    backgroundColor: '#D4AF37',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    marginTop: 24,
+  },
+  saveButtonText: {
+    color: '#0A1628',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
-// Force deploy Tue Jan 20 07:25:04 UTC 2026
