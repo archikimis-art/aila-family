@@ -31,6 +31,7 @@ const getApiUrl = () => {
 // Mot de passe par défaut (peut être changé via l'interface)
 const DEFAULT_PASSWORD = 'aila2025blog';
 const PASSWORD_STORAGE_KEY = 'adminblog_password';
+const RESET_CODE = 'AILA-RESET-2025'; // Code de réinitialisation
 
 interface Article {
   id: string;
@@ -52,6 +53,8 @@ export default function AdminBlogScreen() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [showEditor, setShowEditor] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetCode, setResetCode] = useState('');
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   
   // Form fields
@@ -114,6 +117,30 @@ export default function AdminBlogScreen() {
       Alert.alert('Succès', 'Mot de passe modifié');
     } catch (e) {
       Alert.alert('Erreur', 'Impossible de sauvegarder');
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (resetCode === RESET_CODE) {
+      try {
+        await AsyncStorage.removeItem(PASSWORD_STORAGE_KEY);
+        setStoredPassword(DEFAULT_PASSWORD);
+        setShowResetModal(false);
+        setResetCode('');
+        if (Platform.OS === 'web') {
+          alert('Mot de passe réinitialisé ! Utilisez : aila2025blog');
+        } else {
+          Alert.alert('Succès', 'Mot de passe réinitialisé ! Utilisez : aila2025blog');
+        }
+      } catch (e) {
+        Alert.alert('Erreur', 'Impossible de réinitialiser');
+      }
+    } else {
+      if (Platform.OS === 'web') {
+        alert('Code de réinitialisation incorrect');
+      } else {
+        Alert.alert('Erreur', 'Code de réinitialisation incorrect');
+      }
     }
   };
 
@@ -242,26 +269,74 @@ export default function AdminBlogScreen() {
           <Text style={styles.loginTitle}>Admin Blog</Text>
           <Text style={styles.loginSubtitle}>Gestion des articles</Text>
           
-          <TextInput
-            style={styles.passwordInput}
-            placeholder="Mot de passe"
-            placeholderTextColor="#6B7C93"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            onSubmitEditing={handleLogin}
-          />
-          
-          <TouchableOpacity 
-            style={styles.loginButton}
-            onPress={handleLogin}
-          >
-            <Text style={styles.loginButtonText}>Se connecter</Text>
-          </TouchableOpacity>
-          
-          <Text style={styles.hintText}>
-            Mot de passe par défaut : aila2025blog
-          </Text>
+          {!showResetModal ? (
+            <>
+              <TextInput
+                style={styles.passwordInput}
+                placeholder="Mot de passe"
+                placeholderTextColor="#6B7C93"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                onSubmitEditing={handleLogin}
+              />
+              
+              <TouchableOpacity 
+                style={styles.loginButton}
+                onPress={handleLogin}
+              >
+                <Text style={styles.loginButtonText}>Se connecter</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.forgotButton}
+                onPress={() => setShowResetModal(true)}
+              >
+                <Text style={styles.forgotButtonText}>Mot de passe oublié ?</Text>
+              </TouchableOpacity>
+              
+              <Text style={styles.hintText}>
+                Mot de passe par défaut : aila2025blog
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.resetTitle}>Réinitialisation</Text>
+              <Text style={styles.resetSubtitle}>
+                Entrez le code de réinitialisation pour restaurer le mot de passe par défaut
+              </Text>
+              
+              <TextInput
+                style={styles.passwordInput}
+                placeholder="Code de réinitialisation"
+                placeholderTextColor="#6B7C93"
+                value={resetCode}
+                onChangeText={setResetCode}
+                autoCapitalize="characters"
+              />
+              
+              <TouchableOpacity 
+                style={styles.loginButton}
+                onPress={handleResetPassword}
+              >
+                <Text style={styles.loginButtonText}>Réinitialiser</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.forgotButton}
+                onPress={() => {
+                  setShowResetModal(false);
+                  setResetCode('');
+                }}
+              >
+                <Text style={styles.forgotButtonText}>Retour à la connexion</Text>
+              </TouchableOpacity>
+              
+              <Text style={styles.hintText}>
+                Code : AILA-RESET-2025
+              </Text>
+            </>
+          )}
         </View>
       </SafeAreaView>
     );
@@ -566,6 +641,26 @@ const styles = StyleSheet.create({
     color: '#6B7C93',
     fontSize: 12,
     marginTop: 20,
+  },
+  forgotButton: {
+    marginTop: 16,
+  },
+  forgotButtonText: {
+    color: '#D4AF37',
+    fontSize: 14,
+  },
+  resetTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
+  resetSubtitle: {
+    fontSize: 13,
+    color: '#6B7C93',
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 18,
   },
   statsRow: {
     flexDirection: 'row',
