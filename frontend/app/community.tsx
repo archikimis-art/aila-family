@@ -211,9 +211,6 @@ export default function CommunityScreen() {
           </TouchableOpacity>
         ))}
       </ScrollView>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
 
       {/* Write Button (visible when form is hidden) */}
       {!showForm && (
