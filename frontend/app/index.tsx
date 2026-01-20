@@ -191,8 +191,8 @@ export default function WelcomeScreen() {
               <Text style={styles.featureText}>Collaborez en famille</Text>
             </View>
             <View style={styles.featureItem}>
-              <Ionicons name="lock-closed-outline" size={22} color="#D4AF37" />
-              <Text style={styles.featureText}>Vos données protégées</Text>
+              <Ionicons name="gift-outline" size={22} color="#D4AF37" />
+              <Text style={styles.featureText}>Votre arbre généalogique gratuit</Text>
             </View>
           </View>
 
