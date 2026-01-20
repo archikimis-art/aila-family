@@ -6,7 +6,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import Testimonials from '../src/components/Testimonials';
-import ReferralProgram from '../src/components/ReferralProgram';
 
 // Lazy load the animated background for better LCP
 const AnimatedTreeBackground = lazy(() => import('@/components/AnimatedTreeBackground').then(m => ({ default: m.AnimatedTreeBackground })));
@@ -300,9 +299,6 @@ export default function WelcomeScreen() {
 
             {/* Testimonials Section */}
             <Testimonials />
-
-            {/* Referral Program */}
-            <ReferralProgram userEmail={undefined} />
 
             {/* Footer text only */}
             <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
