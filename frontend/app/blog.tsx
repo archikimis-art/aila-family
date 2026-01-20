@@ -11,6 +11,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import BlogComments from '../src/components/BlogComments';
+import ShareButtons from '../src/components/ShareButtons';
 
 interface Article {
   id: string;
@@ -336,6 +338,17 @@ export default function BlogScreen() {
                 return paragraph + '\n\n';
               })}
             </Text>
+          </View>
+
+          {/* Share Buttons */}
+          <ShareButtons 
+            title={selectedArticle.title}
+            url={`https://www.aila.family/blog#${selectedArticle.id}`}
+          />
+
+          {/* Comments Section */}
+          <View style={styles.commentsSection}>
+            <BlogComments articleId={selectedArticle.id} />
           </View>
 
           <TouchableOpacity 
@@ -763,5 +776,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
+  },
+  commentsSection: {
+    paddingHorizontal: 20,
+    marginTop: 16,
   },
 });

@@ -4553,6 +4553,272 @@ async def import_excel_tree(
         raise HTTPException(status_code=500, detail=f"Erreur lors de l'import: {str(e)}")
 
 
+# ===================== BLOG COMMENTS =====================
+
+class CommentCreate(BaseModel):
+    article_id: str
+    content: str
+    author_name: str
+    author_email: Optional[str] = None
+
+class CommentResponse(BaseModel):
+    id: str
+    article_id: str
+    content: str
+    author_name: str
+    created_at: str
+    likes: int = 0
+    replies: List[dict] = []
+
+@api_router.post("/comments", response_model=CommentResponse)
+async def create_comment(comment: CommentCreate):
+    """Add a comment to a blog article"""
+    try:
+        comment_doc = {
+            "id": str(uuid.uuid4()),
+            "article_id": comment.article_id,
+            "content": comment.content,
+            "author_name": comment.author_name,
+            "author_email": comment.author_email,
+            "created_at": datetime.utcnow().isoformat(),
+            "likes": 0,
+            "replies": [],
+            "approved": True  # Auto-approve for now
+        }
+        await db.comments.insert_one(comment_doc)
+        logger.info(f"✓ New comment on article {comment.article_id}")
+        return CommentResponse(**comment_doc)
+    except Exception as e:
+        logger.error(f"Error creating comment: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'ajout du commentaire")
+
+@api_router.get("/comments/{article_id}", response_model=List[CommentResponse])
+async def get_comments(article_id: str):
+    """Get all comments for an article"""
+    try:
+        comments = await db.comments.find(
+            {"article_id": article_id, "approved": True}
+        ).sort("created_at", -1).to_list(100)
+        return [CommentResponse(**{**c, "id": c.get("id", str(c["_id"]))}) for c in comments]
+    except Exception as e:
+        logger.error(f"Error fetching comments: {e}")
+        return []
+
+@api_router.post("/comments/{comment_id}/like")
+async def like_comment(comment_id: str):
+    """Like a comment"""
+    try:
+        result = await db.comments.update_one(
+            {"id": comment_id},
+            {"$inc": {"likes": 1}}
+        )
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Commentaire non trouvé")
+        return {"success": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error liking comment: {e}")
+        raise HTTPException(status_code=500, detail="Erreur")
+
+
+# ===================== TESTIMONIALS =====================
+
+class TestimonialCreate(BaseModel):
+    author_name: str
+    content: str
+    rating: int = 5
+    author_location: Optional[str] = None
+
+class TestimonialResponse(BaseModel):
+    id: str
+    author_name: str
+    content: str
+    rating: int
+    author_location: Optional[str] = None
+    created_at: str
+    approved: bool = False
+
+@api_router.post("/testimonials", response_model=TestimonialResponse)
+async def create_testimonial(testimonial: TestimonialCreate):
+    """Submit a testimonial (requires approval)"""
+    try:
+        testimonial_doc = {
+            "id": str(uuid.uuid4()),
+            "author_name": testimonial.author_name,
+            "content": testimonial.content,
+            "rating": min(5, max(1, testimonial.rating)),
+            "author_location": testimonial.author_location,
+            "created_at": datetime.utcnow().isoformat(),
+            "approved": False  # Requires manual approval
+        }
+        await db.testimonials.insert_one(testimonial_doc)
+        logger.info(f"✓ New testimonial from {testimonial.author_name}")
+        return TestimonialResponse(**testimonial_doc)
+    except Exception as e:
+        logger.error(f"Error creating testimonial: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'envoi du témoignage")
+
+@api_router.get("/testimonials", response_model=List[TestimonialResponse])
+async def get_testimonials(approved_only: bool = True):
+    """Get testimonials"""
+    try:
+        query = {"approved": True} if approved_only else {}
+        testimonials = await db.testimonials.find(query).sort("created_at", -1).to_list(50)
+        return [TestimonialResponse(**{**t, "id": t.get("id", str(t["_id"]))}) for t in testimonials]
+    except Exception as e:
+        logger.error(f"Error fetching testimonials: {e}")
+        return []
+
+@api_router.put("/testimonials/{testimonial_id}/approve")
+async def approve_testimonial(testimonial_id: str, credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
+    """Approve a testimonial (admin only)"""
+    try:
+        user = await get_current_user(credentials)
+        if user.get("role") != "admin":
+            raise HTTPException(status_code=403, detail="Admin only")
+        
+        result = await db.testimonials.update_one(
+            {"id": testimonial_id},
+            {"$set": {"approved": True}}
+        )
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Témoignage non trouvé")
+        return {"success": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error approving testimonial: {e}")
+        raise HTTPException(status_code=500, detail="Erreur")
+
+
+# ===================== REFERRAL PROGRAM =====================
+
+class ReferralCreate(BaseModel):
+    referrer_email: str
+    referred_email: str
+
+class ReferralResponse(BaseModel):
+    id: str
+    referrer_email: str
+    referred_email: str
+    status: str  # pending, registered, rewarded
+    created_at: str
+    reward_given: bool = False
+
+@api_router.post("/referrals", response_model=ReferralResponse)
+async def create_referral(referral: ReferralCreate):
+    """Create a referral invitation"""
+    try:
+        # Check if already referred
+        existing = await db.referrals.find_one({"referred_email": referral.referred_email})
+        if existing:
+            raise HTTPException(status_code=400, detail="Cette personne a déjà été invitée")
+        
+        referral_doc = {
+            "id": str(uuid.uuid4()),
+            "referrer_email": referral.referrer_email,
+            "referred_email": referral.referred_email,
+            "status": "pending",
+            "created_at": datetime.utcnow().isoformat(),
+            "reward_given": False
+        }
+        await db.referrals.insert_one(referral_doc)
+        
+        # Send invitation email
+        await send_referral_email(referral.referred_email, referral.referrer_email)
+        
+        logger.info(f"✓ Referral created: {referral.referrer_email} -> {referral.referred_email}")
+        return ReferralResponse(**referral_doc)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating referral: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'envoi de l'invitation")
+
+@api_router.get("/referrals/{email}", response_model=List[ReferralResponse])
+async def get_user_referrals(email: str):
+    """Get referrals made by a user"""
+    try:
+        referrals = await db.referrals.find({"referrer_email": email}).to_list(100)
+        return [ReferralResponse(**{**r, "id": r.get("id", str(r["_id"]))}) for r in referrals]
+    except Exception as e:
+        logger.error(f"Error fetching referrals: {e}")
+        return []
+
+@api_router.get("/referrals/{email}/stats")
+async def get_referral_stats(email: str):
+    """Get referral statistics for a user"""
+    try:
+        total = await db.referrals.count_documents({"referrer_email": email})
+        registered = await db.referrals.count_documents({"referrer_email": email, "status": "registered"})
+        rewarded = await db.referrals.count_documents({"referrer_email": email, "reward_given": True})
+        
+        return {
+            "total_invited": total,
+            "registered": registered,
+            "rewards_earned": rewarded,
+            "next_reward_at": 3 - (registered % 3) if registered % 3 != 0 else 0
+        }
+    except Exception as e:
+        logger.error(f"Error fetching referral stats: {e}")
+        return {"total_invited": 0, "registered": 0, "rewards_earned": 0, "next_reward_at": 3}
+
+async def send_referral_email(to_email: str, referrer_email: str):
+    """Send referral invitation email"""
+    try:
+        referrer = await db.users.find_one({"email": referrer_email})
+        referrer_name = referrer.get("name", referrer_email.split("@")[0]) if referrer else referrer_email.split("@")[0]
+        
+        invite_url = f"{FRONTEND_URL}/?ref={referrer_email}"
+        
+        html_content = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #0A1628; color: #FFFFFF;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="color: #D4AF37; margin: 0;">🌳 AÏLA</h1>
+                <p style="color: #B8C5D6; margin-top: 5px;">L'arbre généalogique qui connecte votre famille</p>
+            </div>
+            
+            <div style="background-color: #1A2F4A; border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+                <h2 style="color: #FFFFFF; margin-top: 0;">Vous êtes invité(e) ! 🎉</h2>
+                <p style="color: #B8C5D6; line-height: 1.6;">
+                    <strong style="color: #D4AF37;">{referrer_name}</strong> vous invite à découvrir AÏLA, 
+                    l'application gratuite pour créer votre arbre généalogique et connecter votre famille.
+                </p>
+                <ul style="color: #B8C5D6; line-height: 1.8;">
+                    <li>✨ 100% gratuit pour commencer</li>
+                    <li>👨‍👩‍👧‍👦 Collaborez en famille</li>
+                    <li>📱 Disponible sur mobile et web</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="{invite_url}" style="display: inline-block; background-color: #D4AF37; color: #0A1628; text-decoration: none; padding: 16px 32px; border-radius: 12px; font-weight: bold; font-size: 16px;">
+                    Créer mon arbre gratuitement
+                </a>
+            </div>
+            
+            <p style="color: #6B7C93; font-size: 12px; text-align: center;">
+                © 2025 AÏLA - L'arbre généalogique qui connecte votre famille
+            </p>
+        </div>
+        """
+        
+        params = {
+            "from": "AÏLA <noreply@aila.family>",
+            "to": [to_email],
+            "subject": f"🌳 {referrer_name} vous invite à créer votre arbre généalogique",
+            "html": html_content
+        }
+        
+        email = resend.Emails.send(params)
+        logger.info(f"✓ Referral email sent to {to_email}")
+        return True
+    except Exception as e:
+        logger.error(f"✗ Failed to send referral email: {e}")
+        return False
+
+
 # ===================== INCLUDE ROUTER AT END =====================
 # This must be at the end to include all routes defined above
 app.include_router(api_router)
