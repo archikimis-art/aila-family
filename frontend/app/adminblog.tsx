@@ -234,7 +234,7 @@ export default function AdminBlogScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loginContainer}>
-          <TouchableOpacity style={styles.backButtonAbs} onPress={() => router.back()}>
+          <TouchableOpacity style={styles.backButtonAbs} onPress={() => router.push('/')}>
             <Ionicons name="arrow-back" size={24} color="#D4AF37" />
           </TouchableOpacity>
           
@@ -401,7 +401,7 @@ export default function AdminBlogScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.push('/')}>
           <Ionicons name="arrow-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Admin Blog</Text>
