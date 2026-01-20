@@ -369,14 +369,14 @@ export default function WelcomeScreen() {
             </TouchableOpacity>
           )}
           
-          {/* Bouton Premium */}
+          {/* Bouton Blog */}
           <TouchableOpacity 
-            style={styles.adPremiumButton}
-            onPress={() => router.push('/pricing')}
+            style={styles.adBlogButton}
+            onPress={() => router.push('/blog')}
             activeOpacity={0.7}
           >
-            <Ionicons name="star" size={14} color="#D4AF37" />
-            <Text style={styles.adPremiumButtonText}>Premium</Text>
+            <Ionicons name="newspaper-outline" size={14} color="#FFFFFF" />
+            <Text style={styles.adBlogButtonText}>Blog</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -701,20 +701,20 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 6,
   },
-  adPremiumButton: {
-    flex: 1, // Prend l'espace disponible
+  adBlogButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+    backgroundColor: '#2D4A6F',
     borderWidth: 1,
     borderColor: '#D4AF37',
     borderRadius: 8,
     paddingVertical: 6,
     paddingHorizontal: 8,
   },
-  adPremiumButtonText: {
-    color: '#D4AF37',
+  adBlogButtonText: {
+    color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '600',
     marginLeft: 4,
