@@ -267,6 +267,10 @@ export default function WelcomeScreen() {
                   <Ionicons name="sparkles" size={14} color="#0A1628" />
                   <Text style={styles.guideChipTextHighlight}>Pourquoi AÏLA ?</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.guideChipBlog} onPress={() => router.push('/blog')}>
+                  <Ionicons name="newspaper-outline" size={14} color="#FFFFFF" />
+                  <Text style={styles.guideChipTextBlog}>Blog</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
                   <Ionicons name="search-outline" size={14} color="#D4AF37" />
                   <Text style={styles.guideChipText}>Ancêtres</Text>
@@ -793,6 +797,22 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     gap: 6,
+  },
+  guideChipBlog: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2D4A6F',
+    borderRadius: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: '#D4AF37',
+  },
+  guideChipTextBlog: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
   },
   guideChipText: {
     color: '#8BA1B7',
