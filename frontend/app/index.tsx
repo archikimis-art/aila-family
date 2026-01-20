@@ -380,7 +380,7 @@ export default function WelcomeScreen() {
             onPress={() => router.push('/blog')}
             activeOpacity={0.7}
           >
-            <Ionicons name="newspaper-outline" size={14} color="#FFFFFF" />
+            <Ionicons name="newspaper-outline" size={14} color="#D4AF37" />
             <Text style={styles.adBlogButtonText}>Blog</Text>
           </TouchableOpacity>
         </View>
@@ -711,15 +711,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#2D4A6F',
+    backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: '#D4AF37',
+    borderColor: 'rgba(212, 175, 55, 0.5)',
     borderRadius: 8,
     paddingVertical: 6,
     paddingHorizontal: 8,
   },
   adBlogButtonText: {
-    color: '#FFFFFF',
+    color: '#D4AF37',
     fontSize: 12,
     fontWeight: '600',
     marginLeft: 4,
