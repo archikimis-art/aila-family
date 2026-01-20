@@ -5,13 +5,11 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  ScrollView,
-  ActivityIndicator,
+  Alert,
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'https://www.aila.family/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Comment {
   id: string;
@@ -20,12 +18,13 @@ interface Comment {
   author_name: string;
   created_at: string;
   likes: number;
-  replies: any[];
 }
 
 interface BlogCommentsProps {
   articleId: string;
 }
+
+const COMMENTS_STORAGE_KEY = 'aila_blog_comments';
 
 export default function BlogComments({ articleId }: BlogCommentsProps) {
   const [comments, setComments] = useState<Comment[]>([]);
@@ -36,46 +35,66 @@ export default function BlogComments({ articleId }: BlogCommentsProps) {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    fetchComments();
+    loadComments();
   }, [articleId]);
 
-  const fetchComments = async () => {
+  const loadComments = async () => {
     try {
-      const response = await fetch(`${API_URL}/comments/${articleId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setComments(data);
+      const stored = await AsyncStorage.getItem(COMMENTS_STORAGE_KEY);
+      if (stored) {
+        const allComments: Comment[] = JSON.parse(stored);
+        const articleComments = allComments.filter(c => c.article_id === articleId);
+        setComments(articleComments);
       }
     } catch (error) {
-      console.error('Error fetching comments:', error);
+      console.error('Error loading comments:', error);
     } finally {
       setLoading(false);
     }
   };
 
+  const saveComments = async (allComments: Comment[]) => {
+    try {
+      await AsyncStorage.setItem(COMMENTS_STORAGE_KEY, JSON.stringify(allComments));
+    } catch (error) {
+      console.error('Error saving comments:', error);
+    }
+  };
+
   const submitComment = async () => {
-    if (!newComment.trim() || !authorName.trim()) return;
+    if (!newComment.trim() || !authorName.trim()) {
+      Alert.alert('Erreur', 'Veuillez remplir votre nom et votre commentaire');
+      return;
+    }
 
     setSubmitting(true);
     try {
-      const response = await fetch(`${API_URL}/comments`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          article_id: articleId,
-          content: newComment,
-          author_name: authorName,
-        }),
-      });
+      const newCommentObj: Comment = {
+        id: Date.now().toString(),
+        article_id: articleId,
+        content: newComment.trim(),
+        author_name: authorName.trim(),
+        created_at: new Date().toISOString(),
+        likes: 0,
+      };
 
-      if (response.ok) {
-        const comment = await response.json();
-        setComments([comment, ...comments]);
-        setNewComment('');
-        setShowForm(false);
-      }
+      // Get all comments and add new one
+      const stored = await AsyncStorage.getItem(COMMENTS_STORAGE_KEY);
+      const allComments: Comment[] = stored ? JSON.parse(stored) : [];
+      allComments.unshift(newCommentObj);
+      await saveComments(allComments);
+
+      // Update local state
+      setComments([newCommentObj, ...comments]);
+      setNewComment('');
+      setShowForm(false);
+      
+      // Save author name for next time
+      await AsyncStorage.setItem('aila_comment_author', authorName);
+      
+      Alert.alert('Merci !', 'Votre commentaire a été publié.');
     } catch (error) {
-      console.error('Error submitting comment:', error);
+      Alert.alert('Erreur', 'Impossible de publier le commentaire');
     } finally {
       setSubmitting(false);
     }
@@ -83,14 +102,30 @@ export default function BlogComments({ articleId }: BlogCommentsProps) {
 
   const likeComment = async (commentId: string) => {
     try {
-      await fetch(`${API_URL}/comments/${commentId}/like`, { method: 'POST' });
-      setComments(comments.map(c => 
-        c.id === commentId ? { ...c, likes: c.likes + 1 } : c
-      ));
+      const stored = await AsyncStorage.getItem(COMMENTS_STORAGE_KEY);
+      if (stored) {
+        const allComments: Comment[] = JSON.parse(stored);
+        const updated = allComments.map(c => 
+          c.id === commentId ? { ...c, likes: c.likes + 1 } : c
+        );
+        await saveComments(updated);
+        setComments(comments.map(c => 
+          c.id === commentId ? { ...c, likes: c.likes + 1 } : c
+        ));
+      }
     } catch (error) {
       console.error('Error liking comment:', error);
     }
   };
+
+  // Load saved author name
+  useEffect(() => {
+    const loadAuthor = async () => {
+      const saved = await AsyncStorage.getItem('aila_comment_author');
+      if (saved) setAuthorName(saved);
+    };
+    loadAuthor();
+  }, []);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -101,19 +136,11 @@ export default function BlogComments({ articleId }: BlogCommentsProps) {
     });
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator color="#D4AF37" />
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>
-          <Ionicons name="chatbubbles-outline" size={20} color="#D4AF37" /> Commentaires ({comments.length})
+          💬 Commentaires ({comments.length})
         </Text>
         {!showForm && (
           <TouchableOpacity style={styles.addButton} onPress={() => setShowForm(true)}>
@@ -125,6 +152,7 @@ export default function BlogComments({ articleId }: BlogCommentsProps) {
 
       {showForm && (
         <View style={styles.formContainer}>
+          <Text style={styles.formTitle}>Donner votre avis</Text>
           <TextInput
             style={styles.input}
             placeholder="Votre nom"
@@ -134,7 +162,7 @@ export default function BlogComments({ articleId }: BlogCommentsProps) {
           />
           <TextInput
             style={[styles.input, styles.textArea]}
-            placeholder="Votre commentaire..."
+            placeholder="Votre commentaire, votre avis, vos questions..."
             placeholderTextColor="#6B7C93"
             value={newComment}
             onChangeText={setNewComment}
@@ -153,11 +181,9 @@ export default function BlogComments({ articleId }: BlogCommentsProps) {
               onPress={submitComment}
               disabled={submitting}
             >
-              {submitting ? (
-                <ActivityIndicator color="#0A1628" size="small" />
-              ) : (
-                <Text style={styles.submitButtonText}>Publier</Text>
-              )}
+              <Text style={styles.submitButtonText}>
+                {submitting ? 'Envoi...' : 'Publier'}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -166,7 +192,12 @@ export default function BlogComments({ articleId }: BlogCommentsProps) {
       {comments.length === 0 ? (
         <View style={styles.emptyState}>
           <Ionicons name="chatbubble-outline" size={40} color="#6B7C93" />
-          <Text style={styles.emptyText}>Soyez le premier à commenter !</Text>
+          <Text style={styles.emptyText}>Soyez le premier à donner votre avis !</Text>
+          {!showForm && (
+            <TouchableOpacity style={styles.firstCommentButton} onPress={() => setShowForm(true)}>
+              <Text style={styles.firstCommentButtonText}>Écrire un commentaire</Text>
+            </TouchableOpacity>
+          )}
         </View>
       ) : (
         <View style={styles.commentsList}>
@@ -206,10 +237,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#1E3A5F',
   },
-  loadingContainer: {
-    padding: 40,
-    alignItems: 'center',
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -240,6 +267,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
+  },
+  formTitle: {
+    color: '#D4AF37',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 12,
   },
   input: {
     backgroundColor: '#0A1628',
@@ -282,12 +315,25 @@ const styles = StyleSheet.create({
   },
   emptyState: {
     alignItems: 'center',
-    padding: 40,
+    padding: 30,
+    backgroundColor: '#1E3A5F',
+    borderRadius: 12,
   },
   emptyText: {
-    color: '#6B7C93',
+    color: '#B8C5D6',
     marginTop: 12,
     fontSize: 15,
+  },
+  firstCommentButton: {
+    marginTop: 16,
+    backgroundColor: '#D4AF37',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  firstCommentButtonText: {
+    color: '#0A1628',
+    fontWeight: '600',
   },
   commentsList: {
     gap: 12,
