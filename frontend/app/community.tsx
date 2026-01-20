@@ -211,6 +211,9 @@ export default function CommunityScreen() {
           </TouchableOpacity>
         ))}
       </ScrollView>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
 
       {/* Write Button (visible when form is hidden) */}
       {!showForm && (
@@ -340,6 +343,15 @@ export default function CommunityScreen() {
             </View>
           ))
         )}
+        
+        {/* Lien vers le blog */}
+        <TouchableOpacity 
+          style={styles.blogLink}
+          onPress={() => router.push('/blog')}
+        >
+          <Ionicons name="newspaper-outline" size={18} color="#D4AF37" />
+          <Text style={styles.blogLinkText}>Lire nos articles</Text>
+        </TouchableOpacity>
         
         <View style={styles.bottomPadding} />
       </ScrollView>
@@ -589,6 +601,23 @@ const styles = StyleSheet.create({
   likeCount: {
     color: '#D4AF37',
     fontSize: 14,
+  },
+  blogLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+    marginHorizontal: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.4)',
+    borderRadius: 8,
+    gap: 8,
+  },
+  blogLinkText: {
+    color: '#D4AF37',
+    fontSize: 14,
+    fontWeight: '500',
   },
   bottomPadding: {
     height: 40,

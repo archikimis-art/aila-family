@@ -296,13 +296,13 @@ export default function WelcomeScreen() {
               </View>
             </View>
 
-            {/* Bouton Communauté - visible */}
+            {/* Bouton Communauté - compact */}
             <TouchableOpacity 
               style={styles.communityButton}
               onPress={() => router.push('/community')}
             >
-              <Ionicons name="chatbubbles" size={18} color="#0A1628" />
-              <Text style={styles.communityButtonText}>Rejoindre la communauté</Text>
+              <Ionicons name="chatbubbles-outline" size={14} color="#D4AF37" />
+              <Text style={styles.communityButtonText}>Communauté</Text>
             </TouchableOpacity>
 
             {/* Footer text only */}
@@ -386,6 +386,16 @@ export default function WelcomeScreen() {
           >
             <Ionicons name="newspaper-outline" size={14} color="#D4AF37" />
             <Text style={styles.adBlogButtonText}>Blog</Text>
+          </TouchableOpacity>
+          
+          {/* Bouton Premium */}
+          <TouchableOpacity 
+            style={styles.adPremiumButton}
+            onPress={() => router.push('/pricing')}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="star" size={14} color="#D4AF37" />
+            <Text style={styles.adPremiumButtonText}>Premium</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -728,6 +738,24 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 4,
   },
+  adPremiumButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+    borderWidth: 1,
+    borderColor: '#D4AF37',
+    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+  },
+  adPremiumButtonText: {
+    color: '#D4AF37',
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 4,
+  },
   feedbackButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -751,19 +779,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    marginTop: 16,
+    gap: 6,
+    marginTop: 12,
     marginBottom: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    backgroundColor: '#D4AF37',
-    borderRadius: 25,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.4)',
+    borderRadius: 20,
     alignSelf: 'center',
   },
   communityButtonText: {
-    color: '#0A1628',
-    fontSize: 14,
-    fontWeight: '600',
+    color: '#D4AF37',
+    fontSize: 13,
+    fontWeight: '500',
   },
   // Section "Pourquoi AILA" - Version compacte
   whySection: {

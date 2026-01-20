@@ -306,6 +306,14 @@ export default function BlogScreen() {
           <Text style={styles.introText}>
             Découvrez nos articles pour vous aider dans vos recherches généalogiques.
           </Text>
+          {/* Lien vers la communauté */}
+          <TouchableOpacity 
+            style={styles.communityLink}
+            onPress={() => router.push('/community')}
+          >
+            <Ionicons name="chatbubbles-outline" size={16} color="#D4AF37" />
+            <Text style={styles.communityLinkText}>Rejoindre la communauté</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Guides Section */}
@@ -462,6 +470,22 @@ const styles = StyleSheet.create({
     color: '#B8C5D6',
     textAlign: 'center',
     marginTop: 8,
+  },
+  communityLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.4)',
+    borderRadius: 20,
+    gap: 6,
+  },
+  communityLinkText: {
+    color: '#D4AF37',
+    fontSize: 13,
+    fontWeight: '500',
   },
   guidesSection: {
     padding: 16,
