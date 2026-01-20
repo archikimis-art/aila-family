@@ -26,6 +26,95 @@ interface Article {
 
 const articles: Article[] = [
   {
+    id: '7',
+    title: "Partagez l'histoire de votre région d'origine",
+    excerpt: "Racontez l'histoire, la géographie, la culture et les traditions de votre région. Un espace d'échange pour découvrir les richesses de nos territoires.",
+    content: `Chaque famille porte en elle l'histoire d'une région, d'un terroir, d'une culture. Aujourd'hui, nous vous invitons à partager ces trésors avec la communauté AÏLA.
+
+**🌍 D'où venez-vous ?**
+
+La France compte 18 régions, mais aussi des centaines de "pays" traditionnels, chacun avec son identité propre. Et au-delà de nos frontières, les origines de nos familles nous relient aux quatre coins du monde.
+
+Que vos ancêtres soient bretons, alsaciens, provençaux, antillais, italiens, portugais, algériens ou d'ailleurs... chaque histoire mérite d'être racontée.
+
+**📜 L'histoire de votre région**
+
+Partagez avec nous :
+- Les grands événements historiques qui ont marqué votre région
+- Les personnages célèbres qui en sont originaires
+- Les guerres, migrations ou transformations économiques
+- L'évolution des frontières et des appartenances
+
+**🏔️ La géographie et les paysages**
+
+Décrivez-nous :
+- Les paysages caractéristiques (montagnes, mer, plaines, forêts...)
+- Le climat et son influence sur le mode de vie
+- Les villages et villes emblématiques
+- Les ressources naturelles (agriculture, industrie...)
+
+**🎭 La culture et les traditions**
+
+Racontez-nous :
+- Les fêtes locales et célébrations traditionnelles
+- Les costumes régionaux
+- La musique, les danses, les chants
+- Les légendes et contes populaires
+- La langue ou le patois local
+
+**🍽️ La gastronomie**
+
+Partagez vos recettes familiales :
+- Les plats traditionnels de votre région
+- Les spécialités transmises de génération en génération
+- Les produits du terroir
+- Les vins et boissons locales
+
+**👨‍👩‍👧‍👦 L'histoire de votre famille dans cette région**
+
+- Depuis combien de générations votre famille y vit-elle ?
+- Quels métiers exerçaient vos ancêtres ?
+- Quelles traditions familiales perpétuez-vous ?
+- Y a-t-il des lieux importants pour votre famille ?
+
+**💬 Participez à la discussion !**
+
+Utilisez les commentaires ci-dessous pour :
+- Partager l'histoire de votre région
+- Poser des questions sur d'autres régions
+- Échanger avec des personnes de mêmes origines
+- Découvrir des traditions que vous ne connaissiez pas
+
+**🔗 Connectez-vous avec vos racines**
+
+En partageant votre histoire régionale, vous contribuez à :
+- Préserver la mémoire collective
+- Aider d'autres généalogistes à comprendre le contexte de leurs ancêtres
+- Créer des liens avec des personnes partageant les mêmes origines
+- Transmettre ce patrimoine aux générations futures
+
+**🌳 Créez votre arbre sur AÏLA**
+
+Pour aller plus loin dans la découverte de vos origines, créez votre arbre généalogique sur AÏLA. C'est gratuit et vous pourrez y documenter l'histoire de votre famille région par région.
+
+---
+
+**À vous de jouer !** 
+
+Dans les commentaires, présentez votre région d'origine en suivant ce modèle :
+
+📍 **Région/Pays** : 
+📜 **Un fait historique** : 
+🎭 **Une tradition** : 
+🍽️ **Un plat typique** : 
+💬 **Une anecdote familiale** :
+
+Nous avons hâte de vous lire !`,
+    date: "20 janvier 2025",
+    readTime: "5 min",
+    icon: "earth-outline"
+  },
+  {
     id: '6',
     title: "Comment retrouver ses ancêtres gratuitement en 2025 : Guide complet",
     excerpt: "Découvrez toutes les méthodes et ressources gratuites pour retrouver vos ancêtres sans dépenser un centime. Archives en ligne, astuces et outils.",
@@ -447,6 +536,23 @@ export default function BlogScreen() {
             <View style={styles.guideLinkContent}>
               <Text style={styles.guideLinkTitle}>Comment organiser une cousinade réussie</Text>
               <Text style={styles.guideLinkDesc}>Guide + checklist pour réunir la famille</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.guideLink, { backgroundColor: 'rgba(212, 175, 55, 0.15)', borderColor: '#D4AF37' }]}
+            onPress={() => {
+              const regionArticle = articles.find(a => a.id === '7');
+              if (regionArticle) setSelectedArticle(regionArticle);
+            }}
+          >
+            <View style={styles.guideLinkIcon}>
+              <Text style={styles.guideLinkEmoji}>🌍</Text>
+            </View>
+            <View style={styles.guideLinkContent}>
+              <Text style={styles.guideLinkTitle}>Partagez l'histoire de votre région</Text>
+              <Text style={styles.guideLinkDesc}>Échangez sur vos origines avec la communauté</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
           </TouchableOpacity>
