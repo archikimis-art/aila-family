@@ -330,7 +330,7 @@ export default function WelcomeScreen() {
                 <Text style={styles.legalLink}>CGU</Text>
               </TouchableOpacity>
               <Text style={styles.legalSeparator}>•</Text>
-              <TouchableOpacity onPress={() => router.push('/admin-blog')}>
+              <TouchableOpacity onPress={() => router.push('/adminblog')}>
                 <Text style={styles.legalLink}>Admin</Text>
               </TouchableOpacity>
             </View>
