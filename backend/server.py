@@ -4967,6 +4967,290 @@ async def delete_article(article_id: str, admin_token: str = None):
         logger.error(f"Error deleting article: {e}")
         raise HTTPException(status_code=500, detail="Erreur lors de la suppression")
 
+@api_router.post("/articles/init-default")
+async def init_default_articles(admin_token: str = None):
+    """Initialize default articles in database (admin only, run once)"""
+    if not admin_token or not verify_admin_token(admin_token):
+        raise HTTPException(status_code=401, detail="Non autorisé")
+    
+    # Check if articles already exist
+    count = await db.blog_articles.count_documents({})
+    if count > 0:
+        return {"message": f"{count} articles déjà présents", "initialized": False}
+    
+    default_articles = [
+        {
+            "id": "7",
+            "title": "Partagez l'histoire de votre région d'origine",
+            "excerpt": "Racontez l'histoire, la géographie, la culture et les traditions de votre région. Un espace d'échange pour découvrir les richesses de nos territoires.",
+            "content": """Chaque famille porte en elle l'histoire d'une région, d'un terroir, d'une culture. Aujourd'hui, nous vous invitons à partager ces trésors avec la communauté AÏLA.
+
+**🌍 D'où venez-vous ?**
+
+La France compte 18 régions, mais aussi des centaines de "pays" traditionnels, chacun avec son identité propre. Et au-delà de nos frontières, les origines de nos familles nous relient aux quatre coins du monde.
+
+**📜 L'histoire de votre région**
+
+Partagez avec nous :
+- Les grands événements historiques qui ont marqué votre région
+- Les personnages célèbres qui en sont originaires
+- Les guerres, migrations ou transformations économiques
+
+**🎭 La culture et les traditions**
+
+Racontez-nous :
+- Les fêtes locales et célébrations traditionnelles
+- Les costumes régionaux
+- La musique, les danses, les chants
+- Les légendes et contes populaires
+
+**🍽️ La gastronomie**
+
+Partagez vos recettes familiales :
+- Les plats traditionnels de votre région
+- Les spécialités transmises de génération en génération
+- Les produits du terroir
+
+**💬 Participez à la discussion !**
+
+Dans les commentaires, présentez votre région d'origine :
+
+📍 **Région/Pays** : 
+📜 **Un fait historique** : 
+🎭 **Une tradition** : 
+🍽️ **Un plat typique** : 
+
+Nous avons hâte de vous lire !""",
+            "date": "20 janvier 2025",
+            "read_time": "5 min",
+            "icon": "earth-outline",
+            "published": True,
+            "created_at": "2025-01-20T00:00:00"
+        },
+        {
+            "id": "6",
+            "title": "Comment retrouver ses ancêtres gratuitement en 2025",
+            "excerpt": "Découvrez toutes les méthodes et ressources gratuites pour retrouver vos ancêtres. Archives en ligne, astuces et outils.",
+            "content": """**🎯 Par où commencer ?**
+
+1. **Interrogez votre famille** : Parents, grands-parents détiennent des informations précieuses.
+2. **Rassemblez les documents** : Livrets de famille, actes de naissance, photos anciennes.
+3. **Créez votre arbre** : Utilisez AÏLA pour organiser vos découvertes.
+
+**📚 Les Archives Départementales (GRATUIT)**
+
+Chaque département a son site d'archives avec accès gratuit :
+- Registres paroissiaux (avant 1792)
+- État civil (depuis 1792)
+- Recensements de population
+- Registres matricules militaires
+
+**🌐 Sites gratuits incontournables**
+
+1. **FamilySearch.org** : Milliards de documents gratuits
+2. **Geneanet.org** : Arbres partagés par d'autres généalogistes
+3. **Mémoire des Hommes** : Archives militaires
+
+**💡 Astuces**
+
+- Utilisez les tables décennales
+- Variez l'orthographe des noms
+- Cherchez les frères et sœurs
+- Exploitez les témoins de mariage
+
+**🚀 Commencez maintenant !**
+
+Créez votre arbre sur AÏLA et découvrez vos ancêtres dès aujourd'hui !""",
+            "date": "15 janvier 2025",
+            "read_time": "8 min",
+            "icon": "gift-outline",
+            "published": True,
+            "created_at": "2025-01-15T00:00:00"
+        },
+        {
+            "id": "1",
+            "title": "Comment commencer votre arbre généalogique",
+            "excerpt": "Découvrez les étapes essentielles pour débuter vos recherches généalogiques et créer un arbre familial complet.",
+            "content": """**1. Commencez par ce que vous connaissez**
+
+Rassemblez les informations que vous possédez déjà. Interrogez vos parents, grands-parents. Notez les noms, dates, lieux et professions.
+
+**2. Organisez vos informations**
+
+Utilisez AÏLA pour organiser vos données. Un arbre numérique permet de visualiser les liens familiaux.
+
+**3. Consultez les documents familiaux**
+
+Recherchez : actes de naissance, certificats de mariage, photos anciennes, lettres, livrets de famille.
+
+**4. Explorez les archives en ligne**
+
+De nombreuses archives sont numérisées : registres paroissiaux, recensements, actes d'état civil.
+
+**5. Vérifiez vos sources**
+
+Recoupez les informations. Une même personne peut avoir des variations d'orthographe.
+
+**6. Partagez avec votre famille**
+
+Avec AÏLA, invitez vos proches à consulter et contribuer à l'arbre familial.""",
+            "date": "15 janvier 2025",
+            "read_time": "6 min",
+            "icon": "book-outline",
+            "published": True,
+            "created_at": "2025-01-15T00:00:00"
+        },
+        {
+            "id": "2",
+            "title": "Les erreurs à éviter en généalogie",
+            "excerpt": "Évitez les pièges courants qui peuvent fausser vos recherches et compromettre la fiabilité de votre arbre.",
+            "content": """**1. Ne pas vérifier les sources**
+
+Ne copiez pas d'autres arbres sans vérification. Les erreurs se propagent.
+
+**2. Confondre les homonymes**
+
+Deux Jean Dupont peuvent être différents. Croisez les informations !
+
+**3. Ignorer les variations d'orthographe**
+
+MARTIN, MARTEN, MARTAIN peuvent désigner la même famille.
+
+**4. Aller trop vite**
+
+Documentez bien chaque génération avant de passer à la suivante.
+
+**5. Négliger les collatéraux**
+
+Les frères, sœurs, oncles peuvent fournir des informations précieuses.
+
+**6. Oublier de sauvegarder**
+
+Avec AÏLA, vos données sont automatiquement sauvegardées.""",
+            "date": "10 janvier 2025",
+            "read_time": "5 min",
+            "icon": "warning-outline",
+            "published": True,
+            "created_at": "2025-01-10T00:00:00"
+        },
+        {
+            "id": "3",
+            "title": "Comprendre les liens de parenté",
+            "excerpt": "Maîtrisez le vocabulaire : cousins germains, cousins issus de germains, et plus encore.",
+            "content": """**Les liens directs**
+
+- Parents : père et mère
+- Grands-parents : parents de vos parents
+- Arrière-grands-parents : parents de vos grands-parents
+
+**Les liens collatéraux**
+
+- Frères et sœurs : mêmes parents
+- Demi-frères/sœurs : un seul parent en commun
+- Oncles et tantes : frères et sœurs de vos parents
+
+**Les cousins**
+
+- Cousins germains : enfants de vos oncles/tantes
+- Cousins issus de germains : enfants de cousins germains
+
+**Termes à connaître**
+
+- Ascendants : ancêtres
+- Descendants : enfants, petits-enfants
+- Collatéraux : frères, sœurs, cousins
+- Alliés : famille par mariage""",
+            "date": "5 janvier 2025",
+            "read_time": "5 min",
+            "icon": "people-outline",
+            "published": True,
+            "created_at": "2025-01-05T00:00:00"
+        },
+        {
+            "id": "4",
+            "title": "Les archives en ligne : où chercher",
+            "excerpt": "Découvrez les meilleures ressources en ligne pour retrouver vos ancêtres.",
+            "content": """**Archives Départementales**
+
+Chaque département a numérisé ses archives :
+- Registres paroissiaux (avant 1792)
+- État civil (après 1792)
+- Recensements de population
+- Registres matricules militaires
+
+**Sites nationaux**
+
+- Archives Nationales
+- Geneanet (base collaborative)
+- Filae (archives indexées)
+- FamilySearch (gratuit)
+
+**Archives spécialisées**
+
+- Mémoire des Hommes (militaires)
+- Légion d'Honneur (décorés)
+
+**Conseils pratiques**
+
+1. Commencez par la commune d'origine
+2. Notez les cotes des documents
+3. Téléchargez les images importantes
+4. Utilisez les tables décennales""",
+            "date": "28 décembre 2024",
+            "read_time": "7 min",
+            "icon": "search-outline",
+            "published": True,
+            "created_at": "2024-12-28T00:00:00"
+        },
+        {
+            "id": "5",
+            "title": "Préserver l'histoire familiale",
+            "excerpt": "Apprenez à conserver vos documents et transmettre l'héritage aux générations futures.",
+            "content": """**Collecter les témoignages**
+
+Enregistrez les récits de vos aînés :
+- Leur enfance et vie quotidienne
+- Les traditions familiales
+- Les métiers de leurs parents
+- Les événements historiques vécus
+
+**Numériser les documents**
+
+Scannez photos et documents anciens. Conservez en haute résolution avec sauvegardes multiples.
+
+**Organiser vos archives**
+
+Classez par famille et génération. Identifiez les personnes sur les photos.
+
+**Partager avec la famille**
+
+Avec AÏLA :
+- Invitez vos proches
+- Utilisez le chat familial
+- Permettez à chacun de contribuer
+
+**Transmettre aux jeunes**
+
+- Racontez des anecdotes
+- Montrez les photos anciennes
+- Visitez les lieux ancestraux
+- Faites-les participer à l'arbre""",
+            "date": "20 décembre 2024",
+            "read_time": "6 min",
+            "icon": "heart-outline",
+            "published": True,
+            "created_at": "2024-12-20T00:00:00"
+        }
+    ]
+    
+    try:
+        await db.blog_articles.insert_many(default_articles)
+        logger.info(f"✓ Initialized {len(default_articles)} default articles")
+        return {"message": f"{len(default_articles)} articles initialisés", "initialized": True}
+    except Exception as e:
+        logger.error(f"Error initializing articles: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'initialisation")
+
 
 # ===================== INCLUDE ROUTER AT END =====================
 # This must be at the end to include all routes defined above

@@ -299,6 +299,31 @@ export default function AdminScreen() {
           <Text style={styles.statsLabel}>Articles publiés</Text>
         </View>
 
+        {articles.length === 0 && (
+          <TouchableOpacity 
+            style={styles.initButton}
+            onPress={async () => {
+              setLoading(true);
+              try {
+                const response = await fetch(`${API_URL}/articles/init-default?admin_token=${adminToken}`, {
+                  method: 'POST'
+                });
+                if (response.ok) {
+                  Alert.alert('Succès', 'Articles par défaut initialisés');
+                  fetchArticles(adminToken);
+                }
+              } catch (e) {
+                Alert.alert('Erreur', 'Impossible d\'initialiser');
+              } finally {
+                setLoading(false);
+              }
+            }}
+          >
+            <Ionicons name="cloud-download-outline" size={20} color="#0A1628" />
+            <Text style={styles.initButtonText}>Charger les articles par défaut</Text>
+          </TouchableOpacity>
+        )}
+
         <Text style={styles.sectionTitle}>Articles</Text>
         
         {articles.length === 0 ? (
@@ -374,6 +399,21 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
+  },
+  initButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#D4AF37',
+    borderRadius: 8,
+    padding: 14,
+    marginBottom: 16,
+    gap: 8,
+  },
+  initButtonText: {
+    color: '#0A1628',
+    fontSize: 14,
+    fontWeight: '600',
   },
   loginContainer: {
     flex: 1,
