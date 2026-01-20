@@ -4819,6 +4819,155 @@ async def send_referral_email(to_email: str, referrer_email: str):
         return False
 
 
+# ===================== BLOG ARTICLES MANAGEMENT =====================
+
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'aila2025admin')
+
+class ArticleCreate(BaseModel):
+    title: str
+    excerpt: str
+    content: str
+    icon: str = "document-text-outline"
+    read_time: str = "5 min"
+
+class ArticleUpdate(BaseModel):
+    title: Optional[str] = None
+    excerpt: Optional[str] = None
+    content: Optional[str] = None
+    icon: Optional[str] = None
+    read_time: Optional[str] = None
+    published: Optional[bool] = None
+
+class ArticleResponse(BaseModel):
+    id: str
+    title: str
+    excerpt: str
+    content: str
+    icon: str
+    read_time: str
+    date: str
+    published: bool = True
+
+class AdminLogin(BaseModel):
+    password: str
+
+@api_router.post("/admin/login")
+async def admin_login(login: AdminLogin):
+    """Admin login - returns a simple token"""
+    if login.password == ADMIN_PASSWORD:
+        # Simple token (in production, use proper JWT)
+        import hashlib
+        token = hashlib.sha256(f"{ADMIN_PASSWORD}{datetime.utcnow().date()}".encode()).hexdigest()
+        return {"success": True, "token": token}
+    raise HTTPException(status_code=401, detail="Mot de passe incorrect")
+
+def verify_admin_token(token: str) -> bool:
+    """Verify admin token"""
+    import hashlib
+    expected = hashlib.sha256(f"{ADMIN_PASSWORD}{datetime.utcnow().date()}".encode()).hexdigest()
+    return token == expected
+
+@api_router.get("/articles", response_model=List[ArticleResponse])
+async def get_articles(published_only: bool = True):
+    """Get all blog articles"""
+    try:
+        query = {"published": True} if published_only else {}
+        articles = await db.blog_articles.find(query).sort("created_at", -1).to_list(100)
+        return [ArticleResponse(
+            id=str(a.get("_id", a.get("id"))),
+            title=a["title"],
+            excerpt=a["excerpt"],
+            content=a["content"],
+            icon=a.get("icon", "document-text-outline"),
+            read_time=a.get("read_time", "5 min"),
+            date=a.get("date", a.get("created_at", "")[:10] if a.get("created_at") else ""),
+            published=a.get("published", True)
+        ) for a in articles]
+    except Exception as e:
+        logger.error(f"Error fetching articles: {e}")
+        return []
+
+@api_router.post("/articles", response_model=ArticleResponse)
+async def create_article(article: ArticleCreate, admin_token: str = None):
+    """Create a new blog article (admin only)"""
+    if not admin_token or not verify_admin_token(admin_token):
+        raise HTTPException(status_code=401, detail="Non autorisé")
+    
+    try:
+        article_doc = {
+            "id": str(uuid.uuid4()),
+            "title": article.title,
+            "excerpt": article.excerpt,
+            "content": article.content,
+            "icon": article.icon,
+            "read_time": article.read_time,
+            "date": datetime.utcnow().strftime("%d %B %Y"),
+            "created_at": datetime.utcnow().isoformat(),
+            "published": True
+        }
+        await db.blog_articles.insert_one(article_doc)
+        logger.info(f"✓ New article created: {article.title}")
+        return ArticleResponse(**article_doc)
+    except Exception as e:
+        logger.error(f"Error creating article: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la création")
+
+@api_router.put("/articles/{article_id}", response_model=ArticleResponse)
+async def update_article(article_id: str, article: ArticleUpdate, admin_token: str = None):
+    """Update a blog article (admin only)"""
+    if not admin_token or not verify_admin_token(admin_token):
+        raise HTTPException(status_code=401, detail="Non autorisé")
+    
+    try:
+        update_data = {k: v for k, v in article.dict().items() if v is not None}
+        if not update_data:
+            raise HTTPException(status_code=400, detail="Aucune modification")
+        
+        update_data["updated_at"] = datetime.utcnow().isoformat()
+        
+        result = await db.blog_articles.update_one(
+            {"id": article_id},
+            {"$set": update_data}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Article non trouvé")
+        
+        updated = await db.blog_articles.find_one({"id": article_id})
+        return ArticleResponse(
+            id=updated["id"],
+            title=updated["title"],
+            excerpt=updated["excerpt"],
+            content=updated["content"],
+            icon=updated.get("icon", "document-text-outline"),
+            read_time=updated.get("read_time", "5 min"),
+            date=updated.get("date", ""),
+            published=updated.get("published", True)
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating article: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la mise à jour")
+
+@api_router.delete("/articles/{article_id}")
+async def delete_article(article_id: str, admin_token: str = None):
+    """Delete a blog article (admin only)"""
+    if not admin_token or not verify_admin_token(admin_token):
+        raise HTTPException(status_code=401, detail="Non autorisé")
+    
+    try:
+        result = await db.blog_articles.delete_one({"id": article_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Article non trouvé")
+        return {"success": True, "message": "Article supprimé"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting article: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la suppression")
+
+
 # ===================== INCLUDE ROUTER AT END =====================
 # This must be at the end to include all routes defined above
 app.include_router(api_router)

@@ -329,6 +329,10 @@ export default function WelcomeScreen() {
               <TouchableOpacity onPress={() => router.push('/terms')}>
                 <Text style={styles.legalLink}>CGU</Text>
               </TouchableOpacity>
+              <Text style={styles.legalSeparator}>•</Text>
+              <TouchableOpacity onPress={() => router.push('/admin')}>
+                <Text style={styles.legalLink}>Admin</Text>
+              </TouchableOpacity>
             </View>
             
             {/* Spacer for bottom bar */}
