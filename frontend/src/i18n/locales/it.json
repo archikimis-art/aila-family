@@ -76,6 +76,7 @@
   },
   "challenges": {
     "title": "Sfide Familiari",
+    "dailyChallenge": "Sfida del giorno",
     "points": "Punti",
     "badges": "Distintivi",
     "completed": "Completato",
@@ -127,6 +128,7 @@
   },
   "community": {
     "title": "Comunità AÏLA",
+    "liveActivity": "Attività in diretta",
     "writeMessage": "Scrivi un messaggio",
     "newMessage": "Nuovo messaggio",
     "yourName": "Il tuo nome",

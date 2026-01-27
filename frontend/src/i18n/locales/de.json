@@ -76,6 +76,7 @@
   },
   "challenges": {
     "title": "Familien-Herausforderungen",
+    "dailyChallenge": "Tägliche Herausforderung",
     "points": "Punkte",
     "badges": "Abzeichen",
     "completed": "Abgeschlossen",
@@ -127,6 +128,7 @@
   },
   "community": {
     "title": "AÏLA-Gemeinschaft",
+    "liveActivity": "Live-Aktivität",
     "writeMessage": "Nachricht schreiben",
     "newMessage": "Neue Nachricht",
     "yourName": "Ihr Name",

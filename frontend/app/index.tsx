@@ -7,6 +7,8 @@ import { useAuth } from '@/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from 'react-i18next';
 import LanguageSelector from '@/components/LanguageSelector';
+import DailyChallengeBanner from '@/components/DailyChallengeBanner';
+import SocialProofBanner from '@/components/SocialProofBanner';
 
 // Lazy load the animated background for better LCP
 const AnimatedTreeBackground = lazy(() => import('@/components/AnimatedTreeBackground').then(m => ({ default: m.AnimatedTreeBackground })));
@@ -262,6 +264,12 @@ export default function WelcomeScreen() {
               <Text style={styles.loginLinkTextBold}>{t('home.cta.login')}</Text>
             </TouchableOpacity>
           </View>
+
+          {/* Défi du jour - Gamification */}
+          <DailyChallengeBanner />
+
+          {/* Preuve sociale - Activité en direct */}
+          <SocialProofBanner />
 
           {/* Guides SEO Section - Design épuré */}
           <View style={styles.guidesSection}>

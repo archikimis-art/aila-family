@@ -76,6 +76,7 @@
   },
   "challenges": {
     "title": "Family Challenges",
+    "dailyChallenge": "Daily challenge",
     "points": "Points",
     "badges": "Badges",
     "completed": "Completed",
@@ -127,6 +128,7 @@
   },
   "community": {
     "title": "AÏLA Community",
+    "liveActivity": "Live activity",
     "writeMessage": "Write a message",
     "newMessage": "New message",
     "yourName": "Your name",
