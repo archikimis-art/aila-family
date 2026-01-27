@@ -1,0 +1,232 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "back": "Retour",
+    "next": "Suivant",
+    "close": "Fermer",
+    "share": "Partager",
+    "download": "Télécharger",
+    "search": "Rechercher",
+    "seeAll": "Voir tout",
+    "language": "Langue"
+  },
+  "home": {
+    "title": "AÏLA",
+    "subtitle": "L'arbre généalogique qui connecte votre famille",
+    "features": {
+      "simple": "Simple & intuitif",
+      "collaborate": "Collaborez en famille",
+      "free": "Votre arbre généalogique gratuit"
+    },
+    "cta": {
+      "tryNow": "Essayer maintenant",
+      "createTree": "Créez votre arbre en 5 min",
+      "createAccount": "Créer un compte gratuit",
+      "alreadyMember": "Déjà inscrit ?",
+      "login": "Se connecter"
+    },
+    "reassurance": {
+      "noAccount": "Sans compte",
+      "free": "Gratuit",
+      "noCommitment": "Sans engagement"
+    },
+    "discover": "Découvrir AÏLA",
+    "challenges": "Défis",
+    "whyAila": "Pourquoi AÏLA ?",
+    "blog": "Blog",
+    "community": "Communauté",
+    "ancestors": "Ancêtres",
+    "beginner": "Débutant",
+    "traditions": "Traditions",
+    "cousinade": "Cousinade",
+    "write": "Écrire",
+    "preserve": "Préserver"
+  },
+  "nav": {
+    "home": "Accueil",
+    "share": "Partager",
+    "download": "Télécharger",
+    "premium": "Premium"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "forgotPassword": "Mot de passe oublié ?",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "loginWithGoogle": "Continuer avec Google",
+    "createAccount": "Créer un compte",
+    "alreadyHaveAccount": "Déjà un compte ?",
+    "noAccount": "Pas encore de compte ?",
+    "signUp": "S'inscrire"
+  },
+  "challenges": {
+    "title": "Défis Familiaux",
+    "points": "Points",
+    "badges": "Badges",
+    "completed": "Complété",
+    "share": "Partager",
+    "startChallenge": "Commencer",
+    "challengeCompleted": "Défi complété",
+    "categories": {
+      "all": "Tous",
+      "tree": "Arbre",
+      "memory": "Mémoire",
+      "connection": "Lien",
+      "tradition": "Tradition"
+    },
+    "list": {
+      "tree3gen": {
+        "title": "Racines profondes",
+        "description": "Complétez votre arbre sur 3 générations (vous, parents, grands-parents)",
+        "badge": "Gardien des Racines",
+        "action": "Compléter mon arbre"
+      },
+      "firstMemory": {
+        "title": "Premier souvenir",
+        "description": "Ajoutez une anecdote ou un souvenir à un membre de votre famille",
+        "badge": "Gardien des Mémoires",
+        "action": "Ajouter un souvenir"
+      },
+      "askGrandparent": {
+        "title": "Pont entre générations",
+        "description": "Posez 3 questions à un grand-parent et notez ses réponses",
+        "badge": "Tisseur de Liens",
+        "action": "Voir les questions suggérées"
+      },
+      "familyTradition": {
+        "title": "Tradition vivante",
+        "description": "Documentez une tradition familiale (recette, rituel, fête...)",
+        "badge": "Passeur de Traditions",
+        "action": "Ajouter une tradition"
+      },
+      "shareCommunity": {
+        "title": "Voix de la famille",
+        "description": "Partagez votre histoire ou une astuce avec la communauté AÏLA",
+        "badge": "Voix de la Communauté",
+        "action": "Rejoindre la communauté"
+      }
+    },
+    "needInspiration": "Besoin d'inspiration ?",
+    "exploreBlog": "Découvrez nos articles pour enrichir votre histoire familiale",
+    "viewBlog": "Explorer le blog"
+  },
+  "community": {
+    "title": "Communauté AÏLA",
+    "writeMessage": "Écrire un message",
+    "newMessage": "Nouveau message",
+    "yourName": "Votre nom",
+    "country": "Pays / Région",
+    "topic": "Sujet",
+    "yourMessage": "Votre message",
+    "publish": "Publier",
+    "publishing": "Publication...",
+    "noMessages": "Aucun message dans cette catégorie",
+    "beFirst": "Soyez le premier à partager !",
+    "readArticles": "Lire nos articles",
+    "joinChallenges": "Participer aux défis familiaux",
+    "topics": {
+      "all": "Tout",
+      "origins": "Origines",
+      "help": "Entraide",
+      "tips": "Astuces",
+      "stories": "Histoires"
+    },
+    "placeholder": {
+      "name": "Prénom N.",
+      "country": "France 🇫🇷",
+      "message": "Partagez vos origines, posez une question, donnez un conseil..."
+    }
+  },
+  "profile": {
+    "title": "Mon Profil",
+    "level": "Niveau",
+    "points": "points",
+    "myBadges": "Mes Badges",
+    "noBadges": "Aucun badge pour l'instant",
+    "startChallenges": "Commencer les défis",
+    "quickActions": "Actions rapides",
+    "familyChallenges": "Défis familiaux",
+    "earnBadges": "Gagnez des badges et des points",
+    "communityTitle": "Communauté",
+    "shareExchange": "Partagez et échangez",
+    "blogInspiration": "Blog & Inspiration",
+    "articlesAdvice": "Articles et conseils",
+    "account": "Compte",
+    "goPremium": "Passer Premium",
+    "unlockFeatures": "Débloquez toutes les fonctionnalités",
+    "logout": "Déconnexion",
+    "levels": {
+      "explorer": "Explorateur",
+      "researcher": "Chercheur",
+      "historian": "Historien",
+      "guardian": "Gardien",
+      "sage": "Sage"
+    }
+  },
+  "blog": {
+    "title": "Blog AÏLA",
+    "articles": "Articles",
+    "readMore": "Lire la suite",
+    "backToList": "Retour aux articles",
+    "readTime": "min de lecture",
+    "takeAction": "Passez à l'action !",
+    "transformReading": "Transformez votre lecture en action familiale",
+    "viewChallenges": "Voir les défis",
+    "readyToStart": "Prêt à commencer ?",
+    "createTreeFree": "Créez votre arbre généalogique gratuitement avec AÏLA.",
+    "createMyTree": "Créer mon arbre gratuitement",
+    "backHome": "Retour à l'accueil"
+  },
+  "pricing": {
+    "title": "Premium",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "perMonth": "/mois",
+    "perYear": "/an",
+    "save": "Économisez",
+    "popular": "Populaire",
+    "features": {
+      "noAds": "Aucune publicité",
+      "unlimitedTree": "Arbre illimité",
+      "unlimitedCollaborators": "Collaborateurs illimités",
+      "exportFormats": "Export JSON & GEDCOM",
+      "familyEvents": "Événements familiaux",
+      "prioritySupport": "Support prioritaire"
+    },
+    "subscribe": "S'abonner",
+    "alreadyPremium": "Vous êtes Premium"
+  },
+  "errors": {
+    "required": "Ce champ est requis",
+    "invalidEmail": "Adresse e-mail invalide",
+    "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "loginFailed": "Échec de la connexion",
+    "networkError": "Erreur de connexion réseau",
+    "unknownError": "Une erreur est survenue"
+  },
+  "alerts": {
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ?",
+    "confirmLogout": "Êtes-vous sûr de vouloir vous déconnecter ?",
+    "saved": "Enregistré avec succès",
+    "deleted": "Supprimé avec succès",
+    "shared": "Partagé avec succès",
+    "connectionRequired": "Connexion requise",
+    "createAccountPrompt": "Créez un compte gratuit pour participer aux défis et gagner des badges !",
+    "later": "Plus tard",
+    "signUp": "S'inscrire"
+  }
+}

@@ -6,6 +6,8 @@ import { AdsProvider } from '@/context/AdsContext';
 import { ConversionProvider } from '@/context/ConversionContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@/i18n';
 
 // Lazy import AdMob only on native platforms
 let initializeAds: () => Promise<void> = async () => {};
@@ -463,47 +465,49 @@ export default function RootLayout() {
   }, [pathname]);
 
   return (
-    <SafeAreaProvider>
-      <AuthProvider>
-        <AdsProvider>
-          <ConversionProvider>
-            <StatusBar style="light" />
-            <Stack
-              screenOptions={{
-                headerShown: false,
-                contentStyle: { backgroundColor: '#0A1628' },
-                animation: 'slide_from_right',
-              }}
-            >
-              <Stack.Screen name="index" />
-              <Stack.Screen name="(auth)" />
-              <Stack.Screen name="(tabs)" />
-              <Stack.Screen 
-                name="person/[id]" 
+    <I18nextProvider i18n={i18n}>
+      <SafeAreaProvider>
+        <AuthProvider>
+          <AdsProvider>
+            <ConversionProvider>
+              <StatusBar style="light" />
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: { backgroundColor: '#0A1628' },
+                  animation: 'slide_from_right',
+                }}
+              >
+                <Stack.Screen name="index" />
+                <Stack.Screen name="(auth)" />
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen 
+                  name="person/[id]" 
+                  options={{ 
+                    presentation: 'modal',
+                    animation: 'slide_from_bottom'
+                  }} 
+                />
+                <Stack.Screen 
+                  name="add-person" 
                 options={{ 
                   presentation: 'modal',
                   animation: 'slide_from_bottom'
                 }} 
               />
               <Stack.Screen 
-                name="add-person" 
-              options={{ 
-                presentation: 'modal',
-                animation: 'slide_from_bottom'
-              }} 
-            />
-            <Stack.Screen 
-              name="add-link" 
-              options={{ 
-                presentation: 'modal',
-                animation: 'slide_from_bottom'
-              }} 
-            />
-          </Stack>
-          </ConversionProvider>
-        </AdsProvider>
-      </AuthProvider>
-    </SafeAreaProvider>
+                name="add-link" 
+                options={{ 
+                  presentation: 'modal',
+                  animation: 'slide_from_bottom'
+                }} 
+              />
+            </Stack>
+            </ConversionProvider>
+          </AdsProvider>
+        </AuthProvider>
+      </SafeAreaProvider>
+    </I18nextProvider>
   );
 }
 // Force clean build 1768908512

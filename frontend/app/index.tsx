@@ -5,6 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '@/components/LanguageSelector';
 
 // Lazy load the animated background for better LCP
 const AnimatedTreeBackground = lazy(() => import('@/components/AnimatedTreeBackground').then(m => ({ default: m.AnimatedTreeBackground })));
@@ -14,6 +16,7 @@ const isWeb = Platform.OS === 'web';
 const isLargeScreen = width > 768;
 
 export default function WelcomeScreen() {
+  const { t } = useTranslation();
   const { loading } = useAuth();
   const router = useRouter();
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -173,26 +176,32 @@ export default function WelcomeScreen() {
               colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
               style={styles.gradientBackground}
             />
+            
+            {/* Language Selector - Top Right */}
+            <View style={styles.languageContainer}>
+              <LanguageSelector compact />
+            </View>
+            
             {/* Header Logo */}
             <View style={styles.logoContainer}>
               <Ionicons name="leaf" size={60} color="#D4AF37" />
-              <Text style={styles.title}>AÏLA</Text>
-              <Text style={styles.subtitle}>L'arbre généalogique qui connecte votre famille</Text>
+              <Text style={styles.title}>{t('home.title')}</Text>
+              <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
             </View>
 
           {/* Features - Vrais arguments */}
           <View style={styles.featuresContainer}>
             <View style={styles.featureItem}>
               <Ionicons name="flash-outline" size={22} color="#D4AF37" />
-              <Text style={styles.featureText}>Simple & intuitif</Text>
+              <Text style={styles.featureText}>{t('home.features.simple')}</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="people-outline" size={22} color="#D4AF37" />
-              <Text style={styles.featureText}>Collaborez en famille</Text>
+              <Text style={styles.featureText}>{t('home.features.collaborate')}</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="gift-outline" size={22} color="#D4AF37" />
-              <Text style={styles.featureText}>Votre arbre généalogique gratuit</Text>
+              <Text style={styles.featureText}>{t('home.features.free')}</Text>
             </View>
           </View>
 
@@ -203,14 +212,13 @@ export default function WelcomeScreen() {
               style={styles.primaryButton} 
               onPress={goToPreview}
               activeOpacity={0.7}
-              accessibilityLabel="Essayer gratuitement sans créer de compte"
+              accessibilityLabel={t('home.cta.tryNow')}
               accessibilityRole="button"
-              accessibilityHint="Créez un arbre de démonstration sans inscription"
             >
               <Ionicons name="play-outline" size={24} color="#0A1628" />
               <View style={styles.primaryButtonTextContainer}>
-                <Text style={styles.primaryButtonText}>Essayer maintenant</Text>
-                <Text style={styles.primaryButtonSubtext}>Créez votre arbre en 5 min</Text>
+                <Text style={styles.primaryButtonText}>{t('home.cta.tryNow')}</Text>
+                <Text style={styles.primaryButtonSubtext}>{t('home.cta.createTree')}</Text>
               </View>
             </TouchableOpacity>
 
@@ -218,15 +226,15 @@ export default function WelcomeScreen() {
             <View style={styles.reassuranceRow}>
               <View style={styles.reassuranceItem}>
                 <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
-                <Text style={styles.reassuranceText}>Sans compte</Text>
+                <Text style={styles.reassuranceText}>{t('home.reassurance.noAccount')}</Text>
               </View>
               <View style={styles.reassuranceItem}>
                 <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
-                <Text style={styles.reassuranceText}>Gratuit</Text>
+                <Text style={styles.reassuranceText}>{t('home.reassurance.free')}</Text>
               </View>
               <View style={styles.reassuranceItem}>
                 <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
-                <Text style={styles.reassuranceText}>Sans engagement</Text>
+                <Text style={styles.reassuranceText}>{t('home.reassurance.noCommitment')}</Text>
               </View>
             </View>
 
@@ -235,12 +243,11 @@ export default function WelcomeScreen() {
               style={styles.secondaryButton} 
               onPress={goToRegister}
               activeOpacity={0.7}
-              accessibilityLabel="Créer un compte pour sauvegarder son arbre"
+              accessibilityLabel={t('home.cta.createAccount')}
               accessibilityRole="button"
-              accessibilityHint="Inscription gratuite avec Google ou email"
             >
               <Ionicons name="person-add-outline" size={18} color="#D4AF37" />
-              <Text style={styles.secondaryButtonText}>Créer un compte gratuit</Text>
+              <Text style={styles.secondaryButtonText}>{t('home.cta.createAccount')}</Text>
             </TouchableOpacity>
 
             {/* Login Link - Discret */}
@@ -248,17 +255,17 @@ export default function WelcomeScreen() {
               style={styles.loginLink} 
               onPress={goToLogin}
               activeOpacity={0.7}
-              accessibilityLabel="Se connecter à un compte existant"
+              accessibilityLabel={t('auth.login')}
               accessibilityRole="button"
             >
-              <Text style={styles.loginLinkText}>Déjà inscrit ? </Text>
-              <Text style={styles.loginLinkTextBold}>Se connecter</Text>
+              <Text style={styles.loginLinkText}>{t('home.cta.alreadyMember')} </Text>
+              <Text style={styles.loginLinkTextBold}>{t('home.cta.login')}</Text>
             </TouchableOpacity>
           </View>
 
           {/* Guides SEO Section - Design épuré */}
           <View style={styles.guidesSection}>
-              <Text style={styles.guidesTitle}>Découvrir AÏLA</Text>
+              <Text style={styles.guidesTitle}>{t('home.discover')}</Text>
               <View style={styles.guidesContainer}>
                 {/* Bouton Défis - Gaming familial */}
                 <TouchableOpacity style={styles.guideChipChallenge} onPress={() => router.push('/challenges')}>
@@ -445,6 +452,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 16,
     fontWeight: '500',
+  },
+  languageContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 16,
+    zIndex: 100,
   },
   logoContainer: {
     alignItems: 'center',
