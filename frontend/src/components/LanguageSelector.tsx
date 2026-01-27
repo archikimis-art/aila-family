@@ -60,8 +60,10 @@ export default function LanguageSelector({ style, compact = false }: LanguageSel
         onPress={() => setModalVisible(true)}
         activeOpacity={0.7}
       >
+        <Ionicons name="globe-outline" size={14} color="#D4AF37" />
+        <Text style={styles.compactLabel}>{t('common.language')}</Text>
         <Text style={styles.compactFlag}>{currentLang.flag}</Text>
-        <Ionicons name="chevron-down" size={14} color="#D4AF37" />
+        <Ionicons name="chevron-down" size={12} color="#D4AF37" />
         
         <Modal
           visible={modalVisible}
@@ -164,9 +166,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     padding: 6,
+    backgroundColor: 'rgba(212, 175, 55, 0.1)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.3)',
+  },
+  compactLabel: {
+    color: '#D4AF37',
+    fontSize: 11,
+    fontWeight: '500',
   },
   compactFlag: {
-    fontSize: 16,
+    fontSize: 14,
   },
   modalOverlay: {
     flex: 1,

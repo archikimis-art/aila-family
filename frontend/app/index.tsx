@@ -270,44 +270,44 @@ export default function WelcomeScreen() {
                 {/* Bouton Défis - Gaming familial */}
                 <TouchableOpacity style={styles.guideChipChallenge} onPress={() => router.push('/challenges')}>
                   <Ionicons name="trophy" size={14} color="#0A1628" />
-                  <Text style={styles.guideChipTextChallenge}>Défis 🎮</Text>
+                  <Text style={styles.guideChipTextChallenge}>{t('home.challenges')} 🎮</Text>
                 </TouchableOpacity>
                 {/* Bouton principal Pourquoi AÏLA */}
                 <TouchableOpacity style={styles.guideChipHighlight} onPress={() => router.push('/pourquoi-aila')}>
                   <Ionicons name="sparkles" size={14} color="#0A1628" />
-                  <Text style={styles.guideChipTextHighlight}>Pourquoi AÏLA ?</Text>
+                  <Text style={styles.guideChipTextHighlight}>{t('home.whyAila')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChipBlog} onPress={() => router.push('/blog')}>
                   <Ionicons name="newspaper-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipTextBlog}>Blog</Text>
+                  <Text style={styles.guideChipTextBlog}>{t('home.blog')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/community')}>
                   <Ionicons name="people-circle-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>Communauté</Text>
+                  <Text style={styles.guideChipText}>{t('home.community')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
                   <Ionicons name="search-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>Ancêtres</Text>
+                  <Text style={styles.guideChipText}>{t('home.ancestors')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/genealogie-debutant-guide')}>
                   <Ionicons name="school-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>Débutant</Text>
+                  <Text style={styles.guideChipText}>{t('home.beginner')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/traditions-familiales')}>
                   <Ionicons name="gift-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>Traditions</Text>
+                  <Text style={styles.guideChipText}>{t('home.traditions')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/organiser-cousinade')}>
                   <Ionicons name="people-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>Cousinade</Text>
+                  <Text style={styles.guideChipText}>{t('home.cousinade')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/ecrire-histoire-famille')}>
                   <Ionicons name="create-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>Écrire</Text>
+                  <Text style={styles.guideChipText}>{t('home.write')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/preserver-histoire-famille')}>
                   <Ionicons name="images-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>Préserver</Text>
+                  <Text style={styles.guideChipText}>{t('home.preserve')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -318,16 +318,16 @@ export default function WelcomeScreen() {
               onPress={() => router.push('/community')}
             >
               <Ionicons name="chatbubbles-outline" size={14} color="#D4AF37" />
-              <Text style={styles.communityButtonText}>Communauté</Text>
+              <Text style={styles.communityButtonText}>{t('home.community')}</Text>
             </TouchableOpacity>
 
             {/* Footer text only */}
-            <Text style={styles.footerSubtext}>Vos données sont protégées</Text>
+            <Text style={styles.footerSubtext}>{t('home.dataProtected')}</Text>
             
             {/* Legal Links - All on one line */}
             <View style={styles.legalLinks}>
               <TouchableOpacity onPress={() => router.push('/about')}>
-                <Text style={styles.legalLink}>À propos</Text>
+                <Text style={styles.legalLink}>{t('home.about')}</Text>
               </TouchableOpacity>
               <Text style={styles.legalSeparator}>•</Text>
               <TouchableOpacity onPress={() => router.push('/blog')}>
@@ -379,7 +379,7 @@ export default function WelcomeScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="share-social-outline" size={18} color="#D4AF37" />
-            <Text style={styles.adShareButtonText}>Partager</Text>
+            <Text style={styles.adShareButtonText}>{t('nav.share')}</Text>
           </TouchableOpacity>
           
           {/* Bouton Télécharger */}
@@ -390,7 +390,7 @@ export default function WelcomeScreen() {
               activeOpacity={0.7}
             >
               <Ionicons name="download-outline" size={14} color="#A0AEC0" />
-              <Text style={styles.adInstallButtonText}>Télécharger</Text>
+              <Text style={styles.adInstallButtonText}>{t('nav.download')}</Text>
             </TouchableOpacity>
           )}
           
@@ -401,7 +401,7 @@ export default function WelcomeScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="star" size={14} color="#D4AF37" />
-            <Text style={styles.adPremiumButtonText}>Premium</Text>
+            <Text style={styles.adPremiumButtonText}>{t('nav.premium')}</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -47,7 +47,9 @@
     "traditions": "Traditions",
     "cousinade": "Family reunion",
     "write": "Write",
-    "preserve": "Preserve"
+    "preserve": "Preserve",
+    "dataProtected": "Your data is protected",
+    "about": "About"
   },
   "nav": {
     "home": "Home",

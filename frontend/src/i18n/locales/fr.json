@@ -47,7 +47,9 @@
     "traditions": "Traditions",
     "cousinade": "Cousinade",
     "write": "Écrire",
-    "preserve": "Préserver"
+    "preserve": "Préserver",
+    "dataProtected": "Vos données sont protégées",
+    "about": "À propos"
   },
   "nav": {
     "home": "Accueil",
