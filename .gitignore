@@ -95,3 +95,7 @@ temp_aila/.git/objects/pack/pack-6b1f2d12a03ad575d25aad41c98befb0c8329909.pack
 # Environment files
 *.env
 *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
