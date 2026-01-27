@@ -306,40 +306,58 @@ export default function CommunityScreen() {
             <Text style={styles.emptySubtext}>Soyez le premier à partager !</Text>
           </View>
         ) : (
-          filteredMessages.map(message => (
-            <View key={message.id} style={styles.messageCard}>
-              <View style={styles.messageHeader}>
-                <View style={styles.avatar}>
-                  <Text style={styles.avatarText}>
-                    {message.author_name.charAt(0).toUpperCase()}
-                  </Text>
+          filteredMessages.map(message => {
+            const isChallenge = (message as any).isChallenge;
+            return (
+              <View key={message.id} style={[styles.messageCard, isChallenge && styles.challengeMessageCard]}>
+                {isChallenge && (
+                  <View style={styles.challengeBadgeHeader}>
+                    <Ionicons name="trophy" size={14} color="#4CAF50" />
+                    <Text style={styles.challengeBadgeText}>Défi complété</Text>
+                  </View>
+                )}
+                <View style={styles.messageHeader}>
+                  <View style={[styles.avatar, isChallenge && styles.challengeAvatar]}>
+                    <Text style={styles.avatarText}>
+                      {message.author_name.charAt(0).toUpperCase()}
+                    </Text>
+                  </View>
+                  <View style={styles.authorInfo}>
+                    <Text style={styles.authorName}>{message.author_name}</Text>
+                    <Text style={styles.authorCountry}>{message.author_country}</Text>
+                  </View>
+                  <Text style={styles.messageDate}>{formatDate(message.created_at)}</Text>
                 </View>
-                <View style={styles.authorInfo}>
-                  <Text style={styles.authorName}>{message.author_name}</Text>
-                  <Text style={styles.authorCountry}>{message.author_country}</Text>
+                
+                <Text style={styles.messageContent}>{message.content}</Text>
+                
+                <View style={styles.messageFooter}>
+                  <View style={[styles.topicBadge, isChallenge && styles.challengeTopicBadge]}>
+                    <Text style={[styles.topicBadgeText, isChallenge && styles.challengeTopicBadgeText]}>
+                      {isChallenge ? '🎮 Défi' : topics.find(t => t.id === message.topic)?.label || 'Général'}
+                    </Text>
+                  </View>
+                  <TouchableOpacity 
+                    style={styles.likeButton}
+                    onPress={() => likeMessage(message.id)}
+                  >
+                    <Ionicons name="heart-outline" size={18} color="#D4AF37" />
+                    <Text style={styles.likeCount}>{message.likes}</Text>
+                  </TouchableOpacity>
                 </View>
-                <Text style={styles.messageDate}>{formatDate(message.created_at)}</Text>
               </View>
-              
-              <Text style={styles.messageContent}>{message.content}</Text>
-              
-              <View style={styles.messageFooter}>
-                <View style={styles.topicBadge}>
-                  <Text style={styles.topicBadgeText}>
-                    {topics.find(t => t.id === message.topic)?.label || 'Général'}
-                  </Text>
-                </View>
-                <TouchableOpacity 
-                  style={styles.likeButton}
-                  onPress={() => likeMessage(message.id)}
-                >
-                  <Ionicons name="heart-outline" size={18} color="#D4AF37" />
-                  <Text style={styles.likeCount}>{message.likes}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))
+            );
+          })
         )}
+        
+        {/* Lien vers les défis */}
+        <TouchableOpacity 
+          style={styles.challengesLink}
+          onPress={() => router.push('/challenges')}
+        >
+          <Ionicons name="trophy-outline" size={18} color="#4CAF50" />
+          <Text style={styles.challengesLinkText}>Participer aux défis familiaux</Text>
+        </TouchableOpacity>
         
         {/* Lien vers le blog */}
         <TouchableOpacity 
@@ -599,11 +617,57 @@ const styles = StyleSheet.create({
     color: '#D4AF37',
     fontSize: 14,
   },
-  blogLink: {
+  challengeMessageCard: {
+    borderWidth: 1,
+    borderColor: 'rgba(76, 175, 80, 0.4)',
+    backgroundColor: 'rgba(76, 175, 80, 0.05)',
+  },
+  challengeBadgeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(76, 175, 80, 0.2)',
+  },
+  challengeBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#4CAF50',
+  },
+  challengeAvatar: {
+    backgroundColor: '#4CAF50',
+  },
+  challengeTopicBadge: {
+    backgroundColor: 'rgba(76, 175, 80, 0.15)',
+  },
+  challengeTopicBadgeText: {
+    color: '#4CAF50',
+  },
+  challengesLink: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 16,
+    marginHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(76, 175, 80, 0.4)',
+    borderRadius: 8,
+    gap: 8,
+  },
+  challengesLinkText: {
+    color: '#4CAF50',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  blogLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
     marginHorizontal: 16,
     paddingVertical: 12,
     borderWidth: 1,

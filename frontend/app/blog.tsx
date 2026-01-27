@@ -363,6 +363,25 @@ export default function BlogScreen() {
           </TouchableOpacity>
         </View>
 
+        {/* Défis Section - Gaming familial */}
+        <View style={styles.challengesBanner}>
+          <View style={styles.challengesBannerIcon}>
+            <Ionicons name="trophy" size={28} color="#FFF" />
+          </View>
+          <View style={styles.challengesBannerContent}>
+            <Text style={styles.challengesBannerTitle}>🎮 Passez à l'action !</Text>
+            <Text style={styles.challengesBannerText}>
+              Transformez votre lecture en action familiale
+            </Text>
+          </View>
+          <TouchableOpacity 
+            style={styles.challengesBannerButton}
+            onPress={() => router.push('/challenges')}
+          >
+            <Text style={styles.challengesBannerButtonText}>Voir les défis</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Articles Section */}
         <View style={styles.articlesSectionHeader}>
           <Text style={styles.articlesSectionTitle}>📰 Articles</Text>
@@ -402,7 +421,7 @@ export default function BlogScreen() {
           </Text>
           <TouchableOpacity 
             style={styles.ctaButton}
-            onPress={() => router.push('/register')}
+            onPress={() => router.push('/(auth)/register')}
           >
             <Text style={styles.ctaButtonText}>Créer mon arbre gratuitement</Text>
           </TouchableOpacity>
@@ -527,6 +546,48 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  challengesBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#4CAF50',
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 16,
+    padding: 16,
+  },
+  challengesBannerIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  challengesBannerContent: {
+    flex: 1,
+  },
+  challengesBannerTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  challengesBannerText: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.9)',
+    marginTop: 2,
+  },
+  challengesBannerButton: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  challengesBannerButtonText: {
+    color: '#4CAF50',
+    fontSize: 12,
+    fontWeight: '600',
   },
   articlesSectionHeader: {
     paddingHorizontal: 16,

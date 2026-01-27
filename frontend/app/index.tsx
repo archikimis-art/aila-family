@@ -260,6 +260,11 @@ export default function WelcomeScreen() {
           <View style={styles.guidesSection}>
               <Text style={styles.guidesTitle}>Découvrir AÏLA</Text>
               <View style={styles.guidesContainer}>
+                {/* Bouton Défis - Gaming familial */}
+                <TouchableOpacity style={styles.guideChipChallenge} onPress={() => router.push('/challenges')}>
+                  <Ionicons name="trophy" size={14} color="#0A1628" />
+                  <Text style={styles.guideChipTextChallenge}>Défis 🎮</Text>
+                </TouchableOpacity>
                 {/* Bouton principal Pourquoi AÏLA */}
                 <TouchableOpacity style={styles.guideChipHighlight} onPress={() => router.push('/pourquoi-aila')}>
                   <Ionicons name="sparkles" size={14} color="#0A1628" />
@@ -268,6 +273,10 @@ export default function WelcomeScreen() {
                 <TouchableOpacity style={styles.guideChipBlog} onPress={() => router.push('/blog')}>
                   <Ionicons name="newspaper-outline" size={14} color="#D4AF37" />
                   <Text style={styles.guideChipTextBlog}>Blog</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/community')}>
+                  <Ionicons name="people-circle-outline" size={14} color="#D4AF37" />
+                  <Text style={styles.guideChipText}>Communauté</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
                   <Ionicons name="search-outline" size={14} color="#D4AF37" />
@@ -863,6 +872,22 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   guideChipTextHighlight: {
+    color: '#0A1628',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  guideChipChallenge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+  },
+  guideChipTextChallenge: {
     color: '#0A1628',
     fontSize: 12,
     fontWeight: '600',
