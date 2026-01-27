@@ -12,6 +12,8 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import BlogComments from '../src/components/BlogComments';
 import ShareButtons from '../src/components/ShareButtons';
+import ArticleChallengeCta from '../src/components/ArticleChallengeCta';
+import { useTranslation } from 'react-i18next';
 
 interface Article {
   id: string;
@@ -21,6 +23,7 @@ interface Article {
   date: string;
   read_time: string;
   icon: string;
+  challengeType?: 'tree' | 'memory' | 'tradition' | 'community' | 'general';
 }
 
 // Articles complets
@@ -88,7 +91,8 @@ Dans les commentaires, présentez votre région d'origine :
 Nous avons hâte de découvrir vos origines !`,
     date: "20 janvier 2025",
     read_time: "5 min",
-    icon: "earth-outline"
+    icon: "earth-outline",
+    challengeType: 'community'
   },
   {
     id: '6',
@@ -126,7 +130,8 @@ Chaque département a son site d'archives avec accès gratuit :
 Créez votre arbre sur AÏLA et découvrez vos ancêtres dès aujourd'hui !`,
     date: "15 janvier 2025",
     read_time: "8 min",
-    icon: "search-outline"
+    icon: "search-outline",
+    challengeType: 'tree'
   },
   {
     id: '1',
@@ -157,7 +162,8 @@ Recoupez les informations. Une même personne peut avoir des variations d'orthog
 Avec AÏLA, invitez vos proches à consulter et contribuer à l'arbre familial.`,
     date: "15 janvier 2025",
     read_time: "6 min",
-    icon: "book-outline"
+    icon: "book-outline",
+    challengeType: 'tree'
   },
   {
     id: '2',
@@ -188,7 +194,8 @@ Les frères, sœurs, oncles peuvent fournir des informations précieuses.
 Avec AÏLA, vos données sont automatiquement sauvegardées.`,
     date: "10 janvier 2025",
     read_time: "5 min",
-    icon: "warning-outline"
+    icon: "warning-outline",
+    challengeType: 'tree'
   },
   {
     id: '3',
@@ -219,12 +226,17 @@ Avec AÏLA, vos données sont automatiquement sauvegardées.`,
 - Alliés : famille par mariage`,
     date: "5 janvier 2025",
     read_time: "5 min",
-    icon: "people-outline"
+    icon: "people-outline",
+    challengeType: 'tree'
+  },
+    icon: "people-outline",
+    challengeType: 'community'
   },
 ];
 
 export default function BlogScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
   if (selectedArticle) {
@@ -234,7 +246,7 @@ export default function BlogScreen() {
           <TouchableOpacity onPress={() => setSelectedArticle(null)} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#D4AF37" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Article</Text>
+          <Text style={styles.headerTitle}>{t('blog.articles') || 'Article'}</Text>
           <View style={{ width: 40 }} />
         </View>
 
@@ -265,6 +277,12 @@ export default function BlogScreen() {
             url={`https://www.aila.family/blog`}
           />
 
+          {/* Challenge CTA - Passez à l'action */}
+          <ArticleChallengeCta 
+            articleTitle={selectedArticle.title}
+            challengeType={selectedArticle.challengeType || 'general'}
+          />
+
           {/* Comments Section */}
           <View style={styles.commentsSection}>
             <BlogComments articleId={selectedArticle.id} />
@@ -272,9 +290,9 @@ export default function BlogScreen() {
 
           <TouchableOpacity 
             style={styles.ctaButton}
-            onPress={() => router.push('/register')}
+            onPress={() => router.push('/(auth)/register')}
           >
-            <Text style={styles.ctaButtonText}>Créer mon arbre généalogique</Text>
+            <Text style={styles.ctaButtonText}>{t('blog.createMyTree') || 'Créer mon arbre généalogique'}</Text>
           </TouchableOpacity>
 
           <View style={styles.footer}>

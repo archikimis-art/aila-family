@@ -124,7 +124,11 @@
     },
     "needInspiration": "¿Necesitas inspiración?",
     "exploreBlog": "Descubre nuestros artículos para enriquecer tu historia familiar",
-    "viewBlog": "Explorar el blog"
+    "viewBlog": "Explorar el blog",
+    "congratulations": "¡Felicidades!",
+    "badgeEarned": "Has obtenido la insignia",
+    "shareQuestion": "¿Quieres compartir este logro con la comunidad?",
+    "celebrationMessage": "¡Estás dando vida a tu historia familiar!"
   },
   "community": {
     "title": "Comunidad AÏLA",

@@ -124,7 +124,11 @@
     },
     "needInspiration": "Need inspiration?",
     "exploreBlog": "Discover our articles to enrich your family history",
-    "viewBlog": "Explore the blog"
+    "viewBlog": "Explore the blog",
+    "congratulations": "Congratulations!",
+    "badgeEarned": "You earned the badge",
+    "shareQuestion": "Would you like to share this achievement with the community?",
+    "celebrationMessage": "You're bringing your family history to life!"
   },
   "community": {
     "title": "AÏLA Community",
@@ -192,7 +196,8 @@
     "readyToStart": "Ready to start?",
     "createTreeFree": "Create your family tree for free with AÏLA.",
     "createMyTree": "Create my tree for free",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "viewAllChallenges": "View all challenges"
   },
   "pricing": {
     "title": "Premium",

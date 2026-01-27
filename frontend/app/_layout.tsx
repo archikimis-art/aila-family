@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '@/context/AuthContext';
 import { AdsProvider } from '@/context/AdsContext';
 import { ConversionProvider } from '@/context/ConversionContext';
+import { SoundProvider } from '@/context/SoundContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 import { I18nextProvider } from 'react-i18next';
@@ -467,6 +468,7 @@ export default function RootLayout() {
   return (
     <I18nextProvider i18n={i18n}>
       <SafeAreaProvider>
+        <SoundProvider>
         <AuthProvider>
           <AdsProvider>
             <ConversionProvider>
@@ -506,6 +508,7 @@ export default function RootLayout() {
             </ConversionProvider>
           </AdsProvider>
         </AuthProvider>
+        </SoundProvider>
       </SafeAreaProvider>
     </I18nextProvider>
   );

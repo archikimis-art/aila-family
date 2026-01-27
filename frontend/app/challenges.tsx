@@ -14,6 +14,10 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from 'react-i18next';
+import Confetti from '@/components/Confetti';
+import SuccessToast from '@/components/SuccessToast';
+import { useSound } from '@/context/SoundContext';
 
 // Types
 interface Challenge {
@@ -126,12 +130,20 @@ const CATEGORY_LABELS = {
 
 export default function ChallengesScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { user, isAuthenticated } = useAuth();
+  const { playSound } = useSound();
   const [progress, setProgress] = useState<Record<string, UserProgress>>({});
   const [badges, setBadges] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPoints, setTotalPoints] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  
+  // Celebration states
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastBadge, setToastBadge] = useState('');
 
   useEffect(() => {
     loadProgress();
@@ -170,11 +182,11 @@ export default function ChallengesScreen() {
   const handleCompleteChallenge = async (challenge: Challenge) => {
     if (!isAuthenticated) {
       Alert.alert(
-        'Connexion requise',
-        'Créez un compte gratuit pour participer aux défis et gagner des badges !',
+        t('alerts.connectionRequired'),
+        t('alerts.createAccountPrompt'),
         [
-          { text: 'Plus tard', style: 'cancel' },
-          { text: "S'inscrire", onPress: () => router.push('/(auth)/register') },
+          { text: t('alerts.later'), style: 'cancel' },
+          { text: t('alerts.signUp'), onPress: () => router.push('/(auth)/register') },
         ]
       );
       return;
@@ -202,18 +214,27 @@ export default function ChallengesScreen() {
     await AsyncStorage.setItem(CHALLENGES_STORAGE_KEY, JSON.stringify(newProgress));
     await AsyncStorage.setItem(BADGES_STORAGE_KEY, JSON.stringify(newBadges));
 
-    // Proposer de partager
-    Alert.alert(
-      '🎉 Félicitations !',
-      `Vous avez obtenu le badge "${challenge.badge}" !\n\n+${challenge.points} points\n\nVoulez-vous partager cette réussite avec la communauté ?`,
-      [
-        { text: 'Plus tard', style: 'cancel' },
-        { 
-          text: 'Partager', 
-          onPress: () => shareToCommmunity(challenge),
-        },
-      ]
-    );
+    // 🎉 Celebration effects!
+    playSound('badge');
+    setShowConfetti(true);
+    setToastMessage(t('challenges.celebrationMessage') || 'Vous faites vivre votre histoire familiale !');
+    setToastBadge(challenge.badge);
+    setToastVisible(true);
+
+    // After celebration, propose to share
+    setTimeout(() => {
+      Alert.alert(
+        '🎉 ' + (t('challenges.congratulations') || 'Félicitations !'),
+        `${t('challenges.badgeEarned') || 'Vous avez obtenu le badge'} "${challenge.badge}" !\n\n+${challenge.points} ${t('challenges.points')}\n\n${t('challenges.shareQuestion') || 'Voulez-vous partager cette réussite avec la communauté ?'}`,
+        [
+          { text: t('alerts.later'), style: 'cancel' },
+          { 
+            text: t('common.share'), 
+            onPress: () => shareToCommmunity(challenge),
+          },
+        ]
+      );
+    }, 2000);
   };
 
   const shareToCommmunity = async (challenge: Challenge) => {
@@ -246,7 +267,7 @@ export default function ChallengesScreen() {
       setProgress(newProgress);
       await AsyncStorage.setItem(CHALLENGES_STORAGE_KEY, JSON.stringify(newProgress));
 
-      Alert.alert('Partagé !', 'Votre réussite est visible dans la communauté.');
+      Alert.alert(t('alerts.shared'), t('community.sharedSuccess') || 'Votre réussite est visible dans la communauté.');
     } catch (e) {
       console.error('Error sharing:', e);
     }
@@ -268,12 +289,27 @@ export default function ChallengesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Confetti effect */}
+      <Confetti 
+        active={showConfetti} 
+        onComplete={() => setShowConfetti(false)}
+      />
+      
+      {/* Success Toast */}
+      <SuccessToast
+        visible={toastVisible}
+        message={toastMessage}
+        badge={toastBadge}
+        icon="trophy"
+        onHide={() => setToastVisible(false)}
+      />
+      
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Défis Familiaux</Text>
+        <Text style={styles.headerTitle}>{t('challenges.title')}</Text>
         <TouchableOpacity onPress={() => router.push('/profile')} style={styles.profileButton}>
           <Ionicons name="trophy" size={24} color="#D4AF37" />
         </TouchableOpacity>
@@ -284,7 +320,7 @@ export default function ChallengesScreen() {
         <View style={styles.statsCard}>
           <View style={styles.statItem}>
             <Text style={styles.statNumber}>{totalPoints}</Text>
-            <Text style={styles.statLabel}>Points</Text>
+            <Text style={styles.statLabel}>{t('challenges.points')}</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>

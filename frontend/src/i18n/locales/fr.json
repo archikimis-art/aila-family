@@ -124,7 +124,11 @@
     },
     "needInspiration": "Besoin d'inspiration ?",
     "exploreBlog": "Découvrez nos articles pour enrichir votre histoire familiale",
-    "viewBlog": "Explorer le blog"
+    "viewBlog": "Explorer le blog",
+    "congratulations": "Félicitations !",
+    "badgeEarned": "Vous avez obtenu le badge",
+    "shareQuestion": "Voulez-vous partager cette réussite avec la communauté ?",
+    "celebrationMessage": "Vous faites vivre votre histoire familiale !"
   },
   "community": {
     "title": "Communauté AÏLA",
@@ -192,7 +196,8 @@
     "readyToStart": "Prêt à commencer ?",
     "createTreeFree": "Créez votre arbre généalogique gratuitement avec AÏLA.",
     "createMyTree": "Créer mon arbre gratuitement",
-    "backHome": "Retour à l'accueil"
+    "backHome": "Retour à l'accueil",
+    "viewAllChallenges": "Voir tous les défis"
   },
   "pricing": {
     "title": "Premium",
