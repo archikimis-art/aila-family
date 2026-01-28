@@ -175,7 +175,7 @@ export default function WelcomeScreen() {
         <SafeAreaView>
           <View style={styles.contentContainer}>
             <LinearGradient
-              colors={['rgba(10, 22, 40, 0.85)', 'rgba(26, 47, 74, 0.9)', 'rgba(10, 22, 40, 0.95)']}
+              colors={['rgba(30, 60, 100, 0.92)', 'rgba(50, 85, 130, 0.95)', 'rgba(25, 50, 85, 0.97)']}
               style={styles.gradientBackground}
             />
             
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#0A1628',
+    backgroundColor: '#1E3A5F',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 14,
-    color: '#FFFFFF',
+    color: '#E8EDF3',
     marginLeft: 12,
     flex: 1,
   },
@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   reassuranceText: {
-    color: '#8BA1B7',
+    color: '#B8C9DA',
     fontSize: 11,
   },
   secondaryButton: {
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   loginLinkText: {
-    color: '#8BA1B7',
+    color: '#B8C9DA',
     fontSize: 13,
   },
   loginLinkTextBold: {
@@ -597,7 +597,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   previewNote: {
-    color: '#6B7C93',
+    color: '#9BB0C5',
     fontSize: 11,
     marginTop: 2,
   },

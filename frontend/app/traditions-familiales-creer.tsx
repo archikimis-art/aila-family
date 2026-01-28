@@ -116,7 +116,7 @@ export default function TraditionsFamiliales() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0A1628' },
+  container: { flex: 1, backgroundColor: '#1E3A5F' },
   scrollContent: { paddingBottom: 40 },
   header: { flexDirection: 'row', alignItems: 'center', padding: 20, gap: 16 },
   backButton: { padding: 4 },
