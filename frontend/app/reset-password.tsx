@@ -14,10 +14,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/services/api';
+import { useTranslation } from 'react-i18next';
 
 export default function ResetPasswordScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { t } = useTranslation();
   const token = params.token as string;
 
   const [password, setPassword] = useState('');

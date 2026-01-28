@@ -325,19 +325,19 @@ export default function ChallengesScreen() {
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
             <Text style={styles.statNumber}>{badges.length}</Text>
-            <Text style={styles.statLabel}>Badges</Text>
+            <Text style={styles.statLabel}>{t('challenges.badges')}</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
             <Text style={styles.statNumber}>{completedCount}/{CHALLENGES.length}</Text>
-            <Text style={styles.statLabel}>Défis</Text>
+            <Text style={styles.statLabel}>{t('challenges.title')}</Text>
           </View>
         </View>
 
         {/* Badges Preview */}
         {badges.length > 0 && (
           <View style={styles.badgesPreview}>
-            <Text style={styles.sectionTitle}>Vos badges</Text>
+            <Text style={styles.sectionTitle}>{t('profile.myBadges')}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {badges.map((badge, index) => {
                 const challenge = CHALLENGES.find(c => c.badge === badge);
@@ -361,7 +361,7 @@ export default function ChallengesScreen() {
             onPress={() => setSelectedCategory(null)}
           >
             <Text style={[styles.categoryChipText, !selectedCategory && styles.categoryChipTextActive]}>
-              Tous
+              {t('challenges.categories.all')}
             </Text>
           </TouchableOpacity>
           {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
@@ -378,7 +378,7 @@ export default function ChallengesScreen() {
                 styles.categoryChipText,
                 selectedCategory === key && styles.categoryChipTextActive
               ]}>
-                {label}
+                {t(`challenges.categories.${key}`)}
               </Text>
             </TouchableOpacity>
           ))}
@@ -386,7 +386,7 @@ export default function ChallengesScreen() {
 
         {/* Challenges List */}
         <Text style={styles.sectionTitle}>
-          {selectedCategory ? CATEGORY_LABELS[selectedCategory as keyof typeof CATEGORY_LABELS] : 'Tous les défis'}
+          {selectedCategory ? t(`challenges.categories.${selectedCategory}`) : t('challenges.categories.all')}
         </Text>
         
         {filteredChallenges.map((challenge) => {
@@ -423,7 +423,7 @@ export default function ChallengesScreen() {
                   <View style={styles.completedRow}>
                     <View style={styles.completedBadge}>
                       <Ionicons name="checkmark" size={14} color="#4CAF50" />
-                      <Text style={styles.completedText}>Complété</Text>
+                      <Text style={styles.completedText}>{t('challenges.completed')}</Text>
                     </View>
                     {!isShared && (
                       <TouchableOpacity 
@@ -431,7 +431,7 @@ export default function ChallengesScreen() {
                         onPress={() => shareToCommmunity(challenge)}
                       >
                         <Ionicons name="share-social" size={16} color="#D4AF37" />
-                        <Text style={styles.shareButtonText}>Partager</Text>
+                        <Text style={styles.shareButtonText}>{t('common.share')}</Text>
                       </TouchableOpacity>
                     )}
                   </View>
@@ -460,15 +460,15 @@ export default function ChallengesScreen() {
         {/* CTA Blog */}
         <View style={styles.ctaCard}>
           <Ionicons name="bulb" size={32} color="#D4AF37" />
-          <Text style={styles.ctaTitle}>Besoin d'inspiration ?</Text>
+          <Text style={styles.ctaTitle}>{t('challenges.needInspiration')}</Text>
           <Text style={styles.ctaText}>
-            Découvrez nos articles pour enrichir votre histoire familiale
+            {t('challenges.exploreBlog')}
           </Text>
           <TouchableOpacity 
             style={styles.ctaButton}
             onPress={() => router.push('/blog')}
           >
-            <Text style={styles.ctaButtonText}>Explorer le blog</Text>
+            <Text style={styles.ctaButtonText}>{t('challenges.viewBlog')}</Text>
           </TouchableOpacity>
         </View>
 

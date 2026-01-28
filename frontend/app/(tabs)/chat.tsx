@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { chatAPI } from '@/services/api';
 import AdBanner from '@/components/AdBanner';
+import { useTranslation } from 'react-i18next';
 
 interface ChatMessage {
   id: string;
@@ -30,6 +31,7 @@ interface ChatMessage {
 
 export default function ChatScreen() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const scrollViewRef = useRef<ScrollView>(null);
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);

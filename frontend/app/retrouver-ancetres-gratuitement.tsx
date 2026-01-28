@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SEOFooter } from '@/components/SEOFooter';
 import { SEOBreadcrumbs, BREADCRUMB_CONFIGS } from '@/components/SEOBreadcrumbs';
 import { RelatedArticles, ContextualCTA } from '@/components/RelatedArticles';
+import { useTranslation } from 'react-i18next';
 
 const SEOHead = () => {
   useEffect(() => {

@@ -17,6 +17,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { collaboratorsAPI, contributionsAPI } from '@/services/api';
+import { useTranslation } from 'react-i18next';
 
 interface Collaborator {
   id: string;
@@ -50,6 +51,7 @@ interface Contribution {
 export default function ShareScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const { t } = useTranslation();
   
   const [activeTab, setActiveTab] = useState<'collaborators' | 'shared' | 'contributions'>('collaborators');
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);

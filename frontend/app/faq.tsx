@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 interface FAQItem {
   question: string;
@@ -112,6 +113,7 @@ const faqData: FAQItem[] = [
 
 export default function FAQScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("Tous");
 
@@ -132,7 +134,7 @@ export default function FAQScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>FAQ - Questions Fréquentes</Text>
+        <Text style={styles.headerTitle}>{t('faq.title') || 'FAQ'}</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -140,10 +142,9 @@ export default function FAQScreen() {
         {/* Introduction */}
         <View style={styles.introSection}>
           <Ionicons name="help-circle-outline" size={48} color="#D4AF37" />
-          <Text style={styles.introTitle}>Comment pouvons-nous vous aider ?</Text>
+          <Text style={styles.introTitle}>{t('faq.howCanWeHelp') || 'Comment pouvons-nous vous aider ?'}</Text>
           <Text style={styles.introText}>
-            Trouvez rapidement des réponses à vos questions sur AÏLA, 
-            l'application de création d'arbres généalogiques.
+            {t('faq.intro') || "Trouvez rapidement des réponses à vos questions sur AÏLA, l'application de création d'arbres généalogiques."}
           </Text>
         </View>
 

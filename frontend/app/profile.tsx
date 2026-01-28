@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 interface Badge {
   id: string;
@@ -77,6 +78,7 @@ const LEVELS = [
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
+  const { t } = useTranslation();
   const [badges, setBadges] = useState<string[]>([]);
   const [stats, setStats] = useState<UserStats>({
     totalPoints: 0,
@@ -170,11 +172,11 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     Alert.alert(
-      'Déconnexion',
-      'Êtes-vous sûr de vouloir vous déconnecter ?',
+      t('auth.logout'),
+      t('alerts.confirmLogout'),
       [
-        { text: 'Annuler', style: 'cancel' },
-        { text: 'Déconnexion', style: 'destructive', onPress: () => {
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('auth.logout'), style: 'destructive', onPress: () => {
           logout();
           router.push('/');
         }},
@@ -192,7 +194,7 @@ export default function ProfileScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Mon Profil</Text>
+        <Text style={styles.headerTitle}>{t('profile.title')}</Text>
         <TouchableOpacity onPress={() => router.push('/challenges')} style={styles.challengesButton}>
           <Ionicons name="ribbon" size={24} color="#D4AF37" />
         </TouchableOpacity>
@@ -220,17 +222,17 @@ export default function ProfileScreen() {
           {/* Level Progress */}
           <View style={styles.levelSection}>
             <View style={styles.levelHeader}>
-              <Text style={styles.levelName}>{currentLevel.name}</Text>
+              <Text style={styles.levelName}>{t(`profile.levels.${currentLevel.name.toLowerCase()}`) || currentLevel.name}</Text>
               {nextLevel && (
-                <Text style={styles.levelNext}>→ {nextLevel.name}</Text>
+                <Text style={styles.levelNext}>→ {t(`profile.levels.${nextLevel.name.toLowerCase()}`) || nextLevel.name}</Text>
               )}
             </View>
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: `${getProgressToNextLevel()}%` }]} />
             </View>
             <Text style={styles.pointsText}>
-              {stats.totalPoints} points
-              {nextLevel && ` • ${nextLevel.minPoints - stats.totalPoints} pts avant ${nextLevel.name}`}
+              {stats.totalPoints} {t('profile.points')}
+              {nextLevel && ` • ${nextLevel.minPoints - stats.totalPoints} pts`}
             </Text>
           </View>
         </View>
@@ -240,13 +242,13 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.statBox} onPress={() => router.push('/challenges')}>
             <Ionicons name="trophy" size={24} color="#D4AF37" />
             <Text style={styles.statNumber}>{stats.challengesCompleted}</Text>
-            <Text style={styles.statLabel}>Défis</Text>
+            <Text style={styles.statLabel}>{t('challenges.title')}</Text>
           </TouchableOpacity>
           
           <View style={styles.statBox}>
             <Ionicons name="ribbon" size={24} color="#E91E63" />
             <Text style={styles.statNumber}>{stats.badgesEarned}</Text>
-            <Text style={styles.statLabel}>Badges</Text>
+            <Text style={styles.statLabel}>{t('challenges.badges')}</Text>
           </View>
           
           <TouchableOpacity style={styles.statBox} onPress={() => router.push('/community')}>
@@ -259,9 +261,9 @@ export default function ProfileScreen() {
         {/* Badges Section */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Mes Badges</Text>
+            <Text style={styles.sectionTitle}>{t('profile.myBadges')}</Text>
             <TouchableOpacity onPress={() => router.push('/challenges')}>
-              <Text style={styles.seeAllText}>Voir les défis</Text>
+              <Text style={styles.seeAllText}>{t('common.seeAll')}</Text>
             </TouchableOpacity>
           </View>
           
@@ -289,12 +291,12 @@ export default function ProfileScreen() {
           ) : (
             <View style={styles.emptyBadges}>
               <Ionicons name="ribbon-outline" size={48} color="#6B7C93" />
-              <Text style={styles.emptyText}>Aucun badge pour l'instant</Text>
+              <Text style={styles.emptyText}>{t('profile.noBadges')}</Text>
               <TouchableOpacity 
                 style={styles.startButton}
                 onPress={() => router.push('/challenges')}
               >
-                <Text style={styles.startButtonText}>Commencer les défis</Text>
+                <Text style={styles.startButtonText}>{t('profile.startChallenges')}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -302,7 +304,7 @@ export default function ProfileScreen() {
 
         {/* Quick Actions */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Actions rapides</Text>
+          <Text style={styles.sectionTitle}>{t('profile.quickActions')}</Text>
           
           <TouchableOpacity 
             style={styles.actionItem}
@@ -312,8 +314,8 @@ export default function ProfileScreen() {
               <Ionicons name="flag" size={20} color="#4CAF50" />
             </View>
             <View style={styles.actionInfo}>
-              <Text style={styles.actionTitle}>Défis familiaux</Text>
-              <Text style={styles.actionSubtitle}>Gagnez des badges et des points</Text>
+              <Text style={styles.actionTitle}>{t('profile.familyChallenges')}</Text>
+              <Text style={styles.actionSubtitle}>{t('profile.earnBadges')}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
           </TouchableOpacity>
@@ -326,8 +328,8 @@ export default function ProfileScreen() {
               <Ionicons name="people" size={20} color="#2196F3" />
             </View>
             <View style={styles.actionInfo}>
-              <Text style={styles.actionTitle}>Communauté</Text>
-              <Text style={styles.actionSubtitle}>Partagez et échangez</Text>
+              <Text style={styles.actionTitle}>{t('profile.communityTitle')}</Text>
+              <Text style={styles.actionSubtitle}>{t('profile.shareExchange')}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
           </TouchableOpacity>
@@ -340,8 +342,8 @@ export default function ProfileScreen() {
               <Ionicons name="newspaper" size={20} color="#D4AF37" />
             </View>
             <View style={styles.actionInfo}>
-              <Text style={styles.actionTitle}>Blog & Inspiration</Text>
-              <Text style={styles.actionSubtitle}>Articles et conseils</Text>
+              <Text style={styles.actionTitle}>{t('profile.blogInspiration')}</Text>
+              <Text style={styles.actionSubtitle}>{t('profile.articlesAdvice')}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
           </TouchableOpacity>
@@ -349,7 +351,7 @@ export default function ProfileScreen() {
 
         {/* Account Actions */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Compte</Text>
+          <Text style={styles.sectionTitle}>{t('profile.account')}</Text>
           
           <TouchableOpacity 
             style={styles.actionItem}
@@ -359,8 +361,8 @@ export default function ProfileScreen() {
               <Ionicons name="star" size={20} color="#D4AF37" />
             </View>
             <View style={styles.actionInfo}>
-              <Text style={styles.actionTitle}>Passer Premium</Text>
-              <Text style={styles.actionSubtitle}>Débloquez toutes les fonctionnalités</Text>
+              <Text style={styles.actionTitle}>{t('profile.goPremium')}</Text>
+              <Text style={styles.actionSubtitle}>{t('profile.unlockFeatures')}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
           </TouchableOpacity>
@@ -373,7 +375,7 @@ export default function ProfileScreen() {
               <Ionicons name="log-out" size={20} color="#F44336" />
             </View>
             <View style={styles.actionInfo}>
-              <Text style={[styles.actionTitle, { color: '#F44336' }]}>Déconnexion</Text>
+              <Text style={[styles.actionTitle, { color: '#F44336' }]}>{t('profile.logout')}</Text>
             </View>
           </TouchableOpacity>
         </View>

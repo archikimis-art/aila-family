@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { personsAPI, previewAPI } from '@/services/api';
+import { useTranslation } from 'react-i18next';
 
 // ===================== DONNÉES GÉOGRAPHIQUES MONDIALES =====================
 const WORLD_LOCATIONS: Record<string, Record<string, string[]>> = {

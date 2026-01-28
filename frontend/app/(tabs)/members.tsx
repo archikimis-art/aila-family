@@ -17,6 +17,7 @@ import { useAuth } from '@/context/AuthContext';
 import { personsAPI, previewAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdBanner from '@/components/AdBanner';
+import { useTranslation } from 'react-i18next';
 
 interface Person {
   id: string;
@@ -32,6 +33,7 @@ export default function MembersScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const isPreviewMode = !user;
 
   const [persons, setPersons] = useState<Person[]>([]);

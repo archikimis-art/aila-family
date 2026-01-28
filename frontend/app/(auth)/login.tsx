@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '@/services/api';
+import { useTranslation } from 'react-i18next';
 
 const GOOGLE_CLIENT_ID = '548263066328-916g23gmboqvmqtd7fi3ejatoseh4h09.apps.googleusercontent.com';
 
@@ -24,6 +25,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { login, refreshUser } = useAuth();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -284,8 +286,8 @@ export default function LoginScreen() {
           {/* Logo and Title */}
           <View style={styles.header}>
             <Text style={styles.logo}>🌳</Text>
-            <Text style={styles.title}>Bienvenue sur AÏLA</Text>
-            <Text style={styles.subtitle}>Connectez-vous à votre compte</Text>
+            <Text style={styles.title}>{t('home.title')}</Text>
+            <Text style={styles.subtitle}>{t('auth.login')}</Text>
           </View>
 
           {/* Form */}
@@ -301,7 +303,7 @@ export default function LoginScreen() {
               <Ionicons name="mail-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder={t('auth.email')}
                 placeholderTextColor="#6B7C93"
                 value={email}
                 onChangeText={setEmail}
@@ -315,7 +317,7 @@ export default function LoginScreen() {
               <Ionicons name="lock-closed-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Mot de passe"
+                placeholder={t('auth.password')}
                 placeholderTextColor="#6B7C93"
                 value={password}
                 onChangeText={setPassword}
@@ -337,7 +339,7 @@ export default function LoginScreen() {
               style={styles.forgotPassword}
               onPress={() => router.push('/(auth)/forgot-password')}
             >
-              <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
+              <Text style={styles.forgotPasswordText}>{t('auth.forgotPassword')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -349,7 +351,7 @@ export default function LoginScreen() {
                 <ActivityIndicator color="#0A1628" />
               ) : (
                 <>
-                  <Text style={styles.loginButtonText}>Se connecter</Text>
+                  <Text style={styles.loginButtonText}>{t('auth.login')}</Text>
                   <Ionicons name="arrow-forward" size={20} color="#0A1628" />
                 </>
               )}
@@ -376,7 +378,7 @@ export default function LoginScreen() {
                     <View style={styles.googleIconContainer}>
                       <Text style={styles.googleIcon}>G</Text>
                     </View>
-                    <Text style={styles.googleButtonText}>Continuer avec Google</Text>
+                    <Text style={styles.googleButtonText}>{t('auth.loginWithGoogle')}</Text>
                   </>
                 )}
               </TouchableOpacity>
@@ -385,9 +387,9 @@ export default function LoginScreen() {
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Pas encore de compte ?</Text>
+            <Text style={styles.footerText}>{t('auth.noAccount')}</Text>
             <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-              <Text style={styles.registerLink}>Créer un compte</Text>
+              <Text style={styles.registerLink}>{t('auth.signUp')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

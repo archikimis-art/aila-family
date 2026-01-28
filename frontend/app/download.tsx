@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 const SCREENSHOTS = [
   { id: '01', name: 'Page d\'accueil', file: '01_accueil.png' },
@@ -16,6 +17,8 @@ const SCREENSHOTS = [
 const BASE_URL = 'https://www.aila.family/presentation';
 
 export default function DownloadPage() {
+  const { t } = useTranslation();
+  
   const openFile = (url: string) => {
     Linking.openURL(url);
   };

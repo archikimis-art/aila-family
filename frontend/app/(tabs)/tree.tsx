@@ -25,6 +25,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EventAnimation from '@/components/EventAnimation';
 import AdBanner from '@/components/AdBanner';
 import ExcelImport from '@/components/ExcelImport';
+import { useTranslation } from 'react-i18next';
 
 // Import conditionnel pour le web
 let TransformWrapper: any = null;

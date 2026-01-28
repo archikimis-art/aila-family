@@ -16,10 +16,12 @@ import { useAuth } from '@/context/AuthContext';
 import api, { gdprAPI, treeAPI, exportAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdBanner from '@/components/AdBanner';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, logout, isAdmin } = useAuth();
+  const { t } = useTranslation();
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);

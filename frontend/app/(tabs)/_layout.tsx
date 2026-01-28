@@ -3,8 +3,11 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function TabsLayout() {
+  const { t } = useTranslation();
+  
   return (
     <Tabs
       screenOptions={{
@@ -28,7 +31,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="tree"
         options={{
-          title: 'Arbre',
+          title: t('challenges.categories.tree') || 'Arbre',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="git-branch-outline" size={size} color={color} />
           ),
@@ -37,7 +40,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="members"
         options={{
-          title: 'Membres',
+          title: t('nav.home') || 'Membres',
           tabBarIcon: ({ color, size}) => (
             <Ionicons name="people-outline" size={size} color={color} />
           ),
@@ -46,7 +49,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="chat"
         options={{
-          title: 'Discussion',
+          title: t('community.title')?.split(' ')[0] || 'Discussion',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="chatbubbles-outline" size={size} color={color} />
           ),
@@ -55,7 +58,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="share"
         options={{
-          title: 'Liens',
+          title: t('common.share') || 'Liens',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="link-outline" size={size} color={color} />
           ),
@@ -64,7 +67,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profil',
+          title: t('profile.title')?.split(' ')[1] || 'Profil',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" size={size} color={color} />
           ),

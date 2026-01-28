@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { mergeAPI } from '@/services/api';
+import { useTranslation } from 'react-i18next';
 
 interface MergeableTree {
   owner_id: string;

@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/services/api';
+import { useTranslation } from 'react-i18next';
 
 // Subscription Plans
 const PLANS = [
@@ -109,6 +110,7 @@ const COMING_SOON = [
 export default function PricingScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState<string | null>(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
 

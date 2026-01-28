@@ -10,9 +10,11 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export default function AboutScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -21,7 +23,7 @@ export default function AboutScreen() {
         <TouchableOpacity onPress={() => router.replace('/')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>À propos d'AÏLA</Text>
+        <Text style={styles.headerTitle}>{t('home.about')}</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -29,7 +31,7 @@ export default function AboutScreen() {
         {/* Logo Section */}
         <View style={styles.logoSection}>
           <Text style={styles.appName}>AÏLA</Text>
-          <Text style={styles.tagline}>Votre arbre généalogique intelligent</Text>
+          <Text style={styles.tagline}>{t('home.subtitle')}</Text>
         </View>
 
         {/* Description */}
