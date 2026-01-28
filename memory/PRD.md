@@ -15,6 +15,16 @@ French (Français)
 
 ## Completed Features
 
+### 2026-01-28 - Full Internationalization (i18n) Implementation (P0) ✅
+- ✅ Ajouté `useTranslation` hook à **38 pages** de l'application
+- ✅ Traduit community.tsx : formulaires, messages, catégories
+- ✅ Traduit login.tsx et register.tsx : authentification complète
+- ✅ Traduit profile.tsx : niveaux, badges, actions rapides
+- ✅ Traduit challenges.tsx : catégories, badges, états complétés
+- ✅ Traduit tabs/_layout.tsx : labels des onglets
+- ✅ Traduit pricing, faq, about, et autres pages de contenu
+- ✅ Toutes les pages utilisent maintenant les fichiers de traduction
+
 ### 2026-01-27 - Homepage Layout Fix (P0)
 - ✅ Réduit la taille des composants `DailyChallengeBanner` et `SocialProofBanner`
 - ✅ Déplacé les banners de gamification après la section "Découvrir AÏLA"
