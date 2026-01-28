@@ -211,6 +211,15 @@
       "sage": "Saggio"
     }
   },
+  "chat": {
+    "collaborativeDiscussion": "Discussione collaborativa",
+    "loginToChat": "Accedi per chattare con altri membri dell'albero genealogico",
+    "loadingMessages": "Caricamento messaggi...",
+    "discussion": "Discussione",
+    "noMessages": "Nessun messaggio ancora",
+    "beFirstToChat": "Sii il primo a iniziare la conversazione!",
+    "writeMessage": "Scrivi un messaggio..."
+  },
   "blog": {
     "title": "Blog AÏLA",
     "articles": "Articoli",

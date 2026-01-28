@@ -164,9 +164,9 @@ export default function ChatScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.emptyState}>
           <Ionicons name="chatbubbles-outline" size={80} color="#2A3F5A" />
-          <Text style={styles.emptyTitle}>Discussion collaborative</Text>
+          <Text style={styles.emptyTitle}>{t('chat.collaborativeDiscussion')}</Text>
           <Text style={styles.emptySubtitle}>
-            Connectez-vous pour discuter avec les autres membres de l'arbre familial
+            {t('chat.loginToChat')}
           </Text>
         </View>
       </SafeAreaView>
@@ -178,7 +178,7 @@ export default function ChatScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#D4AF37" />
-          <Text style={styles.loadingText}>Chargement des messages...</Text>
+          <Text style={styles.loadingText}>{t('chat.loadingMessages')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -195,7 +195,7 @@ export default function ChatScreen() {
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Ionicons name="chatbubbles" size={24} color="#D4AF37" />
-            <Text style={styles.headerTitle}>Discussion</Text>
+            <Text style={styles.headerTitle}>{t('chat.discussion')}</Text>
           </View>
           <TouchableOpacity onPress={onRefresh}>
             <Ionicons name="refresh" size={22} color="#B8C5D6" />
@@ -214,9 +214,10 @@ export default function ChatScreen() {
           {messages.length === 0 ? (
             <View style={styles.emptyMessages}>
               <Ionicons name="chatbubble-ellipses-outline" size={60} color="#2A3F5A" />
-              <Text style={styles.emptyMessagesText}>Aucun message pour le moment</Text>
+              <Text style={styles.emptyMessagesText}>{t('chat.noMessages')}</Text>
               <Text style={styles.emptyMessagesSubtext}>
-                Soyez le premier à démarrer la conversation !
+                {t('chat.beFirstToChat')}
+              </Text>
               </Text>
             </View>
           ) : (
@@ -265,7 +266,7 @@ export default function ChatScreen() {
           <View style={styles.inputWrapper}>
             <TextInput
               style={styles.input}
-              placeholder="Écrivez un message..."
+              placeholder={t('chat.writeMessage')}
               placeholderTextColor="#6B7C93"
               value={newMessage}
               onChangeText={setNewMessage}

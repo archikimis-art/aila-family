@@ -211,6 +211,15 @@
       "sage": "Weiser"
     }
   },
+  "chat": {
+    "collaborativeDiscussion": "Kollaborative Diskussion",
+    "loginToChat": "Melden Sie sich an, um mit anderen Stammbaumitgliedern zu chatten",
+    "loadingMessages": "Nachrichten werden geladen...",
+    "discussion": "Diskussion",
+    "noMessages": "Noch keine Nachrichten",
+    "beFirstToChat": "Seien Sie der Erste, der das Gespräch beginnt!",
+    "writeMessage": "Nachricht schreiben..."
+  },
   "blog": {
     "title": "AÏLA-Blog",
     "articles": "Artikel",
