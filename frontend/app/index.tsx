@@ -17,6 +17,16 @@ const { width, height } = Dimensions.get('window');
 const isWeb = Platform.OS === 'web';
 const isLargeScreen = width > 768;
 
+// Store install prompt globally to catch it before React mounts
+let globalDeferredPrompt: any = null;
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    globalDeferredPrompt = e;
+    console.log('PWA install prompt captured globally');
+  });
+}
+
 export default function WelcomeScreen() {
   const { t } = useTranslation();
   const { loading } = useAuth();
@@ -36,8 +46,16 @@ export default function WelcomeScreen() {
   // PWA Install prompt
   useEffect(() => {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      // Check if we already captured the prompt globally
+      if (globalDeferredPrompt) {
+        setDeferredPrompt(globalDeferredPrompt);
+        setShowInstallButton(true);
+        console.log('Using globally captured install prompt');
+      }
+
       const handleBeforeInstallPrompt = (e: any) => {
         e.preventDefault();
+        globalDeferredPrompt = e;
         setDeferredPrompt(e);
         setShowInstallButton(true);
         console.log('PWA install prompt available');
@@ -57,26 +75,41 @@ export default function WelcomeScreen() {
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      // Fallback instructions
-      if (Platform.OS === 'web') {
+    // Try to use the global prompt first
+    const prompt = deferredPrompt || globalDeferredPrompt;
+    
+    if (!prompt) {
+      // Fallback: try to trigger native browser install UI
+      if (Platform.OS === 'web' && typeof window !== 'undefined') {
+        // Check if there's a native install button visible
+        const hasNativePrompt = document.querySelector('button[aria-label*="install"], button[aria-label*="Install"]');
+        
         window.alert(
-          '📲 Pour installer AÏLA :\n\n' +
-          '• Sur Chrome/Edge : Cliquez sur ⋮ puis "Installer l\'application"\n' +
-          '• Sur Safari (iPhone) : Cliquez sur ⬆️ puis "Sur l\'écran d\'accueil"\n' +
-          '• Sur Android : Cliquez sur ⋮ puis "Ajouter à l\'écran d\'accueil"'
+          '📲 Pour installer AÏLA sur votre appareil :\n\n' +
+          '🖥️ Sur PC (Chrome/Edge) :\n' +
+          '   → Regardez en haut à droite de la barre d\'adresse\n' +
+          '   → Cliquez sur "Installer" ou l\'icône ⊕\n\n' +
+          '📱 Sur Mobile :\n' +
+          '   → Menu ⋮ puis "Installer l\'application"\n' +
+          '   → Ou "Ajouter à l\'écran d\'accueil"'
         );
       }
       return;
     }
 
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log('PWA install outcome:', outcome);
-    
-    if (outcome === 'accepted') {
-      setShowInstallButton(false);
+    try {
+      prompt.prompt();
+      const { outcome } = await prompt.userChoice;
+      console.log('PWA install outcome:', outcome);
+      
+      if (outcome === 'accepted') {
+        setShowInstallButton(false);
+      }
+    } catch (error) {
+      console.error('Install prompt error:', error);
     }
+    
+    globalDeferredPrompt = null;
     setDeferredPrompt(null);
   };
 
