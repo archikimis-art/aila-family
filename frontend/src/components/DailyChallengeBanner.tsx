@@ -149,24 +149,18 @@ export default function DailyChallengeBanner() {
         </View>
         
         <View style={styles.content}>
-          <Animated.View 
-            style={[
-              styles.iconContainer, 
-              { 
-                backgroundColor: challenge.color,
-                transform: [{ scale: pulseAnim }],
-              }
-            ]}
-          >
-            <Ionicons name={challenge.icon as any} size={24} color="#FFF" />
-          </Animated.View>
+          <Ionicons 
+            name={challenge.icon as any} 
+            size={16} 
+            color={challenge.color} 
+            style={styles.simpleIcon}
+          />
           
           <View style={styles.textContent}>
             <Text style={styles.title}>{challenge.title}</Text>
-            <Text style={styles.description}>{challenge.description}</Text>
           </View>
           
-          <Ionicons name="chevron-forward" size={20} color="#D4AF37" />
+          <Ionicons name="chevron-forward" size={16} color="#6B7C93" />
         </View>
       </TouchableOpacity>
     </Animated.View>
@@ -219,15 +213,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  iconContainer: {
-    width: 20,
-    height: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 6,
+  simpleIcon: {
+    marginRight: 8,
+    opacity: 0.9,
   },
   textContent: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
