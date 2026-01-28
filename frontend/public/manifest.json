@@ -4,8 +4,8 @@
   "description": "Créez, visualisez et partagez votre arbre généalogique familial",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1E3A5F",
-  "theme_color": "#1E3A5F",
+  "background_color": "#152A45",
+  "theme_color": "#152A45",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "fr",
@@ -13,15 +13,9 @@
   "icons": [
     {
       "src": "/icons/icon.svg",
-      "sizes": "any",
+      "sizes": "192x192 512x512",
       "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/icon.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [

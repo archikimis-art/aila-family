@@ -404,7 +404,7 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: '#0A1628',
+    backgroundColor: '#152A45',
     position: 'relative', // Important pour que absolute fonctionne
   },
   backgroundContainer: {
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#0A1628',
+    backgroundColor: '#152A45',
     justifyContent: 'center',
     alignItems: 'center',
   },
