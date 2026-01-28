@@ -177,7 +177,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   compactFlag: {
-    fontSize: 14,
+    fontSize: 16,
+    lineHeight: 20,
   },
   modalOverlay: {
     flex: 1,
