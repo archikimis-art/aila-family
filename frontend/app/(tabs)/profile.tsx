@@ -820,8 +820,8 @@ export default function ProfileScreen() {
             </>
           ) : (
             <>
-              <Text style={styles.userName}>Mode Aperçu</Text>
-              <Text style={styles.userEmail}>Non connecté</Text>
+              <Text style={styles.userName}>{t('profile.previewMode')}</Text>
+              <Text style={styles.userEmail}>{t('profile.notConnected')}</Text>
             </>
           )}
         </View>
@@ -832,14 +832,14 @@ export default function ProfileScreen() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="shield-checkmark-outline" size={20} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>Administration</Text>
+              <Text style={styles.sectionTitle}>{t('profile.administration')}</Text>
             </View>
             <TouchableOpacity 
               style={styles.menuItem} 
               onPress={() => router.push('/users-management')}
             >
               <Ionicons name="people-outline" size={22} color="#4A90D9" />
-              <Text style={styles.menuItemText}>Gérer les utilisateurs</Text>
+              <Text style={styles.menuItemText}>{t('profile.manageUsers')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           </View>
@@ -849,15 +849,15 @@ export default function ProfileScreen() {
         {/* Account Section */}
         {!user && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Compte</Text>
+            <Text style={styles.sectionTitle}>{t('profile.account')}</Text>
             <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/(auth)/login')}>
               <Ionicons name="log-in-outline" size={22} color="#D4AF37" />
-              <Text style={styles.menuItemText}>Se connecter</Text>
+              <Text style={styles.menuItemText}>{t('auth.login')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/(auth)/register')}>
               <Ionicons name="person-add-outline" size={22} color="#D4AF37" />
-              <Text style={styles.menuItemText}>Créer un compte</Text>
+              <Text style={styles.menuItemText}>{t('auth.createAccount')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           </View>
@@ -867,14 +867,14 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Ionicons name="star" size={20} color="#D4AF37" />
-            <Text style={styles.sectionTitle}>Premium</Text>
+            <Text style={styles.sectionTitle}>{t('pricing.title')}</Text>
           </View>
           <TouchableOpacity 
             style={styles.menuItem} 
             onPress={() => router.push('/pricing' as any)}
           >
             <Ionicons name="diamond-outline" size={22} color="#D4AF37" />
-            <Text style={styles.menuItemText}>Voir les offres Premium</Text>
+            <Text style={styles.menuItemText}>{t('profile.seePremiumOffers')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
           </TouchableOpacity>
         </View>
@@ -884,14 +884,14 @@ export default function ProfileScreen() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="git-branch" size={20} color="#D4AF37" />
-              <Text style={styles.sectionTitle}>Gestion de l'arbre</Text>
+              <Text style={styles.sectionTitle}>{t('profile.treeManagement')}</Text>
             </View>
             <TouchableOpacity 
               style={styles.menuItem} 
               onPress={() => router.push('/merge-trees' as any)}
             >
               <Ionicons name="git-merge-outline" size={22} color="#00BCD4" />
-              <Text style={styles.menuItemText}>Fusionner des arbres</Text>
+              <Text style={styles.menuItemText}>{t('profile.mergeTrees')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           </View>
@@ -901,10 +901,10 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Ionicons name="shield-checkmark-outline" size={20} color="#D4AF37" />
-            <Text style={styles.sectionTitle}>Protection des données (RGPD)</Text>
+            <Text style={styles.sectionTitle}>{t('profile.dataProtection')}</Text>
           </View>
           <Text style={styles.sectionDescription}>
-            Conformément au RGPD, vous pouvez accéder, exporter ou supprimer vos données à tout moment.
+            {t('profile.gdprDescription')}
           </Text>
 
           <TouchableOpacity
@@ -917,7 +917,7 @@ export default function ProfileScreen() {
             ) : (
               <Ionicons name="cloud-download-outline" size={22} color="#4A90D9" />
             )}
-            <Text style={styles.menuItemText}>Voir mes données</Text>
+            <Text style={styles.menuItemText}>{t('profile.viewMyData')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
           </TouchableOpacity>
 
@@ -932,7 +932,7 @@ export default function ProfileScreen() {
               ) : (
                 <Ionicons name="download-outline" size={22} color="#4CAF50" />
               )}
-              <Text style={styles.menuItemText}>Télécharger l'arbre (JSON)</Text>
+              <Text style={styles.menuItemText}>{t('profile.downloadJSON')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           )}
@@ -949,7 +949,7 @@ export default function ProfileScreen() {
               ) : (
                 <Ionicons name="print-outline" size={22} color="#E91E63" />
               )}
-              <Text style={styles.menuItemText}>Imprimer / Exporter PDF</Text>
+              <Text style={styles.menuItemText}>{t('profile.exportPDF')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           )}
@@ -966,7 +966,7 @@ export default function ProfileScreen() {
               ) : (
                 <Ionicons name="grid-outline" size={22} color="#217346" />
               )}
-              <Text style={styles.menuItemText}>Exporter Excel / CSV</Text>
+              <Text style={styles.menuItemText}>{t('profile.exportExcel')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           )}
@@ -978,7 +978,7 @@ export default function ProfileScreen() {
               onPress={handleImportGedcom}
             >
               <Ionicons name="cloud-upload-outline" size={22} color="#9B59B6" />
-              <Text style={styles.menuItemText}>Importer un fichier GEDCOM</Text>
+              <Text style={styles.menuItemText}>{t('profile.importGEDCOM')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           )}
@@ -990,7 +990,7 @@ export default function ProfileScreen() {
               onPress={handleSendByEmail}
             >
               <Ionicons name="mail-outline" size={22} color="#E67E22" />
-              <Text style={styles.menuItemText}>Envoyer l'arbre par email</Text>
+              <Text style={styles.menuItemText}>{t('profile.sendByEmail')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           )}
@@ -1002,7 +1002,7 @@ export default function ProfileScreen() {
               onPress={() => router.push('/merge-trees')}
             >
               <Ionicons name="git-merge-outline" size={22} color="#00BCD4" />
-              <Text style={styles.menuItemText}>Fusionner des arbres</Text>
+              <Text style={styles.menuItemText}>{t('profile.mergeTrees')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           )}
@@ -1010,7 +1010,7 @@ export default function ProfileScreen() {
           {!user && (
             <TouchableOpacity style={styles.menuItem} onPress={handleClearPreview}>
               <Ionicons name="trash-outline" size={22} color="#FF6B6B" />
-              <Text style={[styles.menuItemText, { color: '#FF6B6B' }]}>Effacer données aperçu</Text>
+              <Text style={[styles.menuItemText, { color: '#FF6B6B' }]}>{t('profile.clearPreviewData')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           )}
@@ -1026,7 +1026,7 @@ export default function ProfileScreen() {
               ) : (
                 <Ionicons name="git-branch-outline" size={22} color="#FF9800" />
               )}
-              <Text style={[styles.menuItemText, { color: '#FF9800' }]}>Supprimer l'arbre</Text>
+              <Text style={[styles.menuItemText, { color: '#FF9800' }]}>{t('profile.clearTree')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           )}
@@ -1037,7 +1037,7 @@ export default function ProfileScreen() {
               onPress={handleDeleteAccount}
               disabled={deleting}
               activeOpacity={0.7}
-              accessibilityLabel="Supprimer mon compte"
+              accessibilityLabel={t('profile.deleteAccount')}
               accessibilityRole="button"
             >
               {deleting ? (
@@ -1045,7 +1045,7 @@ export default function ProfileScreen() {
               ) : (
                 <Ionicons name="trash-outline" size={22} color="#FF6B6B" />
               )}
-              <Text style={[styles.menuItemText, { color: '#FF6B6B' }]}>Supprimer mon compte</Text>
+              <Text style={[styles.menuItemText, { color: '#FF6B6B' }]}>{t('profile.deleteAccount')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
             </TouchableOpacity>
           )}
@@ -1053,37 +1053,36 @@ export default function ProfileScreen() {
 
         {/* Support Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Support & Contact</Text>
+          <Text style={styles.sectionTitle}>{t('profile.supportContact')}</Text>
           <TouchableOpacity 
             style={styles.menuItem}
             onPress={() => {
               Alert.alert(
-                'Nous contacter',
-                'Pour toute question, suggestion ou problème :\n\ncontact@aila.family\n\nNous vous répondrons dans les plus brefs délais.',
+                t('profile.contactUs'),
+                t('profile.contactMessage'),
                 [{ text: 'OK' }]
               );
             }}
           >
             <Ionicons name="mail-outline" size={22} color="#4A90D9" />
-            <Text style={styles.menuItemText}>Nous contacter</Text>
+            <Text style={styles.menuItemText}>{t('profile.contactUs')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
           </TouchableOpacity>
         </View>
 
         {/* Info Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Informations</Text>
+          <Text style={styles.sectionTitle}>{t('profile.information')}</Text>
           <View style={styles.infoCard}>
             <Ionicons name="information-circle-outline" size={20} color="#D4AF37" />
             <Text style={styles.infoText}>
-              AÏLA est une application de généalogie pour préserver et partager l'histoire de votre famille.
-              Vos données sont stockées de manière sécurisée et vous en gardez le contrôle total.
+              {t('profile.appDescription')}
             </Text>
           </View>
           <View style={[styles.infoCard, { marginTop: 12 }]}>
             <Ionicons name="at-outline" size={20} color="#D4AF37" />
             <Text style={styles.infoText}>
-              Contact : contact@aila.family
+              {t('profile.contactEmail')}
             </Text>
           </View>
         </View>
@@ -1101,7 +1100,7 @@ export default function ProfileScreen() {
               <Ionicons name="log-out-outline" size={22} color="#FFFFFF" />
             )}
             <Text style={styles.logoutButtonText}>
-              {loggingOut ? 'Déconnexion...' : 'Déconnexion'}
+              {loggingOut ? t('profile.loggingOut') : t('profile.logout')}
             </Text>
           </TouchableOpacity>
         )}
@@ -1109,7 +1108,7 @@ export default function ProfileScreen() {
         {/* Back to Welcome */}
         <TouchableOpacity style={styles.welcomeButton} onPress={handleGoToWelcome}>
           <Ionicons name="home-outline" size={22} color="#D4AF37" />
-          <Text style={styles.welcomeButtonText}>Retour à l'accueil</Text>
+          <Text style={styles.welcomeButtonText}>{t('profile.backToHome')}</Text>
         </TouchableOpacity>
 
         {/* Version */}
