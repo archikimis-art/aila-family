@@ -265,12 +265,6 @@ export default function WelcomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Défi du jour - Gamification */}
-          <DailyChallengeBanner />
-
-          {/* Preuve sociale - Activité en direct */}
-          <SocialProofBanner />
-
           {/* Guides SEO Section - Design épuré */}
           <View style={styles.guidesSection}>
               <Text style={styles.guidesTitle}>{t('home.discover')}</Text>
@@ -285,52 +279,42 @@ export default function WelcomeScreen() {
                   <Ionicons name="sparkles" size={14} color="#0A1628" />
                   <Text style={styles.guideChipTextHighlight}>{t('home.whyAila')}</Text>
                 </TouchableOpacity>
+                {/* Bouton Blog */}
                 <TouchableOpacity style={styles.guideChipBlog} onPress={() => router.push('/blog')}>
                   <Ionicons name="newspaper-outline" size={14} color="#D4AF37" />
                   <Text style={styles.guideChipTextBlog}>{t('home.blog')}</Text>
                 </TouchableOpacity>
+                {/* Bouton Communauté */}
                 <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/community')}>
                   <Ionicons name="people-circle-outline" size={14} color="#D4AF37" />
                   <Text style={styles.guideChipText}>{t('home.community')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
-                  <Ionicons name="search-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>{t('home.ancestors')}</Text>
+              </View>
+              {/* Deuxième ligne - Guides SEO */}
+              <View style={styles.guidesContainerSecondary}>
+                <TouchableOpacity style={styles.guideChipSmall} onPress={() => router.push('/retrouver-ancetres-gratuitement')}>
+                  <Text style={styles.guideChipTextSmall}>{t('home.ancestors')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/genealogie-debutant-guide')}>
-                  <Ionicons name="school-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>{t('home.beginner')}</Text>
+                <TouchableOpacity style={styles.guideChipSmall} onPress={() => router.push('/genealogie-debutant-guide')}>
+                  <Text style={styles.guideChipTextSmall}>{t('home.beginner')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/traditions-familiales')}>
-                  <Ionicons name="gift-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>{t('home.traditions')}</Text>
+                <TouchableOpacity style={styles.guideChipSmall} onPress={() => router.push('/traditions-familiales')}>
+                  <Text style={styles.guideChipTextSmall}>{t('home.traditions')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/organiser-cousinade')}>
-                  <Ionicons name="people-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>{t('home.cousinade')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/ecrire-histoire-famille')}>
-                  <Ionicons name="create-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>{t('home.write')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.guideChip} onPress={() => router.push('/preserver-histoire-famille')}>
-                  <Ionicons name="images-outline" size={14} color="#D4AF37" />
-                  <Text style={styles.guideChipText}>{t('home.preserve')}</Text>
+                <TouchableOpacity style={styles.guideChipSmall} onPress={() => router.push('/organiser-cousinade')}>
+                  <Text style={styles.guideChipTextSmall}>{t('home.cousinade')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
-            {/* Bouton Communauté - compact */}
-            <TouchableOpacity 
-              style={styles.communityButton}
-              onPress={() => router.push('/community')}
-            >
-              <Ionicons name="chatbubbles-outline" size={14} color="#D4AF37" />
-              <Text style={styles.communityButtonText}>{t('home.community')}</Text>
-            </TouchableOpacity>
-
             {/* Footer text only */}
             <Text style={styles.footerSubtext}>{t('home.dataProtected')}</Text>
+            
+            {/* Mini gamification - Discret en bas */}
+            <View style={styles.miniGamificationSection}>
+              <DailyChallengeBanner />
+              <SocialProofBanner />
+            </View>
             
             {/* Legal Links - All on one line */}
             <View style={styles.legalLinks}>
@@ -835,6 +819,16 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 4,
   },
+  gamificationRow: {
+    marginTop: 8,
+    marginBottom: 4,
+    gap: 4,
+  },
+  miniGamificationSection: {
+    marginTop: 8,
+    marginBottom: 4,
+    opacity: 0.8,
+  },
   guidesTitle: {
     color: '#6B7C93',
     fontSize: 9,
@@ -850,6 +844,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
     paddingHorizontal: 12,
+  },
+  guidesContainerSecondary: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    marginTop: 6,
+  },
+  guideChipSmall: {
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+  },
+  guideChipTextSmall: {
+    color: '#6B7C93',
+    fontSize: 10,
+    textDecorationLine: 'underline',
   },
   guideChip: {
     flexDirection: 'row',

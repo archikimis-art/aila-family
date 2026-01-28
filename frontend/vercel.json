@@ -1,8 +1,8 @@
 {
-  "buildCommand": "rm -rf .expo dist node_modules/.cache .next && npx expo export -p web && node scripts/inject-seo.js",
+  "buildCommand": "rm -rf .expo dist node_modules/.cache .next && yarn add expo@54.0.31 --ignore-engines && yarn expo export -p web && node scripts/inject-seo.js",
   "outputDirectory": "dist",
   "devCommand": "npx expo start --web",
-  "installCommand": "yarn install --force",
+  "installCommand": "yarn install",
   "framework": null,
   "headers": [
     {

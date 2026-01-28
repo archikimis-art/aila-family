@@ -229,9 +229,6 @@ Avec AÏLA, vos données sont automatiquement sauvegardées.`,
     icon: "people-outline",
     challengeType: 'tree'
   },
-    icon: "people-outline",
-    challengeType: 'community'
-  },
 ];
 
 export default function BlogScreen() {

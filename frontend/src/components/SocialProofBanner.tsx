@@ -136,28 +136,28 @@ export default function SocialProofBanner() {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 16,
-    marginVertical: 6,
-    backgroundColor: 'rgba(30, 58, 95, 0.5)',
-    borderRadius: 12,
-    padding: 12,
+    marginHorizontal: 0,
+    marginVertical: 0,
+    backgroundColor: 'transparent',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
   },
   header: {
-    marginBottom: 8,
+    display: 'none',
   },
   liveIndicator: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
   liveDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: 4,
+    height: 4,
+    borderRadius: 2,
     backgroundColor: '#4CAF50',
   },
   liveText: {
-    fontSize: 10,
+    fontSize: 8,
     fontWeight: '600',
     color: '#6B7C93',
     textTransform: 'uppercase',
@@ -166,30 +166,25 @@ const styles = StyleSheet.create({
   activityCard: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   iconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
+    display: 'none',
   },
   activityContent: {
-    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   activityText: {
-    fontSize: 13,
-    color: '#B8C5D6',
-    lineHeight: 18,
+    fontSize: 10,
+    color: '#6B7C93',
+    textAlign: 'center',
   },
   userName: {
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontWeight: '500',
+    color: '#8BA1B7',
   },
   timeText: {
-    fontSize: 11,
-    color: '#6B7C93',
-    marginTop: 2,
+    display: 'none',
   },
 });
