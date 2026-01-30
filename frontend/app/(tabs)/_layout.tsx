@@ -31,7 +31,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="tree"
         options={{
-          title: t('challenges.categories.tree') || 'Arbre',
+          title: t('tabs.tree'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="git-branch-outline" size={size} color={color} />
           ),
@@ -40,7 +40,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="members"
         options={{
-          title: t('nav.home') || 'Membres',
+          title: t('tabs.members'),
           tabBarIcon: ({ color, size}) => (
             <Ionicons name="people-outline" size={size} color={color} />
           ),
@@ -49,7 +49,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="chat"
         options={{
-          title: t('community.title')?.split(' ')[0] || 'Discussion',
+          title: t('tabs.chat'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="chatbubbles-outline" size={size} color={color} />
           ),
@@ -58,7 +58,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="share"
         options={{
-          title: t('common.share') || 'Liens',
+          title: t('tabs.share'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="link-outline" size={size} color={color} />
           ),
@@ -67,7 +67,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: t('profile.title')?.split(' ')[1] || 'Profil',
+          title: t('tabs.profile'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" size={size} color={color} />
           ),

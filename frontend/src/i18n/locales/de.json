@@ -17,6 +17,13 @@
     "seeAll": "Alle anzeigen",
     "language": "Sprache"
   },
+  "tabs": {
+    "tree": "Baum",
+    "members": "Mitglieder",
+    "chat": "Chat",
+    "share": "Teilen",
+    "profile": "Profil"
+  },
   "home": {
     "title": "AÏLA",
     "subtitle": "Der Stammbaum, der Ihre Familie verbindet",

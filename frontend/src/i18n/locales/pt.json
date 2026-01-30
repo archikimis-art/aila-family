@@ -17,6 +17,13 @@
     "seeAll": "Ver tudo",
     "language": "Idioma"
   },
+  "tabs": {
+    "tree": "Árvore",
+    "members": "Membros",
+    "chat": "Chat",
+    "share": "Compartilhar",
+    "profile": "Perfil"
+  },
   "home": {
     "title": "AÏLA",
     "subtitle": "A árvore genealógica que conecta sua família",

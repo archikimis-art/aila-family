@@ -17,6 +17,13 @@
     "seeAll": "See all",
     "language": "Language"
   },
+  "tabs": {
+    "tree": "Tree",
+    "members": "Members",
+    "chat": "Chat",
+    "share": "Share",
+    "profile": "Profile"
+  },
   "home": {
     "title": "AÏLA",
     "subtitle": "The family tree that connects your family",
