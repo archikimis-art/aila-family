@@ -218,7 +218,6 @@ export default function ChatScreen() {
               <Text style={styles.emptyMessagesSubtext}>
                 {t('chat.beFirstToChat')}
               </Text>
-              </Text>
             </View>
           ) : (
             messages.map((msg) => {
