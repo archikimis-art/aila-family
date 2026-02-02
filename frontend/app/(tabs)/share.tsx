@@ -289,13 +289,13 @@ export default function ShareScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Partage</Text>
+        <Text style={styles.headerTitle}>{t('share.title')}</Text>
         <TouchableOpacity 
           style={styles.inviteButton}
           onPress={() => setShowInviteModal(true)}
         >
           <Ionicons name="person-add" size={20} color="#0A1628" />
-          <Text style={styles.inviteButtonText}>Inviter</Text>
+          <Text style={styles.inviteButtonText}>{t('share.invite')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -312,7 +312,7 @@ export default function ShareScreen() {
           onPress={() => setActiveTab('collaborators')}
         >
           <Text style={[styles.tabText, activeTab === 'collaborators' && styles.tabTextActive]}>
-            Collaborateurs
+            {t('share.collaborators')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity 
@@ -320,7 +320,7 @@ export default function ShareScreen() {
           onPress={() => setActiveTab('shared')}
         >
           <Text style={[styles.tabText, activeTab === 'shared' && styles.tabTextActive]}>
-            Partages
+            {t('share.sharedWithMe')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity 
@@ -328,7 +328,7 @@ export default function ShareScreen() {
           onPress={() => setActiveTab('contributions')}
         >
           <Text style={[styles.tabText, activeTab === 'contributions' && styles.tabTextActive]}>
-            En attente {pendingContributions.length > 0 ? '(' + pendingContributions.length + ')' : ''}
+            {t('share.pending')} {pendingContributions.length > 0 ? '(' + pendingContributions.length + ')' : ''}
           </Text>
         </TouchableOpacity>
       </View>
@@ -345,9 +345,9 @@ export default function ShareScreen() {
           ListEmptyComponent={
             <View style={styles.emptyState}>
               <Ionicons name="people-outline" size={60} color="#2A3F5A" />
-              <Text style={styles.emptyTitle}>Aucun collaborateur</Text>
+              <Text style={styles.emptyTitle}>{t('share.noCollaborators')}</Text>
               <Text style={styles.emptySubtitle}>
-                Invitez votre famille a completer l'arbre
+                {t('share.inviteFamily')}
               </Text>
             </View>
           }
@@ -405,13 +405,13 @@ export default function ShareScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Inviter un collaborateur</Text>
+              <Text style={styles.modalTitle}>{t('share.inviteCollaborator')}</Text>
               <TouchableOpacity onPress={() => setShowInviteModal(false)}>
                 <Ionicons name="close" size={24} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.inputLabel}>Adresse email</Text>
+            <Text style={styles.inputLabel}>{t('share.email')}</Text>
             <TextInput
               style={styles.input}
               placeholder="email@exemple.com"
@@ -422,7 +422,7 @@ export default function ShareScreen() {
               autoCapitalize="none"
             />
 
-            <Text style={styles.inputLabel}>Role</Text>
+            <Text style={styles.inputLabel}>{t('share.role')}</Text>
             <View style={styles.roleContainer}>
               <TouchableOpacity
                 style={[styles.roleButton, inviteRole === 'editor' && styles.roleButtonActive]}
@@ -430,9 +430,8 @@ export default function ShareScreen() {
               >
                 <Ionicons name="create-outline" size={20} color={inviteRole === 'editor' ? '#D4AF37' : '#6B7C93'} />
                 <Text style={[styles.roleText, inviteRole === 'editor' && styles.roleTextActive]}>
-                  Editeur
+                  {t('share.editor')}
                 </Text>
-                <Text style={styles.roleDescription}>Peut ajouter et modifier</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.roleButton, inviteRole === 'viewer' && styles.roleButtonActive]}
@@ -440,9 +439,8 @@ export default function ShareScreen() {
               >
                 <Ionicons name="eye-outline" size={20} color={inviteRole === 'viewer' ? '#D4AF37' : '#6B7C93'} />
                 <Text style={[styles.roleText, inviteRole === 'viewer' && styles.roleTextActive]}>
-                  Lecteur
+                  {t('share.viewer')}
                 </Text>
-                <Text style={styles.roleDescription}>Peut uniquement voir</Text>
               </TouchableOpacity>
             </View>
 
@@ -456,7 +454,7 @@ export default function ShareScreen() {
               ) : (
                 <>
                   <Ionicons name="send" size={20} color="#0A1628" />
-                  <Text style={styles.sendButtonText}>Envoyer l'invitation</Text>
+                  <Text style={styles.sendButtonText}>{t('share.sendInvitation')}</Text>
                 </>
               )}
             </TouchableOpacity>
