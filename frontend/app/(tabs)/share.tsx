@@ -184,7 +184,7 @@ export default function ShareScreen() {
         <View style={styles.cardInfo}>
           <Text style={styles.cardTitle}>{item.email}</Text>
           <Text style={styles.cardSubtitle}>
-            {item.role === 'editor' ? 'Editeur' : 'Lecteur'} - {item.status === 'accepted' ? 'Accepte' : 'En attente'}
+            {item.role === 'editor' ? t('share.editor') : t('share.viewer')} - {item.status === 'accepted' ? t('share.accepted') : t('share.pending')}
           </Text>
         </View>
       </View>
@@ -209,7 +209,7 @@ export default function ShareScreen() {
         <View style={styles.cardInfo}>
           <Text style={styles.cardTitle}>{item.owner_name}</Text>
           <Text style={styles.cardSubtitle}>
-            {item.persons_count} membres - {item.role === 'editor' ? 'Editeur' : 'Lecteur'}
+            {t('share.peopleInTree', { count: item.persons_count })} - {item.role === 'editor' ? t('share.editor') : t('share.viewer')}
           </Text>
         </View>
       </View>
@@ -228,9 +228,9 @@ export default function ShareScreen() {
         <View style={styles.contributionInfo}>
           <Text style={styles.contributionTitle}>{item.contributor_name}</Text>
           <Text style={styles.contributionSubtitle}>
-            {item.action === 'add' ? 'Ajouter' : item.action === 'edit' ? 'Modifier' : 'Supprimer'}
-            {' une '}
-            {item.entity_type === 'person' ? 'personne' : 'relation'}
+            {item.action === 'add' ? t('common.add') : item.action === 'edit' ? t('common.edit') : t('common.delete')}
+            {' - '}
+            {item.entity_type === 'person' ? t('common.person') : t('common.link')}
           </Text>
           {item.entity_data && item.entity_data.first_name && (
             <Text style={styles.contributionDetail}>
@@ -261,15 +261,15 @@ export default function ShareScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.loginPrompt}>
           <Ionicons name="people-outline" size={60} color="#D4AF37" />
-          <Text style={styles.loginTitle}>Connectez-vous</Text>
+          <Text style={styles.loginTitle}>{t('share.loginRequired')}</Text>
           <Text style={styles.loginSubtitle}>
-            La collaboration necessite un compte
+            {t('share.loginToShare')}
           </Text>
           <TouchableOpacity 
             style={styles.loginButton}
             onPress={() => router.push('/(auth)/login')}
           >
-            <Text style={styles.loginButtonText}>Se connecter</Text>
+            <Text style={styles.loginButtonText}>{t('auth.login')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

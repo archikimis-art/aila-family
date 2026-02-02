@@ -2150,7 +2150,7 @@ export default function TreeScreen() {
         <View style={styles.guideOverlay}>
           <View style={styles.guideContent}>
             <View style={styles.guideHeader}>
-              <Text style={styles.guideTitle}>📖 Guide d'utilisation</Text>
+              <Text style={styles.guideTitle}>📖 {t('tree.guide.title')}</Text>
               <TouchableOpacity onPress={() => setShowGuide(false)}>
                 <Ionicons name="close-circle" size={28} color="#D4AF37" />
               </TouchableOpacity>
@@ -2163,15 +2163,15 @@ export default function TreeScreen() {
                   <Text style={styles.guideStepNumberText}>1</Text>
                 </View>
                 <View style={styles.guideStepContent}>
-                  <Text style={styles.guideStepTitle}>Créer des personnes</Text>
+                  <Text style={styles.guideStepTitle}>{t('tree.guide.step1Title')}</Text>
                   <Text style={styles.guideStepText}>
-                    Cliquez sur le bouton <Text style={styles.guideHighlight}>"Ajouter"</Text> en bas de l'écran pour créer une nouvelle personne dans votre arbre.
+                    {t('tree.guide.step1Text')}
                   </Text>
                   <View style={styles.guideStepDetails}>
-                    <Text style={styles.guideStepDetail}>• Renseignez le prénom et le nom (obligatoires)</Text>
-                    <Text style={styles.guideStepDetail}>• Choisissez le genre</Text>
-                    <Text style={styles.guideStepDetail}>• Ajoutez la date et le lieu de naissance</Text>
-                    <Text style={styles.guideStepDetail}>• Indiquez la branche géographique</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step1Detail1')}</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step1Detail2')}</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step1Detail3')}</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step1Detail4')}</Text>
                   </View>
                 </View>
               </View>
@@ -2182,14 +2182,14 @@ export default function TreeScreen() {
                   <Text style={styles.guideStepNumberText}>2</Text>
                 </View>
                 <View style={styles.guideStepContent}>
-                  <Text style={styles.guideStepTitle}>Créer les liens familiaux</Text>
+                  <Text style={styles.guideStepTitle}>{t('tree.guide.step2Title')}</Text>
                   <Text style={styles.guideStepText}>
-                    Une fois au moins 2 personnes créées, cliquez sur <Text style={styles.guideHighlight}>"Lien"</Text> pour établir les relations.
+                    {t('tree.guide.step2Text')}
                   </Text>
                   <View style={styles.guideStepDetails}>
-                    <Text style={styles.guideStepDetail}>• <Text style={styles.guideHighlight}>Parent</Text> : X est parent de Y</Text>
-                    <Text style={styles.guideStepDetail}>• <Text style={styles.guideHighlight}>Enfant</Text> : X est enfant de Y</Text>
-                    <Text style={styles.guideStepDetail}>• <Text style={styles.guideHighlight}>Époux/Épouse</Text> : X est marié(e) à Y</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step2Detail1')}</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step2Detail2')}</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step2Detail3')}</Text>
                   </View>
                 </View>
               </View>
@@ -2200,9 +2200,9 @@ export default function TreeScreen() {
                   <Text style={styles.guideStepNumberText}>3</Text>
                 </View>
                 <View style={styles.guideStepContent}>
-                  <Text style={styles.guideStepTitle}>Actualiser la visualisation</Text>
+                  <Text style={styles.guideStepTitle}>{t('tree.guide.step3Title')}</Text>
                   <Text style={styles.guideStepText}>
-                    Après avoir créé des personnes ou des liens, cliquez sur <Text style={styles.guideHighlight}>"Actualiser"</Text> pour mettre à jour l'affichage de l'arbre.
+                    {t('tree.guide.step3Text')}
                   </Text>
                 </View>
               </View>
@@ -2213,18 +2213,18 @@ export default function TreeScreen() {
                   <Text style={styles.guideStepNumberText}>4</Text>
                 </View>
                 <View style={styles.guideStepContent}>
-                  <Text style={styles.guideStepTitle}>Ordre de création recommandé</Text>
+                  <Text style={styles.guideStepTitle}>{t('tree.guide.step4Title')}</Text>
                   <Text style={styles.guideStepText}>
-                    Pour un arbre bien organisé :
+                    {t('tree.guide.step4Text')}
                   </Text>
                   <View style={styles.guideStepDetails}>
-                    <Text style={styles.guideStepDetail}>1. Commencez par les grands-parents</Text>
-                    <Text style={styles.guideStepDetail}>2. Créez leurs enfants (vos parents)</Text>
-                    <Text style={styles.guideStepDetail}>3. Ajoutez les liens "parent" entre eux</Text>
-                    <Text style={styles.guideStepDetail}>4. Continuez avec votre génération</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step4Detail1')}</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step4Detail2')}</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step4Detail3')}</Text>
+                    <Text style={styles.guideStepDetail}>{t('tree.guide.step4Detail4')}</Text>
                   </View>
                   <Text style={styles.guideNote}>
-                    💡 L'arbre se réorganise automatiquement même si vous ajoutez des ancêtres après coup !
+                    💡 {t('tree.guide.step4Note')}
                   </Text>
                 </View>
               </View>
@@ -2235,14 +2235,10 @@ export default function TreeScreen() {
                   <Text style={styles.guideStepNumberText}>5</Text>
                 </View>
                 <View style={styles.guideStepContent}>
-                  <Text style={styles.guideStepTitle}>Partager votre arbre</Text>
+                  <Text style={styles.guideStepTitle}>{t('tree.guide.step5Title')}</Text>
                   <Text style={styles.guideStepText}>
-                    Allez dans l'onglet <Text style={styles.guideHighlight}>"Partage"</Text> pour inviter des membres de votre famille à collaborer sur l'arbre.
+                    {t('tree.guide.step5Text')}
                   </Text>
-                  <View style={styles.guideStepDetails}>
-                    <Text style={styles.guideStepDetail}>• <Text style={styles.guideHighlight}>Éditeur</Text> : peut ajouter des personnes et liens</Text>
-                    <Text style={styles.guideStepDetail}>• <Text style={styles.guideHighlight}>Lecteur</Text> : peut uniquement visualiser</Text>
-                  </View>
                 </View>
               </View>
 
@@ -2250,9 +2246,9 @@ export default function TreeScreen() {
               <View style={styles.guideTip}>
                 <Ionicons name="bulb" size={24} color="#D4AF37" />
                 <View style={styles.guideTipContent}>
-                  <Text style={styles.guideTipTitle}>Astuce</Text>
+                  <Text style={styles.guideTipTitle}>{t('tree.guide.tipTitle')}</Text>
                   <Text style={styles.guideTipText}>
-                    Cliquez sur une personne dans l'arbre pour voir ses détails et modifier ses informations.
+                    {t('tree.guide.tipText')}
                   </Text>
                 </View>
               </View>
@@ -2262,7 +2258,7 @@ export default function TreeScreen() {
               style={styles.guideCloseButton}
               onPress={() => setShowGuide(false)}
             >
-              <Text style={styles.guideCloseButtonText}>J'ai compris !</Text>
+              <Text style={styles.guideCloseButtonText}>{t('tree.guide.close')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -2278,7 +2274,7 @@ export default function TreeScreen() {
         <View style={styles.eventsOverlay}>
           <View style={styles.eventsContent}>
             <View style={styles.eventsHeader}>
-              <Text style={styles.eventsTitle}>🎉 Événements Familiaux</Text>
+              <Text style={styles.eventsTitle}>🎉 {t('events.title')}</Text>
               <TouchableOpacity onPress={() => setShowEventsPanel(false)}>
                 <Ionicons name="close-circle" size={28} color="#D4AF37" />
               </TouchableOpacity>
@@ -2286,9 +2282,9 @@ export default function TreeScreen() {
             
             <ScrollView style={styles.eventsScroll} showsVerticalScrollIndicator={false}>
               {/* Upcoming Birthdays */}
-              <Text style={styles.eventsSectionTitle}>🎂 Anniversaires à venir</Text>
+              <Text style={styles.eventsSectionTitle}>🎂 {t('events.upcomingBirthdays')}</Text>
               {upcomingBirthdays.length === 0 ? (
-                <Text style={styles.eventsEmpty}>Aucun anniversaire dans les 30 prochains jours</Text>
+                <Text style={styles.eventsEmpty}>{t('events.noBirthdays')}</Text>
               ) : (
                 upcomingBirthdays.map((birthday, index) => (
                   <TouchableOpacity 
@@ -2297,11 +2293,11 @@ export default function TreeScreen() {
                     onPress={() => {
                       setCurrentEvent({
                         type: 'birthday',
-                        title: `🎂 Anniversaire de ${birthday.person_name}!`,
+                        title: `🎂 ${t('events.birthdayOf', { name: birthday.person_name })}`,
                         person_name: birthday.person_name,
                         subtitle: birthday.days_until === 0 
-                          ? `Aujourd'hui - ${birthday.age} ans!` 
-                          : `Dans ${birthday.days_until} jour${birthday.days_until > 1 ? 's' : ''} - ${birthday.age} ans`
+                          ? `${t('events.today')} - ${birthday.age} ${t('events.yearsOld')}!` 
+                          : `${birthday.days_until > 1 ? t('events.inDaysPlural', { count: birthday.days_until }) : t('events.inDays', { count: birthday.days_until })} - ${birthday.age} ${t('events.yearsOld')}`
                       });
                       setShowEventsPanel(false);
                       setShowEventAnimation(true);
@@ -2312,8 +2308,8 @@ export default function TreeScreen() {
                       <Text style={styles.eventCardTitle}>{birthday.person_name}</Text>
                       <Text style={styles.eventCardSubtitle}>
                         {birthday.days_until === 0 
-                          ? `🎉 Aujourd'hui! - ${birthday.age} ans` 
-                          : `Dans ${birthday.days_until} jour${birthday.days_until > 1 ? 's' : ''} - ${birthday.age} ans`}
+                          ? `🎉 ${t('events.today')}! - ${birthday.age} ${t('events.yearsOld')}` 
+                          : `${birthday.days_until > 1 ? t('events.inDaysPlural', { count: birthday.days_until }) : t('events.inDays', { count: birthday.days_until })} - ${birthday.age} ${t('events.yearsOld')}`}
                       </Text>
                     </View>
                     <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
@@ -2322,29 +2318,29 @@ export default function TreeScreen() {
               )}
 
               {/* Create Event Section */}
-              <Text style={styles.eventsSectionTitle}>✨ Créer un événement</Text>
+              <Text style={styles.eventsSectionTitle}>✨ {t('events.createEvent')}</Text>
               
               {!showCreateEvent ? (
                 <View style={styles.eventTypeGrid}>
                   {[
-                    { type: 'birthday', emoji: '🎂', label: 'Anniversaire' },
-                    { type: 'birth', emoji: '👶', label: 'Naissance' },
-                    { type: 'graduation', emoji: '🎓', label: 'Diplôme' },
-                    { type: 'wedding', emoji: '💍', label: 'Mariage' },
-                    { type: 'newyear', emoji: '🎆', label: 'Nouvel An' },
-                    { type: 'holiday', emoji: '🎄', label: 'Fête' },
+                    { type: 'birthday', emoji: '🎂', labelKey: 'events.birthday' },
+                    { type: 'birth', emoji: '👶', labelKey: 'events.birth' },
+                    { type: 'graduation', emoji: '🎓', labelKey: 'events.graduation' },
+                    { type: 'wedding', emoji: '💍', labelKey: 'events.wedding' },
+                    { type: 'newyear', emoji: '🎆', labelKey: 'events.newYear' },
+                    { type: 'holiday', emoji: '🎄', labelKey: 'events.christmas' },
                   ].map((item) => (
                     <TouchableOpacity 
                       key={item.type}
                       style={styles.eventTypeButton}
                       onPress={() => {
                         setNewEventType(item.type);
-                        setNewEventTitle(`${item.emoji} ${item.label}`);
+                        setNewEventTitle(`${item.emoji} ${t(item.labelKey)}`);
                         setShowCreateEvent(true);
                       }}
                     >
                       <Text style={styles.eventTypeEmoji}>{item.emoji}</Text>
-                      <Text style={styles.eventTypeLabel}>{item.label}</Text>
+                      <Text style={styles.eventTypeLabel}>{t(item.labelKey)}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
