@@ -41,6 +41,18 @@
     "info": "Informação",
     "addTwoPersons": "Adicione pelo menos 2 pessoas para criar um vínculo familiar.",
     "printAvailableWeb": "A impressão está disponível na versão web.",
+    "viewingTreeOf": "Você está visualizando a árvore de {{name}} ({{role}})",
+    "roleEditor": "Editor",
+    "roleViewer": "Visualizador",
+    "debug": {
+      "title": "DEBUG - Vínculos e Níveis",
+      "persons": "Pessoas",
+      "parentLinks": "Vínculos pai/mãe",
+      "spouseLinks": "Vínculos cônjuge",
+      "calculatedLevels": "Níveis calculados",
+      "level": "Nível",
+      "rawLinks": "Vínculos brutos"
+    },
     "guide": {
       "title": "Guia de uso",
       "step1Title": "Criar pessoas",

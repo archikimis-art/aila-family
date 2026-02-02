@@ -41,6 +41,18 @@
     "info": "Information",
     "addTwoPersons": "Fügen Sie mindestens 2 Personen hinzu, um eine Familienverbindung zu erstellen.",
     "printAvailableWeb": "Das Drucken ist in der Webversion verfügbar.",
+    "viewingTreeOf": "Sie sehen den Baum von {{name}} ({{role}})",
+    "roleEditor": "Bearbeiter",
+    "roleViewer": "Betrachter",
+    "debug": {
+      "title": "DEBUG - Verbindungen und Ebenen",
+      "persons": "Personen",
+      "parentLinks": "Eltern-Verbindungen",
+      "spouseLinks": "Ehepartner-Verbindungen",
+      "calculatedLevels": "Berechnete Ebenen",
+      "level": "Ebene",
+      "rawLinks": "Rohe Verbindungen"
+    },
     "guide": {
       "title": "Bedienungsanleitung",
       "step1Title": "Personen erstellen",

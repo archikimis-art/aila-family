@@ -41,6 +41,18 @@
     "info": "Informazione",
     "addTwoPersons": "Aggiungi almeno 2 persone per creare un legame familiare.",
     "printAvailableWeb": "La stampa è disponibile nella versione web.",
+    "viewingTreeOf": "Stai visualizzando l'albero di {{name}} ({{role}})",
+    "roleEditor": "Editor",
+    "roleViewer": "Visualizzatore",
+    "debug": {
+      "title": "DEBUG - Legami e Livelli",
+      "persons": "Persone",
+      "parentLinks": "Legami genitore",
+      "spouseLinks": "Legami coniuge",
+      "calculatedLevels": "Livelli calcolati",
+      "level": "Livello",
+      "rawLinks": "Legami grezzi"
+    },
     "guide": {
       "title": "Guida all'uso",
       "step1Title": "Creare persone",

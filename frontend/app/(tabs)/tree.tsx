@@ -1956,17 +1956,17 @@ export default function TreeScreen() {
       {/* Debug Panel */}
       {showDebug && debugInfo && (
         <View style={styles.debugPanel}>
-          <Text style={styles.debugTitle}>🔍 DEBUG - Liens et Niveaux</Text>
-          <Text style={styles.debugText}>Personnes: {debugInfo.totalPersons}</Text>
-          <Text style={styles.debugText}>Liens parent: {debugInfo.parentLinks}</Text>
-          <Text style={styles.debugText}>Liens époux: {debugInfo.spouseLinks}</Text>
-          <Text style={styles.debugSubtitle}>Niveaux calculés:</Text>
+          <Text style={styles.debugTitle}>🔍 {t('tree.debug.title')}</Text>
+          <Text style={styles.debugText}>{t('tree.debug.persons')}: {debugInfo.totalPersons}</Text>
+          <Text style={styles.debugText}>{t('tree.debug.parentLinks')}: {debugInfo.parentLinks}</Text>
+          <Text style={styles.debugText}>{t('tree.debug.spouseLinks')}: {debugInfo.spouseLinks}</Text>
+          <Text style={styles.debugSubtitle}>{t('tree.debug.calculatedLevels')}:</Text>
           {debugInfo.personLevelsMap.map((item, idx) => (
             <Text key={idx} style={styles.debugText}>
-              • {item.name}: Niveau {item.level}
+              • {item.name}: {t('tree.debug.level')} {item.level}
             </Text>
           ))}
-          <Text style={styles.debugSubtitle}>Liens bruts:</Text>
+          <Text style={styles.debugSubtitle}>{t('tree.debug.rawLinks')}:</Text>
           {links.map((link, idx) => {
             const p1 = persons.find(p => p.id === link.person_id_1);
             const p2 = persons.find(p => p.id === link.person_id_2);
@@ -1990,7 +1990,10 @@ export default function TreeScreen() {
       {sharedTreeOwner && !inviteMessage && (
         <View style={[styles.previewBanner, { backgroundColor: '#2196F3' }]}>
           <Text style={styles.previewBannerText}>
-            Vous consultez l'arbre de {sharedTreeOwner.name} ({sharedTreeOwner.role === 'editor' ? 'Éditeur' : 'Lecteur'})
+            {t('tree.viewingTreeOf', { 
+              name: sharedTreeOwner.name, 
+              role: sharedTreeOwner.role === 'editor' ? t('tree.roleEditor') : t('tree.roleViewer') 
+            })}
           </Text>
         </View>
       )}
