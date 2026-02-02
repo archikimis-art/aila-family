@@ -471,5 +471,25 @@
     "version": "Version",
     "copyright": "© 2024 AÏLA. All rights reserved.",
     "backHome": "Back to home"
+  },
+  "faq": {
+    "title": "FAQ",
+    "howCanWeHelp": "How can we help you?",
+    "intro": "Quickly find answers to your questions about AÏLA, the family tree creation app.",
+    "categories": {
+      "all": "All",
+      "gettingStarted": "Getting Started",
+      "treeManagement": "Tree Management",
+      "navigation": "Navigation & Display",
+      "sharing": "Sharing & Collaboration",
+      "chat": "Family Chat",
+      "privacy": "Data & Privacy",
+      "technical": "Technical"
+    },
+    "contactSupport": "Still have questions?",
+    "contactSupportText": "Our team is here to help you.",
+    "contactUs": "Contact us",
+    "createTree": "Ready to start?",
+    "createTreeText": "Create your family tree for free with AÏLA."
   }
 }

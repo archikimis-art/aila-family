@@ -471,5 +471,25 @@
     "version": "Version",
     "copyright": "© 2024 AÏLA. Tous droits réservés.",
     "backHome": "Retour à l'accueil"
+  },
+  "faq": {
+    "title": "FAQ",
+    "howCanWeHelp": "Comment pouvons-nous vous aider ?",
+    "intro": "Trouvez rapidement des réponses à vos questions sur AÏLA, l'application de création d'arbres généalogiques.",
+    "categories": {
+      "all": "Tous",
+      "gettingStarted": "Premiers pas",
+      "treeManagement": "Gestion de l'arbre",
+      "navigation": "Navigation et affichage",
+      "sharing": "Partage et collaboration",
+      "chat": "Chat familial",
+      "privacy": "Données et confidentialité",
+      "technical": "Technique"
+    },
+    "contactSupport": "Vous avez encore des questions ?",
+    "contactSupportText": "Notre équipe est là pour vous aider.",
+    "contactUs": "Contactez-nous",
+    "createTree": "Prêt à commencer ?",
+    "createTreeText": "Créez votre arbre généalogique gratuitement avec AÏLA."
   }
 }
