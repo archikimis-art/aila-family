@@ -15,14 +15,20 @@ French (Français)
 
 ## Completed Features
 
-### 2026-02-02 - i18n Completion for Tree & Members Pages ✅
-- ✅ Traduit `tree.tsx` : boutons "Ajouter", "Lien", "Actualiser", "Votre arbre est vide", "Mode Aperçu", "Sauvegarder", etc.
-- ✅ Traduit `members.tsx` : titre "Membres", placeholder recherche, messages d'état vide
-- ✅ Traduit `AdBanner.tsx` : "Espace publicitaire", "Premium"
-- ✅ Ajouté clés de traduction dans 6 fichiers de langue (fr, en, es, de, it, pt)
-- ✅ Toutes les alertes système traduites (limite atteinte, information, etc.)
+### 2026-02-02 - i18n Audit - Major Progress ✅
+**Pages entièrement traduites :**
+- ✅ `tree.tsx` : Boutons "Ajouter", "Lien", "Actualiser", états vides, alertes système
+- ✅ `members.tsx` : Titre, recherche, messages d'état vide
+- ✅ `add-person.tsx` : Formulaire complet (prénom, nom, genre, dates, lieu, notes)
+- ✅ `add-link.tsx` : Types de relation (Parent/Enfant/Époux/Frère), aperçu, boutons
+- ✅ `share.tsx` : Onglets, modal d'invitation, rôles (Éditeur/Lecteur)
+- ✅ `AdBanner.tsx` : "Espace publicitaire", "Premium"
 
-### 2026-01-28 - Full Internationalization (i18n) Implementation (P0) ✅
+**Fichiers de traduction mis à jour (6 langues) :**
+- Ajout des sections `tree`, `members`, `addPerson`, `addLink`, `share`
+- Langues : fr, en, es, de, it, pt
+
+### 2026-02-02 - i18n Completion for Tree & Members Pages ✅
 - ✅ Ajouté `useTranslation` hook à **38 pages** de l'application
 - ✅ Traduit community.tsx : formulaires, messages, catégories
 - ✅ Traduit login.tsx et register.tsx : authentification complète
