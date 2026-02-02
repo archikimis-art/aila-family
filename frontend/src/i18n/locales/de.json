@@ -15,7 +15,42 @@
     "download": "Herunterladen",
     "search": "Suchen",
     "seeAll": "Alle anzeigen",
-    "language": "Sprache"
+    "language": "Sprache",
+    "add": "Hinzufügen",
+    "link": "Verbindung",
+    "refresh": "Aktualisieren",
+    "person": "Person",
+    "persons": "Personen",
+    "premium": "Premium",
+    "adSpace": "Werbefläche"
+  },
+  "tree": {
+    "myTree": "Mein Baum",
+    "previewMode": "Vorschaumodus",
+    "treeOf": "Baum von {{name}}",
+    "saveTree": "Speichern",
+    "emptyTitle": "Ihr Baum ist leer",
+    "emptySubtitle": "Beginnen Sie, indem Sie das erste Familienmitglied hinzufügen",
+    "addPerson": "Eine Person hinzufügen",
+    "demoMode": "Demo-Modus - Familie Martin",
+    "demoSubtitle": "Frei erkunden • Mitglieder hinzufügen • Verbindungen erstellen",
+    "createMyTree": "Meinen Baum erstellen",
+    "limitReached": "Limit erreicht",
+    "limitMessage": "Der Vorschaumodus ist auf 10 Mitglieder begrenzt. Erstellen Sie ein Konto für einen unbegrenzten Baum.",
+    "createAccount": "Konto erstellen",
+    "info": "Information",
+    "addTwoPersons": "Fügen Sie mindestens 2 Personen hinzu, um eine Familienverbindung zu erstellen.",
+    "printAvailableWeb": "Das Drucken ist in der Webversion verfügbar.",
+    "guide": {
+      "title": "So verwenden Sie Ihren Stammbaum",
+      "step1Title": "Familienmitglieder hinzufügen",
+      "step1Text": "Klicken Sie auf die Schaltfläche \"Hinzufügen\" unten auf dem Bildschirm, um eine neue Person in Ihrem Baum zu erstellen.",
+      "step2Title": "Familienverbindungen erstellen",
+      "step2Text": "Sobald mindestens 2 Personen erstellt sind, klicken Sie auf \"Verbindung\", um Beziehungen herzustellen.",
+      "step3Title": "Ansicht aktualisieren",
+      "step3Text": "Nach dem Erstellen von Personen oder Verbindungen klicken Sie auf \"Aktualisieren\", um die Baumansicht zu aktualisieren.",
+      "close": "Verstanden!"
+    }
   },
   "tabs": {
     "tree": "Baum",
@@ -279,5 +314,15 @@
     "createAccountPrompt": "Erstellen Sie ein kostenloses Konto, um an Herausforderungen teilzunehmen und Abzeichen zu verdienen!",
     "later": "Später",
     "signUp": "Registrieren"
+  },
+  "members": {
+    "title": "Mitglieder",
+    "searchPlaceholder": "Mitglied suchen...",
+    "noResults": "Keine Ergebnisse",
+    "noMembers": "Keine Mitglieder",
+    "tryOtherTerms": "Versuchen Sie andere Begriffe",
+    "startAddingMembers": "Beginnen Sie, Mitglieder zu Ihrem Baum hinzuzufügen",
+    "limitReached": "Limit erreicht",
+    "limitMessage": "Der Vorschaumodus ist auf 10 Mitglieder begrenzt."
   }
 }

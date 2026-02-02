@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAds } from '@/context/AdsContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 // Google AdSense Publisher ID (Web)
 const ADSENSE_CLIENT = 'ca-pub-8309745338282834';
@@ -18,7 +19,7 @@ interface AdBannerProps {
 }
 
 // Web AdSense Banner Component
-const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
+const WebAdBanner = ({ onRemoveAds, t }: { onRemoveAds: () => void; t: any }) => {
   const adRef = useRef<HTMLDivElement>(null);
   const adInitialized = useRef(false);
   const [adLoaded, setAdLoaded] = useState(false);
@@ -74,13 +75,13 @@ const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
         {!adLoaded && (
           <div style={webStyles.placeholder}>
             <span style={webStyles.placeholderIcon}>📢</span>
-            <span style={webStyles.placeholderText}>Espace publicitaire</span>
+            <span style={webStyles.placeholderText}>{t('common.adSpace')}</span>
           </div>
         )}
       </div>
       <button onClick={onRemoveAds} style={webStyles.premiumButton}>
         <span style={webStyles.premiumIcon}>⭐</span>
-        <span style={webStyles.premiumText}>Premium</span>
+        <span style={webStyles.premiumText}>{t('common.premium')}</span>
       </button>
     </div>
   );
@@ -164,6 +165,7 @@ export default function AdBanner({ style }: AdBannerProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [isClient, setIsClient] = useState(false);
+  const { t } = useTranslation();
 
   // Prevent SSR hydration mismatch - only render on client
   useEffect(() => {
@@ -186,7 +188,7 @@ export default function AdBanner({ style }: AdBannerProps) {
 
   // For web, show AdSense banner
   if (Platform.OS === 'web') {
-    return <WebAdBanner onRemoveAds={handleRemoveAds} />;
+    return <WebAdBanner onRemoveAds={handleRemoveAds} t={t} />;
   }
 
   // For mobile, show ad banner with AdMob info
@@ -197,11 +199,11 @@ export default function AdBanner({ style }: AdBannerProps) {
     <View style={[styles.container, style]}>
       <View style={styles.adContent}>
         <Text style={styles.adIcon}>📢</Text>
-        <Text style={styles.adText}>Espace publicitaire</Text>
+        <Text style={styles.adText}>{t('common.adSpace')}</Text>
       </View>
       <TouchableOpacity style={styles.removeButton} onPress={handleRemoveAds}>
         <Ionicons name="star" size={14} color="#D4AF37" />
-        <Text style={styles.premiumText}>Premium</Text>
+        <Text style={styles.premiumText}>{t('common.premium')}</Text>
       </TouchableOpacity>
     </View>
   );

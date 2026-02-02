@@ -216,6 +216,7 @@ export default function TreeScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { user, refreshUser } = useAuth();
+  const { t } = useTranslation();
   const isPreviewMode = params.preview === 'true';
   const inviteToken = params.invite as string | undefined;
   const sharedOwnerId = params.sharedOwnerId as string | undefined;
@@ -436,11 +437,11 @@ export default function TreeScreen() {
   const handleAddPerson = () => {
     if (isPreviewMode && persons.length >= 10) {
       Alert.alert(
-        'Limite atteinte',
-        'Le mode aperçu est limité à 10 membres. Créez un compte pour un arbre illimité.',
+        t('tree.limitReached'),
+        t('tree.limitMessage'),
         [
-          { text: 'Annuler', style: 'cancel' },
-          { text: 'Créer un compte', onPress: () => router.push('/(auth)/register') },
+          { text: t('common.cancel'), style: 'cancel' },
+          { text: t('tree.createAccount'), onPress: () => router.push('/(auth)/register') },
         ]
       );
       return;
@@ -457,7 +458,7 @@ export default function TreeScreen() {
 
   const handleAddLink = () => {
     if (persons.length < 2) {
-      Alert.alert('Information', 'Ajoutez au moins 2 personnes pour créer un lien familial.');
+      Alert.alert(t('tree.info'), t('tree.addTwoPersons'));
       return;
     }
     router.push({
@@ -1334,7 +1335,7 @@ export default function TreeScreen() {
   // ============================================================================
   const handlePrintTree = useCallback(() => {
     if (Platform.OS !== 'web') {
-      Alert.alert('Information', 'L\'impression est disponible sur la version web.');
+      Alert.alert(t('tree.info'), t('tree.printAvailableWeb'));
       return;
     }
 
@@ -1897,7 +1898,7 @@ export default function TreeScreen() {
           <Ionicons name="leaf" size={28} color="#D4AF37" />
           <View style={styles.headerTitleContainer}>
             <Text style={styles.headerTitle}>
-              {sharedTreeOwner ? `Arbre de ${sharedTreeOwner.name}` : (isPreviewMode ? 'Mode Aperçu' : 'Mon Arbre')}
+              {sharedTreeOwner ? t('tree.treeOf', { name: sharedTreeOwner.name }) : (isPreviewMode ? t('tree.previewMode') : t('tree.myTree'))}
             </Text>
             {user && !isPreviewMode && !sharedTreeOwner && (
               <Text style={styles.headerAccount}>
@@ -1947,7 +1948,7 @@ export default function TreeScreen() {
         {isPreviewMode && (
           <TouchableOpacity style={styles.convertButton} onPress={handleConvertToAccount}>
             <Ionicons name="save-outline" size={18} color="#0A1628" />
-            <Text style={styles.convertButtonText}>Sauvegarder</Text>
+            <Text style={styles.convertButtonText}>{t('tree.saveTree')}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -2001,9 +2002,9 @@ export default function TreeScreen() {
             <View style={styles.demoBannerLeft}>
               <Ionicons name="sparkles" size={20} color="#D4AF37" />
               <View style={styles.demoBannerTextContainer}>
-                <Text style={styles.demoBannerTitle}>Mode Démo - Famille Martin</Text>
+                <Text style={styles.demoBannerTitle}>{t('tree.demoMode')}</Text>
                 <Text style={styles.demoBannerSubtitle}>
-                  Explorez librement • Ajoutez des membres • Créez des liens
+                  {t('tree.demoSubtitle')}
                 </Text>
               </View>
             </View>
@@ -2012,7 +2013,7 @@ export default function TreeScreen() {
               onPress={handleConvertToAccount}
               activeOpacity={0.8}
             >
-              <Text style={styles.demoBannerButtonText}>Créer mon arbre</Text>
+              <Text style={styles.demoBannerButtonText}>{t('tree.createMyTree')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -2023,13 +2024,13 @@ export default function TreeScreen() {
         {persons.length === 0 ? (
           <View style={styles.emptyState}>
             <Ionicons name="git-branch-outline" size={80} color="#2A3F5A" />
-            <Text style={styles.emptyTitle}>Votre arbre est vide</Text>
+            <Text style={styles.emptyTitle}>{t('tree.emptyTitle')}</Text>
             <Text style={styles.emptySubtitle}>
-              Commencez par ajouter le premier membre de votre famille
+              {t('tree.emptySubtitle')}
             </Text>
             <TouchableOpacity style={styles.emptyButton} onPress={handleAddPerson}>
               <Ionicons name="add" size={24} color="#0A1628" />
-              <Text style={styles.emptyButtonText}>Ajouter une personne</Text>
+              <Text style={styles.emptyButtonText}>{t('tree.addPerson')}</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -2127,15 +2128,15 @@ export default function TreeScreen() {
       <View style={styles.actionsContainer}>
         <TouchableOpacity style={styles.actionButton} onPress={handleAddPerson}>
           <Ionicons name="person-add" size={22} color="#FFFFFF" />
-          <Text style={styles.actionButtonText}>Ajouter</Text>
+          <Text style={styles.actionButtonText}>{t('common.add')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButtonSecondary} onPress={handleAddLink}>
           <Ionicons name="git-merge" size={22} color="#D4AF37" />
-          <Text style={styles.actionButtonTextSecondary}>Lien</Text>
+          <Text style={styles.actionButtonTextSecondary}>{t('common.link')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButtonSecondary} onPress={onRefresh}>
           <Ionicons name="refresh" size={22} color="#D4AF37" />
-          <Text style={styles.actionButtonTextSecondary}>Actualiser</Text>
+          <Text style={styles.actionButtonTextSecondary}>{t('common.refresh')}</Text>
         </TouchableOpacity>
       </View>
 

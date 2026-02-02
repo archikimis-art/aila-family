@@ -79,11 +79,11 @@ export default function MembersScreen() {
   const handleAddPerson = () => {
     if (isPreviewMode && persons.length >= 10) {
       Alert.alert(
-        'Limite atteinte',
-        'Le mode aperçu est limité à 10 membres.',
+        t('members.limitReached'),
+        t('members.limitMessage'),
         [
-          { text: 'Annuler', style: 'cancel' },
-          { text: 'Créer un compte', onPress: () => router.push('/(auth)/register') },
+          { text: t('common.cancel'), style: 'cancel' },
+          { text: t('tree.createAccount'), onPress: () => router.push('/(auth)/register') },
         ]
       );
       return;
@@ -155,8 +155,8 @@ export default function MembersScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Membres</Text>
-        <Text style={styles.memberCount}>{persons.length} personne{persons.length !== 1 ? 's' : ''}</Text>
+        <Text style={styles.headerTitle}>{t('members.title')}</Text>
+        <Text style={styles.memberCount}>{persons.length} {persons.length !== 1 ? t('common.persons') : t('common.person')}</Text>
       </View>
 
       {/* Search */}
@@ -164,7 +164,7 @@ export default function MembersScreen() {
         <Ionicons name="search" size={20} color="#6B7C93" />
         <TextInput
           style={styles.searchInput}
-          placeholder="Rechercher un membre..."
+          placeholder={t('members.searchPlaceholder')}
           placeholderTextColor="#6B7C93"
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -189,12 +189,12 @@ export default function MembersScreen() {
           <View style={styles.emptyState}>
             <Ionicons name="people-outline" size={60} color="#2A3F5A" />
             <Text style={styles.emptyTitle}>
-              {searchQuery ? 'Aucun résultat' : 'Aucun membre'}
+              {searchQuery ? t('members.noResults') : t('members.noMembers')}
             </Text>
             <Text style={styles.emptySubtitle}>
               {searchQuery
-                ? 'Essayez avec d\'autres termes'
-                : 'Commencez par ajouter des membres à votre arbre'}
+                ? t('members.tryOtherTerms')
+                : t('members.startAddingMembers')}
             </Text>
           </View>
         }

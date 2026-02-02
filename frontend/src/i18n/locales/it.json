@@ -15,7 +15,42 @@
     "download": "Scarica",
     "search": "Cerca",
     "seeAll": "Vedi tutto",
-    "language": "Lingua"
+    "language": "Lingua",
+    "add": "Aggiungi",
+    "link": "Legame",
+    "refresh": "Aggiorna",
+    "person": "persona",
+    "persons": "persone",
+    "premium": "Premium",
+    "adSpace": "Spazio pubblicitario"
+  },
+  "tree": {
+    "myTree": "Il Mio Albero",
+    "previewMode": "Modalità Anteprima",
+    "treeOf": "Albero di {{name}}",
+    "saveTree": "Salva",
+    "emptyTitle": "Il tuo albero è vuoto",
+    "emptySubtitle": "Inizia aggiungendo il primo membro della tua famiglia",
+    "addPerson": "Aggiungi una persona",
+    "demoMode": "Modalità Demo - Famiglia Martin",
+    "demoSubtitle": "Esplora liberamente • Aggiungi membri • Crea legami",
+    "createMyTree": "Crea il mio albero",
+    "limitReached": "Limite raggiunto",
+    "limitMessage": "La modalità anteprima è limitata a 10 membri. Crea un account per un albero illimitato.",
+    "createAccount": "Crea un account",
+    "info": "Informazione",
+    "addTwoPersons": "Aggiungi almeno 2 persone per creare un legame familiare.",
+    "printAvailableWeb": "La stampa è disponibile nella versione web.",
+    "guide": {
+      "title": "Come usare il tuo albero genealogico",
+      "step1Title": "Aggiungere membri della famiglia",
+      "step1Text": "Clicca sul pulsante \"Aggiungi\" in basso sullo schermo per creare una nuova persona nel tuo albero.",
+      "step2Title": "Creare legami familiari",
+      "step2Text": "Una volta create almeno 2 persone, clicca su \"Legame\" per stabilire le relazioni.",
+      "step3Title": "Aggiornare la visualizzazione",
+      "step3Text": "Dopo aver creato persone o legami, clicca su \"Aggiorna\" per aggiornare la vista dell'albero.",
+      "close": "Capito!"
+    }
   },
   "tabs": {
     "tree": "Albero",
@@ -279,5 +314,15 @@
     "createAccountPrompt": "Crea un account gratuito per partecipare alle sfide e guadagnare distintivi!",
     "later": "Più tardi",
     "signUp": "Registrati"
+  },
+  "members": {
+    "title": "Membri",
+    "searchPlaceholder": "Cerca un membro...",
+    "noResults": "Nessun risultato",
+    "noMembers": "Nessun membro",
+    "tryOtherTerms": "Prova con altri termini",
+    "startAddingMembers": "Inizia aggiungendo membri al tuo albero",
+    "limitReached": "Limite raggiunto",
+    "limitMessage": "La modalità anteprima è limitata a 10 membri."
   }
 }

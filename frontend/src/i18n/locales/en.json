@@ -15,7 +15,42 @@
     "download": "Download",
     "search": "Search",
     "seeAll": "See all",
-    "language": "Language"
+    "language": "Language",
+    "add": "Add",
+    "link": "Link",
+    "refresh": "Refresh",
+    "person": "person",
+    "persons": "persons",
+    "premium": "Premium",
+    "adSpace": "Ad space"
+  },
+  "tree": {
+    "myTree": "My Tree",
+    "previewMode": "Preview Mode",
+    "treeOf": "Tree of {{name}}",
+    "saveTree": "Save",
+    "emptyTitle": "Your tree is empty",
+    "emptySubtitle": "Start by adding the first member of your family",
+    "addPerson": "Add a person",
+    "demoMode": "Demo Mode - Martin Family",
+    "demoSubtitle": "Explore freely • Add members • Create links",
+    "createMyTree": "Create my tree",
+    "limitReached": "Limit reached",
+    "limitMessage": "Preview mode is limited to 10 members. Create an account for an unlimited tree.",
+    "createAccount": "Create an account",
+    "info": "Information",
+    "addTwoPersons": "Add at least 2 people to create a family link.",
+    "printAvailableWeb": "Printing is available on the web version.",
+    "guide": {
+      "title": "How to use your family tree",
+      "step1Title": "Add family members",
+      "step1Text": "Click the \"Add\" button at the bottom of the screen to create a new person in your tree.",
+      "step2Title": "Create family links",
+      "step2Text": "Once at least 2 people are created, click \"Link\" to establish relationships.",
+      "step3Title": "Refresh the view",
+      "step3Text": "After creating people or links, click \"Refresh\" to update the tree display.",
+      "close": "Got it!"
+    }
   },
   "tabs": {
     "tree": "Tree",
@@ -280,5 +315,15 @@
     "createAccountPrompt": "Create a free account to participate in challenges and earn badges!",
     "later": "Later",
     "signUp": "Sign up"
+  },
+  "members": {
+    "title": "Members",
+    "searchPlaceholder": "Search a member...",
+    "noResults": "No results",
+    "noMembers": "No members",
+    "tryOtherTerms": "Try with other terms",
+    "startAddingMembers": "Start by adding members to your tree",
+    "limitReached": "Limit reached",
+    "limitMessage": "Preview mode is limited to 10 members."
   }
 }

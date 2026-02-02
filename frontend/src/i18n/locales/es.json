@@ -15,7 +15,42 @@
     "download": "Descargar",
     "search": "Buscar",
     "seeAll": "Ver todo",
-    "language": "Idioma"
+    "language": "Idioma",
+    "add": "Añadir",
+    "link": "Vínculo",
+    "refresh": "Actualizar",
+    "person": "persona",
+    "persons": "personas",
+    "premium": "Premium",
+    "adSpace": "Espacio publicitario"
+  },
+  "tree": {
+    "myTree": "Mi Árbol",
+    "previewMode": "Modo Vista Previa",
+    "treeOf": "Árbol de {{name}}",
+    "saveTree": "Guardar",
+    "emptyTitle": "Tu árbol está vacío",
+    "emptySubtitle": "Empieza añadiendo el primer miembro de tu familia",
+    "addPerson": "Añadir una persona",
+    "demoMode": "Modo Demo - Familia Martín",
+    "demoSubtitle": "Explora libremente • Añade miembros • Crea vínculos",
+    "createMyTree": "Crear mi árbol",
+    "limitReached": "Límite alcanzado",
+    "limitMessage": "El modo vista previa está limitado a 10 miembros. Crea una cuenta para un árbol ilimitado.",
+    "createAccount": "Crear una cuenta",
+    "info": "Información",
+    "addTwoPersons": "Añade al menos 2 personas para crear un vínculo familiar.",
+    "printAvailableWeb": "La impresión está disponible en la versión web.",
+    "guide": {
+      "title": "Cómo usar tu árbol genealógico",
+      "step1Title": "Añadir miembros de la familia",
+      "step1Text": "Haz clic en el botón \"Añadir\" en la parte inferior de la pantalla para crear una nueva persona en tu árbol.",
+      "step2Title": "Crear vínculos familiares",
+      "step2Text": "Una vez creadas al menos 2 personas, haz clic en \"Vínculo\" para establecer las relaciones.",
+      "step3Title": "Actualizar la visualización",
+      "step3Text": "Después de crear personas o vínculos, haz clic en \"Actualizar\" para actualizar la vista del árbol.",
+      "close": "¡Entendido!"
+    }
   },
   "tabs": {
     "tree": "Árbol",
@@ -279,5 +314,15 @@
     "createAccountPrompt": "¡Crea una cuenta gratis para participar en los retos y ganar insignias!",
     "later": "Más tarde",
     "signUp": "Registrarse"
+  },
+  "members": {
+    "title": "Miembros",
+    "searchPlaceholder": "Buscar un miembro...",
+    "noResults": "Sin resultados",
+    "noMembers": "Sin miembros",
+    "tryOtherTerms": "Intenta con otros términos",
+    "startAddingMembers": "Empieza añadiendo miembros a tu árbol",
+    "limitReached": "Límite alcanzado",
+    "limitMessage": "El modo vista previa está limitado a 10 miembros."
   }
 }

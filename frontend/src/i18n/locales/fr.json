@@ -15,7 +15,42 @@
     "download": "Télécharger",
     "search": "Rechercher",
     "seeAll": "Voir tout",
-    "language": "Langue"
+    "language": "Langue",
+    "add": "Ajouter",
+    "link": "Lien",
+    "refresh": "Actualiser",
+    "person": "personne",
+    "persons": "personnes",
+    "premium": "Premium",
+    "adSpace": "Espace publicitaire"
+  },
+  "tree": {
+    "myTree": "Mon Arbre",
+    "previewMode": "Mode Aperçu",
+    "treeOf": "Arbre de {{name}}",
+    "saveTree": "Sauvegarder",
+    "emptyTitle": "Votre arbre est vide",
+    "emptySubtitle": "Commencez par ajouter le premier membre de votre famille",
+    "addPerson": "Ajouter une personne",
+    "demoMode": "Mode Démo - Famille Martin",
+    "demoSubtitle": "Explorez librement • Ajoutez des membres • Créez des liens",
+    "createMyTree": "Créer mon arbre",
+    "limitReached": "Limite atteinte",
+    "limitMessage": "Le mode aperçu est limité à 10 membres. Créez un compte pour un arbre illimité.",
+    "createAccount": "Créer un compte",
+    "info": "Information",
+    "addTwoPersons": "Ajoutez au moins 2 personnes pour créer un lien familial.",
+    "printAvailableWeb": "L'impression est disponible sur la version web.",
+    "guide": {
+      "title": "Comment utiliser votre arbre généalogique",
+      "step1Title": "Ajouter des membres",
+      "step1Text": "Cliquez sur le bouton \"Ajouter\" en bas de l'écran pour créer une nouvelle personne dans votre arbre.",
+      "step2Title": "Créer des liens familiaux",
+      "step2Text": "Une fois au moins 2 personnes créées, cliquez sur \"Lien\" pour établir les relations.",
+      "step3Title": "Actualiser la visualisation",
+      "step3Text": "Après avoir créé des personnes ou des liens, cliquez sur \"Actualiser\" pour mettre à jour l'affichage de l'arbre.",
+      "close": "Compris !"
+    }
   },
   "tabs": {
     "tree": "Arbre",
@@ -280,5 +315,15 @@
     "createAccountPrompt": "Créez un compte gratuit pour participer aux défis et gagner des badges !",
     "later": "Plus tard",
     "signUp": "S'inscrire"
+  },
+  "members": {
+    "title": "Membres",
+    "searchPlaceholder": "Rechercher un membre...",
+    "noResults": "Aucun résultat",
+    "noMembers": "Aucun membre",
+    "tryOtherTerms": "Essayez avec d'autres termes",
+    "startAddingMembers": "Commencez par ajouter des membres à votre arbre",
+    "limitReached": "Limite atteinte",
+    "limitMessage": "Le mode aperçu est limité à 10 membres."
   }
 }
