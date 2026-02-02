@@ -93,6 +93,7 @@ const REGIONS = Object.keys(WORLD_LOCATIONS);
 export default function AddPersonScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { t } = useTranslation();
   const isPreviewMode = params.preview === 'true';
   const previewToken = params.token as string;
   const sharedOwnerId = params.sharedOwnerId as string | undefined;
@@ -365,7 +366,7 @@ export default function AddPersonScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#D4AF37" />
-          <Text style={styles.loadingText}>Chargement...</Text>
+          <Text style={styles.loadingText}>{t('addPerson.loading')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -382,18 +383,18 @@ export default function AddPersonScreen() {
           <TouchableOpacity style={styles.closeButton} onPress={() => router.back()}>
             <Ionicons name="close" size={24} color="#FFFFFF" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>{isEditMode ? 'Modifier' : 'Nouvelle personne'}</Text>
+          <Text style={styles.headerTitle}>{isEditMode ? t('addPerson.editPerson') : t('addPerson.newPerson')}</Text>
           <TouchableOpacity
             style={[styles.saveButton, loading && styles.saveButtonDisabled]}
             onPress={handleSave}
             disabled={loading}
             testID="save-button"
-            accessibilityLabel={isEditMode ? "Enregistrer les modifications" : "Ajouter une personne"}
+            accessibilityLabel={isEditMode ? t('common.save') : t('common.add')}
           >
             {loading ? (
               <ActivityIndicator size="small" color="#0A1628" />
             ) : (
-              <Text style={styles.saveButtonText}>{isEditMode ? 'Enregistrer' : 'Ajouter'}</Text>
+              <Text style={styles.saveButtonText}>{isEditMode ? t('common.save') : t('common.add')}</Text>
             )}
           </TouchableOpacity>
         </View>
@@ -405,13 +406,13 @@ export default function AddPersonScreen() {
         >
           {/* Name Fields */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Identité</Text>
+            <Text style={styles.sectionTitle}>{t('addPerson.firstName')}</Text>
             <View style={styles.row}>
               <View style={styles.halfField}>
-                <Text style={styles.label}>Prénom *</Text>
+                <Text style={styles.label}>{t('addPerson.firstName')} *</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Prénom"
+                  placeholder={t('addPerson.firstNamePlaceholder')}
                   placeholderTextColor="#6B7C93"
                   value={firstName}
                   onChangeText={setFirstName}
@@ -419,10 +420,10 @@ export default function AddPersonScreen() {
                 />
               </View>
               <View style={styles.halfField}>
-                <Text style={styles.label}>Nom *</Text>
+                <Text style={styles.label}>{t('addPerson.lastName')} *</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Nom de famille"
+                  placeholder={t('addPerson.lastNamePlaceholder')}
                   placeholderTextColor="#6B7C93"
                   value={lastName}
                   onChangeText={setLastName}
@@ -434,7 +435,7 @@ export default function AddPersonScreen() {
 
           {/* Gender */}
           <View style={styles.section}>
-            <Text style={styles.label}>Genre</Text>
+            <Text style={styles.label}>{t('addPerson.gender')}</Text>
             <View style={styles.genderContainer}>
               <TouchableOpacity
                 style={[
@@ -446,7 +447,7 @@ export default function AddPersonScreen() {
               >
                 <Ionicons name="male" size={24} color={gender === 'male' ? '#4A90D9' : '#6B7C93'} />
                 <Text style={[styles.genderText, gender === 'male' && { color: '#4A90D9' }]}>
-                  Homme
+                  {t('addPerson.male')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -459,7 +460,7 @@ export default function AddPersonScreen() {
               >
                 <Ionicons name="female" size={24} color={gender === 'female' ? '#D94A8C' : '#6B7C93'} />
                 <Text style={[styles.genderText, gender === 'female' && { color: '#D94A8C' }]}>
-                  Femme
+                  {t('addPerson.female')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -471,7 +472,7 @@ export default function AddPersonScreen() {
               >
                 <Ionicons name="person" size={24} color={gender === 'unknown' ? '#D4AF37' : '#6B7C93'} />
                 <Text style={[styles.genderText, gender === 'unknown' && { color: '#D4AF37' }]}>
-                  Inconnu
+                  {t('addPerson.other')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -479,10 +480,10 @@ export default function AddPersonScreen() {
 
           {/* Birth */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Naissance</Text>
+            <Text style={styles.sectionTitle}>{t('addPerson.birthDate')}</Text>
             <View style={styles.row}>
               <View style={styles.halfField}>
-                <Text style={styles.label}>Date</Text>
+                <Text style={styles.label}>{t('addPerson.birthDate')}</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="JJ/MM/AAAA"
@@ -492,14 +493,14 @@ export default function AddPersonScreen() {
                 />
               </View>
               <View style={styles.halfField}>
-                <Text style={styles.label}>Lieu</Text>
+                <Text style={styles.label}>{t('addPerson.birthPlace')}</Text>
                 <TouchableOpacity
                   style={styles.locationButton}
                   onPress={() => openLocationPicker('birth')}
                 >
                   <Ionicons name="location-outline" size={18} color="#D4AF37" />
                   <Text style={[styles.locationButtonText, birthPlace && { color: '#FFFFFF' }]} numberOfLines={1}>
-                    {birthPlace || 'Choisir un lieu'}
+                    {birthPlace || t('addPerson.selectLocation')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -508,10 +509,10 @@ export default function AddPersonScreen() {
 
           {/* Death (optional) */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Décès (optionnel)</Text>
+            <Text style={styles.sectionTitle}>{t('addPerson.deathDate')}</Text>
             <View style={styles.row}>
               <View style={styles.halfField}>
-                <Text style={styles.label}>Date</Text>
+                <Text style={styles.label}>{t('addPerson.deathDate')}</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="JJ/MM/AAAA"
@@ -521,14 +522,14 @@ export default function AddPersonScreen() {
                 />
               </View>
               <View style={styles.halfField}>
-                <Text style={styles.label}>Lieu</Text>
+                <Text style={styles.label}>{t('addPerson.deathPlace')}</Text>
                 <TouchableOpacity
                   style={styles.locationButton}
                   onPress={() => openLocationPicker('death')}
                 >
                   <Ionicons name="location-outline" size={18} color="#D4AF37" />
                   <Text style={[styles.locationButtonText, deathPlace && { color: '#FFFFFF' }]} numberOfLines={1}>
-                    {deathPlace || 'Choisir un lieu'}
+                    {deathPlace || t('addPerson.selectLocation')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -537,25 +538,25 @@ export default function AddPersonScreen() {
 
           {/* Geographic Branch */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Branche géographique</Text>
-            <Text style={styles.sectionDescription}>Région d'origine de la famille</Text>
+            <Text style={styles.sectionTitle}>{t('addPerson.branch')}</Text>
+            <Text style={styles.sectionDescription}>{t('addPerson.selectBranch')}</Text>
             <TouchableOpacity
               style={styles.locationButton}
               onPress={() => openLocationPicker('branch')}
             >
               <Ionicons name="globe-outline" size={18} color="#D4AF37" />
               <Text style={[styles.locationButtonText, geographicBranch && { color: '#FFFFFF' }]} numberOfLines={1}>
-                {geographicBranch || 'Choisir une région'}
+                {geographicBranch || t('addPerson.selectBranch')}
               </Text>
             </TouchableOpacity>
           </View>
 
           {/* Notes */}
           <View style={styles.section}>
-            <Text style={styles.label}>Notes</Text>
+            <Text style={styles.label}>{t('addPerson.notes')}</Text>
             <TextInput
               style={[styles.input, styles.textArea]}
-              placeholder="Informations supplémentaires..."
+              placeholder={t('addPerson.notesPlaceholder')}
               placeholderTextColor="#6B7C93"
               value={notes}
               onChangeText={setNotes}
@@ -568,7 +569,7 @@ export default function AddPersonScreen() {
           {/* Liens familiaux - seulement en mode édition */}
           {isEditMode && getPersonLinks().length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Liens familiaux</Text>
+              <Text style={styles.sectionTitle}>{t('addPerson.familyLinks')}</Text>
               {getPersonLinks().map((link: any) => {
                 const otherId = link.person_id_1 === editPersonId ? link.person_id_2 : link.person_id_1;
                 return (

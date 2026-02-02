@@ -22,32 +22,32 @@ interface Person {
   gender: string;
 }
 
-// Simple family relationship types
-const LINK_TYPES = [
-  { value: 'parent', label: 'Parent', icon: 'arrow-up', color: '#4A90D9' },
-  { value: 'child', label: 'Enfant', icon: 'arrow-down', color: '#4A90D9' },
-  { value: 'spouse', label: 'Époux / Épouse', icon: 'heart', color: '#D94A8C' },
-  { value: 'sibling', label: 'Frère / Sœur', icon: 'people', color: '#4CAF50' },
+// Simple family relationship types - base structure, labels translated dynamically
+const LINK_TYPES_BASE = [
+  { value: 'parent', labelKey: 'addLink.parent', icon: 'arrow-up', color: '#4A90D9' },
+  { value: 'child', labelKey: 'addLink.child', icon: 'arrow-down', color: '#4A90D9' },
+  { value: 'spouse', labelKey: 'addLink.spouse', icon: 'heart', color: '#D94A8C' },
+  { value: 'sibling', labelKey: 'addLink.sibling', icon: 'people', color: '#4CAF50' },
 ];
-
-// Helper function to get relationship description for preview
-const getRelationshipDescription = (linkType: string): string => {
-  const relationMap: { [key: string]: string } = {
-    'parent': 'parent de',
-    'child': 'enfant de',
-    'spouse': 'époux/épouse de',
-    'sibling': 'frère/sœur de',
-  };
-  
-  return relationMap[linkType] || 'lié(e) à';
-};
 
 export default function AddLinkScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
+  const { t } = useTranslation();
   const isPreviewMode = params.preview === 'true';
   const previewToken = params.token as string;
   const sharedOwnerId = params.sharedOwnerId as string | undefined;
+  
+  // Get translated relationship description
+  const getRelationshipDescription = (linkType: string): string => {
+    const relationMap: { [key: string]: string } = {
+      'parent': t('addLink.parentOf'),
+      'child': t('addLink.childOf'),
+      'spouse': t('addLink.spouseOf'),
+      'sibling': t('addLink.siblingOf'),
+    };
+    return relationMap[linkType] || t('addLink.relatedTo');
+  };
 
   const [persons, setPersons] = useState<Person[]>([]);
   const [person1, setPerson1] = useState<Person | null>(null);
@@ -193,7 +193,7 @@ export default function AddLinkScreen() {
             </Text>
           </View>
         ) : (
-          <Text style={styles.placeholderText}>Sélectionner une personne</Text>
+          <Text style={styles.placeholderText}>{t('addLink.selectFirst')}</Text>
         )}
         <Ionicons
           name={showList ? 'chevron-up' : 'chevron-down'}
@@ -252,7 +252,7 @@ export default function AddLinkScreen() {
         <TouchableOpacity style={styles.closeButton} onPress={() => router.back()}>
           <Ionicons name="close" size={24} color="#FFFFFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Nouveau lien</Text>
+        <Text style={styles.headerTitle}>{t('addLink.title')}</Text>
         <TouchableOpacity
           style={[styles.saveButton, loading && styles.saveButtonDisabled]}
           onPress={handleSave}
@@ -261,7 +261,7 @@ export default function AddLinkScreen() {
           {loading ? (
             <ActivityIndicator size="small" color="#0A1628" />
           ) : (
-            <Text style={styles.saveButtonText}>Créer</Text>
+            <Text style={styles.saveButtonText}>{t('addLink.create')}</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -269,9 +269,7 @@ export default function AddLinkScreen() {
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         {/* Person 1 */}
         {renderPersonSelector(
-          linkType === 'parent' ? 'Le parent' : 
-          linkType === 'child' ? 'L\'enfant' : 
-          'Première personne',
+          t('addLink.selectFirst'),
           person1,
           setPerson1,
           showPerson1List,
@@ -281,13 +279,13 @@ export default function AddLinkScreen() {
 
         {/* Link Type - Horizontal Simple */}
         <View style={styles.section}>
-          <Text style={styles.label}>Type de relation</Text>
+          <Text style={styles.label}>{t('addLink.selectType')}</Text>
           <ScrollView 
             horizontal 
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.linkTypeScrollHorizontal}
           >
-            {LINK_TYPES.map((type) => (
+            {LINK_TYPES_BASE.map((type) => (
               <TouchableOpacity
                 key={type.value}
                 style={[
@@ -312,7 +310,7 @@ export default function AddLinkScreen() {
                     linkType === type.value && styles.linkTypeTextActive,
                   ]}
                 >
-                  {type.label}
+                  {t(type.labelKey)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -321,9 +319,7 @@ export default function AddLinkScreen() {
 
         {/* Person 2 */}
         {renderPersonSelector(
-          linkType === 'parent' ? 'de (l\'enfant)' : 
-          linkType === 'child' ? 'de (le parent)' : 
-          'Deuxième personne',
+          t('addLink.selectSecond'),
           person2,
           setPerson2,
           showPerson2List,
@@ -337,7 +333,7 @@ export default function AddLinkScreen() {
             <Ionicons name="git-merge" size={24} color="#D4AF37" />
             <Text style={styles.previewText}>
               <Text style={styles.previewName}>{person1.first_name} {person1.last_name}</Text>
-              {' est '}
+              {' '}
               <Text style={styles.previewRelation}>
                 {getRelationshipDescription(linkType)}
               </Text>
