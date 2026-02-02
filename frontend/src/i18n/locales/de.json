@@ -134,7 +134,9 @@
     "write": "Schreiben",
     "preserve": "Bewahren",
     "dataProtected": "Ihre Daten sind geschützt",
-    "about": "Über uns"
+    "about": "Über uns",
+    "shareMessage": "🌳 Entdecken Sie AÏLA - Der Stammbaum, der Ihre Familie verbindet! Erstellen, teilen und bewahren Sie Ihre Familiengeschichte. 👉 https://www.aila.family",
+    "linkCopied": "Link kopiert! Teilen Sie ihn mit Ihrer Familie 🌳"
   },
   "nav": {
     "home": "Startseite",
@@ -446,5 +448,27 @@
     "spouseOf": "Ehepartner von",
     "siblingOf": "Geschwister von",
     "relatedTo": "verwandt mit"
+  },
+  "about": {
+    "mission": "Unsere Mission",
+    "missionText": "AÏLA ist eine innovative Anwendung zur Erstellung und Verwaltung Ihres Familienstammbaums. Unsere Mission ist es, Ihnen zu helfen, Ihre Familiengeschichte über Generationen hinweg zu bewahren und zu teilen.",
+    "features": "Hauptfunktionen",
+    "interactiveTree": "Interaktiver Stammbaum",
+    "interactiveTreeDesc": "Visualisieren Sie Ihre Familie in einem dynamischen Baum mit klaren Verbindungen zwischen den Generationen.",
+    "memberManagement": "Mitgliederverwaltung",
+    "memberManagementDesc": "Fügen Sie einfach Familienmitglieder mit ihren persönlichen Informationen, Fotos und wichtigen Daten hinzu.",
+    "familyChat": "Familienchat",
+    "familyChatDesc": "Kommunizieren Sie mit Familienmitgliedern über unser integriertes und privates Chat-System.",
+    "secureSharing": "Sicheres Teilen",
+    "secureSharingDesc": "Teilen Sie Ihren Baum sicher mit Ihren Lieben über Vorschaulinks.",
+    "eventReminders": "Ereignis-Erinnerungen",
+    "eventRemindersDesc": "Verpassen Sie nie wieder einen Geburtstag oder ein wichtiges Datum dank unserer automatischen Benachrichtigungen.",
+    "whyChoose": "Warum AÏLA wählen?",
+    "whyChooseList": "• Intuitive und elegante Oberfläche\n• Respekt vor Ihrer Privatsphäre und Datenschutz\n• Automatische Synchronisation auf allen Geräten\n• Mehrsprachige Unterstützung\n• Exportieren Sie Ihre Daten jederzeit\n• Reaktionsschnelles Support-Team",
+    "contactUs": "Kontaktieren Sie uns",
+    "contactText": "Bei Fragen oder Vorschlägen kontaktieren Sie uns gerne:\nEmail: contact@aila.family\nWebsite: www.aila.family",
+    "version": "Version",
+    "copyright": "© 2024 AÏLA. Alle Rechte vorbehalten.",
+    "backHome": "Zurück zur Startseite"
   }
 }

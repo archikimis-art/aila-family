@@ -134,7 +134,9 @@
     "write": "Escribir",
     "preserve": "Preservar",
     "dataProtected": "Tus datos están protegidos",
-    "about": "Acerca de"
+    "about": "Acerca de",
+    "shareMessage": "🌳 Descubre AÏLA - ¡El árbol genealógico que conecta a tu familia! Crea, comparte y preserva tu historia familiar. 👉 https://www.aila.family",
+    "linkCopied": "¡Enlace copiado! Compártelo con tu familia 🌳"
   },
   "nav": {
     "home": "Inicio",
@@ -446,5 +448,27 @@
     "spouseOf": "cónyuge de",
     "siblingOf": "hermano/a de",
     "relatedTo": "relacionado/a con"
+  },
+  "about": {
+    "mission": "Nuestra Misión",
+    "missionText": "AÏLA es una aplicación innovadora dedicada a crear y gestionar tu árbol genealógico familiar. Nuestra misión es ayudarte a preservar y compartir la historia de tu familia a través de las generaciones.",
+    "features": "Características Principales",
+    "interactiveTree": "Árbol Genealógico Interactivo",
+    "interactiveTreeDesc": "Visualiza tu familia en un árbol dinámico con conexiones claras entre generaciones.",
+    "memberManagement": "Gestión de Miembros",
+    "memberManagementDesc": "Añade fácilmente miembros de tu familia con su información personal, fotos y fechas importantes.",
+    "familyChat": "Chat Familiar",
+    "familyChatDesc": "Comunícate con los miembros de tu familia a través de nuestro sistema de chat integrado y privado.",
+    "secureSharing": "Compartir de Forma Segura",
+    "secureSharingDesc": "Comparte tu árbol con tus seres queridos de forma segura mediante enlaces de vista previa.",
+    "eventReminders": "Recordatorios de Eventos",
+    "eventRemindersDesc": "No te pierdas nunca un cumpleaños o fecha importante gracias a nuestras notificaciones automáticas.",
+    "whyChoose": "¿Por Qué Elegir AÏLA?",
+    "whyChooseList": "• Interfaz intuitiva y elegante\n• Respeto a tu privacidad y protección de datos\n• Sincronización automática en todos tus dispositivos\n• Soporte multilingüe\n• Exporta tus datos en cualquier momento\n• Equipo de soporte receptivo",
+    "contactUs": "Contáctanos",
+    "contactText": "Para cualquier pregunta o sugerencia, no dudes en contactarnos:\nEmail: contact@aila.family\nWeb: www.aila.family",
+    "version": "Versión",
+    "copyright": "© 2024 AÏLA. Todos los derechos reservados.",
+    "backHome": "Volver al inicio"
   }
 }

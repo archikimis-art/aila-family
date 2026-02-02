@@ -134,7 +134,9 @@
     "write": "Write",
     "preserve": "Preserve",
     "dataProtected": "Your data is protected",
-    "about": "About"
+    "about": "About",
+    "shareMessage": "🌳 Discover AÏLA - The family tree that connects your family! Create, share and preserve your family history. 👉 https://www.aila.family",
+    "linkCopied": "Link copied! Share it with your family 🌳"
   },
   "nav": {
     "home": "Home",
@@ -447,5 +449,27 @@
     "spouseOf": "spouse of",
     "siblingOf": "sibling of",
     "relatedTo": "related to"
+  },
+  "about": {
+    "mission": "Our Mission",
+    "missionText": "AÏLA is an innovative application dedicated to creating and managing your family tree. Our mission is to help you preserve and share your family history across generations.",
+    "features": "Main Features",
+    "interactiveTree": "Interactive Family Tree",
+    "interactiveTreeDesc": "View your family in a dynamic tree with clear connections between generations.",
+    "memberManagement": "Member Management",
+    "memberManagementDesc": "Easily add family members with their personal information, photos, and important dates.",
+    "familyChat": "Family Chat",
+    "familyChatDesc": "Communicate with family members through our integrated and private chat system.",
+    "secureSharing": "Secure Sharing",
+    "secureSharingDesc": "Share your tree with loved ones securely through preview links.",
+    "eventReminders": "Event Reminders",
+    "eventRemindersDesc": "Never miss a birthday or important date thanks to our automatic notifications.",
+    "whyChoose": "Why Choose AÏLA?",
+    "whyChooseList": "• Intuitive and elegant interface\n• Privacy respect and data protection\n• Automatic sync across all your devices\n• Multilingual support\n• Export your data anytime\n• Responsive support team",
+    "contactUs": "Contact Us",
+    "contactText": "For any questions or suggestions, feel free to contact us at:\nEmail: contact@aila.family\nWebsite: www.aila.family",
+    "version": "Version",
+    "copyright": "© 2024 AÏLA. All rights reserved.",
+    "backHome": "Back to home"
   }
 }

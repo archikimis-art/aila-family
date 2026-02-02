@@ -134,7 +134,9 @@
     "write": "Scrivere",
     "preserve": "Preservare",
     "dataProtected": "I tuoi dati sono protetti",
-    "about": "Chi siamo"
+    "about": "Chi siamo",
+    "shareMessage": "🌳 Scopri AÏLA - L'albero genealogico che connette la tua famiglia! Crea, condividi e preserva la tua storia familiare. 👉 https://www.aila.family",
+    "linkCopied": "Link copiato! Condividilo con la tua famiglia 🌳"
   },
   "nav": {
     "home": "Home",
@@ -446,5 +448,27 @@
     "spouseOf": "coniuge di",
     "siblingOf": "fratello/sorella di",
     "relatedTo": "imparentato/a con"
+  },
+  "about": {
+    "mission": "La Nostra Missione",
+    "missionText": "AÏLA è un'applicazione innovativa dedicata alla creazione e gestione del tuo albero genealogico familiare. La nostra missione è aiutarti a preservare e condividere la storia della tua famiglia attraverso le generazioni.",
+    "features": "Funzionalità Principali",
+    "interactiveTree": "Albero Genealogico Interattivo",
+    "interactiveTreeDesc": "Visualizza la tua famiglia in un albero dinamico con connessioni chiare tra le generazioni.",
+    "memberManagement": "Gestione Membri",
+    "memberManagementDesc": "Aggiungi facilmente membri della famiglia con le loro informazioni personali, foto e date importanti.",
+    "familyChat": "Chat Familiare",
+    "familyChatDesc": "Comunica con i membri della famiglia attraverso il nostro sistema di chat integrato e privato.",
+    "secureSharing": "Condivisione Sicura",
+    "secureSharingDesc": "Condividi il tuo albero con i tuoi cari in modo sicuro tramite link di anteprima.",
+    "eventReminders": "Promemoria Eventi",
+    "eventRemindersDesc": "Non perdere mai più un compleanno o una data importante grazie alle nostre notifiche automatiche.",
+    "whyChoose": "Perché Scegliere AÏLA?",
+    "whyChooseList": "• Interfaccia intuitiva ed elegante\n• Rispetto della tua privacy e protezione dei dati\n• Sincronizzazione automatica su tutti i tuoi dispositivi\n• Supporto multilingue\n• Esporta i tuoi dati in qualsiasi momento\n• Team di supporto reattivo",
+    "contactUs": "Contattaci",
+    "contactText": "Per qualsiasi domanda o suggerimento, non esitare a contattarci:\nEmail: contact@aila.family\nSito web: www.aila.family",
+    "version": "Versione",
+    "copyright": "© 2024 AÏLA. Tutti i diritti riservati.",
+    "backHome": "Torna alla home"
   }
 }

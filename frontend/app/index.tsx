@@ -141,7 +141,7 @@ export default function WelcomeScreen() {
     return (
       <View style={styles.loadingContainer}>
         <Ionicons name="leaf" size={60} color="#D4AF37" />
-        <Text style={styles.loadingText}>Chargement...</Text>
+        <Text style={styles.loadingText}>{t('common.loading')}</Text>
       </View>
     );
   }
@@ -160,27 +160,27 @@ export default function WelcomeScreen() {
   };
 
   const shareApp = async () => {
-    const shareMessage = "🌳 Découvrez AÏLA - L'arbre généalogique qui connecte votre famille ! Créez, partagez et préservez votre histoire familiale. 👉 https://www.aila.family";
+    const shareMessage = t('home.shareMessage');
     
     try {
       if (Platform.OS === 'web') {
         // Web Share API
         if (navigator.share) {
           await navigator.share({
-            title: 'AÏLA - Arbre Généalogique Familial',
+            title: 'AÏLA - ' + t('home.subtitle'),
             text: shareMessage,
             url: 'https://www.aila.family',
           });
         } else {
           // Fallback: copy to clipboard
           await navigator.clipboard.writeText(shareMessage);
-          window.alert('Lien copié ! Partagez-le avec votre famille 🌳');
+          window.alert(t('home.linkCopied'));
         }
       } else {
         // Mobile Share
         await Share.share({
           message: shareMessage,
-          title: 'AÏLA - Arbre Généalogique Familial',
+          title: 'AÏLA - ' + t('home.subtitle'),
         });
       }
     } catch (error) {
