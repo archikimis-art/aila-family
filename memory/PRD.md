@@ -15,20 +15,28 @@ French (Français)
 
 ## Completed Features
 
-### 2026-02-02 - i18n Audit - Major Progress ✅
-**Pages entièrement traduites :**
-- ✅ `tree.tsx` : Boutons "Ajouter", "Lien", "Actualiser", états vides, alertes système
-- ✅ `members.tsx` : Titre, recherche, messages d'état vide
-- ✅ `add-person.tsx` : Formulaire complet (prénom, nom, genre, dates, lieu, notes)
-- ✅ `add-link.tsx` : Types de relation (Parent/Enfant/Époux/Frère), aperçu, boutons
-- ✅ `share.tsx` : Onglets, modal d'invitation, rôles (Éditeur/Lecteur)
+### 2026-02-02 - Audit i18n Complet ✅
+
+**Pages fonctionnelles entièrement traduites (6 langues : fr, en, es, de, it, pt) :**
+- ✅ `tree.tsx` : Boutons, états vides, alertes, guide d'utilisation, événements familiaux
+- ✅ `members.tsx` : Titre, recherche, messages vides
+- ✅ `add-person.tsx` : Formulaire complet (prénom, nom, genre, dates, lieu)
+- ✅ `add-link.tsx` : Types de relation (Parent/Enfant/Époux/Frère)
+- ✅ `share.tsx` : Onglets, modal d'invitation, rôles, statuts
+- ✅ `profile.tsx` : Déjà traduit (session précédente)
+- ✅ `chat.tsx` : Déjà traduit (session précédente)
+- ✅ `index.tsx` : Page d'accueil (messages partage)
+- ✅ `about.tsx` : Mission, fonctionnalités, contact
 - ✅ `AdBanner.tsx` : "Espace publicitaire", "Premium"
+- ✅ Navigation tabs (barre du bas)
 
-**Fichiers de traduction mis à jour (6 langues) :**
-- Ajout des sections `tree`, `members`, `addPerson`, `addLink`, `share`
-- Langues : fr, en, es, de, it, pt
+**Sections de traduction ajoutées :**
+- `tree` (guide complet + événements)
+- `members`, `addPerson`, `addLink`
+- `share`, `events`, `about`, `faq`
+- `common` (boutons génériques)
 
-### 2026-02-02 - i18n Completion for Tree & Members Pages ✅
+### 2026-01-28 - Full Internationalization (i18n) Implementation (P0) ✅
 - ✅ Ajouté `useTranslation` hook à **38 pages** de l'application
 - ✅ Traduit community.tsx : formulaires, messages, catégories
 - ✅ Traduit login.tsx et register.tsx : authentification complète
