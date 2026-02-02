@@ -15,34 +15,50 @@ French (Français)
 
 ## Completed Features
 
-### 2026-02-02 - Audit i18n Approfondi ✅
-
-**Fichiers fonctionnels traduits avec clés de traduction :**
-- ✅ `admin.tsx` : Interface d'administration complète (statistiques, recherche, modals)
-- ✅ `users-management.tsx` : Gestion des utilisateurs (promouvoir/rétrograder)
-- ✅ `add-person.tsx` : Messages d'erreur, relations, sauvegarde
-- ✅ `person/[id].tsx` : Page de détail personne, édition, suppression
-- ✅ `(tabs)/chat.tsx` : Messages d'erreur et confirmation
-- ✅ `(tabs)/profile.tsx` : Export, email, suppression de compte
-- ✅ `(tabs)/share.tsx` : Boutons Annuler/Confirmer
-- ✅ `(tabs)/tree.tsx` : Chargement, bouton Fermer
-- ✅ `pricing.tsx` : Messages d'erreur d'achat
-- ✅ `merge-trees.tsx` : Interface de fusion d'arbres
-- ✅ `(auth)/login.tsx` : Messages d'erreur de connexion
-- ✅ `(auth)/register.tsx` : Messages d'erreur d'inscription
-
-**Sections ajoutées aux 6 fichiers de langue (en, fr, es, de, it, pt):**
-- `admin` : 27 nouvelles clés
-- `userManagement` : 10 nouvelles clés
-- `deleteAccount` : 10 nouvelles clés
-- `forgotPassword` : 3 nouvelles clés
-- `resetPasswordPage` : 6 nouvelles clés
-- `person` : 11 nouvelles clés
-- `mergeTrees` : 11 nouvelles clés
-- `errors` : 15 nouvelles clés
-- `profile` : 18 nouvelles clés (export, email)
-
 ### 2026-02-02 - Audit i18n Complet ✅
+
+**Travail accompli :**
+- Analysé et traduit **12+ fichiers fonctionnels** (.tsx) avec remplacement de texte français codé en dur
+- Ajouté **100+ nouvelles clés de traduction** aux 6 fichiers de langue (en, fr, es, de, it, pt)
+- Fichiers clés traduits : `admin.tsx`, `users-management.tsx`, `add-person.tsx`, `person/[id].tsx`, `chat.tsx`, `profile.tsx`, `share.tsx`, `tree.tsx`, `pricing.tsx`, `merge-trees.tsx`, `login.tsx`, `register.tsx`
+
+**Sections ajoutées aux fichiers de langue :**
+- `admin` : Interface d'administration complète
+- `userManagement` : Gestion des utilisateurs
+- `deleteAccount` : Suppression de compte
+- `forgotPassword` : Mot de passe oublié
+- `resetPasswordPage` : Réinitialisation mot de passe
+- `person` : Page de détail personne
+- `mergeTrees` : Fusion d'arbres
+- `errors` : Messages d'erreur étendus
+- `profile` : Export, email, actions profil
+- `pricing` : Plans, services, FAQ
+
+### Problème connu
+- ⚠️ **Sélecteur de langue non visible** : Le bouton de changement de langue a été ajouté au code mais ne s'affiche pas correctement à cause d'un problème de rendu React Native Web avec le positionnement absolu.
+
+---
+
+## Pending Issues
+
+### P0 - Critique
+1. **Sélecteur de langue invisible** - Le bouton flottant ou dans la barre du bas ne s'affiche pas
+
+### P1 - Important
+2. **Backend persistence** - Remplacer AsyncStorage par des appels API backend
+3. **Vercel build status** - À vérifier
+
+### P2 - Normal
+4. **Blog admin** - Fonctionnalité incomplète
+5. **Pages SEO statiques** - Contenu marketing non traduit
+
+---
+
+## Upcoming Tasks
+1. Résoudre l'affichage du sélecteur de langue
+2. Implémenter persistance backend
+3. Publication Google Play Store
+4. Mode "Cousinade" complet
 
 **Pages fonctionnelles entièrement traduites (6 langues : fr, en, es, de, it, pt) :**
 - ✅ `tree.tsx` : Boutons, états vides, alertes, guide d'utilisation, événements familiaux
