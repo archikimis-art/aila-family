@@ -15,6 +15,33 @@ French (Français)
 
 ## Completed Features
 
+### 2026-02-02 - Audit i18n Approfondi ✅
+
+**Fichiers fonctionnels traduits avec clés de traduction :**
+- ✅ `admin.tsx` : Interface d'administration complète (statistiques, recherche, modals)
+- ✅ `users-management.tsx` : Gestion des utilisateurs (promouvoir/rétrograder)
+- ✅ `add-person.tsx` : Messages d'erreur, relations, sauvegarde
+- ✅ `person/[id].tsx` : Page de détail personne, édition, suppression
+- ✅ `(tabs)/chat.tsx` : Messages d'erreur et confirmation
+- ✅ `(tabs)/profile.tsx` : Export, email, suppression de compte
+- ✅ `(tabs)/share.tsx` : Boutons Annuler/Confirmer
+- ✅ `(tabs)/tree.tsx` : Chargement, bouton Fermer
+- ✅ `pricing.tsx` : Messages d'erreur d'achat
+- ✅ `merge-trees.tsx` : Interface de fusion d'arbres
+- ✅ `(auth)/login.tsx` : Messages d'erreur de connexion
+- ✅ `(auth)/register.tsx` : Messages d'erreur d'inscription
+
+**Sections ajoutées aux 6 fichiers de langue (en, fr, es, de, it, pt):**
+- `admin` : 27 nouvelles clés
+- `userManagement` : 10 nouvelles clés
+- `deleteAccount` : 10 nouvelles clés
+- `forgotPassword` : 3 nouvelles clés
+- `resetPasswordPage` : 6 nouvelles clés
+- `person` : 11 nouvelles clés
+- `mergeTrees` : 11 nouvelles clés
+- `errors` : 15 nouvelles clés
+- `profile` : 18 nouvelles clés (export, email)
+
 ### 2026-02-02 - Audit i18n Complet ✅
 
 **Pages fonctionnelles entièrement traduites (6 langues : fr, en, es, de, it, pt) :**
