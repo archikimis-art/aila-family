@@ -96,6 +96,9 @@
     "share": "Partager",
     "startChallenge": "Commencer",
     "challengeCompleted": "Défi complété",
+    "yourBadges": "Vos badges",
+    "challengesLabel": "Défis",
+    "allChallenges": "Tous les défis",
     "categories": {
       "all": "Tous",
       "tree": "Arbre",

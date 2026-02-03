@@ -96,6 +96,9 @@
     "share": "Share",
     "startChallenge": "Start",
     "challengeCompleted": "Challenge completed",
+    "yourBadges": "Your badges",
+    "challengesLabel": "Challenges",
+    "allChallenges": "All challenges",
     "categories": {
       "all": "All",
       "tree": "Tree",

@@ -96,6 +96,9 @@
     "share": "Teilen",
     "startChallenge": "Starten",
     "challengeCompleted": "Herausforderung abgeschlossen",
+    "yourBadges": "Ihre Abzeichen",
+    "challengesLabel": "Herausforderungen",
+    "allChallenges": "Alle Herausforderungen",
     "categories": {
       "all": "Alle",
       "tree": "Baum",

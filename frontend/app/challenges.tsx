@@ -45,72 +45,67 @@ interface UserProgress {
 const CHALLENGES_STORAGE_KEY = 'aila_challenges_progress';
 const BADGES_STORAGE_KEY = 'aila_user_badges';
 
-// Définition des défis
-const CHALLENGES: Challenge[] = [
+// Challenge keys for translation - will be resolved at render time
+const CHALLENGE_KEYS = [
   {
     id: 'tree_3gen',
-    title: 'Racines profondes',
-    description: 'Complétez votre arbre sur 3 générations (vous, parents, grands-parents)',
+    titleKey: 'challenges.list.tree3gen.title',
+    descriptionKey: 'challenges.list.tree3gen.description',
     icon: 'leaf',
     category: 'tree',
     points: 100,
-    badge: 'Gardien des Racines',
+    badgeKey: 'challenges.list.tree3gen.badge',
     badgeIcon: 'shield-checkmark',
-    action: 'Compléter mon arbre',
+    actionKey: 'challenges.list.tree3gen.action',
     actionRoute: '/add-person',
-    checkProgress: async () => ({ completed: false, progress: 0, total: 7 }), // Placeholder
   },
   {
     id: 'first_memory',
-    title: 'Premier souvenir',
-    description: 'Ajoutez une anecdote ou un souvenir à un membre de votre famille',
+    titleKey: 'challenges.list.firstMemory.title',
+    descriptionKey: 'challenges.list.firstMemory.description',
     icon: 'heart',
     category: 'memory',
     points: 50,
-    badge: 'Gardien des Mémoires',
+    badgeKey: 'challenges.list.firstMemory.badge',
     badgeIcon: 'book',
-    action: 'Ajouter un souvenir',
+    actionKey: 'challenges.list.firstMemory.action',
     actionRoute: '/add-person',
-    checkProgress: async () => ({ completed: false, progress: 0, total: 1 }),
   },
   {
     id: 'ask_grandparent',
-    title: 'Pont entre générations',
-    description: 'Posez 3 questions à un grand-parent et notez ses réponses',
+    titleKey: 'challenges.list.askGrandparent.title',
+    descriptionKey: 'challenges.list.askGrandparent.description',
     icon: 'chatbubbles',
     category: 'connection',
     points: 75,
-    badge: 'Tisseur de Liens',
+    badgeKey: 'challenges.list.askGrandparent.badge',
     badgeIcon: 'people',
-    action: 'Voir les questions suggérées',
+    actionKey: 'challenges.list.askGrandparent.action',
     actionRoute: '/questions-grands-parents',
-    checkProgress: async () => ({ completed: false, progress: 0, total: 3 }),
   },
   {
     id: 'family_tradition',
-    title: 'Tradition vivante',
-    description: 'Documentez une tradition familiale (recette, rituel, fête...)',
+    titleKey: 'challenges.list.familyTradition.title',
+    descriptionKey: 'challenges.list.familyTradition.description',
     icon: 'star',
     category: 'tradition',
     points: 60,
-    badge: 'Passeur de Traditions',
+    badgeKey: 'challenges.list.familyTradition.badge',
     badgeIcon: 'flame',
-    action: 'Ajouter une tradition',
+    actionKey: 'challenges.list.familyTradition.action',
     actionRoute: '/traditions-familiales',
-    checkProgress: async () => ({ completed: false, progress: 0, total: 1 }),
   },
   {
     id: 'share_community',
-    title: 'Voix de la famille',
-    description: 'Partagez votre histoire ou une astuce avec la communauté AÏLA',
+    titleKey: 'challenges.list.shareCommunity.title',
+    descriptionKey: 'challenges.list.shareCommunity.description',
     icon: 'megaphone',
     category: 'connection',
     points: 40,
-    badge: 'Voix de la Communauté',
+    badgeKey: 'challenges.list.shareCommunity.badge',
     badgeIcon: 'chatbubble-ellipses',
-    action: 'Rejoindre la communauté',
+    actionKey: 'challenges.list.shareCommunity.action',
     actionRoute: '/community',
-    checkProgress: async () => ({ completed: false, progress: 0, total: 1 }),
   },
 ];
 
@@ -121,11 +116,11 @@ const CATEGORY_COLORS = {
   tradition: '#FF9800',
 };
 
-const CATEGORY_LABELS = {
-  tree: 'Arbre',
-  memory: 'Mémoire',
-  connection: 'Lien',
-  tradition: 'Tradition',
+const CATEGORY_LABELS_KEYS = {
+  tree: 'challenges.categories.tree',
+  memory: 'challenges.categories.memory',
+  connection: 'challenges.categories.connection',
+  tradition: 'challenges.categories.tradition',
 };
 
 export default function ChallengesScreen() {
@@ -144,6 +139,21 @@ export default function ChallengesScreen() {
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastBadge, setToastBadge] = useState('');
+
+  // Build translated challenges
+  const CHALLENGES = CHALLENGE_KEYS.map(c => ({
+    ...c,
+    title: t(c.titleKey),
+    description: t(c.descriptionKey),
+    badge: t(c.badgeKey),
+    action: t(c.actionKey),
+    checkProgress: async () => ({ completed: false, progress: 0, total: 1 }),
+  }));
+
+  // Build translated category labels
+  const CATEGORY_LABELS = Object.fromEntries(
+    Object.entries(CATEGORY_LABELS_KEYS).map(([key, labelKey]) => [key, t(labelKey)])
+  ) as Record<string, string>;
 
   useEffect(() => {
     loadProgress();
@@ -325,19 +335,19 @@ export default function ChallengesScreen() {
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
             <Text style={styles.statNumber}>{badges.length}</Text>
-            <Text style={styles.statLabel}>Badges</Text>
+            <Text style={styles.statLabel}>{t('challenges.badges')}</Text>
           </View>
           <View style={styles.statDivider} />
           <View style={styles.statItem}>
             <Text style={styles.statNumber}>{completedCount}/{CHALLENGES.length}</Text>
-            <Text style={styles.statLabel}>Défis</Text>
+            <Text style={styles.statLabel}>{t('challenges.challengesLabel')}</Text>
           </View>
         </View>
 
         {/* Badges Preview */}
         {badges.length > 0 && (
           <View style={styles.badgesPreview}>
-            <Text style={styles.sectionTitle}>Vos badges</Text>
+            <Text style={styles.sectionTitle}>{t('challenges.yourBadges')}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {badges.map((badge, index) => {
                 const challenge = CHALLENGES.find(c => c.badge === badge);
@@ -361,7 +371,7 @@ export default function ChallengesScreen() {
             onPress={() => setSelectedCategory(null)}
           >
             <Text style={[styles.categoryChipText, !selectedCategory && styles.categoryChipTextActive]}>
-              Tous
+              {t('challenges.categories.all')}
             </Text>
           </TouchableOpacity>
           {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
@@ -386,7 +396,7 @@ export default function ChallengesScreen() {
 
         {/* Challenges List */}
         <Text style={styles.sectionTitle}>
-          {selectedCategory ? CATEGORY_LABELS[selectedCategory as keyof typeof CATEGORY_LABELS] : 'Tous les défis'}
+          {selectedCategory ? CATEGORY_LABELS[selectedCategory as keyof typeof CATEGORY_LABELS] : t('challenges.allChallenges')}
         </Text>
         
         {filteredChallenges.map((challenge) => {
@@ -423,7 +433,7 @@ export default function ChallengesScreen() {
                   <View style={styles.completedRow}>
                     <View style={styles.completedBadge}>
                       <Ionicons name="checkmark" size={14} color="#4CAF50" />
-                      <Text style={styles.completedText}>Complété</Text>
+                      <Text style={styles.completedText}>{t('challenges.completed')}</Text>
                     </View>
                     {!isShared && (
                       <TouchableOpacity 
@@ -431,7 +441,7 @@ export default function ChallengesScreen() {
                         onPress={() => shareToCommmunity(challenge)}
                       >
                         <Ionicons name="share-social" size={16} color="#D4AF37" />
-                        <Text style={styles.shareButtonText}>Partager</Text>
+                        <Text style={styles.shareButtonText}>{t('common.share')}</Text>
                       </TouchableOpacity>
                     )}
                   </View>
@@ -460,15 +470,15 @@ export default function ChallengesScreen() {
         {/* CTA Blog */}
         <View style={styles.ctaCard}>
           <Ionicons name="bulb" size={32} color="#D4AF37" />
-          <Text style={styles.ctaTitle}>Besoin d'inspiration ?</Text>
+          <Text style={styles.ctaTitle}>{t('challenges.needInspiration')}</Text>
           <Text style={styles.ctaText}>
-            Découvrez nos articles pour enrichir votre histoire familiale
+            {t('challenges.exploreBlog')}
           </Text>
           <TouchableOpacity 
             style={styles.ctaButton}
             onPress={() => router.push('/blog')}
           >
-            <Text style={styles.ctaButtonText}>Explorer le blog</Text>
+            <Text style={styles.ctaButtonText}>{t('challenges.viewBlog')}</Text>
           </TouchableOpacity>
         </View>
 
