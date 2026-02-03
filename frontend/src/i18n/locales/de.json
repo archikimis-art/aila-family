@@ -517,5 +517,78 @@
     "createAccountPrompt": "Erstellen Sie ein kostenloses Konto, um an Herausforderungen teilzunehmen und Abzeichen zu verdienen!",
     "later": "Später",
     "signUp": "Registrieren"
+  },
+  "seoPages": {
+    "beginner": {
+      "metaTitle": "Genealogie für Anfänger: Wo anfangen? Leitfaden 2025 | AILA",
+      "metaDescription": "Neu in der Genealogie? Entdecken Sie, wo Sie Ihre Recherche beginnen können. Kompletter Anfänger-Leitfaden: Methode, kostenlose Tools, Expertentipps.",
+      "badge": "🎓 Anfänger-Leitfaden • 2025",
+      "title": "Genealogie für Anfänger: Wo anfangen?",
+      "subtitle": "Sie möchten Ihre Familiengeschichte entdecken, wissen aber nicht, wo Sie anfangen sollen? Dieser Leitfaden begleitet Sie Schritt für Schritt bei Ihren ersten genealogischen Recherchen.",
+      "summaryTitle": "💡 Kurz gesagt: Wo anfangen mit Genealogie?",
+      "summaryText": "1. Befragen Sie Ihre Familie und sammeln Sie vorhandene Dokumente\n2. Erstellen Sie Ihren Baum mit dem, was Sie bereits wissen\n3. Konsultieren Sie die Online-Departementsarchive (kostenlos)\n4. Gehen Sie Generation für Generation zurück, ohne Schritte zu überspringen",
+      "step1": {
+        "title": "Schritt 1: Beginnen Sie mit sich selbst",
+        "text": "Genealogie beginnt immer mit einem selbst. Notieren Sie Ihren vollständigen Namen, Geburtsdatum und -ort. Dann arbeiten Sie sich schrittweise zurück.",
+        "tipTitle": "🎯 Goldene Regel",
+        "tipText": "Überspringen Sie niemals eine Generation! Jeder Vorfahre muss überprüft werden, bevor Sie zum nächsten übergehen."
+      },
+      "step2": {
+        "title": "Schritt 2: Befragen Sie Ihre Familie",
+        "text": "Ihre Eltern, Großeltern, Onkel und Tanten sind Informationsschätze. Bereiten Sie eine Fragenliste vor und zeichnen Sie die Antworten auf.",
+        "check1": "✅ Namen der Vorfahren",
+        "check2": "✅ Wichtige Daten (Geburt, Heirat, Tod)",
+        "check3": "✅ Wohnorte",
+        "check4": "✅ Berufe",
+        "check5": "✅ Familienanekdoten"
+      },
+      "step3": {
+        "title": "Schritt 3: Erstellen Sie Ihren Baum",
+        "text": "Ein Stammbaum ermöglicht es Ihnen, Ihre Recherchen zu visualisieren und Lücken zu identifizieren. Nutzen Sie ein digitales Tool wie AILA, um Ihre Entdeckungen einfach zu organisieren."
+      },
+      "step4": {
+        "title": "Schritt 4: Die Online-Archive",
+        "text": "Die Departementsarchive sind digitalisiert und kostenlos zugänglich. Sie finden dort Personenstandsregister, Volkszählungen und vieles mehr.",
+        "resourceTitle": "🏛️ Kostenlose Ressourcen",
+        "resource1": "• Departementsarchive jeder Region",
+        "resource2": "• FamilySearch.org - Kostenlose weltweite Datenbank",
+        "resource3": "• Geneanet.org - Frankophone Gemeinschaft",
+        "resource4": "• Militärarchive"
+      },
+      "errors": {
+        "title": "Die 5 Anfängerfehler",
+        "error1": { "title": "❌ 1. Zu schnell vorgehen", "desc": "Nehmen Sie sich Zeit, jede Information zu überprüfen." },
+        "error2": { "title": "❌ 2. Quellen nicht notieren", "desc": "Woher kommt diese Info? Notieren Sie es systematisch." },
+        "error3": { "title": "❌ 3. Namensvettern verwechseln", "desc": "Hans Müller, davon gibt es Tausende! Überprüfen Sie." },
+        "error4": { "title": "❌ 4. Online-Bäume kopieren", "desc": "Sie enthalten oft Fehler. Überprüfen Sie die Quellen." },
+        "error5": { "title": "❌ 5. Seitenlinien vernachlässigen", "desc": "Geschwister können Informationen über Ihre Vorfahren enthüllen." }
+      },
+      "cta": {
+        "title": "🌳 Bereit anzufangen?",
+        "text": "Erstellen Sie Ihren kostenlosen Stammbaum mit AILA und beginnen Sie Ihre Reise in die Familiengeschichte.",
+        "button": "Meinen Baum kostenlos erstellen"
+      }
+    },
+    "ancestors": {
+      "metaTitle": "Wie Sie Ihre Vorfahren kostenlos finden: Kompletter Leitfaden 2025 | AILA",
+      "metaDescription": "Entdecken Sie, wie Sie Ihre Vorfahren 2025 kostenlos finden. Kompletter Leitfaden mit Online-Archiven, Standesamtsregistern und kostenlosen Tools.",
+      "badge": "📚 Experten-Leitfaden • Januar 2025",
+      "title": "Wie Sie Ihre Vorfahren kostenlos finden",
+      "subtitle": "Der komplette Leitfaden, um Ihre genealogische Recherche zu beginnen, ohne einen Cent auszugeben. Methoden, Ressourcen und kostenlose Tools."
+    },
+    "traditions": {
+      "metaTitle": "Familientraditionen: 50 Ideen zum Schaffen und Bewahren | AILA",
+      "metaDescription": "Entdecken Sie 50+ Ideen für Familientraditionen zum Schaffen oder Bewahren. Tägliche Rituale, Feiern, Mahlzeiten, Reisen. Stärken Sie die Familienbande.",
+      "badge": "🎄 Familienleben • Leitfaden 2025",
+      "title": "Familientraditionen: 50 Ideen für unvergessliche Erinnerungen",
+      "subtitle": "Familientraditionen sind der Kitt, der Generationen zusammenhält. Entdecken Sie, wie Sie diese kostbaren Momente schaffen, bewahren und weitergeben."
+    },
+    "cousinade": {
+      "metaTitle": "Wie Sie ein Familientreffen organisieren: Kompletter Leitfaden + Checkliste | AILA",
+      "metaDescription": "Organisieren Sie ein erfolgreiches Familientreffen! Kompletter Leitfaden: Planung, Budget, Einladungen, Aktivitäten, Mahlzeiten.",
+      "badge": "🎉 Familientreffen",
+      "title": "Wie Sie ein erfolgreiches Familientreffen organisieren",
+      "subtitle": "Ein Familientreffen ist die perfekte Gelegenheit, die ganze Familie zusammenzubringen. Hier ist der komplette Leitfaden für die Organisation."
+    }
   }
 }

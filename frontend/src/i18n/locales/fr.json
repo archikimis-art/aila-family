@@ -628,5 +628,84 @@
     "createAccountPrompt": "Créez un compte gratuit pour participer aux défis et gagner des badges !",
     "later": "Plus tard",
     "signUp": "S'inscrire"
+  },
+  "seoPages": {
+    "beginner": {
+      "metaTitle": "Généalogie pour Débutant : Par Où Commencer ? Guide 2025 | AILA",
+      "metaDescription": "Vous débutez en généalogie ? Découvrez par où commencer vos recherches. Guide complet pour débutants : méthode, outils gratuits, conseils d'experts.",
+      "badge": "🎓 Guide Débutant • 2025",
+      "title": "Généalogie pour Débutant : Par Où Commencer ?",
+      "subtitle": "Vous voulez découvrir l'histoire de votre famille mais ne savez pas par où commencer ? Ce guide vous accompagne pas à pas dans vos premières recherches généalogiques.",
+      "summaryTitle": "💡 En bref : Par où commencer la généalogie ?",
+      "summaryText": "1. Interrogez votre famille et collectez les documents existants\n2. Créez votre arbre avec ce que vous savez déjà\n3. Consultez les archives départementales en ligne (gratuit)\n4. Remontez génération par génération, sans sauter d'étapes",
+      "step1": {
+        "title": "Étape 1 : Commencez par Vous",
+        "text": "La généalogie commence toujours par soi-même. Notez votre nom complet, date et lieu de naissance. Puis remontez progressivement.",
+        "tipTitle": "🎯 Règle d'or",
+        "tipText": "Ne sautez jamais une génération ! Chaque ancêtre doit être vérifié avant de passer au suivant."
+      },
+      "step2": {
+        "title": "Étape 2 : Interrogez Votre Famille",
+        "text": "Vos parents, grands-parents, oncles et tantes sont des trésors d'informations. Préparez une liste de questions et enregistrez leurs réponses.",
+        "check1": "✅ Noms et prénoms des ancêtres",
+        "check2": "✅ Dates importantes (naissance, mariage, décès)",
+        "check3": "✅ Lieux de vie",
+        "check4": "✅ Professions",
+        "check5": "✅ Anecdotes familiales"
+      },
+      "step3": {
+        "title": "Étape 3 : Créez Votre Arbre",
+        "text": "Un arbre généalogique vous permet de visualiser vos recherches et d'identifier les \"trous\" à combler. Utilisez un outil numérique comme AILA pour organiser facilement vos découvertes."
+      },
+      "step4": {
+        "title": "Étape 4 : Les Archives en Ligne",
+        "text": "Les archives départementales sont numérisées et accessibles gratuitement. Vous y trouverez les registres d'état civil, les recensements et bien plus.",
+        "resourceTitle": "🏛️ Ressources gratuites",
+        "resource1": "• Archives départementales de chaque région",
+        "resource2": "• FamilySearch.org - Base mondiale gratuite",
+        "resource3": "• Geneanet.org - Communauté francophone",
+        "resource4": "• Mémoire des Hommes - Archives militaires"
+      },
+      "errors": {
+        "title": "Les 5 Erreurs du Débutant",
+        "error1": { "title": "❌ 1. Vouloir aller trop vite", "desc": "Prenez le temps de vérifier chaque information." },
+        "error2": { "title": "❌ 2. Ne pas noter ses sources", "desc": "D'où vient cette info ? Notez-le systématiquement." },
+        "error3": { "title": "❌ 3. Confondre les homonymes", "desc": "Jean Dupont, il y en a des milliers ! Vérifiez." },
+        "error4": { "title": "❌ 4. Copier des arbres en ligne", "desc": "Ils contiennent souvent des erreurs. Vérifiez aux sources." },
+        "error5": { "title": "❌ 5. Négliger les collatéraux", "desc": "Frères et sœurs peuvent révéler des informations sur vos ancêtres." }
+      },
+      "cta": {
+        "title": "🌳 Prêt à Commencer ?",
+        "text": "Créez votre arbre généalogique gratuit avec AILA et démarrez votre voyage dans l'histoire familiale.",
+        "button": "Créer Mon Arbre Gratuit"
+      }
+    },
+    "ancestors": {
+      "metaTitle": "Comment Retrouver ses Ancêtres Gratuitement : Guide Complet 2025 | AILA",
+      "metaDescription": "Découvrez comment retrouver vos ancêtres gratuitement en 2025. Guide complet avec archives en ligne, registres d'état civil, méthodes de recherche et outils gratuits.",
+      "badge": "📚 Guide Expert • Janvier 2025",
+      "title": "Comment Retrouver ses Ancêtres Gratuitement",
+      "subtitle": "Le guide complet pour débuter vos recherches généalogiques sans dépenser un centime. Méthodes, ressources et outils gratuits testés par notre équipe.",
+      "authorName": "Rédigé par l'équipe AILA",
+      "authorCredentials": "Experts en généalogie • 10+ ans d'expérience",
+      "authorDate": "Dernière mise à jour : Janvier 2025",
+      "tocTitle": "📑 Sommaire",
+      "summaryTitle": "💡 En bref : Comment retrouver ses ancêtres gratuitement ?",
+      "summaryText": "Pour retrouver vos ancêtres gratuitement, commencez par interroger votre famille, puis consultez les archives départementales en ligne (état civil, recensements). Utilisez des outils gratuits comme FamilySearch ou Geneanet pour élargir vos recherches. Organisez tout dans un arbre généalogique numérique comme AILA."
+    },
+    "traditions": {
+      "metaTitle": "Traditions Familiales : 50 Idées pour Créer et Perpétuer les Vôtres | AILA",
+      "metaDescription": "Découvrez 50+ idées de traditions familiales à créer ou perpétuer. Rituels quotidiens, fêtes, repas, voyages. Renforcez les liens familiaux.",
+      "badge": "🎄 Vie de Famille • Guide 2025",
+      "title": "Traditions Familiales : 50 Idées pour Créer des Souvenirs Inoubliables",
+      "subtitle": "Les traditions familiales sont le ciment qui unit les générations. Découvrez comment créer, perpétuer et transmettre ces moments précieux qui définissent votre famille."
+    },
+    "cousinade": {
+      "metaTitle": "Comment Organiser une Cousinade : Guide Complet + Checklist | AILA",
+      "metaDescription": "Organisez une cousinade réussie ! Guide complet : planification, budget, invitations, activités, repas. Checklist gratuite pour réunir toute la famille.",
+      "badge": "🎉 Réunion de Famille",
+      "title": "Comment Organiser une Cousinade Réussie",
+      "subtitle": "Une cousinade est l'occasion parfaite de rassembler toute la famille. Voici le guide complet pour l'organiser de A à Z."
+    }
   }
 }

@@ -517,5 +517,78 @@
     "createAccountPrompt": "Crie uma conta gratuita para participar dos desafios e ganhar medalhas!",
     "later": "Mais tarde",
     "signUp": "Cadastrar-se"
+  },
+  "seoPages": {
+    "beginner": {
+      "metaTitle": "Genealogia para Iniciantes: Por Onde Começar? Guia 2025 | AILA",
+      "metaDescription": "Novo na genealogia? Descubra por onde começar sua pesquisa. Guia completo para iniciantes: método, ferramentas gratuitas, dicas de especialistas.",
+      "badge": "🎓 Guia para Iniciantes • 2025",
+      "title": "Genealogia para Iniciantes: Por Onde Começar?",
+      "subtitle": "Quer descobrir a história da sua família mas não sabe por onde começar? Este guia acompanha você passo a passo nas suas primeiras pesquisas genealógicas.",
+      "summaryTitle": "💡 Em resumo: Por onde começar a genealogia?",
+      "summaryText": "1. Entreviste sua família e colete os documentos existentes\n2. Crie sua árvore com o que você já sabe\n3. Consulte os arquivos departamentais online (grátis)\n4. Volte geração por geração, sem pular etapas",
+      "step1": {
+        "title": "Passo 1: Comece por Você",
+        "text": "A genealogia sempre começa por si mesmo. Anote seu nome completo, data e local de nascimento. Depois volte gradualmente.",
+        "tipTitle": "🎯 Regra de ouro",
+        "tipText": "Nunca pule uma geração! Cada ancestral deve ser verificado antes de passar para o próximo."
+      },
+      "step2": {
+        "title": "Passo 2: Entreviste Sua Família",
+        "text": "Seus pais, avós, tios e tias são tesouros de informação. Prepare uma lista de perguntas e grave as respostas.",
+        "check1": "✅ Nomes dos ancestrais",
+        "check2": "✅ Datas importantes (nascimento, casamento, morte)",
+        "check3": "✅ Locais de residência",
+        "check4": "✅ Profissões",
+        "check5": "✅ Anedotas familiares"
+      },
+      "step3": {
+        "title": "Passo 3: Crie Sua Árvore",
+        "text": "Uma árvore genealógica permite visualizar suas pesquisas e identificar as lacunas a preencher. Use uma ferramenta digital como AILA para organizar facilmente suas descobertas."
+      },
+      "step4": {
+        "title": "Passo 4: Os Arquivos Online",
+        "text": "Os arquivos departamentais estão digitalizados e acessíveis gratuitamente. Você encontrará registros civis, censos e muito mais.",
+        "resourceTitle": "🏛️ Recursos gratuitos",
+        "resource1": "• Arquivos departamentais de cada região",
+        "resource2": "• FamilySearch.org - Base mundial gratuita",
+        "resource3": "• Geneanet.org - Comunidade francófona",
+        "resource4": "• Arquivos Militares"
+      },
+      "errors": {
+        "title": "Os 5 Erros do Iniciante",
+        "error1": { "title": "❌ 1. Querer ir rápido demais", "desc": "Tome o tempo de verificar cada informação." },
+        "error2": { "title": "❌ 2. Não anotar as fontes", "desc": "De onde vem esta info? Anote sistematicamente." },
+        "error3": { "title": "❌ 3. Confundir homônimos", "desc": "João Silva, há milhares! Verifique." },
+        "error4": { "title": "❌ 4. Copiar árvores online", "desc": "Frequentemente contêm erros. Verifique nas fontes." },
+        "error5": { "title": "❌ 5. Negligenciar os colaterais", "desc": "Irmãos podem revelar informações sobre seus ancestrais." }
+      },
+      "cta": {
+        "title": "🌳 Pronto para Começar?",
+        "text": "Crie sua árvore genealógica gratuita com AILA e comece sua jornada na história familiar.",
+        "button": "Criar Minha Árvore Grátis"
+      }
+    },
+    "ancestors": {
+      "metaTitle": "Como Encontrar seus Ancestrais de Graça: Guia Completo 2025 | AILA",
+      "metaDescription": "Descubra como encontrar seus ancestrais de graça em 2025. Guia completo com arquivos online, registros civis, métodos de pesquisa e ferramentas gratuitas.",
+      "badge": "📚 Guia Especialista • Janeiro 2025",
+      "title": "Como Encontrar seus Ancestrais de Graça",
+      "subtitle": "O guia completo para começar sua pesquisa genealógica sem gastar um centavo. Métodos, recursos e ferramentas gratuitas testadas por nossa equipe."
+    },
+    "traditions": {
+      "metaTitle": "Tradições Familiares: 50 Ideias para Criar e Perpetuar as Suas | AILA",
+      "metaDescription": "Descubra 50+ ideias de tradições familiares para criar ou perpetuar. Rituais diários, celebrações, refeições, viagens. Fortaleça os laços familiares.",
+      "badge": "🎄 Vida Familiar • Guia 2025",
+      "title": "Tradições Familiares: 50 Ideias para Criar Memórias Inesquecíveis",
+      "subtitle": "As tradições familiares são o cimento que une as gerações. Descubra como criar, perpetuar e transmitir esses momentos preciosos."
+    },
+    "cousinade": {
+      "metaTitle": "Como Organizar uma Reunião de Família: Guia Completo + Checklist | AILA",
+      "metaDescription": "Organize uma reunião de família de sucesso! Guia completo: planejamento, orçamento, convites, atividades, refeições.",
+      "badge": "🎉 Reunião de Família",
+      "title": "Como Organizar uma Reunião de Família de Sucesso",
+      "subtitle": "Uma reunião de família é a ocasião perfeita para juntar toda a família. Aqui está o guia completo para organizá-la de A a Z."
+    }
   }
 }

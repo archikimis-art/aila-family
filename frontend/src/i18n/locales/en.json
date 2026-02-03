@@ -628,5 +628,84 @@
     "createAccountPrompt": "Create a free account to participate in challenges and earn badges!",
     "later": "Later",
     "signUp": "Sign up"
+  },
+  "seoPages": {
+    "beginner": {
+      "metaTitle": "Genealogy for Beginners: Where to Start? 2025 Guide | AILA",
+      "metaDescription": "New to genealogy? Discover where to start your research. Complete beginner's guide: methods, free tools, expert tips.",
+      "badge": "🎓 Beginner's Guide • 2025",
+      "title": "Genealogy for Beginners: Where to Start?",
+      "subtitle": "Want to discover your family history but don't know where to start? This guide walks you through your first genealogical research step by step.",
+      "summaryTitle": "💡 In brief: Where to start with genealogy?",
+      "summaryText": "1. Interview your family and collect existing documents\n2. Create your tree with what you already know\n3. Check online departmental archives (free)\n4. Go back generation by generation, without skipping steps",
+      "step1": {
+        "title": "Step 1: Start with Yourself",
+        "text": "Genealogy always starts with yourself. Write down your full name, date and place of birth. Then work backwards gradually.",
+        "tipTitle": "🎯 Golden rule",
+        "tipText": "Never skip a generation! Each ancestor must be verified before moving on to the next."
+      },
+      "step2": {
+        "title": "Step 2: Interview Your Family",
+        "text": "Your parents, grandparents, uncles and aunts are treasure troves of information. Prepare a list of questions and record their answers.",
+        "check1": "✅ Names of ancestors",
+        "check2": "✅ Important dates (birth, marriage, death)",
+        "check3": "✅ Places of residence",
+        "check4": "✅ Professions",
+        "check5": "✅ Family anecdotes"
+      },
+      "step3": {
+        "title": "Step 3: Create Your Tree",
+        "text": "A family tree allows you to visualize your research and identify gaps to fill. Use a digital tool like AILA to easily organize your discoveries."
+      },
+      "step4": {
+        "title": "Step 4: Online Archives",
+        "text": "Departmental archives are digitized and freely accessible. You'll find civil registry records, censuses and much more.",
+        "resourceTitle": "🏛️ Free resources",
+        "resource1": "• Regional departmental archives",
+        "resource2": "• FamilySearch.org - Free worldwide database",
+        "resource3": "• Geneanet.org - French-speaking community",
+        "resource4": "• Ancestry.com - Large database (partial free)"
+      },
+      "errors": {
+        "title": "5 Beginner Mistakes",
+        "error1": { "title": "❌ 1. Going too fast", "desc": "Take time to verify each piece of information." },
+        "error2": { "title": "❌ 2. Not noting sources", "desc": "Where does this info come from? Note it systematically." },
+        "error3": { "title": "❌ 3. Confusing namesakes", "desc": "John Smith, there are thousands! Verify." },
+        "error4": { "title": "❌ 4. Copying online trees", "desc": "They often contain errors. Verify with sources." },
+        "error5": { "title": "❌ 5. Neglecting collaterals", "desc": "Siblings can reveal information about your ancestors." }
+      },
+      "cta": {
+        "title": "🌳 Ready to Start?",
+        "text": "Create your free family tree with AILA and start your journey into family history.",
+        "button": "Create My Free Tree"
+      }
+    },
+    "ancestors": {
+      "metaTitle": "How to Find Your Ancestors for Free: Complete 2025 Guide | AILA",
+      "metaDescription": "Discover how to find your ancestors for free in 2025. Complete guide with online archives, civil records, research methods and free tools.",
+      "badge": "📚 Expert Guide • January 2025",
+      "title": "How to Find Your Ancestors for Free",
+      "subtitle": "The complete guide to starting your genealogical research without spending a dime. Methods, resources and free tools tested by our team.",
+      "authorName": "Written by the AILA team",
+      "authorCredentials": "Genealogy experts • 10+ years experience",
+      "authorDate": "Last updated: January 2025",
+      "tocTitle": "📑 Contents",
+      "summaryTitle": "💡 In brief: How to find your ancestors for free?",
+      "summaryText": "To find your ancestors for free, start by interviewing your family, then check online departmental archives (civil records, censuses). Use free tools like FamilySearch or Geneanet to expand your research. Organize everything in a digital family tree like AILA."
+    },
+    "traditions": {
+      "metaTitle": "Family Traditions: 50 Ideas to Create and Perpetuate Your Own | AILA",
+      "metaDescription": "Discover 50+ family tradition ideas to create or perpetuate. Daily rituals, celebrations, meals, trips. Strengthen family bonds.",
+      "badge": "🎄 Family Life • 2025 Guide",
+      "title": "Family Traditions: 50 Ideas to Create Unforgettable Memories",
+      "subtitle": "Family traditions are the glue that binds generations together. Discover how to create, perpetuate and pass on these precious moments that define your family."
+    },
+    "cousinade": {
+      "metaTitle": "How to Organize a Family Reunion: Complete Guide + Checklist | AILA",
+      "metaDescription": "Organize a successful family reunion! Complete guide: planning, budget, invitations, activities, meals. Free checklist to gather the whole family.",
+      "badge": "🎉 Family Reunion",
+      "title": "How to Organize a Successful Family Reunion",
+      "subtitle": "A family reunion is the perfect opportunity to bring the whole family together. Here's the complete guide to organizing it from A to Z."
+    }
   }
 }
