@@ -327,6 +327,102 @@
       "description": "For any questions or suggestions, don't hesitate to contact us at:\nEmail: contact@aila.family\nWebsite: www.aila.family"
     }
   },
+  "faq": {
+    "title": "FAQ - Frequently Asked Questions",
+    "introTitle": "How can we help you?",
+    "introText": "Quickly find answers to your questions about AÏLA, the family tree app.",
+    "backHome": "Back to home",
+    "footer": "© 2025 AÏLA - The family tree that connects your family",
+    "categories": {
+      "all": "All",
+      "gettingStarted": "Getting Started",
+      "treeManagement": "Tree Management",
+      "navigation": "Navigation",
+      "sharing": "Sharing",
+      "chat": "Family Chat",
+      "privacy": "Privacy",
+      "technical": "Technical"
+    },
+    "contact": {
+      "title": "Didn't find your answer?",
+      "text": "Our team is here to help. Don't hesitate to contact us for any questions about AÏLA.",
+      "button": "Contact us"
+    },
+    "items": {
+      "createTree": {
+        "question": "How do I create my first family tree?",
+        "answer": "To create your first family tree with AÏLA, start by creating a free account. Once logged in, click 'Add a person' to add the first family member. You can start with yourself, your parents or grandparents. Then use the 'Create a link' button to establish family relationships."
+      },
+      "needAccount": {
+        "question": "Do I need to create an account to use AÏLA?",
+        "answer": "You can discover AÏLA in preview mode without creating an account. However, to save your family tree and access all features, you'll need to create a free account."
+      },
+      "isFree": {
+        "question": "Is AÏLA free?",
+        "answer": "Yes, AÏLA offers a complete free version that allows you to create your family tree, add members and use the family chat. Premium features are also available."
+      },
+      "addPerson": {
+        "question": "How do I add a person to my tree?",
+        "answer": "To add a person, click the 'Add' button in the tree view. Fill in the information: first name, last name, gender, date and place of birth."
+      },
+      "createLink": {
+        "question": "How do I create a relationship between two people?",
+        "answer": "After adding at least two people, click the 'Link' button. Select the relationship type (Parent, Child, Spouse, Sibling), then choose the two people involved."
+      },
+      "editPerson": {
+        "question": "Can I edit a person's information?",
+        "answer": "Yes, you can edit a person's information at any time. Click on the person's card in the tree to access and edit their profile."
+      },
+      "deletePerson": {
+        "question": "How do I delete a person from my tree?",
+        "answer": "To delete a person, access their profile and click 'Delete this person'. Warning: this action will also delete all associated links."
+      },
+      "mobileNav": {
+        "question": "How do I navigate my tree on mobile?",
+        "answer": "On mobile, use one finger to drag the tree, pinch with two fingers to zoom, and double-tap to recenter the view."
+      },
+      "cardColors": {
+        "question": "What do the card colors mean in the tree?",
+        "answer": "Blue cards represent men, pink cards represent women, and gray cards are for people whose gender is not specified. Dotted gold lines represent couple links."
+      },
+      "shareTree": {
+        "question": "How do I share my tree with my family?",
+        "answer": "Go to your profile, then use the 'Share tree' function to generate a share link. You can set the validity period and permissions."
+      },
+      "mergeTree": {
+        "question": "What is tree merging?",
+        "answer": "Tree merging is a premium feature that allows you to combine two separate family trees. The system automatically detects common people."
+      },
+      "familyChat": {
+        "question": "How does the family chat work?",
+        "answer": "The family chat allows your family members to communicate directly in the app. All members with access to your tree can participate."
+      },
+      "dataSecure": {
+        "question": "Is my data secure?",
+        "answer": "Yes, AÏLA uses SSL encryption for all communications. We comply with GDPR and never share your information without your consent."
+      },
+      "exportData": {
+        "question": "How do I export my data?",
+        "answer": "You can export your data at any time from your profile. AÏLA offers export in JSON and GEDCOM formats."
+      },
+      "deleteAccount": {
+        "question": "Can I delete my account and all my data?",
+        "answer": "Yes, in accordance with GDPR, you have the right to delete your account and all your data. Go to your profile, 'Data Protection' section."
+      },
+      "offline": {
+        "question": "Does AÏLA work offline?",
+        "answer": "Currently, AÏLA requires an internet connection as your data is synchronized in real-time with our secure servers."
+      },
+      "devices": {
+        "question": "Which devices can I use AÏLA on?",
+        "answer": "AÏLA is available on all modern devices: smartphones (iOS and Android), tablets, and computers via your web browser."
+      },
+      "displayIssue": {
+        "question": "What should I do if the tree doesn't display correctly?",
+        "answer": "Try refreshing the page or restarting the app. Use the zoom and recenter buttons. If the problem persists, clear your browser cache."
+      }
+    }
+  },
   "blog": {
     "title": "AÏLA Blog",
     "articles": "Articles",

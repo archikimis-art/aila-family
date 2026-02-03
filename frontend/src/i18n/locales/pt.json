@@ -327,6 +327,48 @@
       "description": "Para qualquer pergunta ou sugestão, não hesite em nos contatar:\nEmail: contact@aila.family\nSite: www.aila.family"
     }
   },
+  "faq": {
+    "title": "FAQ - Perguntas Frequentes",
+    "introTitle": "Como podemos ajudar?",
+    "introText": "Encontre rapidamente respostas sobre o AÏLA.",
+    "backHome": "Voltar ao início",
+    "footer": "© 2025 AÏLA - A árvore genealógica que conecta sua família",
+    "categories": {
+      "all": "Todos",
+      "gettingStarted": "Primeiros passos",
+      "treeManagement": "Gestão da árvore",
+      "navigation": "Navegação",
+      "sharing": "Compartilhamento",
+      "chat": "Chat familiar",
+      "privacy": "Privacidade",
+      "technical": "Técnico"
+    },
+    "contact": {
+      "title": "Não encontrou sua resposta?",
+      "text": "Nossa equipe está aqui para ajudar.",
+      "button": "Entre em contato"
+    },
+    "items": {
+      "createTree": { "question": "Como crio minha primeira árvore?", "answer": "Crie uma conta gratuita e clique em 'Adicionar pessoa'." },
+      "needAccount": { "question": "Preciso de uma conta?", "answer": "Você pode testar em modo de visualização. Para salvar, precisa de conta gratuita." },
+      "isFree": { "question": "O AÏLA é gratuito?", "answer": "Sim, versão gratuita completa. Funções premium disponíveis." },
+      "addPerson": { "question": "Como adiciono uma pessoa?", "answer": "Clique em 'Adicionar' e preencha as informações." },
+      "createLink": { "question": "Como crio um vínculo?", "answer": "Clique em 'Vínculo', escolha o tipo e as pessoas." },
+      "editPerson": { "question": "Posso editar informações?", "answer": "Sim, clique no cartão da pessoa." },
+      "deletePerson": { "question": "Como excluo uma pessoa?", "answer": "Vá ao perfil e clique em 'Excluir'." },
+      "mobileNav": { "question": "Como navego no celular?", "answer": "Arraste, belisque para zoom, toque duplo para centralizar." },
+      "cardColors": { "question": "O que significam as cores?", "answer": "Azul homens, rosa mulheres, cinza não especificado." },
+      "shareTree": { "question": "Como compartilho minha árvore?", "answer": "No perfil com 'Compartilhar árvore'." },
+      "mergeTree": { "question": "O que é fusão de árvores?", "answer": "Função premium para combinar duas árvores." },
+      "familyChat": { "question": "Como funciona o chat?", "answer": "Membros da família se comunicam diretamente no app." },
+      "dataSecure": { "question": "Meus dados estão seguros?", "answer": "Sim, criptografia SSL e conformidade com LGPD." },
+      "exportData": { "question": "Como exporto dados?", "answer": "No perfil em JSON e GEDCOM." },
+      "deleteAccount": { "question": "Posso excluir minha conta?", "answer": "Sim, seção 'Proteção de dados' do perfil." },
+      "offline": { "question": "Funciona offline?", "answer": "AÏLA precisa de conexão para sincronização." },
+      "devices": { "question": "Em quais dispositivos?", "answer": "Smartphones, tablets e computadores." },
+      "displayIssue": { "question": "O que fazer se não exibir?", "answer": "Atualize a página ou limpe o cache." }
+    }
+  },
   "blog": {
     "title": "Blog AÏLA",
     "articles": "Artigos",

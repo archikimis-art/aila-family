@@ -327,6 +327,48 @@
       "description": "Bei Fragen oder Anregungen kontaktieren Sie uns:\nEmail: contact@aila.family\nWebsite: www.aila.family"
     }
   },
+  "faq": {
+    "title": "FAQ - Häufig gestellte Fragen",
+    "introTitle": "Wie können wir Ihnen helfen?",
+    "introText": "Finden Sie schnell Antworten zu AÏLA.",
+    "backHome": "Zurück zur Startseite",
+    "footer": "© 2025 AÏLA - Der Stammbaum, der Ihre Familie verbindet",
+    "categories": {
+      "all": "Alle",
+      "gettingStarted": "Erste Schritte",
+      "treeManagement": "Baumverwaltung",
+      "navigation": "Navigation",
+      "sharing": "Teilen",
+      "chat": "Familien-Chat",
+      "privacy": "Datenschutz",
+      "technical": "Technisch"
+    },
+    "contact": {
+      "title": "Keine Antwort gefunden?",
+      "text": "Unser Team hilft Ihnen gerne.",
+      "button": "Kontaktieren Sie uns"
+    },
+    "items": {
+      "createTree": { "question": "Wie erstelle ich meinen ersten Stammbaum?", "answer": "Erstellen Sie ein kostenloses Konto und klicken Sie auf 'Person hinzufügen'." },
+      "needAccount": { "question": "Brauche ich ein Konto?", "answer": "Sie können AÏLA im Vorschaumodus testen. Zum Speichern benötigen Sie ein kostenloses Konto." },
+      "isFree": { "question": "Ist AÏLA kostenlos?", "answer": "Ja, AÏLA bietet eine vollständige kostenlose Version. Premium-Funktionen sind verfügbar." },
+      "addPerson": { "question": "Wie füge ich eine Person hinzu?", "answer": "Klicken Sie auf 'Hinzufügen' und füllen Sie die Informationen aus." },
+      "createLink": { "question": "Wie erstelle ich eine Verbindung?", "answer": "Klicken Sie auf 'Verbindung', wählen Sie den Typ und die Personen." },
+      "editPerson": { "question": "Kann ich Informationen bearbeiten?", "answer": "Ja, klicken Sie auf die Personenkarte." },
+      "deletePerson": { "question": "Wie lösche ich eine Person?", "answer": "Gehen Sie zum Profil und klicken Sie auf 'Löschen'." },
+      "mobileNav": { "question": "Wie navigiere ich auf dem Handy?", "answer": "Wischen, Pinch-to-Zoom, Doppeltippen zum Zentrieren." },
+      "cardColors": { "question": "Was bedeuten die Farben?", "answer": "Blau für Männer, Rosa für Frauen, Grau für nicht angegeben." },
+      "shareTree": { "question": "Wie teile ich meinen Baum?", "answer": "Über Ihr Profil mit 'Baum teilen'." },
+      "mergeTree": { "question": "Was ist Baumzusammenführung?", "answer": "Eine Premium-Funktion zum Kombinieren von Stammbäumen." },
+      "familyChat": { "question": "Wie funktioniert der Chat?", "answer": "Familienmitglieder können direkt in der App kommunizieren." },
+      "dataSecure": { "question": "Sind meine Daten sicher?", "answer": "Ja, SSL-Verschlüsselung und DSGVO-konform." },
+      "exportData": { "question": "Wie exportiere ich Daten?", "answer": "Über Ihr Profil in JSON und GEDCOM." },
+      "deleteAccount": { "question": "Kann ich mein Konto löschen?", "answer": "Ja, im Bereich 'Datenschutz' Ihres Profils." },
+      "offline": { "question": "Funktioniert es offline?", "answer": "AÏLA benötigt Internet zur Synchronisierung." },
+      "devices": { "question": "Auf welchen Geräten?", "answer": "Smartphones, Tablets und Computer." },
+      "displayIssue": { "question": "Was bei Anzeigeproblemen?", "answer": "Seite aktualisieren oder Cache leeren." }
+    }
+  },
   "blog": {
     "title": "AÏLA-Blog",
     "articles": "Artikel",

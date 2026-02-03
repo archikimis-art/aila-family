@@ -327,6 +327,48 @@
       "description": "Para cualquier pregunta o sugerencia, no dudes en contactarnos:\nEmail: contact@aila.family\nSitio web: www.aila.family"
     }
   },
+  "faq": {
+    "title": "FAQ - Preguntas Frecuentes",
+    "introTitle": "¿Cómo podemos ayudarte?",
+    "introText": "Encuentra rápidamente respuestas a tus preguntas sobre AÏLA.",
+    "backHome": "Volver al inicio",
+    "footer": "© 2025 AÏLA - El árbol genealógico que conecta tu familia",
+    "categories": {
+      "all": "Todos",
+      "gettingStarted": "Primeros pasos",
+      "treeManagement": "Gestión del árbol",
+      "navigation": "Navegación",
+      "sharing": "Compartir",
+      "chat": "Chat familiar",
+      "privacy": "Privacidad",
+      "technical": "Técnico"
+    },
+    "contact": {
+      "title": "¿No encontraste tu respuesta?",
+      "text": "Nuestro equipo está aquí para ayudarte.",
+      "button": "Contáctanos"
+    },
+    "items": {
+      "createTree": { "question": "¿Cómo creo mi primer árbol genealógico?", "answer": "Para crear tu primer árbol con AÏLA, empieza creando una cuenta gratuita. Una vez conectado, haz clic en 'Añadir persona' para añadir el primer miembro." },
+      "needAccount": { "question": "¿Necesito crear una cuenta?", "answer": "Puedes descubrir AÏLA en modo vista previa sin cuenta. Para guardar tu árbol, necesitarás una cuenta gratuita." },
+      "isFree": { "question": "¿Es gratuito AÏLA?", "answer": "Sí, AÏLA ofrece una versión gratuita completa. También hay funciones premium disponibles." },
+      "addPerson": { "question": "¿Cómo añado una persona?", "answer": "Haz clic en 'Añadir' y rellena la información: nombre, género, fecha de nacimiento." },
+      "createLink": { "question": "¿Cómo creo un vínculo familiar?", "answer": "Haz clic en 'Vínculo', selecciona el tipo de relación y elige las dos personas." },
+      "editPerson": { "question": "¿Puedo editar la información?", "answer": "Sí, haz clic en la tarjeta de la persona para modificar su perfil." },
+      "deletePerson": { "question": "¿Cómo elimino una persona?", "answer": "Accede a su perfil y haz clic en 'Eliminar'. Esto también eliminará sus vínculos." },
+      "mobileNav": { "question": "¿Cómo navego en móvil?", "answer": "Usa un dedo para arrastrar, pellizca para hacer zoom, y toca dos veces para recentrar." },
+      "cardColors": { "question": "¿Qué significan los colores?", "answer": "Azul para hombres, rosa para mujeres, gris para género no especificado." },
+      "shareTree": { "question": "¿Cómo comparto mi árbol?", "answer": "Ve a tu perfil y usa 'Compartir árbol' para generar un enlace." },
+      "mergeTree": { "question": "¿Qué es la fusión de árboles?", "answer": "Es una función premium para combinar dos árboles genealógicos." },
+      "familyChat": { "question": "¿Cómo funciona el chat?", "answer": "Permite a los miembros de tu familia comunicarse directamente en la app." },
+      "dataSecure": { "question": "¿Están seguros mis datos?", "answer": "Sí, usamos cifrado SSL y cumplimos con el RGPD." },
+      "exportData": { "question": "¿Cómo exporto mis datos?", "answer": "Desde tu perfil, en formatos JSON y GEDCOM." },
+      "deleteAccount": { "question": "¿Puedo eliminar mi cuenta?", "answer": "Sí, desde tu perfil, sección 'Protección de datos'." },
+      "offline": { "question": "¿Funciona sin conexión?", "answer": "AÏLA necesita conexión para sincronizar tus datos." },
+      "devices": { "question": "¿En qué dispositivos funciona?", "answer": "En smartphones, tablets y ordenadores." },
+      "displayIssue": { "question": "¿Qué hago si no se muestra bien?", "answer": "Refresca la página o limpia la caché del navegador." }
+    }
+  },
   "blog": {
     "title": "Blog AÏLA",
     "articles": "Artículos",
