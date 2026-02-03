@@ -235,6 +235,53 @@
       "sage": "Weiser"
     }
   },
+  "whyAila": {
+    "title": "Warum AÏLA?",
+    "subtitle": "Entdecken Sie, was AÏLA zur idealen App macht, um Ihren Familienstammbaum zu erstellen und zu teilen.",
+    "backHome": "← Zurück zur Startseite",
+    "cta": {
+      "title": "Bereit anzufangen?",
+      "subtitle": "Erstellen Sie Ihren Stammbaum in wenigen Minuten"
+    },
+    "features": {
+      "simple": {
+        "title": "Einfach & Intuitiv",
+        "subtitle": "Erstellen Sie Ihren Baum in 5 Minuten",
+        "description": "AÏLA wurde für alle entwickelt, auch ohne technische Kenntnisse. Die intuitive Oberfläche führt Sie Schritt für Schritt bei der Erstellung Ihres Stammbaums. Fügen Sie Mitglieder hinzu, erstellen Sie Familienverbindungen und visualisieren Sie Ihre Familiengeschichte mit wenigen Klicks.",
+        "benefits": ["Klare und moderne Oberfläche", "Integrierte Tutorials", "Keine Schulung erforderlich"]
+      },
+      "collaborative": {
+        "title": "Kollaborativ",
+        "subtitle": "Laden Sie Ihre Familie ein",
+        "description": "Genealogie ist ein Familienabenteuer! Mit AÏLA laden Sie Ihre Lieben ein, zum Baum beizutragen. Jeder kann Informationen, Fotos und Anekdoten hinzufügen. Gemeinsam bauen Sie das Gedächtnis Ihrer Familie auf.",
+        "benefits": ["E-Mail-Einladungen", "Echtzeit-Beiträge", "Änderungsverlauf"]
+      },
+      "chat": {
+        "title": "Sicherer Familien-Chat",
+        "subtitle": "Privat chatten",
+        "description": "Bleiben Sie mit Ihrer Familie über den integrierten Chat verbunden. Teilen Sie Erinnerungen, stellen Sie Fragen über Ihre Vorfahren oder organisieren Sie Familientreffen. Alle Ihre Gespräche sind privat und sicher.",
+        "benefits": ["Sofortnachrichten", "Fotos teilen", "Push-Benachrichtigungen"]
+      },
+      "import": {
+        "title": "Import & Export",
+        "subtitle": "Excel & PDF inklusive",
+        "description": "Importieren Sie Ihre Daten einfach aus einer Excel-Datei oder exportieren Sie Ihren Baum als hochwertiges PDF zum Drucken und Einrahmen. AÏLA passt sich Ihren Bedürfnissen an und ermöglicht es Ihnen, Ihre Arbeit in verschiedenen Formaten zu speichern.",
+        "benefits": ["Automatischer Excel-Import", "Professioneller PDF-Export", "GEDCOM-Sicherung"]
+      },
+      "security": {
+        "title": "DSGVO & Sicherheit",
+        "subtitle": "Ihre Daten geschützt",
+        "description": "Ihre Familiendaten sind wertvoll. AÏLA hält sich strikt an die DSGVO und verwendet Verschlüsselung auf Bankniveau. Sie behalten die volle Kontrolle: Exportieren oder löschen Sie Ihre Daten jederzeit.",
+        "benefits": ["DSGVO-konform", "SSL-Verschlüsselung", "Recht auf Vergessenwerden garantiert"]
+      },
+      "free": {
+        "title": "100% Kostenlos",
+        "subtitle": "Ohne Verpflichtung",
+        "description": "AÏLA ist für die wesentlichen Funktionen völlig kostenlos. Kein verstecktes Abonnement, keine Zeitbegrenzung. Erstellen Sie Ihren Baum, laden Sie Ihre Familie ein und genießen Sie alle Grundfunktionen, ohne einen Cent auszugeben.",
+        "benefits": ["Unbegrenzter Baum", "Keine aufdringliche Werbung", "Optionale Premium-Funktionen"]
+      }
+    }
+  },
   "blog": {
     "title": "AÏLA-Blog",
     "articles": "Artikel",
