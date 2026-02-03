@@ -183,6 +183,19 @@
     "beFirst": "Soyez le premier à partager !",
     "readArticles": "Lire nos articles",
     "joinChallenges": "Participer aux défis familiaux",
+    "errorFillFields": "Veuillez remplir votre nom et votre message",
+    "notSpecified": "Non précisé",
+    "thanks": "Merci !",
+    "messagePublished": "Votre message a été publié.",
+    "errorPublish": "Impossible de publier le message",
+    "challengeCompleted": "Défi complété",
+    "challengeLabel": "🎮 Défi",
+    "general": "Général",
+    "time": {
+      "justNow": "À l'instant",
+      "hoursAgo": "Il y a {{hours}}h",
+      "daysAgo": "Il y a {{days}}j"
+    },
     "topics": {
       "all": "Tout",
       "origins": "Origines",

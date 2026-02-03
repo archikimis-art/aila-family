@@ -183,6 +183,19 @@
     "beFirst": "Be the first to share!",
     "readArticles": "Read our articles",
     "joinChallenges": "Join family challenges",
+    "errorFillFields": "Please fill in your name and message",
+    "notSpecified": "Not specified",
+    "thanks": "Thank you!",
+    "messagePublished": "Your message has been published.",
+    "errorPublish": "Unable to publish the message",
+    "challengeCompleted": "Challenge completed",
+    "challengeLabel": "🎮 Challenge",
+    "general": "General",
+    "time": {
+      "justNow": "Just now",
+      "hoursAgo": "{{hours}}h ago",
+      "daysAgo": "{{days}}d ago"
+    },
     "topics": {
       "all": "All",
       "origins": "Origins",

@@ -183,6 +183,19 @@
     "beFirst": "Seien Sie der Erste, der teilt!",
     "readArticles": "Unsere Artikel lesen",
     "joinChallenges": "An Familien-Herausforderungen teilnehmen",
+    "errorFillFields": "Bitte füllen Sie Ihren Namen und Ihre Nachricht aus",
+    "notSpecified": "Nicht angegeben",
+    "thanks": "Danke!",
+    "messagePublished": "Ihre Nachricht wurde veröffentlicht.",
+    "errorPublish": "Nachricht konnte nicht veröffentlicht werden",
+    "challengeCompleted": "Herausforderung abgeschlossen",
+    "challengeLabel": "🎮 Herausforderung",
+    "general": "Allgemein",
+    "time": {
+      "justNow": "Gerade eben",
+      "hoursAgo": "Vor {{hours}} Std.",
+      "daysAgo": "Vor {{days}} T."
+    },
     "topics": {
       "all": "Alle",
       "origins": "Herkunft",

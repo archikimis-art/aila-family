@@ -5,7 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   Alert,
   Platform,
 } from 'react-native';
@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 
 interface Message {
   id: string;
@@ -26,16 +27,18 @@ interface Message {
 
 const MESSAGES_STORAGE_KEY = 'aila_community_messages';
 
-const topics = [
-  { id: 'all', label: 'Tout', icon: 'chatbubbles-outline' },
-  { id: 'origins', label: 'Origines', icon: 'earth-outline' },
-  { id: 'help', label: 'Entraide', icon: 'help-circle-outline' },
-  { id: 'tips', label: 'Astuces', icon: 'bulb-outline' },
-  { id: 'stories', label: 'Histoires', icon: 'book-outline' },
-];
-
 export default function CommunityScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
+  
+  const topics = [
+    { id: 'all', label: t('community.topics.all'), icon: 'chatbubbles-outline' },
+    { id: 'origins', label: t('community.topics.origins'), icon: 'earth-outline' },
+    { id: 'help', label: t('community.topics.help'), icon: 'help-circle-outline' },
+    { id: 'tips', label: t('community.topics.tips'), icon: 'bulb-outline' },
+    { id: 'stories', label: t('community.topics.stories'), icon: 'book-outline' },
+  ];
+  
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -110,7 +113,7 @@ export default function CommunityScreen() {
 
   const submitMessage = async () => {
     if (!content.trim() || !authorName.trim()) {
-      Alert.alert('Erreur', 'Veuillez remplir votre nom et votre message');
+      Alert.alert(t('common.error'), t('community.errorFillFields'));
       return;
     }
 
@@ -120,7 +123,7 @@ export default function CommunityScreen() {
         id: Date.now().toString(),
         content: content.trim(),
         author_name: authorName.trim(),
-        author_country: authorCountry.trim() || 'Non précisé',
+        author_country: authorCountry.trim() || t('community.notSpecified'),
         created_at: new Date().toISOString(),
         likes: 0,
         topic: messageTopic,
@@ -135,9 +138,9 @@ export default function CommunityScreen() {
       setContent('');
       setShowForm(false);
       
-      Alert.alert('Merci !', 'Votre message a été publié.');
+      Alert.alert(t('community.thanks'), t('community.messagePublished'));
     } catch (error) {
-      Alert.alert('Erreur', 'Impossible de publier le message');
+      Alert.alert(t('common.error'), t('community.errorPublish'));
     } finally {
       setSubmitting(false);
     }
@@ -162,23 +165,23 @@ export default function CommunityScreen() {
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     
-    if (diffHours < 1) return "À l'instant";
-    if (diffHours < 24) return `Il y a ${diffHours}h`;
-    if (diffDays < 7) return `Il y a ${diffDays}j`;
-    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    if (diffHours < 1) return t('community.time.justNow');
+    if (diffHours < 24) return t('community.time.hoursAgo', { hours: diffHours });
+    if (diffDays < 7) return t('community.time.daysAgo', { days: diffDays });
+    return date.toLocaleDateString();
   };
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
+        <Pressable onPress={() => router.push('/')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#D4AF37" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Communauté AÏLA</Text>
-        <TouchableOpacity onPress={() => setShowForm(true)}>
+        </Pressable>
+        <Text style={styles.headerTitle}>{t('community.title')}</Text>
+        <Pressable onPress={() => setShowForm(true)}>
           <Ionicons name="create-outline" size={24} color="#D4AF37" />
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       {/* Topics Filter */}
@@ -189,7 +192,7 @@ export default function CommunityScreen() {
         contentContainerStyle={styles.topicsContent}
       >
         {topics.map(topic => (
-          <TouchableOpacity
+          <Pressable
             key={topic.id}
             style={[
               styles.topicChip,
@@ -208,44 +211,44 @@ export default function CommunityScreen() {
             ]}>
               {topic.label}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         ))}
       </ScrollView>
 
       {/* Write Button (visible when form is hidden) */}
       {!showForm && (
-        <TouchableOpacity style={styles.writeButton} onPress={() => setShowForm(true)}>
+        <Pressable style={styles.writeButton} onPress={() => setShowForm(true)}>
           <Ionicons name="chatbubble-ellipses" size={20} color="#0A1628" />
-          <Text style={styles.writeButtonText}>Écrire un message</Text>
-        </TouchableOpacity>
+          <Text style={styles.writeButtonText}>{t('community.writeMessage')}</Text>
+        </Pressable>
       )}
 
       {/* Write Form */}
       {showForm && (
         <View style={styles.formContainer}>
           <View style={styles.formHeader}>
-            <Text style={styles.formTitle}>Nouveau message</Text>
-            <TouchableOpacity onPress={() => setShowForm(false)}>
+            <Text style={styles.formTitle}>{t('community.newMessage')}</Text>
+            <Pressable onPress={() => setShowForm(false)}>
               <Ionicons name="close" size={24} color="#6B7C93" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <View style={styles.formRow}>
             <View style={styles.formField}>
-              <Text style={styles.label}>Votre nom *</Text>
+              <Text style={styles.label}>{t('community.yourName')} *</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Prénom N."
+                placeholder={t('community.placeholder.name')}
                 placeholderTextColor="#6B7C93"
                 value={authorName}
                 onChangeText={setAuthorName}
               />
             </View>
             <View style={styles.formField}>
-              <Text style={styles.label}>Pays / Région</Text>
+              <Text style={styles.label}>{t('community.country')}</Text>
               <TextInput
                 style={styles.input}
-                placeholder="France 🇫🇷"
+                placeholder={t('community.placeholder.country')}
                 placeholderTextColor="#6B7C93"
                 value={authorCountry}
                 onChangeText={setAuthorCountry}
@@ -253,10 +256,10 @@ export default function CommunityScreen() {
             </View>
           </View>
 
-          <Text style={styles.label}>Sujet</Text>
+          <Text style={styles.label}>{t('community.topic')}</Text>
           <View style={styles.topicSelector}>
             {topics.filter(t => t.id !== 'all').map(topic => (
-              <TouchableOpacity
+              <Pressable
                 key={topic.id}
                 style={[
                   styles.topicOption,
@@ -270,14 +273,14 @@ export default function CommunityScreen() {
                 ]}>
                   {topic.label}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             ))}
           </View>
 
-          <Text style={styles.label}>Votre message *</Text>
+          <Text style={styles.label}>{t('community.yourMessage')} *</Text>
           <TextInput
             style={[styles.input, styles.textArea]}
-            placeholder="Partagez vos origines, posez une question, donnez un conseil..."
+            placeholder={t('community.placeholder.message')}
             placeholderTextColor="#6B7C93"
             value={content}
             onChangeText={setContent}
@@ -285,15 +288,15 @@ export default function CommunityScreen() {
             numberOfLines={4}
           />
 
-          <TouchableOpacity 
+          <Pressable 
             style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
             onPress={submitMessage}
             disabled={submitting}
           >
             <Text style={styles.submitButtonText}>
-              {submitting ? 'Publication...' : 'Publier'}
+              {submitting ? t('community.publishing') : t('community.publish')}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       )}
 
@@ -302,8 +305,8 @@ export default function CommunityScreen() {
         {filteredMessages.length === 0 ? (
           <View style={styles.emptyState}>
             <Ionicons name="chatbubbles-outline" size={48} color="#6B7C93" />
-            <Text style={styles.emptyText}>Aucun message dans cette catégorie</Text>
-            <Text style={styles.emptySubtext}>Soyez le premier à partager !</Text>
+            <Text style={styles.emptyText}>{t('community.noMessages')}</Text>
+            <Text style={styles.emptySubtext}>{t('community.beFirst')}</Text>
           </View>
         ) : (
           filteredMessages.map(message => {
@@ -313,7 +316,7 @@ export default function CommunityScreen() {
                 {isChallenge && (
                   <View style={styles.challengeBadgeHeader}>
                     <Ionicons name="trophy" size={14} color="#4CAF50" />
-                    <Text style={styles.challengeBadgeText}>Défi complété</Text>
+                    <Text style={styles.challengeBadgeText}>{t('community.challengeCompleted')}</Text>
                   </View>
                 )}
                 <View style={styles.messageHeader}>
@@ -334,16 +337,16 @@ export default function CommunityScreen() {
                 <View style={styles.messageFooter}>
                   <View style={[styles.topicBadge, isChallenge && styles.challengeTopicBadge]}>
                     <Text style={[styles.topicBadgeText, isChallenge && styles.challengeTopicBadgeText]}>
-                      {isChallenge ? '🎮 Défi' : topics.find(t => t.id === message.topic)?.label || 'Général'}
+                      {isChallenge ? t('community.challengeLabel') : topics.find(tp => tp.id === message.topic)?.label || t('community.general')}
                     </Text>
                   </View>
-                  <TouchableOpacity 
+                  <Pressable 
                     style={styles.likeButton}
                     onPress={() => likeMessage(message.id)}
                   >
                     <Ionicons name="heart-outline" size={18} color="#D4AF37" />
                     <Text style={styles.likeCount}>{message.likes}</Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 </View>
               </View>
             );
@@ -351,22 +354,22 @@ export default function CommunityScreen() {
         )}
         
         {/* Lien vers les défis */}
-        <TouchableOpacity 
+        <Pressable 
           style={styles.challengesLink}
           onPress={() => router.push('/challenges')}
         >
           <Ionicons name="trophy-outline" size={18} color="#4CAF50" />
-          <Text style={styles.challengesLinkText}>Participer aux défis familiaux</Text>
-        </TouchableOpacity>
+          <Text style={styles.challengesLinkText}>{t('community.joinChallenges')}</Text>
+        </Pressable>
         
         {/* Lien vers le blog */}
-        <TouchableOpacity 
+        <Pressable 
           style={styles.blogLink}
           onPress={() => router.push('/blog')}
         >
           <Ionicons name="newspaper-outline" size={18} color="#D4AF37" />
-          <Text style={styles.blogLinkText}>Lire nos articles</Text>
-        </TouchableOpacity>
+          <Text style={styles.blogLinkText}>{t('community.readArticles')}</Text>
+        </Pressable>
         
         <View style={styles.bottomPadding} />
       </ScrollView>
