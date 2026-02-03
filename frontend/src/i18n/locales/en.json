@@ -143,6 +143,28 @@
     "shareQuestion": "Would you like to share this achievement with the community?",
     "celebrationMessage": "You're bringing your family history to life!"
   },
+  "dailyChallenge": {
+    "addPerson": {
+      "title": "Add a relative",
+      "description": "Enrich your tree with a new member"
+    },
+    "addMemory": {
+      "title": "Share a memory",
+      "description": "Add an anecdote to your family history"
+    },
+    "inviteFamily": {
+      "title": "Invite a relative",
+      "description": "Your tree is richer together"
+    },
+    "exploreBlog": {
+      "title": "Discover a tip",
+      "description": "Read a blog article for inspiration"
+    },
+    "communityPost": {
+      "title": "Share your story",
+      "description": "Post a message in the community"
+    }
+  },
   "community": {
     "title": "AÏLA Community",
     "liveActivity": "Live activity",

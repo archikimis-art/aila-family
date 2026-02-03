@@ -143,6 +143,28 @@
     "shareQuestion": "Voulez-vous partager cette réussite avec la communauté ?",
     "celebrationMessage": "Vous faites vivre votre histoire familiale !"
   },
+  "dailyChallenge": {
+    "addPerson": {
+      "title": "Ajoutez un proche",
+      "description": "Enrichissez votre arbre avec un nouveau membre"
+    },
+    "addMemory": {
+      "title": "Partagez un souvenir",
+      "description": "Ajoutez une anecdote à votre histoire familiale"
+    },
+    "inviteFamily": {
+      "title": "Invitez un proche",
+      "description": "Votre arbre est plus riche à plusieurs"
+    },
+    "exploreBlog": {
+      "title": "Découvrez une astuce",
+      "description": "Lisez un article du blog pour vous inspirer"
+    },
+    "communityPost": {
+      "title": "Partagez votre histoire",
+      "description": "Publiez un message dans la communauté"
+    }
+  },
   "community": {
     "title": "Communauté AÏLA",
     "liveActivity": "Activité en direct",

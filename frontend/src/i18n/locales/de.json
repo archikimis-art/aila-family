@@ -143,6 +143,28 @@
     "shareQuestion": "Möchten Sie diesen Erfolg mit der Gemeinschaft teilen?",
     "celebrationMessage": "Sie erwecken Ihre Familiengeschichte zum Leben!"
   },
+  "dailyChallenge": {
+    "addPerson": {
+      "title": "Fügen Sie ein Familienmitglied hinzu",
+      "description": "Bereichern Sie Ihren Stammbaum mit einem neuen Mitglied"
+    },
+    "addMemory": {
+      "title": "Teilen Sie eine Erinnerung",
+      "description": "Fügen Sie eine Anekdote zu Ihrer Familiengeschichte hinzu"
+    },
+    "inviteFamily": {
+      "title": "Laden Sie ein Familienmitglied ein",
+      "description": "Ihr Stammbaum ist gemeinsam reicher"
+    },
+    "exploreBlog": {
+      "title": "Entdecken Sie einen Tipp",
+      "description": "Lesen Sie einen Blog-Artikel zur Inspiration"
+    },
+    "communityPost": {
+      "title": "Teilen Sie Ihre Geschichte",
+      "description": "Veröffentlichen Sie eine Nachricht in der Gemeinschaft"
+    }
+  },
   "community": {
     "title": "AÏLA-Gemeinschaft",
     "liveActivity": "Live-Aktivität",

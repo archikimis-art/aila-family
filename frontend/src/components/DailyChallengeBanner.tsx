@@ -13,43 +13,43 @@ interface DailyChallenge {
   color: string;
 }
 
-const DAILY_CHALLENGES: DailyChallenge[] = [
+const DAILY_CHALLENGES_KEYS = [
   {
     id: 'add_person',
-    title: 'Ajoutez un proche',
-    description: 'Enrichissez votre arbre avec un nouveau membre',
+    titleKey: 'dailyChallenge.addPerson.title',
+    descriptionKey: 'dailyChallenge.addPerson.description',
     icon: 'person-add',
     points: 25,
     color: '#4CAF50',
   },
   {
     id: 'add_memory',
-    title: 'Partagez un souvenir',
-    description: 'Ajoutez une anecdote à votre histoire familiale',
+    titleKey: 'dailyChallenge.addMemory.title',
+    descriptionKey: 'dailyChallenge.addMemory.description',
     icon: 'heart',
     points: 30,
     color: '#E91E63',
   },
   {
     id: 'invite_family',
-    title: 'Invitez un proche',
-    description: 'Votre arbre est plus riche à plusieurs',
+    titleKey: 'dailyChallenge.inviteFamily.title',
+    descriptionKey: 'dailyChallenge.inviteFamily.description',
     icon: 'people',
     points: 40,
     color: '#2196F3',
   },
   {
     id: 'explore_blog',
-    title: 'Découvrez une astuce',
-    description: 'Lisez un article du blog pour vous inspirer',
+    titleKey: 'dailyChallenge.exploreBlog.title',
+    descriptionKey: 'dailyChallenge.exploreBlog.description',
     icon: 'bulb',
     points: 15,
     color: '#FF9800',
   },
   {
     id: 'community_post',
-    title: 'Partagez votre histoire',
-    description: 'Publiez un message dans la communauté',
+    titleKey: 'dailyChallenge.communityPost.title',
+    descriptionKey: 'dailyChallenge.communityPost.description',
     icon: 'chatbubbles',
     points: 35,
     color: '#9C27B0',
@@ -65,7 +65,12 @@ export default function DailyChallengeBanner() {
   // Get daily challenge based on day of year
   const getDailyChallenge = () => {
     const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-    return DAILY_CHALLENGES[dayOfYear % DAILY_CHALLENGES.length];
+    const challengeKey = DAILY_CHALLENGES_KEYS[dayOfYear % DAILY_CHALLENGES_KEYS.length];
+    return {
+      ...challengeKey,
+      title: t(challengeKey.titleKey),
+      description: t(challengeKey.descriptionKey),
+    };
   };
 
   const challenge = getDailyChallenge();
