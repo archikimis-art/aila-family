@@ -3,52 +3,54 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export default function PourquoiAilaScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const features = [
     {
       icon: 'flash',
-      title: 'Simple & Intuitif',
-      subtitle: 'Créez votre arbre en 5 minutes',
-      description: 'AÏLA a été conçu pour être utilisé par tous, même sans compétences techniques. L\'interface intuitive vous guide pas à pas dans la création de votre arbre généalogique. Ajoutez des membres, créez des liens familiaux, et visualisez votre histoire familiale en quelques clics.',
-      benefits: ['Interface épurée et moderne', 'Tutoriels intégrés', 'Pas de formation nécessaire']
+      titleKey: 'whyAila.features.simple.title',
+      subtitleKey: 'whyAila.features.simple.subtitle',
+      descriptionKey: 'whyAila.features.simple.description',
+      benefitsKeys: ['whyAila.features.simple.benefits.0', 'whyAila.features.simple.benefits.1', 'whyAila.features.simple.benefits.2']
     },
     {
       icon: 'people',
-      title: 'Collaboratif',
-      subtitle: 'Invitez votre famille',
-      description: 'La généalogie est une aventure familiale ! Avec AÏLA, invitez vos proches à contribuer à l\'arbre. Chacun peut ajouter des informations, des photos et des anecdotes. Ensemble, vous construisez la mémoire de votre famille.',
-      benefits: ['Invitations par email', 'Contributions en temps réel', 'Historique des modifications']
+      titleKey: 'whyAila.features.collaborative.title',
+      subtitleKey: 'whyAila.features.collaborative.subtitle',
+      descriptionKey: 'whyAila.features.collaborative.description',
+      benefitsKeys: ['whyAila.features.collaborative.benefits.0', 'whyAila.features.collaborative.benefits.1', 'whyAila.features.collaborative.benefits.2']
     },
     {
       icon: 'chatbubbles',
-      title: 'Chat Familial Sécurisé',
-      subtitle: 'Discutez en privé',
-      description: 'Restez connecté avec votre famille grâce au chat intégré. Partagez des souvenirs, posez des questions sur vos ancêtres, ou organisez des réunions familiales. Toutes vos conversations sont privées et sécurisées.',
-      benefits: ['Messagerie instantanée', 'Partage de photos', 'Notifications push']
+      titleKey: 'whyAila.features.chat.title',
+      subtitleKey: 'whyAila.features.chat.subtitle',
+      descriptionKey: 'whyAila.features.chat.description',
+      benefitsKeys: ['whyAila.features.chat.benefits.0', 'whyAila.features.chat.benefits.1', 'whyAila.features.chat.benefits.2']
     },
     {
       icon: 'document-text',
-      title: 'Import & Export',
-      subtitle: 'Excel & PDF inclus',
-      description: 'Importez facilement vos données depuis un fichier Excel ou exportez votre arbre en PDF haute qualité pour l\'imprimer et l\'encadrer. AÏLA s\'adapte à vos besoins et vous permet de conserver votre travail sous différents formats.',
-      benefits: ['Import Excel automatique', 'Export PDF professionnel', 'Sauvegarde GEDCOM']
+      titleKey: 'whyAila.features.import.title',
+      subtitleKey: 'whyAila.features.import.subtitle',
+      descriptionKey: 'whyAila.features.import.description',
+      benefitsKeys: ['whyAila.features.import.benefits.0', 'whyAila.features.import.benefits.1', 'whyAila.features.import.benefits.2']
     },
     {
       icon: 'shield-checkmark',
-      title: 'RGPD & Sécurité',
-      subtitle: 'Vos données protégées',
-      description: 'Vos données familiales sont précieuses. AÏLA respecte scrupuleusement le RGPD et utilise un chiffrement de niveau bancaire. Vous gardez le contrôle total : exportez ou supprimez vos données à tout moment.',
-      benefits: ['Conforme RGPD', 'Chiffrement SSL', 'Droit à l\'oubli garanti']
+      titleKey: 'whyAila.features.security.title',
+      subtitleKey: 'whyAila.features.security.subtitle',
+      descriptionKey: 'whyAila.features.security.description',
+      benefitsKeys: ['whyAila.features.security.benefits.0', 'whyAila.features.security.benefits.1', 'whyAila.features.security.benefits.2']
     },
     {
       icon: 'gift',
-      title: '100% Gratuit',
-      subtitle: 'Sans engagement',
-      description: 'AÏLA est entièrement gratuit pour les fonctionnalités essentielles. Pas d\'abonnement caché, pas de limite de temps. Créez votre arbre, invitez votre famille, et profitez de toutes les fonctionnalités de base sans débourser un centime.',
-      benefits: ['Arbre illimité', 'Pas de publicité intrusive', 'Fonctions premium optionnelles']
+      titleKey: 'whyAila.features.free.title',
+      subtitleKey: 'whyAila.features.free.subtitle',
+      descriptionKey: 'whyAila.features.free.description',
+      benefitsKeys: ['whyAila.features.free.benefits.0', 'whyAila.features.free.benefits.1', 'whyAila.features.free.benefits.2']
     },
   ];
 
@@ -62,9 +64,9 @@ export default function PourquoiAilaScreen() {
           </TouchableOpacity>
           <View style={styles.headerContent}>
             <Ionicons name="leaf" size={40} color="#D4AF37" />
-            <Text style={styles.headerTitle}>Pourquoi AÏLA ?</Text>
+            <Text style={styles.headerTitle}>{t('whyAila.title')}</Text>
             <Text style={styles.headerSubtitle}>
-              Découvrez ce qui fait d'AÏLA l'application idéale pour créer et partager votre arbre généalogique familial.
+              {t('whyAila.subtitle')}
             </Text>
           </View>
         </View>
@@ -78,18 +80,18 @@ export default function PourquoiAilaScreen() {
                   <Ionicons name={feature.icon as any} size={28} color="#D4AF37" />
                 </View>
                 <View style={styles.featureTitleContainer}>
-                  <Text style={styles.featureTitle}>{feature.title}</Text>
-                  <Text style={styles.featureSubtitle}>{feature.subtitle}</Text>
+                  <Text style={styles.featureTitle}>{t(feature.titleKey)}</Text>
+                  <Text style={styles.featureSubtitle}>{t(feature.subtitleKey)}</Text>
                 </View>
               </View>
               
-              <Text style={styles.featureDescription}>{feature.description}</Text>
+              <Text style={styles.featureDescription}>{t(feature.descriptionKey)}</Text>
               
               <View style={styles.benefitsList}>
-                {feature.benefits.map((benefit, bIndex) => (
+                {feature.benefitsKeys.map((benefitKey, bIndex) => (
                   <View key={bIndex} style={styles.benefitItem}>
                     <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
-                    <Text style={styles.benefitText}>{benefit}</Text>
+                    <Text style={styles.benefitText}>{t(benefitKey)}</Text>
                   </View>
                 ))}
               </View>
@@ -99,29 +101,29 @@ export default function PourquoiAilaScreen() {
 
         {/* CTA Section */}
         <View style={styles.ctaSection}>
-          <Text style={styles.ctaTitle}>Prêt à commencer ?</Text>
-          <Text style={styles.ctaSubtitle}>Créez votre arbre généalogique en quelques minutes</Text>
+          <Text style={styles.ctaTitle}>{t('whyAila.cta.title')}</Text>
+          <Text style={styles.ctaSubtitle}>{t('whyAila.cta.subtitle')}</Text>
           
           <TouchableOpacity 
             style={styles.ctaButton}
             onPress={() => router.push('/(tabs)/tree?preview=true')}
           >
             <Ionicons name="play" size={20} color="#0A1628" />
-            <Text style={styles.ctaButtonText}>Essayer maintenant</Text>
+            <Text style={styles.ctaButtonText}>{t('home.cta.tryNow')}</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
             style={styles.ctaSecondaryButton}
             onPress={() => router.push('/(auth)/register')}
           >
-            <Text style={styles.ctaSecondaryButtonText}>Créer un compte gratuit</Text>
+            <Text style={styles.ctaSecondaryButtonText}>{t('home.cta.createAccount')}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Footer */}
         <View style={styles.footer}>
           <TouchableOpacity onPress={() => router.push('/')}>
-            <Text style={styles.footerLink}>← Retour à l'accueil</Text>
+            <Text style={styles.footerLink}>{t('whyAila.backHome')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

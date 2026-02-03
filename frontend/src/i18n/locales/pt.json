@@ -238,6 +238,53 @@
       "sage": "Sábio"
     }
   },
+  "whyAila": {
+    "title": "Por que AÏLA?",
+    "subtitle": "Descubra o que torna o AÏLA o app ideal para criar e compartilhar sua árvore genealógica familiar.",
+    "backHome": "← Voltar para a página inicial",
+    "cta": {
+      "title": "Pronto para começar?",
+      "subtitle": "Crie sua árvore genealógica em minutos"
+    },
+    "features": {
+      "simple": {
+        "title": "Simples e Intuitivo",
+        "subtitle": "Crie sua árvore em 5 minutos",
+        "description": "O AÏLA foi projetado para ser usado por todos, mesmo sem habilidades técnicas. A interface intuitiva guia você passo a passo na criação de sua árvore genealógica. Adicione membros, crie vínculos familiares e visualize sua história familiar em poucos cliques.",
+        "benefits": ["Interface limpa e moderna", "Tutoriais integrados", "Sem necessidade de treinamento"]
+      },
+      "collaborative": {
+        "title": "Colaborativo",
+        "subtitle": "Convide sua família",
+        "description": "A genealogia é uma aventura familiar! Com o AÏLA, convide seus entes queridos para contribuir com a árvore. Cada um pode adicionar informações, fotos e anedotas. Juntos, vocês constroem a memória de sua família.",
+        "benefits": ["Convites por email", "Contribuições em tempo real", "Histórico de alterações"]
+      },
+      "chat": {
+        "title": "Chat Familiar Seguro",
+        "subtitle": "Converse em particular",
+        "description": "Mantenha-se conectado com sua família através do chat integrado. Compartilhe memórias, faça perguntas sobre seus antepassados ou organize reuniões de família. Todas as suas conversas são privadas e seguras.",
+        "benefits": ["Mensagens instantâneas", "Compartilhamento de fotos", "Notificações push"]
+      },
+      "import": {
+        "title": "Importar e Exportar",
+        "subtitle": "Excel e PDF inclusos",
+        "description": "Importe facilmente seus dados de um arquivo Excel ou exporte sua árvore em PDF de alta qualidade para imprimir e emoldurar. O AÏLA se adapta às suas necessidades e permite salvar seu trabalho em diferentes formatos.",
+        "benefits": ["Importação Excel automática", "Exportação PDF profissional", "Backup GEDCOM"]
+      },
+      "security": {
+        "title": "LGPD e Segurança",
+        "subtitle": "Seus dados protegidos",
+        "description": "Seus dados familiares são preciosos. O AÏLA cumpre rigorosamente a LGPD e usa criptografia de nível bancário. Você mantém o controle total: exporte ou exclua seus dados a qualquer momento.",
+        "benefits": ["Conforme à LGPD", "Criptografia SSL", "Direito ao esquecimento garantido"]
+      },
+      "free": {
+        "title": "100% Grátis",
+        "subtitle": "Sem compromisso",
+        "description": "O AÏLA é completamente gratuito para as funcionalidades essenciais. Sem assinatura oculta, sem limite de tempo. Crie sua árvore, convide sua família e aproveite todas as funcionalidades básicas sem gastar um centavo.",
+        "benefits": ["Árvore ilimitada", "Sem publicidade intrusiva", "Funções premium opcionais"]
+      }
+    }
+  },
   "blog": {
     "title": "Blog AÏLA",
     "articles": "Artigos",

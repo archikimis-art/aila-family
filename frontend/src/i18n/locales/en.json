@@ -238,6 +238,53 @@
       "sage": "Sage"
     }
   },
+  "whyAila": {
+    "title": "Why AÏLA?",
+    "subtitle": "Discover what makes AÏLA the ideal app for creating and sharing your family tree.",
+    "backHome": "← Back to home",
+    "cta": {
+      "title": "Ready to start?",
+      "subtitle": "Create your family tree in minutes"
+    },
+    "features": {
+      "simple": {
+        "title": "Simple & Intuitive",
+        "subtitle": "Create your tree in 5 minutes",
+        "description": "AÏLA was designed to be used by everyone, even without technical skills. The intuitive interface guides you step by step in creating your family tree. Add members, create family links, and visualize your family history in just a few clicks.",
+        "benefits": ["Clean and modern interface", "Built-in tutorials", "No training required"]
+      },
+      "collaborative": {
+        "title": "Collaborative",
+        "subtitle": "Invite your family",
+        "description": "Genealogy is a family adventure! With AÏLA, invite your loved ones to contribute to the tree. Everyone can add information, photos and anecdotes. Together, you build your family's memory.",
+        "benefits": ["Email invitations", "Real-time contributions", "Change history"]
+      },
+      "chat": {
+        "title": "Secure Family Chat",
+        "subtitle": "Chat privately",
+        "description": "Stay connected with your family through the built-in chat. Share memories, ask questions about your ancestors, or organize family reunions. All your conversations are private and secure.",
+        "benefits": ["Instant messaging", "Photo sharing", "Push notifications"]
+      },
+      "import": {
+        "title": "Import & Export",
+        "subtitle": "Excel & PDF included",
+        "description": "Easily import your data from an Excel file or export your tree as a high-quality PDF to print and frame. AÏLA adapts to your needs and allows you to save your work in different formats.",
+        "benefits": ["Automatic Excel import", "Professional PDF export", "GEDCOM backup"]
+      },
+      "security": {
+        "title": "GDPR & Security",
+        "subtitle": "Your data protected",
+        "description": "Your family data is precious. AÏLA strictly complies with GDPR and uses bank-level encryption. You keep full control: export or delete your data at any time.",
+        "benefits": ["GDPR compliant", "SSL encryption", "Right to be forgotten guaranteed"]
+      },
+      "free": {
+        "title": "100% Free",
+        "subtitle": "No commitment",
+        "description": "AÏLA is completely free for essential features. No hidden subscription, no time limit. Create your tree, invite your family, and enjoy all the basic features without spending a dime.",
+        "benefits": ["Unlimited tree", "No intrusive ads", "Optional premium features"]
+      }
+    }
+  },
   "blog": {
     "title": "AÏLA Blog",
     "articles": "Articles",
