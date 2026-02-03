@@ -285,6 +285,48 @@
       }
     }
   },
+  "about": {
+    "title": "Über AÏLA",
+    "tagline": "Ihr intelligenter Stammbaum",
+    "backHome": "Zurück zur Startseite",
+    "version": "Version 1.0.0",
+    "copyright": "© 2024 AÏLA. Alle Rechte vorbehalten.",
+    "mission": {
+      "title": "Unsere Mission",
+      "description": "AÏLA ist eine innovative Anwendung zur Erstellung und Verwaltung Ihres Familienstammbaums. Unsere Mission ist es, Ihnen zu helfen, Ihre Familiengeschichte über Generationen hinweg zu bewahren und zu teilen."
+    },
+    "features": {
+      "title": "Hauptfunktionen",
+      "tree": {
+        "title": "Interaktiver Stammbaum",
+        "description": "Visualisieren Sie Ihre Familie in einem dynamischen Baum mit klaren Verbindungen zwischen den Generationen."
+      },
+      "members": {
+        "title": "Mitgliederverwaltung",
+        "description": "Fügen Sie einfach Familienmitglieder mit persönlichen Informationen, Fotos und wichtigen Daten hinzu."
+      },
+      "chat": {
+        "title": "Familien-Chat",
+        "description": "Kommunizieren Sie mit Familienmitgliedern über unser integriertes und privates Chat-System."
+      },
+      "share": {
+        "title": "Sicheres Teilen",
+        "description": "Teilen Sie Ihren Baum sicher mit Ihren Lieben über Vorschau-Links."
+      },
+      "reminders": {
+        "title": "Ereignis-Erinnerungen",
+        "description": "Verpassen Sie nie wieder einen Geburtstag oder ein wichtiges Datum dank unserer automatischen Benachrichtigungen."
+      }
+    },
+    "whyChoose": {
+      "title": "Warum AÏLA wählen?",
+      "list": "• Intuitive und elegante Oberfläche\n• Datenschutz und Datensicherheit\n• Automatische Synchronisierung auf allen Geräten\n• Mehrsprachige Unterstützung\n• Exportieren Sie Ihre Daten jederzeit\n• Reaktionsschnelles Support-Team"
+    },
+    "contact": {
+      "title": "Kontaktieren Sie uns",
+      "description": "Bei Fragen oder Anregungen kontaktieren Sie uns:\nEmail: contact@aila.family\nWebsite: www.aila.family"
+    }
+  },
   "blog": {
     "title": "AÏLA-Blog",
     "articles": "Artikel",

@@ -285,6 +285,48 @@
       }
     }
   },
+  "about": {
+    "title": "Sobre o AÏLA",
+    "tagline": "Sua árvore genealógica inteligente",
+    "backHome": "Voltar para a página inicial",
+    "version": "Versão 1.0.0",
+    "copyright": "© 2024 AÏLA. Todos os direitos reservados.",
+    "mission": {
+      "title": "Nossa Missão",
+      "description": "O AÏLA é um aplicativo inovador dedicado à criação e gestão da sua árvore genealógica familiar. Nossa missão é ajudá-lo a preservar e compartilhar a história da sua família através das gerações."
+    },
+    "features": {
+      "title": "Funcionalidades Principais",
+      "tree": {
+        "title": "Árvore Genealógica Interativa",
+        "description": "Visualize sua família em uma árvore dinâmica com conexões claras entre as gerações."
+      },
+      "members": {
+        "title": "Gestão de Membros",
+        "description": "Adicione facilmente membros da família com suas informações pessoais, fotos e datas importantes."
+      },
+      "chat": {
+        "title": "Chat Familiar",
+        "description": "Comunique-se com os membros da família através do nosso sistema de chat integrado e privado."
+      },
+      "share": {
+        "title": "Compartilhamento Seguro",
+        "description": "Compartilhe sua árvore com seus entes queridos de forma segura através de links de visualização."
+      },
+      "reminders": {
+        "title": "Lembretes de Eventos",
+        "description": "Nunca mais perca um aniversário ou data importante graças às nossas notificações automáticas."
+      }
+    },
+    "whyChoose": {
+      "title": "Por que escolher o AÏLA?",
+      "list": "• Interface intuitiva e elegante\n• Privacidade e proteção de dados\n• Sincronização automática em todos os dispositivos\n• Suporte multilíngue\n• Exporte seus dados a qualquer momento\n• Equipe de suporte responsiva"
+    },
+    "contact": {
+      "title": "Entre em Contato",
+      "description": "Para qualquer pergunta ou sugestão, não hesite em nos contatar:\nEmail: contact@aila.family\nSite: www.aila.family"
+    }
+  },
   "blog": {
     "title": "Blog AÏLA",
     "articles": "Artigos",

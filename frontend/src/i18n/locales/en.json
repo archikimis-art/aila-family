@@ -285,6 +285,48 @@
       }
     }
   },
+  "about": {
+    "title": "About AÏLA",
+    "tagline": "Your intelligent family tree",
+    "backHome": "Back to home",
+    "version": "Version 1.0.0",
+    "copyright": "© 2024 AÏLA. All rights reserved.",
+    "mission": {
+      "title": "Our Mission",
+      "description": "AÏLA is an innovative application dedicated to creating and managing your family tree. Our mission is to help you preserve and share your family history across generations."
+    },
+    "features": {
+      "title": "Main Features",
+      "tree": {
+        "title": "Interactive Family Tree",
+        "description": "Visualize your family in a dynamic tree with clear connections between generations."
+      },
+      "members": {
+        "title": "Member Management",
+        "description": "Easily add family members with their personal information, photos and important dates."
+      },
+      "chat": {
+        "title": "Family Discussion",
+        "description": "Communicate with family members through our built-in and private chat system."
+      },
+      "share": {
+        "title": "Secure Sharing",
+        "description": "Share your tree with your loved ones securely through preview links."
+      },
+      "reminders": {
+        "title": "Event Reminders",
+        "description": "Never miss a birthday or important date again thanks to our automatic notifications."
+      }
+    },
+    "whyChoose": {
+      "title": "Why Choose AÏLA?",
+      "list": "• Intuitive and elegant interface\n• Privacy and data protection\n• Automatic sync across all your devices\n• Multilingual support\n• Export your data anytime\n• Responsive support team"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "For any questions or suggestions, don't hesitate to contact us at:\nEmail: contact@aila.family\nWebsite: www.aila.family"
+    }
+  },
   "blog": {
     "title": "AÏLA Blog",
     "articles": "Articles",

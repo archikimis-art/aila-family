@@ -285,6 +285,48 @@
       }
     }
   },
+  "about": {
+    "title": "Acerca de AÏLA",
+    "tagline": "Tu árbol genealógico inteligente",
+    "backHome": "Volver al inicio",
+    "version": "Versión 1.0.0",
+    "copyright": "© 2024 AÏLA. Todos los derechos reservados.",
+    "mission": {
+      "title": "Nuestra Misión",
+      "description": "AÏLA es una aplicación innovadora dedicada a la creación y gestión de tu árbol genealógico familiar. Nuestra misión es ayudarte a preservar y compartir la historia de tu familia a través de las generaciones."
+    },
+    "features": {
+      "title": "Características Principales",
+      "tree": {
+        "title": "Árbol Genealógico Interactivo",
+        "description": "Visualiza tu familia en un árbol dinámico con conexiones claras entre generaciones."
+      },
+      "members": {
+        "title": "Gestión de Miembros",
+        "description": "Añade fácilmente miembros de tu familia con su información personal, fotos y fechas importantes."
+      },
+      "chat": {
+        "title": "Chat Familiar",
+        "description": "Comunícate con los miembros de tu familia a través de nuestro sistema de chat integrado y privado."
+      },
+      "share": {
+        "title": "Compartir Seguro",
+        "description": "Comparte tu árbol con tus seres queridos de forma segura mediante enlaces de vista previa."
+      },
+      "reminders": {
+        "title": "Recordatorios de Eventos",
+        "description": "No te pierdas nunca más un cumpleaños o fecha importante gracias a nuestras notificaciones automáticas."
+      }
+    },
+    "whyChoose": {
+      "title": "¿Por qué elegir AÏLA?",
+      "list": "• Interfaz intuitiva y elegante\n• Privacidad y protección de datos\n• Sincronización automática en todos tus dispositivos\n• Soporte multilingüe\n• Exporta tus datos en cualquier momento\n• Equipo de soporte receptivo"
+    },
+    "contact": {
+      "title": "Contáctanos",
+      "description": "Para cualquier pregunta o sugerencia, no dudes en contactarnos:\nEmail: contact@aila.family\nSitio web: www.aila.family"
+    }
+  },
   "blog": {
     "title": "Blog AÏLA",
     "articles": "Artículos",

@@ -10,9 +10,11 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export default function AboutScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -21,7 +23,7 @@ export default function AboutScreen() {
         <TouchableOpacity onPress={() => router.replace('/')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>À propos d'AÏLA</Text>
+        <Text style={styles.headerTitle}>{t('about.title')}</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -29,28 +31,27 @@ export default function AboutScreen() {
         {/* Logo Section */}
         <View style={styles.logoSection}>
           <Text style={styles.appName}>AÏLA</Text>
-          <Text style={styles.tagline}>Votre arbre généalogique intelligent</Text>
+          <Text style={styles.tagline}>{t('about.tagline')}</Text>
         </View>
 
         {/* Description */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Notre Mission</Text>
+          <Text style={styles.sectionTitle}>{t('about.mission.title')}</Text>
           <Text style={styles.paragraph}>
-            AÏLA est une application innovante dédiée à la création et à la gestion de votre arbre généalogique familial. 
-            Notre mission est de vous aider à préserver et partager l'histoire de votre famille à travers les générations.
+            {t('about.mission.description')}
           </Text>
         </View>
 
         {/* Features */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Fonctionnalités Principales</Text>
+          <Text style={styles.sectionTitle}>{t('about.features.title')}</Text>
           
           <View style={styles.featureItem}>
             <Ionicons name="git-branch-outline" size={24} color="#D4AF37" />
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>Arbre Généalogique Interactif</Text>
+              <Text style={styles.featureTitle}>{t('about.features.tree.title')}</Text>
               <Text style={styles.featureDescription}>
-                Visualisez votre famille dans un arbre dynamique avec des connexions claires entre les générations.
+                {t('about.features.tree.description')}
               </Text>
             </View>
           </View>
@@ -58,9 +59,9 @@ export default function AboutScreen() {
           <View style={styles.featureItem}>
             <Ionicons name="people-outline" size={24} color="#D4AF37" />
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>Gestion des Membres</Text>
+              <Text style={styles.featureTitle}>{t('about.features.members.title')}</Text>
               <Text style={styles.featureDescription}>
-                Ajoutez facilement des membres de votre famille avec leurs informations personnelles, photos et dates importantes.
+                {t('about.features.members.description')}
               </Text>
             </View>
           </View>
@@ -68,9 +69,9 @@ export default function AboutScreen() {
           <View style={styles.featureItem}>
             <Ionicons name="chatbubbles-outline" size={24} color="#D4AF37" />
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>Discussion Familiale</Text>
+              <Text style={styles.featureTitle}>{t('about.features.chat.title')}</Text>
               <Text style={styles.featureDescription}>
-                Communiquez avec les membres de votre famille grâce à notre système de chat intégré et privé.
+                {t('about.features.chat.description')}
               </Text>
             </View>
           </View>
@@ -78,9 +79,9 @@ export default function AboutScreen() {
           <View style={styles.featureItem}>
             <Ionicons name="share-social-outline" size={24} color="#D4AF37" />
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>Partage Sécurisé</Text>
+              <Text style={styles.featureTitle}>{t('about.features.share.title')}</Text>
               <Text style={styles.featureDescription}>
-                Partagez votre arbre avec vos proches de manière sécurisée grâce à des liens de prévisualisation.
+                {t('about.features.share.description')}
               </Text>
             </View>
           </View>
@@ -88,9 +89,9 @@ export default function AboutScreen() {
           <View style={styles.featureItem}>
             <Ionicons name="notifications-outline" size={24} color="#D4AF37" />
             <View style={styles.featureText}>
-              <Text style={styles.featureTitle}>Rappels d'Événements</Text>
+              <Text style={styles.featureTitle}>{t('about.features.reminders.title')}</Text>
               <Text style={styles.featureDescription}>
-                Ne manquez plus jamais un anniversaire ou une date importante grâce à nos notifications automatiques.
+                {t('about.features.reminders.description')}
               </Text>
             </View>
           </View>
@@ -98,31 +99,24 @@ export default function AboutScreen() {
 
         {/* Why AILA */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Pourquoi Choisir AÏLA ?</Text>
+          <Text style={styles.sectionTitle}>{t('about.whyChoose.title')}</Text>
           <Text style={styles.paragraph}>
-            • Interface intuitive et élégante{"\n"}
-            • Respect de votre vie privée et protection des données{"\n"}
-            • Synchronisation automatique sur tous vos appareils{"\n"}
-            • Support multilingue (Français, Arabe){"\n"}
-            • Exportation de vos données à tout moment{"\n"}
-            • Équipe de support réactive
+            {t('about.whyChoose.list')}
           </Text>
         </View>
 
         {/* Contact */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Nous Contacter</Text>
+          <Text style={styles.sectionTitle}>{t('about.contact.title')}</Text>
           <Text style={styles.paragraph}>
-            Pour toute question ou suggestion, n'hésitez pas à nous contacter à :{"\n"}
-            Email : contact@aila.family{"\n"}
-            Site web : www.aila.family
+            {t('about.contact.description')}
           </Text>
         </View>
 
         {/* Version */}
         <View style={styles.versionSection}>
-          <Text style={styles.version}>Version 1.0.0</Text>
-          <Text style={styles.copyright}>© 2024 AÏLA. Tous droits réservés.</Text>
+          <Text style={styles.version}>{t('about.version')}</Text>
+          <Text style={styles.copyright}>{t('about.copyright')}</Text>
         </View>
 
         {/* Home Button */}
@@ -131,7 +125,7 @@ export default function AboutScreen() {
           onPress={() => router.replace('/')}
         >
           <Ionicons name="home-outline" size={20} color="#0A1628" />
-          <Text style={styles.homeButtonText}>Retour à l'accueil</Text>
+          <Text style={styles.homeButtonText}>{t('about.backHome')}</Text>
         </TouchableOpacity>
 
         <View style={{ height: 40 }} />
