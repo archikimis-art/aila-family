@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,9 +28,9 @@ export default function OrganiserCousinade() {
       <SEOHead />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
+          <Pressable onPress={() => router.push('/')} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#D4AF37" />
-          </TouchableOpacity>
+          </Pressable>
           <Text style={styles.logoText}>🌳 AILA</Text>
         </View>
 
@@ -199,10 +199,10 @@ export default function OrganiserCousinade() {
             Utilisez votre arbre généalogique pour identifier tous les membres 
             à inviter et ne laisser personne de côté.
           </Text>
-          <TouchableOpacity style={styles.ctaButton} onPress={() => router.push('/(auth)/register')}>
+          <Pressable style={styles.ctaButton} onPress={() => router.push('/(auth)/register')}>
             <Text style={styles.ctaButtonText}>Créer Mon Arbre Gratuit</Text>
             <Ionicons name="arrow-forward" size={20} color="#0A1628" />
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         {/* Related Articles - Internal Linking */}

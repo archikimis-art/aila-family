@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -39,12 +39,12 @@ export default function TraditionsFamiliales() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
+          <Pressable onPress={() => router.push('/')} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#D4AF37" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/')}>
+          </Pressable>
+          <Pressable onPress={() => router.push('/')}>
             <Text style={styles.logoText}>🌳 AILA</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         {/* Breadcrumb SEO */}
@@ -412,13 +412,13 @@ export default function TraditionsFamiliales() {
             traditions et recettes qui font l'identité de votre famille.
           </Text>
           
-          <TouchableOpacity 
+          <Pressable 
             style={styles.ctaButton}
             onPress={() => router.push('/(auth)/register')}
           >
             <Text style={styles.ctaButtonText}>Créer Mon Arbre Gratuit</Text>
             <Ionicons name="arrow-forward" size={20} color="#0A1628" />
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         {/* Related Articles - Internal Linking */}
