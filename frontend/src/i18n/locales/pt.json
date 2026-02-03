@@ -369,6 +369,39 @@
       "displayIssue": { "question": "O que fazer se não exibir?", "answer": "Atualize a página ou limpe o cache." }
     }
   },
+  "privacy": {
+    "title": "Política de Privacidade",
+    "lastUpdate": "Última atualização: Dezembro 2024",
+    "backHome": "Voltar ao início",
+    "sections": {
+      "intro": { "title": "Introdução", "content": "Bem-vindo ao AÏLA. Comprometemo-nos a proteger sua privacidade e dados pessoais." },
+      "dataCollected": { "title": "Dados Coletados", "content": "Coletamos: dados de conta, dados genealógicos e dados de uso." },
+      "dataUse": { "title": "Uso dos Dados", "content": "Seus dados são usados para fornecer e melhorar serviços." },
+      "dataSecurity": { "title": "Segurança dos Dados", "content": "Usamos criptografia SSL e backups regulares." },
+      "yourRights": { "title": "Seus Direitos (LGPD)", "content": "Você tem direito de acessar, retificar e excluir seus dados." },
+      "cookies": { "title": "Cookies", "content": "Usamos cookies essenciais e de análise." },
+      "thirdParty": { "title": "Serviços de Terceiros", "content": "Usamos serviços seguros de terceiros." },
+      "changes": { "title": "Alterações", "content": "Podemos atualizar esta política." },
+      "contact": { "title": "Contato", "content": "contact@aila.family" }
+    }
+  },
+  "terms": {
+    "title": "Termos de Uso",
+    "lastUpdate": "Última atualização: Dezembro 2024",
+    "backHome": "Voltar ao início",
+    "sections": {
+      "acceptance": { "title": "Aceitação dos Termos", "content": "Ao usar o AÏLA, você aceita estes termos." },
+      "service": { "title": "Descrição do Serviço", "content": "AÏLA é um app de árvore genealógica." },
+      "account": { "title": "Conta de Usuário", "content": "Você é responsável por suas credenciais." },
+      "conduct": { "title": "Código de Conduta", "content": "Você concorda em usar o AÏLA legalmente." },
+      "intellectualProperty": { "title": "Propriedade Intelectual", "content": "AÏLA é protegido por direitos autorais." },
+      "liability": { "title": "Limitação de Responsabilidade", "content": "AÏLA é fornecido 'como está'." },
+      "termination": { "title": "Rescisão", "content": "Podemos suspender contas por violações." },
+      "modifications": { "title": "Modificações", "content": "Podemos modificar estes termos." },
+      "law": { "title": "Lei Aplicável", "content": "Aplica-se a lei francesa." },
+      "contact": { "title": "Contato", "content": "contact@aila.family" }
+    }
+  },
   "blog": {
     "title": "Blog AÏLA",
     "articles": "Artigos",

@@ -423,6 +423,96 @@
       }
     }
   },
+  "privacy": {
+    "title": "Politique de Confidentialité",
+    "lastUpdate": "Dernière mise à jour : Décembre 2024",
+    "backHome": "Retour à l'accueil",
+    "sections": {
+      "intro": {
+        "title": "Introduction",
+        "content": "Bienvenue sur AÏLA. Nous nous engageons à protéger votre vie privée et vos données personnelles. Cette politique explique comment nous collectons, utilisons et protégeons vos informations."
+      },
+      "dataCollected": {
+        "title": "Données Collectées",
+        "content": "Nous collectons : les données de compte (nom, email, mot de passe crypté), les données généalogiques (informations sur les membres de la famille, relations, photos), et les données d'utilisation (statistiques d'utilisation)."
+      },
+      "dataUse": {
+        "title": "Utilisation des Données",
+        "content": "Vos données sont utilisées pour : fournir et améliorer nos services, personnaliser votre expérience, vous envoyer des notifications importantes, et assurer la sécurité de votre compte."
+      },
+      "dataSecurity": {
+        "title": "Sécurité des Données",
+        "content": "Nous utilisons le chiffrement SSL, le hachage des mots de passe, des sauvegardes régulières et un contrôle d'accès strict pour protéger vos données."
+      },
+      "yourRights": {
+        "title": "Vos Droits (RGPD)",
+        "content": "Conformément au RGPD, vous avez le droit d'accéder à vos données, de les rectifier, de les supprimer, de les exporter et de retirer votre consentement à tout moment."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "content": "Nous utilisons des cookies essentiels pour le fonctionnement de l'application et des cookies d'analyse pour améliorer nos services. Vous pouvez gérer vos préférences dans les paramètres."
+      },
+      "thirdParty": {
+        "title": "Services Tiers",
+        "content": "Nous utilisons des services tiers sécurisés pour l'hébergement et l'analyse. Ces partenaires sont soumis à des accords de confidentialité stricts."
+      },
+      "changes": {
+        "title": "Modifications",
+        "content": "Nous pouvons mettre à jour cette politique. Les modifications importantes vous seront notifiées par email ou via l'application."
+      },
+      "contact": {
+        "title": "Contact",
+        "content": "Pour toute question concernant la confidentialité : contact@aila.family"
+      }
+    }
+  },
+  "terms": {
+    "title": "Conditions d'Utilisation",
+    "lastUpdate": "Dernière mise à jour : Décembre 2024",
+    "backHome": "Retour à l'accueil",
+    "sections": {
+      "acceptance": {
+        "title": "Acceptation des Conditions",
+        "content": "En utilisant AÏLA, vous acceptez ces conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser l'application."
+      },
+      "service": {
+        "title": "Description du Service",
+        "content": "AÏLA est une application de création et gestion d'arbres généalogiques familiaux, permettant de stocker, organiser et partager les informations sur votre famille."
+      },
+      "account": {
+        "title": "Compte Utilisateur",
+        "content": "Vous êtes responsable de la confidentialité de vos identifiants et de toutes les activités effectuées sous votre compte."
+      },
+      "conduct": {
+        "title": "Règles de Conduite",
+        "content": "Vous vous engagez à utiliser AÏLA de manière légale et respectueuse. Il est interdit de publier du contenu illégal, offensant ou portant atteinte aux droits d'autrui."
+      },
+      "intellectualProperty": {
+        "title": "Propriété Intellectuelle",
+        "content": "AÏLA et son contenu sont protégés par les lois sur la propriété intellectuelle. Vous conservez tous les droits sur les données que vous ajoutez."
+      },
+      "liability": {
+        "title": "Limitation de Responsabilité",
+        "content": "AÏLA est fourni 'tel quel'. Nous ne garantissons pas l'absence d'erreurs ou d'interruptions. Nous ne sommes pas responsables des dommages indirects."
+      },
+      "termination": {
+        "title": "Résiliation",
+        "content": "Nous pouvons suspendre ou supprimer votre compte en cas de violation de ces conditions. Vous pouvez supprimer votre compte à tout moment."
+      },
+      "modifications": {
+        "title": "Modifications des Conditions",
+        "content": "Nous pouvons modifier ces conditions. Les changements seront communiqués via l'application ou par email."
+      },
+      "law": {
+        "title": "Droit Applicable",
+        "content": "Ces conditions sont régies par le droit français. Tout litige sera soumis aux tribunaux compétents de Paris, France."
+      },
+      "contact": {
+        "title": "Contact",
+        "content": "Pour toute question : contact@aila.family"
+      }
+    }
+  },
   "blog": {
     "title": "Blog AÏLA",
     "articles": "Articles",

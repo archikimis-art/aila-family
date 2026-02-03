@@ -369,6 +369,39 @@
       "displayIssue": { "question": "Was bei Anzeigeproblemen?", "answer": "Seite aktualisieren oder Cache leeren." }
     }
   },
+  "privacy": {
+    "title": "Datenschutzrichtlinie",
+    "lastUpdate": "Letzte Aktualisierung: Dezember 2024",
+    "backHome": "Zurück zur Startseite",
+    "sections": {
+      "intro": { "title": "Einführung", "content": "Willkommen bei AÏLA. Wir verpflichten uns, Ihre Privatsphäre und persönlichen Daten zu schützen." },
+      "dataCollected": { "title": "Erfasste Daten", "content": "Wir erfassen: Kontodaten, genealogische Daten und Nutzungsdaten." },
+      "dataUse": { "title": "Datennutzung", "content": "Ihre Daten werden verwendet, um Dienste bereitzustellen und zu verbessern." },
+      "dataSecurity": { "title": "Datensicherheit", "content": "Wir verwenden SSL-Verschlüsselung und regelmäßige Backups." },
+      "yourRights": { "title": "Ihre Rechte (DSGVO)", "content": "Sie haben das Recht auf Zugang, Berichtigung und Löschung Ihrer Daten." },
+      "cookies": { "title": "Cookies", "content": "Wir verwenden essentielle und Analyse-Cookies." },
+      "thirdParty": { "title": "Drittanbieter", "content": "Wir nutzen sichere Drittanbieterdienste." },
+      "changes": { "title": "Änderungen", "content": "Wir können diese Richtlinie aktualisieren." },
+      "contact": { "title": "Kontakt", "content": "contact@aila.family" }
+    }
+  },
+  "terms": {
+    "title": "Nutzungsbedingungen",
+    "lastUpdate": "Letzte Aktualisierung: Dezember 2024",
+    "backHome": "Zurück zur Startseite",
+    "sections": {
+      "acceptance": { "title": "Annahme der Bedingungen", "content": "Durch die Nutzung von AÏLA stimmen Sie diesen Bedingungen zu." },
+      "service": { "title": "Dienstbeschreibung", "content": "AÏLA ist eine Stammbaum-Anwendung." },
+      "account": { "title": "Benutzerkonto", "content": "Sie sind für Ihre Zugangsdaten verantwortlich." },
+      "conduct": { "title": "Verhaltensregeln", "content": "Sie verpflichten sich zur legalen Nutzung." },
+      "intellectualProperty": { "title": "Geistiges Eigentum", "content": "AÏLA ist urheberrechtlich geschützt." },
+      "liability": { "title": "Haftungsbeschränkung", "content": "AÏLA wird 'wie besehen' bereitgestellt." },
+      "termination": { "title": "Kündigung", "content": "Wir können Konten bei Verstößen sperren." },
+      "modifications": { "title": "Änderungen", "content": "Wir können diese Bedingungen ändern." },
+      "law": { "title": "Anwendbares Recht", "content": "Es gilt französisches Recht." },
+      "contact": { "title": "Kontakt", "content": "contact@aila.family" }
+    }
+  },
   "blog": {
     "title": "AÏLA-Blog",
     "articles": "Artikel",

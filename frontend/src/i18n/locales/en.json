@@ -423,6 +423,96 @@
       }
     }
   },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdate": "Last updated: December 2024",
+    "backHome": "Back to home",
+    "sections": {
+      "intro": {
+        "title": "Introduction",
+        "content": "Welcome to AÏLA. We are committed to protecting your privacy and personal data. This policy explains how we collect, use and protect your information."
+      },
+      "dataCollected": {
+        "title": "Data Collected",
+        "content": "We collect: account data (name, email, encrypted password), genealogical data (family member information, relationships, photos), and usage data (usage statistics)."
+      },
+      "dataUse": {
+        "title": "Use of Data",
+        "content": "Your data is used to: provide and improve our services, personalize your experience, send you important notifications, and ensure the security of your account."
+      },
+      "dataSecurity": {
+        "title": "Data Security",
+        "content": "We use SSL encryption, password hashing, regular backups and strict access control to protect your data."
+      },
+      "yourRights": {
+        "title": "Your Rights (GDPR)",
+        "content": "Under GDPR, you have the right to access, rectify, delete, export your data and withdraw your consent at any time."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "content": "We use essential cookies for app functionality and analytics cookies to improve our services. You can manage your preferences in settings."
+      },
+      "thirdParty": {
+        "title": "Third-Party Services",
+        "content": "We use secure third-party services for hosting and analytics. These partners are subject to strict confidentiality agreements."
+      },
+      "changes": {
+        "title": "Changes",
+        "content": "We may update this policy. Significant changes will be notified by email or through the app."
+      },
+      "contact": {
+        "title": "Contact",
+        "content": "For privacy questions: contact@aila.family"
+      }
+    }
+  },
+  "terms": {
+    "title": "Terms of Use",
+    "lastUpdate": "Last updated: December 2024",
+    "backHome": "Back to home",
+    "sections": {
+      "acceptance": {
+        "title": "Acceptance of Terms",
+        "content": "By using AÏLA, you agree to these terms of use. If you do not accept these terms, please do not use the application."
+      },
+      "service": {
+        "title": "Service Description",
+        "content": "AÏLA is a family tree creation and management application, allowing you to store, organize and share information about your family."
+      },
+      "account": {
+        "title": "User Account",
+        "content": "You are responsible for the confidentiality of your credentials and all activities under your account."
+      },
+      "conduct": {
+        "title": "Code of Conduct",
+        "content": "You agree to use AÏLA legally and respectfully. Publishing illegal, offensive content or infringing on others' rights is prohibited."
+      },
+      "intellectualProperty": {
+        "title": "Intellectual Property",
+        "content": "AÏLA and its content are protected by intellectual property laws. You retain all rights to the data you add."
+      },
+      "liability": {
+        "title": "Limitation of Liability",
+        "content": "AÏLA is provided 'as is'. We do not guarantee the absence of errors or interruptions. We are not responsible for indirect damages."
+      },
+      "termination": {
+        "title": "Termination",
+        "content": "We may suspend or delete your account for violating these terms. You can delete your account at any time."
+      },
+      "modifications": {
+        "title": "Modifications to Terms",
+        "content": "We may modify these terms. Changes will be communicated through the app or by email."
+      },
+      "law": {
+        "title": "Applicable Law",
+        "content": "These terms are governed by French law. Any dispute will be submitted to the competent courts of Paris, France."
+      },
+      "contact": {
+        "title": "Contact",
+        "content": "For any questions: contact@aila.family"
+      }
+    }
+  },
   "blog": {
     "title": "AÏLA Blog",
     "articles": "Articles",
