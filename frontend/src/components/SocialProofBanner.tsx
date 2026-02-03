@@ -13,14 +13,14 @@ interface ActivityItem {
   color: string;
 }
 
-// Simulated recent activity (in production, would come from API)
-const SAMPLE_ACTIVITIES: ActivityItem[] = [
+// Activity keys for translation
+const ACTIVITY_KEYS = [
   {
     id: '1',
     type: 'badge',
     user: 'Marie D.',
-    action: 'a obtenu le badge "Gardien des Racines"',
-    time: 'il y a 2 min',
+    actionKey: 'socialProof.activities.badge1',
+    timeKey: 'socialProof.time.2min',
     icon: 'ribbon',
     color: '#D4AF37',
   },
@@ -28,8 +28,8 @@ const SAMPLE_ACTIVITIES: ActivityItem[] = [
     id: '2',
     type: 'tree',
     user: 'Jean-Pierre L.',
-    action: 'a ajouté 5 personnes à son arbre',
-    time: 'il y a 8 min',
+    actionKey: 'socialProof.activities.tree1',
+    timeKey: 'socialProof.time.8min',
     icon: 'leaf',
     color: '#4CAF50',
   },
@@ -37,8 +37,8 @@ const SAMPLE_ACTIVITIES: ActivityItem[] = [
     id: '3',
     type: 'memory',
     user: 'Sophie M.',
-    action: 'a partagé un souvenir familial',
-    time: 'il y a 15 min',
+    actionKey: 'socialProof.activities.memory1',
+    timeKey: 'socialProof.time.15min',
     icon: 'heart',
     color: '#E91E63',
   },
@@ -46,8 +46,8 @@ const SAMPLE_ACTIVITIES: ActivityItem[] = [
     id: '4',
     type: 'community',
     user: 'Pierre B.',
-    action: 'a rejoint la communauté AÏLA',
-    time: 'il y a 23 min',
+    actionKey: 'socialProof.activities.community1',
+    timeKey: 'socialProof.time.23min',
     icon: 'people',
     color: '#2196F3',
   },
@@ -55,8 +55,8 @@ const SAMPLE_ACTIVITIES: ActivityItem[] = [
     id: '5',
     type: 'badge',
     user: 'Isabelle R.',
-    action: 'a complété le défi "Pont entre générations"',
-    time: 'il y a 31 min',
+    actionKey: 'socialProof.activities.badge2',
+    timeKey: 'socialProof.time.31min',
     icon: 'trophy',
     color: '#FF9800',
   },
@@ -68,6 +68,13 @@ export default function SocialProofBanner() {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
 
+  // Build translated activities
+  const getActivities = () => ACTIVITY_KEYS.map(item => ({
+    ...item,
+    action: t(item.actionKey),
+    time: t(item.timeKey),
+  }));
+
   useEffect(() => {
     const interval = setInterval(() => {
       // Fade out
@@ -77,7 +84,7 @@ export default function SocialProofBanner() {
         useNativeDriver: true,
       }).start(() => {
         // Change activity
-        setCurrentIndex((prev) => (prev + 1) % SAMPLE_ACTIVITIES.length);
+        setCurrentIndex((prev) => (prev + 1) % ACTIVITY_KEYS.length);
         
         // Slide and fade in
         slideAnim.setValue(-20);
@@ -99,7 +106,8 @@ export default function SocialProofBanner() {
     return () => clearInterval(interval);
   }, []);
 
-  const activity = SAMPLE_ACTIVITIES[currentIndex];
+  const activities = getActivities();
+  const activity = activities[currentIndex];
 
   return (
     <View style={styles.container}>

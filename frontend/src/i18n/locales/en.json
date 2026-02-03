@@ -193,6 +193,22 @@
       "message": "Share your origins, ask a question, give advice..."
     }
   },
+  "socialProof": {
+    "activities": {
+      "badge1": "earned the \"Root Guardian\" badge",
+      "tree1": "added 5 people to their tree",
+      "memory1": "shared a family memory",
+      "community1": "joined the AÏLA community",
+      "badge2": "completed the \"Bridge Between Generations\" challenge"
+    },
+    "time": {
+      "2min": "2 min ago",
+      "8min": "8 min ago",
+      "15min": "15 min ago",
+      "23min": "23 min ago",
+      "31min": "31 min ago"
+    }
+  },
   "profile": {
     "title": "My Profile",
     "level": "Level",

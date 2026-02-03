@@ -193,6 +193,22 @@
       "message": "Comparte tus orígenes, haz una pregunta, da un consejo..."
     }
   },
+  "socialProof": {
+    "activities": {
+      "badge1": "obtuvo la insignia \"Guardián de las Raíces\"",
+      "tree1": "añadió 5 personas a su árbol",
+      "memory1": "compartió un recuerdo familiar",
+      "community1": "se unió a la comunidad AÏLA",
+      "badge2": "completó el desafío \"Puente entre generaciones\""
+    },
+    "time": {
+      "2min": "hace 2 min",
+      "8min": "hace 8 min",
+      "15min": "hace 15 min",
+      "23min": "hace 23 min",
+      "31min": "hace 31 min"
+    }
+  },
   "profile": {
     "title": "Mi Perfil",
     "level": "Nivel",

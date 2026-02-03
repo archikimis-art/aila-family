@@ -193,6 +193,22 @@
       "message": "Teilen Sie Ihre Herkunft, stellen Sie eine Frage, geben Sie einen Rat..."
     }
   },
+  "socialProof": {
+    "activities": {
+      "badge1": "hat das Abzeichen \"Wurzelhüter\" erhalten",
+      "tree1": "hat 5 Personen zum Stammbaum hinzugefügt",
+      "memory1": "hat eine Familienerinnerung geteilt",
+      "community1": "ist der AÏLA-Gemeinschaft beigetreten",
+      "badge2": "hat die Herausforderung \"Brücke zwischen Generationen\" abgeschlossen"
+    },
+    "time": {
+      "2min": "vor 2 Min",
+      "8min": "vor 8 Min",
+      "15min": "vor 15 Min",
+      "23min": "vor 23 Min",
+      "31min": "vor 31 Min"
+    }
+  },
   "profile": {
     "title": "Mein Profil",
     "level": "Stufe",

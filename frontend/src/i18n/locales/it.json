@@ -193,6 +193,22 @@
       "message": "Condividi le tue origini, fai una domanda, dai un consiglio..."
     }
   },
+  "socialProof": {
+    "activities": {
+      "badge1": "ha ottenuto il distintivo \"Custode delle Radici\"",
+      "tree1": "ha aggiunto 5 persone al suo albero",
+      "memory1": "ha condiviso un ricordo di famiglia",
+      "community1": "si è unito alla comunità AÏLA",
+      "badge2": "ha completato la sfida \"Ponte tra generazioni\""
+    },
+    "time": {
+      "2min": "2 min fa",
+      "8min": "8 min fa",
+      "15min": "15 min fa",
+      "23min": "23 min fa",
+      "31min": "31 min fa"
+    }
+  },
   "profile": {
     "title": "Il Mio Profilo",
     "level": "Livello",

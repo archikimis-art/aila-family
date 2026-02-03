@@ -193,6 +193,22 @@
       "message": "Partagez vos origines, posez une question, donnez un conseil..."
     }
   },
+  "socialProof": {
+    "activities": {
+      "badge1": "a obtenu le badge \"Gardien des Racines\"",
+      "tree1": "a ajouté 5 personnes à son arbre",
+      "memory1": "a partagé un souvenir familial",
+      "community1": "a rejoint la communauté AÏLA",
+      "badge2": "a complété le défi \"Pont entre générations\""
+    },
+    "time": {
+      "2min": "il y a 2 min",
+      "8min": "il y a 8 min",
+      "15min": "il y a 15 min",
+      "23min": "il y a 23 min",
+      "31min": "il y a 31 min"
+    }
+  },
   "profile": {
     "title": "Mon Profil",
     "level": "Niveau",
