@@ -404,17 +404,67 @@
   },
   "blog": {
     "title": "Blog AÏLA",
+    "article": "Articolo",
     "articles": "Articoli",
+    "reading": "min di lettura",
     "readMore": "Leggi di più",
     "backToList": "Torna agli articoli",
     "readTime": "min di lettura",
+    "introTitle": "Consigli e Trucchi di Genealogia",
+    "introText": "Scopri i nostri articoli per creare e arricchire il tuo albero genealogico familiare.",
+    "joinCommunity": "Unisciti alla comunità",
+    "guides": "📚 Guide pratiche",
+    "guideAncestors": "Come trovare i tuoi antenati gratis",
+    "guideBeginner": "Guida per principianti: primi passi",
+    "guideRegion": "🆕 Ricerche per regione e paese",
+    "articlesSection": "📖 Tutti i nostri articoli",
     "takeAction": "Passa all'azione!",
     "transformReading": "Trasforma la tua lettura in azione familiare",
     "viewChallenges": "Vedi le sfide",
     "readyToStart": "Pronto per iniziare?",
     "createTreeFree": "Crea il tuo albero genealogico gratis con AÏLA.",
-    "createMyTree": "Crea il mio albero gratis",
-    "backHome": "Torna alla home"
+    "createMyTree": "Crea il mio albero",
+    "createMyTreeFree": "Crea il mio albero gratis",
+    "backHome": "Torna alla home",
+    "viewAllChallenges": "Vedi tutte le sfide",
+    "copyright": "© 2025 AÏLA - L'albero genealogico che connette la tua famiglia",
+    "articles": {
+      "region": {
+        "title": "Ricerca genealogica per regione e paese",
+        "excerpt": "Scopri le risorse e gli archivi specifici di ogni regione francese e dei paesi francofoni per trovare i tuoi antenati.",
+        "date": "Gennaio 2025",
+        "readTime": "12",
+        "content": "**Introduzione alla ricerca regionale**\n\nLa genealogia non si fa allo stesso modo in tutte le regioni. Ogni dipartimento francese ha i propri archivi, particolarità storiche e risorse online. Questa guida ti aiuterà a navigare questa diversità.\n\n**Archivi dipartimentali**\n\nGli archivi dipartimentali sono la tua prima risorsa. Quasi tutti i dipartimenti francesi hanno digitalizzato i loro registri parrocchiali e civili. Ecco come accedervi:\n\n• Vai al sito degli archivi del tuo dipartimento\n• Cerca la sezione \"Stato civile\" o \"Registri parrocchiali\"\n• I registri sono generalmente disponibili fino al 1902-1912\n\n**Particolarità regionali**\n\n• Alsazia-Mosella: Registri in tedesco durante certi periodi, sistema legale diverso\n• Bretagna: Cognomi bretoni, archivi a volte in bretone\n• Savoia e Nizza: Annesse alla Francia tardi (1860)\n• Corsica: Archivi a volte in italiano, nomi latinizzati\n• Oltremare: Archivi specifici, registri di schiavi liberati\n\n**Ricerca internazionale**\n\nPer antenati che sono emigrati o immigrati:\n\n• Belgio: Archivi di Stato belgi online\n• Svizzera: Portale degli archivi cantonali\n• Quebec: BAnQ e Généalogie Québec\n• Nord Africa: Archivi Nazionali d'Oltremare (ANOM)\n\n**Risorse aggiuntive**\n\n• Associazioni genealogiche regionali\n• Forum specializzati per regione\n• Gruppi Facebook dedicati\n• Database collaborativi\n\n**Consiglio pratico**\n\nIdentifica sempre prima la posizione esatta (comune, parrocchia) prima di cercare negli archivi. Lo stesso cognome può avere origini molto diverse a seconda della regione."
+      },
+      "ancestors": {
+        "title": "Come trovare i tuoi antenati gratis",
+        "excerpt": "Guida completa per iniziare la tua ricerca genealogica senza spendere un centesimo. Archivi online, risorse gratuite e metodi efficaci.",
+        "date": "Dicembre 2024",
+        "readTime": "10",
+        "content": "**Perché cercare i tuoi antenati?**\n\nLa genealogia è molto più di un semplice hobby. È una ricerca di identità, un viaggio nel tempo che ti connette alle tue radici. Scoprire da dove vieni spesso aiuta a capire chi sei.\n\n**Archivi online gratuiti**\n\nLa Francia ha un tesoro: archivi dipartimentali digitalizzati. Ogni dipartimento mette online gratuitamente i suoi registri parrocchiali e civili. Ecco i passaggi:\n\n• Identifica il dipartimento dove sono nati i tuoi antenati\n• Vai al sito degli archivi dipartimentali\n• Accedi alla sezione \"Stato civile\" o \"Registri parrocchiali\"\n• Cerca per comune e data\n\n**Risorse gratuite essenziali**\n\n• FamilySearch.org: Database mondiale gratuito\n• Geneanet: Versione gratuita con milioni di alberi\n• Filae: Alcune funzioni gratuite\n• Archivi Nazionali: Documenti storici\n\n**Metodo passo dopo passo**\n\n1. Inizia da te stesso e torna indietro generazione per generazione\n2. Intervista i tuoi parenti, specialmente i più anziani\n3. Raccogli documenti familiari (libretto di famiglia, foto)\n4. Annota tutto: date, luoghi, aneddoti\n5. Verifica ogni informazione negli archivi ufficiali\n\n**Errori da evitare**\n\n• Non saltare generazioni\n• Controlla gli omonimi (molto comuni)\n• Attenzione alle variazioni ortografiche dei nomi\n• Incrocia più fonti\n\n**Consiglio AÏLA**\n\nUsa la nostra app per organizzare le tue scoperte e condividere il tuo albero con la tua famiglia. Insieme, andrete più veloci e più lontano!"
+      },
+      "start": {
+        "title": "Iniziare il tuo albero genealogico: i primi passi",
+        "excerpt": "Vuoi creare il tuo albero genealogico ma non sai da dove cominciare? Ecco i passaggi essenziali per iniziare.",
+        "date": "Novembre 2024",
+        "readTime": "8",
+        "content": "**Perché creare il tuo albero genealogico?**\n\nCreare il tuo albero genealogico significa intraprendere una scoperta della storia della tua famiglia. È capire da dove vieni, scoprire antenati con percorsi a volte straordinari e trasmettere questa memoria alle generazioni future.\n\n**Passo 1: Inizia da te stesso**\n\nIl punto di partenza sei tu! Scrivi il tuo nome completo, data e luogo di nascita. Poi torna indietro: i tuoi genitori, i tuoi nonni. Questa solida base sarà il fondamento del tuo albero.\n\n**Passo 2: Intervista la tua famiglia**\n\nI tuoi parenti sono una miniera di informazioni. Organizza interviste con i membri più anziani della tua famiglia. Prepara le tue domande in anticipo:\n• Nomi completi (inclusi cognomi da nubile)\n• Date importanti (nascite, matrimoni, morti)\n• Luoghi di residenza e professioni\n• Aneddoti e ricordi\n\n**Passo 3: Raccogli documenti**\n\nAlcuni documenti sono preziosi per la genealogia:\n• Libretti di famiglia\n• Certificati di nascita, matrimonio, morte\n• Foto antiche (guarda sul retro!)\n• Corrispondenza e quaderni\n\n**Passo 4: Organizza la tua ricerca**\n\nUn buon genealogista è un genealogista organizzato. Usa AÏLA per centralizzare le tue informazioni, creare profili per ogni antenato e visualizzare le connessioni familiari.\n\n**Passo 5: Vai agli archivi**\n\nUna volta raccolte le informazioni familiari, vai agli archivi! Gli archivi dipartimentali online sono gratuiti e pieni di informazioni.\n\n**Consiglio bonus**\n\nNon scoraggiarti se ti blocchi su un antenato. La genealogia richiede pazienza. A volte devi solo aspettare di trovare un nuovo documento o chiedere aiuto alla comunità."
+      },
+      "mistakes": {
+        "title": "I 5 errori del genealogista principiante",
+        "excerpt": "Evita le trappole classiche che possono falsare la tua ricerca. Consigli pratici per una genealogia affidabile.",
+        "date": "Ottobre 2024",
+        "readTime": "6",
+        "content": "**Errore #1: Andare troppo veloci**\n\nL'entusiasmo iniziale spesso spinge a voler tornare il più indietro possibile. Resisti a questa tentazione! Ogni generazione deve essere solidamente documentata prima di passare alla successiva. Un albero costruito su supposizioni crollerà prima o poi.\n\n**Errore #2: Trascurare le fonti**\n\nTutte le informazioni devono avere una fonte. Da dove viene questa data di nascita? Chi ti ha detto questo cognome da nubile? Senza fonte, è impossibile verificare e correggere eventuali errori. Con AÏLA, puoi annotare le tue fonti per ogni persona.\n\n**Errore #3: Ignorare le variazioni dei nomi**\n\nPrima del XX secolo, l'ortografia dei nomi non era fissata. MARTIN poteva essere scritto MARTEN, MARTAIN o MARTING a seconda dell'ufficiale di stato civile. Sii flessibile nelle tue ricerche!\n\n**Errore #4: Dimenticare i collaterali**\n\nI fratelli dei tuoi antenati non dovrebbero essere trascurati. Possono aiutarti a identificare i genitori, confermare date o rivelare connessioni con altri rami familiari.\n\n**Errore #5: Lavorare da soli**\n\nLa genealogia è più gratificante in famiglia! Condividi il tuo albero, chiedi ricordi, coinvolgi i tuoi cugini. Con AÏLA, invita i tuoi cari a contribuire e arricchisci il tuo albero insieme.\n\n**Il consiglio definitivo**\n\nPrenditi il tuo tempo, verifica tutto e assapora ogni scoperta. La genealogia non è una corsa, è un viaggio."
+      },
+      "relationships": {
+        "title": "Come calcolare i legami di parentela",
+        "excerpt": "Cugino di primo grado, cugino di secondo grado, zio... Finalmente capisci le connessioni familiari!",
+        "date": "Settembre 2024",
+        "readTime": "7",
+        "content": "**Le basi della parentela**\n\nLe relazioni familiari possono sembrare complesse, ma seguono una logica semplice una volta compresa. Tutto parte da un antenato comune.\n\n**Relazioni dirette**\n\nLa linea diretta collega le persone di generazione in generazione:\n• Genitori → Figli\n• Nonni → Nipoti\n• Bisnonni → Pronipoti\n\n**Relazioni collaterali**\n\nQueste sono connessioni \"orizzontali\":\n• Fratelli e sorelle: stessi genitori\n• Zii e zie: fratelli dei tuoi genitori\n• Cugini di primo grado: figli dei tuoi zii/zie\n\n**Gradi di parentela**\n\n• Cugini di primo grado: antenato comune = nonni (2° grado)\n• Cugini di secondo grado: antenato comune = bisnonni (3° grado)\n• Cugini di terzo grado: antenato comune = trisnonni (4° grado)\n\n**La regola di calcolo**\n\nPer trovare il grado di parentela, conta il numero di generazioni che ti separano dall'antenato comune. Se è diverso per ogni persona, parliamo di cugini \"lontani\".\n\n**Esempio pratico**\n\nTuo nonno e il nonno di Maria sono fratelli:\n→ Tu e Maria siete cugini di primo grado (antenato comune: bisnonni)\n\nIl figlio di Maria e tu:\n→ Sei cugino di primo grado di Maria, quindi \"cugino di primo grado una volta rimosso\" di suo figlio\n\n**Il consiglio AÏLA**\n\nLa nostra app calcola automaticamente le relazioni familiari! Aggiungi semplicemente le persone e le loro relazioni, e AÏLA ti dirà come siete connessi."
+      }
+    }
   },
   "pricing": {
     "title": "Premium",

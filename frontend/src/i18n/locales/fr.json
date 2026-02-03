@@ -515,18 +515,67 @@
   },
   "blog": {
     "title": "Blog AÏLA",
+    "article": "Article",
     "articles": "Articles",
+    "reading": "min de lecture",
     "readMore": "Lire la suite",
     "backToList": "Retour aux articles",
     "readTime": "min de lecture",
+    "introTitle": "Conseils & Astuces Généalogie",
+    "introText": "Découvrez nos articles pour créer et enrichir votre arbre généalogique familial.",
+    "joinCommunity": "Rejoindre la communauté",
+    "guides": "📚 Guides pratiques",
+    "guideAncestors": "Comment retrouver ses ancêtres gratuitement",
+    "guideBeginner": "Guide généalogie débutant : premiers pas",
+    "guideRegion": "🆕 Recherches par région et pays",
+    "articlesSection": "📖 Tous nos articles",
     "takeAction": "Passez à l'action !",
     "transformReading": "Transformez votre lecture en action familiale",
     "viewChallenges": "Voir les défis",
     "readyToStart": "Prêt à commencer ?",
     "createTreeFree": "Créez votre arbre généalogique gratuitement avec AÏLA.",
-    "createMyTree": "Créer mon arbre gratuitement",
+    "createMyTree": "Créer mon arbre",
+    "createMyTreeFree": "Créer mon arbre gratuitement",
     "backHome": "Retour à l'accueil",
-    "viewAllChallenges": "Voir tous les défis"
+    "viewAllChallenges": "Voir tous les défis",
+    "copyright": "© 2025 AÏLA - L'arbre généalogique qui connecte votre famille",
+    "articles": {
+      "region": {
+        "title": "Recherches généalogiques par région et pays",
+        "excerpt": "Découvrez les ressources et archives spécifiques à chaque région française et aux pays francophones pour retrouver vos ancêtres.",
+        "date": "Janvier 2025",
+        "readTime": "12",
+        "content": "**Introduction aux recherches régionales**\n\nLa généalogie ne se fait pas de la même manière selon les régions. Chaque département français possède ses propres archives, ses particularités historiques et ses ressources en ligne. Ce guide vous aidera à naviguer dans cette diversité.\n\n**Les Archives Départementales**\n\nLes archives départementales sont votre première ressource. La quasi-totalité des départements français ont numérisé leurs registres paroissiaux et d'état civil. Voici comment y accéder :\n\n• Rendez-vous sur le site des archives de votre département\n• Cherchez la section \"État civil\" ou \"Registres paroissiaux\"\n• Les registres sont généralement disponibles jusqu'en 1902-1912\n\n**Particularités régionales**\n\n• Alsace-Moselle : Registres en allemand pendant certaines périodes, système juridique différent\n• Bretagne : Patronymes bretons, archives parfois en breton\n• Savoie et Nice : Rattachées tardivement à la France (1860)\n• Corse : Archives parfois en italien, noms latinisés\n• Outre-mer : Archives spécifiques, registres d'esclaves affranchis\n\n**Recherches internationales**\n\nPour les ancêtres ayant émigré ou immigré :\n\n• Belgique : Archives de l'État belge en ligne\n• Suisse : Portail des archives cantonales\n• Québec : BAnQ et Généalogie Québec\n• Afrique du Nord : Archives nationales d'outre-mer (ANOM)\n\n**Ressources complémentaires**\n\n• Associations généalogiques régionales\n• Forums spécialisés par région\n• Groupes Facebook dédiés\n• Bases de données collaboratives\n\n**Conseil pratique**\n\nCommencez toujours par identifier le lieu précis (commune, paroisse) avant de chercher dans les archives. Un même nom de famille peut avoir des origines très différentes selon les régions."
+      },
+      "ancestors": {
+        "title": "Comment retrouver ses ancêtres gratuitement",
+        "excerpt": "Guide complet pour débuter vos recherches généalogiques sans dépenser un centime. Archives en ligne, ressources gratuites et méthodes efficaces.",
+        "date": "Décembre 2024",
+        "readTime": "10",
+        "content": "**Pourquoi chercher ses ancêtres ?**\n\nLa généalogie est bien plus qu'un simple passe-temps. C'est une quête d'identité, un voyage dans le temps qui vous connecte à vos racines. Découvrir d'où l'on vient aide souvent à comprendre qui l'on est.\n\n**Les archives en ligne gratuites**\n\nLa France dispose d'un trésor : les archives départementales numérisées. Chaque département met gratuitement en ligne ses registres paroissiaux et d'état civil. Voici les étapes :\n\n• Identifiez le département de naissance de vos ancêtres\n• Rendez-vous sur le site des archives départementales\n• Accédez à la section \"État civil\" ou \"Registres paroissiaux\"\n• Recherchez par commune et par date\n\n**Les ressources gratuites incontournables**\n\n• FamilySearch.org : Base de données mondiale gratuite\n• Geneanet : Version gratuite avec des millions d'arbres\n• Filae : Certaines fonctions gratuites\n• Archives nationales : Documents historiques\n\n**Méthode pas à pas**\n\n1. Commencez par vous-même et remontez génération par génération\n2. Interrogez vos proches, surtout les plus âgés\n3. Rassemblez les documents familiaux (livret de famille, photos)\n4. Notez tout : dates, lieux, anecdotes\n5. Vérifiez chaque information dans les archives officielles\n\n**Les pièges à éviter**\n\n• Ne pas sauter de génération\n• Vérifier les homonymes (très fréquents)\n• Attention aux variations orthographiques des noms\n• Croiser plusieurs sources\n\n**Astuce AÏLA**\n\nUtilisez notre application pour organiser vos découvertes et partager votre arbre avec votre famille. Ensemble, vous irez plus vite et plus loin !"
+      },
+      "start": {
+        "title": "Débuter son arbre généalogique : les premières étapes",
+        "excerpt": "Vous voulez créer votre arbre généalogique mais ne savez pas par où commencer ? Voici les étapes essentielles pour bien démarrer.",
+        "date": "Novembre 2024",
+        "readTime": "8",
+        "content": "**Pourquoi créer son arbre généalogique ?**\n\nCréer son arbre généalogique, c'est partir à la découverte de son histoire familiale. C'est comprendre d'où l'on vient, découvrir des ancêtres aux parcours parfois extraordinaires, et transmettre cette mémoire aux générations futures.\n\n**Étape 1 : Commencez par vous**\n\nLe point de départ, c'est vous ! Notez votre nom complet, votre date et lieu de naissance. Puis remontez : vos parents, vos grands-parents. Cette base solide sera le fondement de votre arbre.\n\n**Étape 2 : Interrogez votre famille**\n\nVos proches sont une mine d'informations. Organisez des entretiens avec les membres les plus âgés de votre famille. Préparez vos questions à l'avance :\n• Noms complets (y compris noms de jeune fille)\n• Dates importantes (naissances, mariages, décès)\n• Lieux de vie et professions\n• Anecdotes et souvenirs\n\n**Étape 3 : Rassemblez les documents**\n\nCertains documents sont précieux pour la généalogie :\n• Livrets de famille\n• Actes de naissance, mariage, décès\n• Photos anciennes (regardez au dos !)\n• Correspondances et carnets\n\n**Étape 4 : Organisez vos recherches**\n\nUn bon généalogiste est un généalogiste organisé. Utilisez AÏLA pour centraliser vos informations, créer des fiches pour chaque ancêtre, et visualiser les liens familiaux.\n\n**Étape 5 : Passez aux archives**\n\nUne fois les informations familiales collectées, direction les archives ! Les archives départementales en ligne sont gratuites et regorgent d'informations.\n\n**Conseil bonus**\n\nNe vous découragez pas si vous bloquez sur un ancêtre. La généalogie demande de la patience. Parfois, il suffit d'attendre de trouver un nouveau document ou de demander de l'aide à la communauté."
+      },
+      "mistakes": {
+        "title": "Les 5 erreurs du généalogiste débutant",
+        "excerpt": "Évitez les pièges classiques qui peuvent fausser vos recherches. Conseils pratiques pour une généalogie fiable.",
+        "date": "Octobre 2024",
+        "readTime": "6",
+        "content": "**Erreur n°1 : Aller trop vite**\n\nL'enthousiasme du début pousse souvent à vouloir remonter le plus loin possible. Résistez à cette tentation ! Chaque génération doit être solidement documentée avant de passer à la suivante. Un arbre construit sur des suppositions s'effondrera tôt ou tard.\n\n**Erreur n°2 : Négliger les sources**\n\nToute information doit être sourcée. D'où vient cette date de naissance ? Qui vous a dit ce nom de jeune fille ? Sans source, impossible de vérifier et de corriger d'éventuelles erreurs. Avec AÏLA, vous pouvez noter vos sources pour chaque personne.\n\n**Erreur n°3 : Ignorer les variations de noms**\n\nAvant le XXe siècle, l'orthographe des noms n'était pas fixée. MARTIN pouvait s'écrire MARTEN, MARTAIN ou MARTING selon l'officier d'état civil. Soyez flexible dans vos recherches !\n\n**Erreur n°4 : Oublier les collatéraux**\n\nLes frères et sœurs de vos ancêtres ne sont pas à négliger. Ils peuvent vous aider à identifier les parents, confirmer des dates, ou révéler des liens avec d'autres branches familiales.\n\n**Erreur n°5 : Travailler seul**\n\nLa généalogie est plus enrichissante en famille ! Partagez votre arbre, demandez des souvenirs, faites participer vos cousins. Avec AÏLA, invitez vos proches à contribuer et enrichissez votre arbre ensemble.\n\n**Le conseil ultime**\n\nPrenez votre temps, vérifiez tout, et savourez chaque découverte. La généalogie n'est pas une course, c'est un voyage."
+      },
+      "relationships": {
+        "title": "Comment calculer les liens de parenté",
+        "excerpt": "Cousin germain, petit-cousin, oncle à la mode de Bretagne... Comprenez enfin les liens familiaux !",
+        "date": "Septembre 2024",
+        "readTime": "7",
+        "content": "**Les bases de la parenté**\n\nLes liens familiaux peuvent sembler complexes, mais ils suivent une logique simple une fois comprise. Tout part d'un ancêtre commun.\n\n**Les liens directs**\n\nLa ligne directe relie les personnes de génération en génération :\n• Parents → Enfants\n• Grands-parents → Petits-enfants\n• Arrière-grands-parents → Arrière-petits-enfants\n\n**Les liens collatéraux**\n\nCe sont les liens \"horizontaux\" :\n• Frères et sœurs : mêmes parents\n• Oncles et tantes : frères/sœurs de vos parents\n• Cousins germains : enfants de vos oncles/tantes\n\n**Les degrés de cousinage**\n\n• Cousins germains : ancêtre commun = grands-parents (2e degré)\n• Cousins issus de germains : ancêtre commun = arrière-grands-parents (3e degré)\n• Petits-cousins : ancêtre commun = arrière-arrière-grands-parents (4e degré)\n\n**La règle de calcul**\n\nPour trouver le degré de cousinage, comptez le nombre de générations qui vous séparent de l'ancêtre commun. Si c'est différent pour chaque personne, on parle de cousins \"décalés\" ou \"à la mode de Bretagne\".\n\n**Exemple pratique**\n\nVotre grand-père et le grand-père de Marie sont frères :\n→ Vous et Marie êtes cousins germains (ancêtre commun : arrière-grands-parents)\n\nLe fils de Marie et vous :\n→ Vous êtes cousin germain de Marie, donc \"oncle/tante à la mode de Bretagne\" de son fils\n\n**L'astuce AÏLA**\n\nNotre application calcule automatiquement les liens de parenté ! Ajoutez simplement les personnes et leurs relations, et AÏLA vous dira comment vous êtes reliés."
+      }
+    }
   },
   "pricing": {
     "title": "Premium",

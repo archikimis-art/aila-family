@@ -404,17 +404,67 @@
   },
   "blog": {
     "title": "Blog AÏLA",
+    "article": "Artículo",
     "articles": "Artículos",
+    "reading": "min de lectura",
     "readMore": "Leer más",
     "backToList": "Volver a los artículos",
     "readTime": "min de lectura",
+    "introTitle": "Consejos y Trucos de Genealogía",
+    "introText": "Descubre nuestros artículos para crear y enriquecer tu árbol genealógico familiar.",
+    "joinCommunity": "Unirse a la comunidad",
+    "guides": "📚 Guías prácticas",
+    "guideAncestors": "Cómo encontrar a tus ancestros gratis",
+    "guideBeginner": "Guía para principiantes: primeros pasos",
+    "guideRegion": "🆕 Investigación por región y país",
+    "articlesSection": "📖 Todos nuestros artículos",
     "takeAction": "¡Pasa a la acción!",
     "transformReading": "Transforma tu lectura en acción familiar",
     "viewChallenges": "Ver los retos",
     "readyToStart": "¿Listo para empezar?",
     "createTreeFree": "Crea tu árbol genealógico gratis con AÏLA.",
-    "createMyTree": "Crear mi árbol gratis",
-    "backHome": "Volver al inicio"
+    "createMyTree": "Crear mi árbol",
+    "createMyTreeFree": "Crear mi árbol gratis",
+    "backHome": "Volver al inicio",
+    "viewAllChallenges": "Ver todos los retos",
+    "copyright": "© 2025 AÏLA - El árbol genealógico que conecta a tu familia",
+    "articles": {
+      "region": {
+        "title": "Investigación genealógica por región y país",
+        "excerpt": "Descubre los recursos y archivos específicos de cada región francesa y países francófonos para encontrar a tus ancestros.",
+        "date": "Enero 2025",
+        "readTime": "12",
+        "content": "**Introducción a la investigación regional**\n\nLa genealogía no se hace de la misma manera en todas las regiones. Cada departamento francés tiene sus propios archivos, particularidades históricas y recursos en línea. Esta guía te ayudará a navegar esta diversidad.\n\n**Archivos departamentales**\n\nLos archivos departamentales son tu primer recurso. Casi todos los departamentos franceses han digitalizado sus registros parroquiales y civiles. Así es como acceder:\n\n• Ve al sitio web de archivos de tu departamento\n• Busca la sección \"Estado civil\" o \"Registros parroquiales\"\n• Los registros generalmente están disponibles hasta 1902-1912\n\n**Particularidades regionales**\n\n• Alsacia-Mosela: Registros en alemán durante ciertos períodos, sistema legal diferente\n• Bretaña: Apellidos bretones, archivos a veces en bretón\n• Saboya y Niza: Se unieron a Francia tardíamente (1860)\n• Córcega: Archivos a veces en italiano, nombres latinizados\n• Ultramar: Archivos específicos, registros de esclavos liberados\n\n**Investigación internacional**\n\nPara ancestros que emigraron o inmigraron:\n\n• Bélgica: Archivos del Estado belga en línea\n• Suiza: Portal de archivos cantonales\n• Quebec: BAnQ y Généalogie Québec\n• Norte de África: Archivos Nacionales de Ultramar (ANOM)\n\n**Recursos adicionales**\n\n• Asociaciones genealógicas regionales\n• Foros especializados por región\n• Grupos de Facebook dedicados\n• Bases de datos colaborativas\n\n**Consejo práctico**\n\nSiempre comienza identificando la ubicación exacta (municipio, parroquia) antes de buscar en los archivos. El mismo apellido puede tener orígenes muy diferentes según la región."
+      },
+      "ancestors": {
+        "title": "Cómo encontrar a tus ancestros gratis",
+        "excerpt": "Guía completa para comenzar tu investigación genealógica sin gastar un centavo. Archivos en línea, recursos gratuitos y métodos efectivos.",
+        "date": "Diciembre 2024",
+        "readTime": "10",
+        "content": "**¿Por qué buscar a tus ancestros?**\n\nLa genealogía es mucho más que un simple pasatiempo. Es una búsqueda de identidad, un viaje en el tiempo que te conecta con tus raíces. Descubrir de dónde vienes a menudo ayuda a entender quién eres.\n\n**Archivos en línea gratuitos**\n\nFrancia tiene un tesoro: archivos departamentales digitalizados. Cada departamento pone en línea gratuitamente sus registros parroquiales y civiles. Estos son los pasos:\n\n• Identifica el departamento donde nacieron tus ancestros\n• Ve al sitio web de los archivos departamentales\n• Accede a la sección \"Estado civil\" o \"Registros parroquiales\"\n• Busca por municipio y fecha\n\n**Recursos gratuitos esenciales**\n\n• FamilySearch.org: Base de datos mundial gratuita\n• Geneanet: Versión gratuita con millones de árboles\n• Filae: Algunas funciones gratuitas\n• Archivos Nacionales: Documentos históricos\n\n**Método paso a paso**\n\n1. Comienza contigo mismo y retrocede generación por generación\n2. Entrevista a tus familiares, especialmente los más mayores\n3. Reúne documentos familiares (libro de familia, fotos)\n4. Anota todo: fechas, lugares, anécdotas\n5. Verifica cada información en los archivos oficiales\n\n**Errores a evitar**\n\n• No saltes generaciones\n• Verifica los homónimos (muy comunes)\n• Atención a las variaciones ortográficas de nombres\n• Cruza varias fuentes\n\n**Consejo AÏLA**\n\n¡Usa nuestra aplicación para organizar tus descubrimientos y compartir tu árbol con tu familia. Juntos, irán más rápido y más lejos!"
+      },
+      "start": {
+        "title": "Comenzar tu árbol genealógico: los primeros pasos",
+        "excerpt": "¿Quieres crear tu árbol genealógico pero no sabes por dónde empezar? Aquí están los pasos esenciales para comenzar.",
+        "date": "Noviembre 2024",
+        "readTime": "8",
+        "content": "**¿Por qué crear tu árbol genealógico?**\n\nCrear tu árbol genealógico significa embarcarte en un descubrimiento de tu historia familiar. Es entender de dónde vienes, descubrir ancestros con trayectorias a veces extraordinarias, y transmitir esta memoria a las generaciones futuras.\n\n**Paso 1: Comienza contigo**\n\n¡El punto de partida eres tú! Anota tu nombre completo, fecha y lugar de nacimiento. Luego retrocede: tus padres, tus abuelos. Esta base sólida será el fundamento de tu árbol.\n\n**Paso 2: Entrevista a tu familia**\n\nTus familiares son una mina de información. Organiza entrevistas con los miembros más mayores de tu familia. Prepara tus preguntas con anticipación:\n• Nombres completos (incluyendo apellidos de soltera)\n• Fechas importantes (nacimientos, matrimonios, defunciones)\n• Lugares de residencia y profesiones\n• Anécdotas y recuerdos\n\n**Paso 3: Reúne documentos**\n\nAlgunos documentos son valiosos para la genealogía:\n• Libros de familia\n• Actas de nacimiento, matrimonio, defunción\n• Fotos antiguas (¡mira el reverso!)\n• Correspondencia y cuadernos\n\n**Paso 4: Organiza tu investigación**\n\nUn buen genealogista es un genealogista organizado. Usa AÏLA para centralizar tu información, crear perfiles para cada ancestro y visualizar las conexiones familiares.\n\n**Paso 5: Ve a los archivos**\n\nUna vez recopilada la información familiar, ¡dirígete a los archivos! Los archivos departamentales en línea son gratuitos y están llenos de información.\n\n**Consejo extra**\n\nNo te desanimes si te atascas con un ancestro. La genealogía requiere paciencia. A veces solo necesitas esperar para encontrar un nuevo documento o pedir ayuda a la comunidad."
+      },
+      "mistakes": {
+        "title": "Los 5 errores del genealogista principiante",
+        "excerpt": "Evita las trampas clásicas que pueden sesgar tu investigación. Consejos prácticos para una genealogía fiable.",
+        "date": "Octubre 2024",
+        "readTime": "6",
+        "content": "**Error #1: Ir demasiado rápido**\n\nEl entusiasmo del principio a menudo te impulsa a querer retroceder lo más posible. ¡Resiste esta tentación! Cada generación debe estar sólidamente documentada antes de pasar a la siguiente. Un árbol construido sobre suposiciones eventualmente se derrumbará.\n\n**Error #2: Descuidar las fuentes**\n\nToda información debe tener fuente. ¿De dónde viene esta fecha de nacimiento? ¿Quién te dijo este apellido de soltera? Sin fuente, es imposible verificar y corregir posibles errores. Con AÏLA, puedes anotar tus fuentes para cada persona.\n\n**Error #3: Ignorar las variaciones de nombres**\n\nAntes del siglo XX, la ortografía de los nombres no era fija. MARTIN podía escribirse MARTEN, MARTAIN o MARTING según el oficial del registro civil. ¡Sé flexible en tus búsquedas!\n\n**Error #4: Olvidar los colaterales**\n\nLos hermanos de tus ancestros no deben descuidarse. Pueden ayudarte a identificar a los padres, confirmar fechas o revelar conexiones con otras ramas familiares.\n\n**Error #5: Trabajar solo**\n\n¡La genealogía es más gratificante en familia! Comparte tu árbol, pide recuerdos, involucra a tus primos. Con AÏLA, invita a tus seres queridos a contribuir y enriquece tu árbol juntos.\n\n**El consejo definitivo**\n\nTómate tu tiempo, verifica todo y saborea cada descubrimiento. La genealogía no es una carrera, es un viaje."
+      },
+      "relationships": {
+        "title": "Cómo calcular los lazos de parentesco",
+        "excerpt": "Primo hermano, primo segundo, tío político... ¡Entiende por fin las conexiones familiares!",
+        "date": "Septiembre 2024",
+        "readTime": "7",
+        "content": "**Los fundamentos del parentesco**\n\nLas relaciones familiares pueden parecer complejas, pero siguen una lógica simple una vez comprendida. Todo parte de un ancestro común.\n\n**Relaciones directas**\n\nLa línea directa conecta personas de generación en generación:\n• Padres → Hijos\n• Abuelos → Nietos\n• Bisabuelos → Bisnietos\n\n**Relaciones colaterales**\n\nEstas son conexiones \"horizontales\":\n• Hermanos y hermanas: mismos padres\n• Tíos y tías: hermanos de tus padres\n• Primos hermanos: hijos de tus tíos/tías\n\n**Grados de parentesco**\n\n• Primos hermanos: ancestro común = abuelos (2º grado)\n• Primos segundos: ancestro común = bisabuelos (3er grado)\n• Primos terceros: ancestro común = tatarabuelos (4º grado)\n\n**La regla de cálculo**\n\nPara encontrar el grado de parentesco, cuenta el número de generaciones que te separan del ancestro común. Si es diferente para cada persona, hablamos de primos \"lejanos\".\n\n**Ejemplo práctico**\n\nTu abuelo y el abuelo de María son hermanos:\n→ Tú y María son primos hermanos (ancestro común: bisabuelos)\n\nEl hijo de María y tú:\n→ Eres primo hermano de María, así que \"tío/tía político/a\" de su hijo\n\n**El consejo AÏLA**\n\n¡Nuestra aplicación calcula automáticamente las relaciones familiares! Simplemente añade personas y sus relaciones, y AÏLA te dirá cómo estáis conectados."
+      }
+    }
   },
   "pricing": {
     "title": "Premium",

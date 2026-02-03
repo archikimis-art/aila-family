@@ -404,17 +404,67 @@
   },
   "blog": {
     "title": "AÏLA-Blog",
+    "article": "Artikel",
     "articles": "Artikel",
+    "reading": "Min. Lesezeit",
     "readMore": "Weiterlesen",
     "backToList": "Zurück zu den Artikeln",
     "readTime": "Min. Lesezeit",
+    "introTitle": "Tipps & Tricks zur Genealogie",
+    "introText": "Entdecken Sie unsere Artikel, um Ihren Stammbaum zu erstellen und zu bereichern.",
+    "joinCommunity": "Der Community beitreten",
+    "guides": "📚 Praktische Leitfäden",
+    "guideAncestors": "Wie Sie Ihre Vorfahren kostenlos finden",
+    "guideBeginner": "Anfänger-Leitfaden: Erste Schritte",
+    "guideRegion": "🆕 Recherche nach Region und Land",
+    "articlesSection": "📖 Alle unsere Artikel",
     "takeAction": "Werden Sie aktiv!",
     "transformReading": "Verwandeln Sie Ihr Lesen in Familienaktionen",
     "viewChallenges": "Herausforderungen ansehen",
     "readyToStart": "Bereit anzufangen?",
     "createTreeFree": "Erstellen Sie Ihren Stammbaum kostenlos mit AÏLA.",
-    "createMyTree": "Meinen Baum kostenlos erstellen",
-    "backHome": "Zurück zur Startseite"
+    "createMyTree": "Meinen Baum erstellen",
+    "createMyTreeFree": "Meinen Baum kostenlos erstellen",
+    "backHome": "Zurück zur Startseite",
+    "viewAllChallenges": "Alle Herausforderungen ansehen",
+    "copyright": "© 2025 AÏLA - Der Stammbaum, der Ihre Familie verbindet",
+    "articles": {
+      "region": {
+        "title": "Genealogische Forschung nach Region und Land",
+        "excerpt": "Entdecken Sie die spezifischen Ressourcen und Archive jeder französischen Region und frankophonen Länder, um Ihre Vorfahren zu finden.",
+        "date": "Januar 2025",
+        "readTime": "12",
+        "content": "**Einführung in die regionale Forschung**\n\nGenealogie wird nicht überall gleich betrieben. Jedes französische Departement hat seine eigenen Archive, historischen Besonderheiten und Online-Ressourcen. Dieser Leitfaden hilft Ihnen, diese Vielfalt zu navigieren.\n\n**Departementsarchive**\n\nDie Departementsarchive sind Ihre erste Ressource. Fast alle französischen Departements haben ihre Pfarr- und Standesamtsregister digitalisiert. So greifen Sie darauf zu:\n\n• Besuchen Sie die Archiv-Website Ihres Departements\n• Suchen Sie den Abschnitt \"Standesamt\" oder \"Pfarrregister\"\n• Register sind in der Regel bis 1902-1912 verfügbar\n\n**Regionale Besonderheiten**\n\n• Elsass-Mosel: Register zeitweise auf Deutsch, anderes Rechtssystem\n• Bretagne: Bretonische Familiennamen, Archive manchmal auf Bretonisch\n• Savoyen und Nizza: Spät an Frankreich angeschlossen (1860)\n• Korsika: Archive manchmal auf Italienisch, latinisierte Namen\n• Übersee: Spezifische Archive, Register befreiter Sklaven\n\n**Internationale Forschung**\n\nFür Vorfahren, die aus- oder eingewandert sind:\n\n• Belgien: Belgisches Staatsarchiv online\n• Schweiz: Kantonale Archivportale\n• Quebec: BAnQ und Généalogie Québec\n• Nordafrika: Nationale Übersee-Archive (ANOM)\n\n**Zusätzliche Ressourcen**\n\n• Regionale genealogische Vereine\n• Spezialisierte Foren nach Region\n• Dedizierte Facebook-Gruppen\n• Kollaborative Datenbanken\n\n**Praktischer Tipp**\n\nIdentifizieren Sie immer zuerst den genauen Ort (Gemeinde, Pfarrei), bevor Sie in den Archiven suchen. Derselbe Familienname kann je nach Region sehr unterschiedliche Ursprünge haben."
+      },
+      "ancestors": {
+        "title": "Wie Sie Ihre Vorfahren kostenlos finden",
+        "excerpt": "Vollständiger Leitfaden, um Ihre genealogische Forschung zu beginnen, ohne einen Cent auszugeben. Online-Archive, kostenlose Ressourcen und effektive Methoden.",
+        "date": "Dezember 2024",
+        "readTime": "10",
+        "content": "**Warum nach Ihren Vorfahren suchen?**\n\nGenealogie ist viel mehr als nur ein Hobby. Es ist eine Suche nach Identität, eine Zeitreise, die Sie mit Ihren Wurzeln verbindet. Zu entdecken, woher Sie kommen, hilft oft zu verstehen, wer Sie sind.\n\n**Kostenlose Online-Archive**\n\nFrankreich hat einen Schatz: digitalisierte Departementsarchive. Jedes Departement stellt seine Pfarr- und Standesamtsregister kostenlos online zur Verfügung. Hier sind die Schritte:\n\n• Identifizieren Sie das Departement, in dem Ihre Vorfahren geboren wurden\n• Besuchen Sie die Website der Departementsarchive\n• Greifen Sie auf den Abschnitt \"Standesamt\" oder \"Pfarrregister\" zu\n• Suchen Sie nach Gemeinde und Datum\n\n**Wesentliche kostenlose Ressourcen**\n\n• FamilySearch.org: Weltweite kostenlose Datenbank\n• Geneanet: Kostenlose Version mit Millionen von Stammbäumen\n• Filae: Einige kostenlose Funktionen\n• Nationalarchive: Historische Dokumente\n\n**Schritt-für-Schritt-Methode**\n\n1. Beginnen Sie mit sich selbst und gehen Sie Generation für Generation zurück\n2. Befragen Sie Ihre Verwandten, besonders die ältesten\n3. Sammeln Sie Familiendokumente (Familienstammbuch, Fotos)\n4. Notieren Sie alles: Daten, Orte, Anekdoten\n5. Überprüfen Sie jede Information in den offiziellen Archiven\n\n**Zu vermeidende Fallstricke**\n\n• Überspringen Sie keine Generationen\n• Prüfen Sie auf Namensvettern (sehr häufig)\n• Achten Sie auf Schreibvarianten von Namen\n• Kreuzen Sie mehrere Quellen\n\n**AÏLA-Tipp**\n\nNutzen Sie unsere App, um Ihre Entdeckungen zu organisieren und Ihren Stammbaum mit Ihrer Familie zu teilen. Zusammen kommen Sie schneller und weiter!"
+      },
+      "start": {
+        "title": "Ihren Stammbaum starten: Die ersten Schritte",
+        "excerpt": "Sie möchten Ihren Stammbaum erstellen, wissen aber nicht, wo Sie anfangen sollen? Hier sind die wesentlichen Schritte für den Einstieg.",
+        "date": "November 2024",
+        "readTime": "8",
+        "content": "**Warum Ihren Stammbaum erstellen?**\n\nIhren Stammbaum zu erstellen bedeutet, sich auf eine Entdeckungsreise Ihrer Familiengeschichte zu begeben. Es bedeutet zu verstehen, woher Sie kommen, Vorfahren mit manchmal außergewöhnlichen Lebenswegen zu entdecken und diese Erinnerung an zukünftige Generationen weiterzugeben.\n\n**Schritt 1: Beginnen Sie mit sich selbst**\n\nDer Ausgangspunkt sind Sie! Notieren Sie Ihren vollständigen Namen, Geburtsdatum und -ort. Dann gehen Sie zurück: Ihre Eltern, Ihre Großeltern. Dieses solide Fundament wird die Grundlage Ihres Baumes sein.\n\n**Schritt 2: Befragen Sie Ihre Familie**\n\nIhre Verwandten sind eine Informationsquelle. Organisieren Sie Gespräche mit den ältesten Familienmitgliedern. Bereiten Sie Ihre Fragen im Voraus vor:\n• Vollständige Namen (einschließlich Mädchennamen)\n• Wichtige Daten (Geburten, Hochzeiten, Todesfälle)\n• Wohnorte und Berufe\n• Anekdoten und Erinnerungen\n\n**Schritt 3: Sammeln Sie Dokumente**\n\nEinige Dokumente sind für die Genealogie wertvoll:\n• Familienstammbücher\n• Geburts-, Heirats-, Sterbeurkunden\n• Alte Fotos (schauen Sie auf die Rückseite!)\n• Korrespondenz und Notizbücher\n\n**Schritt 4: Organisieren Sie Ihre Forschung**\n\nEin guter Genealoge ist ein organisierter Genealoge. Nutzen Sie AÏLA, um Ihre Informationen zu zentralisieren, Profile für jeden Vorfahren zu erstellen und Familienverbindungen zu visualisieren.\n\n**Schritt 5: Gehen Sie in die Archive**\n\nSobald die Familieninformationen gesammelt sind, ab in die Archive! Die Online-Departementsarchive sind kostenlos und voller Informationen.\n\n**Bonus-Tipp**\n\nLassen Sie sich nicht entmutigen, wenn Sie bei einem Vorfahren nicht weiterkommen. Genealogie erfordert Geduld. Manchmal müssen Sie nur warten, um ein neues Dokument zu finden oder die Community um Hilfe bitten."
+      },
+      "mistakes": {
+        "title": "Die 5 Fehler des Genealogie-Anfängers",
+        "excerpt": "Vermeiden Sie klassische Fallstricke, die Ihre Forschung verfälschen können. Praktische Ratschläge für zuverlässige Genealogie.",
+        "date": "Oktober 2024",
+        "readTime": "6",
+        "content": "**Fehler #1: Zu schnell vorgehen**\n\nDie anfängliche Begeisterung drängt oft dazu, so weit wie möglich zurückgehen zu wollen. Widerstehen Sie dieser Versuchung! Jede Generation muss solide dokumentiert sein, bevor Sie zur nächsten übergehen. Ein Baum, der auf Annahmen aufgebaut ist, wird früher oder später zusammenbrechen.\n\n**Fehler #2: Quellen vernachlässigen**\n\nAlle Informationen müssen belegt sein. Woher stammt dieses Geburtsdatum? Wer hat Ihnen diesen Mädchennamen gesagt? Ohne Quelle ist es unmöglich zu überprüfen und mögliche Fehler zu korrigieren. Mit AÏLA können Sie Ihre Quellen für jede Person notieren.\n\n**Fehler #3: Namensvariationen ignorieren**\n\nVor dem 20. Jahrhundert war die Schreibweise von Namen nicht festgelegt. MARTIN konnte MARTEN, MARTAIN oder MARTING geschrieben werden, je nach Standesbeamtem. Seien Sie flexibel bei Ihren Suchen!\n\n**Fehler #4: Seitenlinien vergessen**\n\nDie Geschwister Ihrer Vorfahren sollten nicht vernachlässigt werden. Sie können Ihnen helfen, Eltern zu identifizieren, Daten zu bestätigen oder Verbindungen zu anderen Familienzweigen aufzudecken.\n\n**Fehler #5: Alleine arbeiten**\n\nGenealogie ist lohnender in der Familie! Teilen Sie Ihren Baum, bitten Sie um Erinnerungen, beziehen Sie Ihre Cousins mit ein. Mit AÏLA laden Sie Ihre Lieben ein, beizutragen und bereichern Ihren Baum gemeinsam.\n\n**Der ultimative Tipp**\n\nNehmen Sie sich Zeit, überprüfen Sie alles und genießen Sie jede Entdeckung. Genealogie ist kein Rennen, es ist eine Reise."
+      },
+      "relationships": {
+        "title": "Wie man Verwandtschaftsbeziehungen berechnet",
+        "excerpt": "Cousin ersten Grades, Cousin zweiten Grades, Onkel... Verstehen Sie endlich Familienverbindungen!",
+        "date": "September 2024",
+        "readTime": "7",
+        "content": "**Grundlagen der Verwandtschaft**\n\nFamilienbeziehungen mögen komplex erscheinen, folgen aber einer einfachen Logik, sobald man sie versteht. Alles beginnt mit einem gemeinsamen Vorfahren.\n\n**Direkte Beziehungen**\n\nDie direkte Linie verbindet Menschen von Generation zu Generation:\n• Eltern → Kinder\n• Großeltern → Enkel\n• Urgroßeltern → Urenkel\n\n**Seitenlinien**\n\nDies sind \"horizontale\" Verbindungen:\n• Brüder und Schwestern: gleiche Eltern\n• Onkel und Tanten: Geschwister Ihrer Eltern\n• Cousins ersten Grades: Kinder Ihrer Onkel/Tanten\n\n**Verwandtschaftsgrade**\n\n• Cousins ersten Grades: gemeinsamer Vorfahre = Großeltern (2. Grad)\n• Cousins zweiten Grades: gemeinsamer Vorfahre = Urgroßeltern (3. Grad)\n• Cousins dritten Grades: gemeinsamer Vorfahre = Ururgroßeltern (4. Grad)\n\n**Die Berechnungsregel**\n\nUm den Verwandtschaftsgrad zu finden, zählen Sie die Generationen, die Sie vom gemeinsamen Vorfahren trennen. Wenn es für jede Person unterschiedlich ist, sprechen wir von \"entfernten\" Cousins.\n\n**Praktisches Beispiel**\n\nIhr Großvater und Maries Großvater sind Brüder:\n→ Sie und Marie sind Cousins ersten Grades (gemeinsamer Vorfahre: Urgroßeltern)\n\nMaries Sohn und Sie:\n→ Sie sind Maries Cousin ersten Grades, also \"Cousin ersten Grades einmal entfernt\" zu ihrem Sohn\n\n**Der AÏLA-Tipp**\n\nUnsere App berechnet automatisch Familienbeziehungen! Fügen Sie einfach Personen und ihre Beziehungen hinzu, und AÏLA sagt Ihnen, wie Sie verbunden sind."
+      }
+    }
   },
   "pricing": {
     "title": "Premium",

@@ -515,18 +515,67 @@
   },
   "blog": {
     "title": "AÏLA Blog",
+    "article": "Article",
     "articles": "Articles",
+    "reading": "min read",
     "readMore": "Read more",
     "backToList": "Back to articles",
     "readTime": "min read",
+    "introTitle": "Genealogy Tips & Tricks",
+    "introText": "Discover our articles to create and enrich your family tree.",
+    "joinCommunity": "Join the community",
+    "guides": "📚 Practical guides",
+    "guideAncestors": "How to find your ancestors for free",
+    "guideBeginner": "Beginner's guide: first steps",
+    "guideRegion": "🆕 Research by region and country",
+    "articlesSection": "📖 All our articles",
     "takeAction": "Take action!",
     "transformReading": "Transform your reading into family action",
     "viewChallenges": "View challenges",
     "readyToStart": "Ready to start?",
     "createTreeFree": "Create your family tree for free with AÏLA.",
-    "createMyTree": "Create my tree for free",
+    "createMyTree": "Create my tree",
+    "createMyTreeFree": "Create my tree for free",
     "backHome": "Back to home",
-    "viewAllChallenges": "View all challenges"
+    "viewAllChallenges": "View all challenges",
+    "copyright": "© 2025 AÏLA - The family tree that connects your family",
+    "articles": {
+      "region": {
+        "title": "Genealogical research by region and country",
+        "excerpt": "Discover the resources and archives specific to each French region and French-speaking countries to find your ancestors.",
+        "date": "January 2025",
+        "readTime": "12",
+        "content": "**Introduction to regional research**\n\nGenealogy is not done the same way in all regions. Each French department has its own archives, historical particularities, and online resources. This guide will help you navigate this diversity.\n\n**Departmental Archives**\n\nDepartmental archives are your first resource. Almost all French departments have digitized their parish and civil registers. Here's how to access them:\n\n• Go to your department's archive website\n• Look for the \"Civil status\" or \"Parish registers\" section\n• Records are generally available until 1902-1912\n\n**Regional particularities**\n\n• Alsace-Moselle: Records in German during certain periods, different legal system\n• Brittany: Breton surnames, archives sometimes in Breton\n• Savoy and Nice: Joined France late (1860)\n• Corsica: Archives sometimes in Italian, Latinized names\n• Overseas: Specific archives, records of freed slaves\n\n**International research**\n\nFor ancestors who emigrated or immigrated:\n\n• Belgium: Belgian State Archives online\n• Switzerland: Cantonal archives portal\n• Quebec: BAnQ and Généalogie Québec\n• North Africa: National Overseas Archives (ANOM)\n\n**Additional resources**\n\n• Regional genealogical associations\n• Specialized forums by region\n• Dedicated Facebook groups\n• Collaborative databases\n\n**Practical tip**\n\nAlways start by identifying the exact location (municipality, parish) before searching the archives. The same family name can have very different origins depending on the region."
+      },
+      "ancestors": {
+        "title": "How to find your ancestors for free",
+        "excerpt": "Complete guide to starting your genealogical research without spending a dime. Online archives, free resources, and effective methods.",
+        "date": "December 2024",
+        "readTime": "10",
+        "content": "**Why search for your ancestors?**\n\nGenealogy is much more than just a hobby. It's a quest for identity, a journey through time that connects you to your roots. Discovering where you come from often helps understand who you are.\n\n**Free online archives**\n\nFrance has a treasure: digitized departmental archives. Each department makes its parish and civil registers available online for free. Here are the steps:\n\n• Identify the department where your ancestors were born\n• Go to the departmental archives website\n• Access the \"Civil status\" or \"Parish registers\" section\n• Search by municipality and date\n\n**Essential free resources**\n\n• FamilySearch.org: Free worldwide database\n• Geneanet: Free version with millions of trees\n• Filae: Some free features\n• National Archives: Historical documents\n\n**Step-by-step method**\n\n1. Start with yourself and go back generation by generation\n2. Interview your relatives, especially the oldest ones\n3. Gather family documents (family record book, photos)\n4. Note everything: dates, places, anecdotes\n5. Verify each piece of information in official archives\n\n**Pitfalls to avoid**\n\n• Don't skip generations\n• Check for namesakes (very common)\n• Watch out for spelling variations of names\n• Cross-reference multiple sources\n\n**AÏLA tip**\n\nUse our app to organize your discoveries and share your tree with your family. Together, you'll go faster and further!"
+      },
+      "start": {
+        "title": "Starting your family tree: the first steps",
+        "excerpt": "Want to create your family tree but don't know where to start? Here are the essential steps to get started.",
+        "date": "November 2024",
+        "readTime": "8",
+        "content": "**Why create your family tree?**\n\nCreating your family tree means embarking on a discovery of your family history. It's understanding where you come from, discovering ancestors with sometimes extraordinary journeys, and passing on this memory to future generations.\n\n**Step 1: Start with yourself**\n\nThe starting point is you! Write down your full name, date and place of birth. Then go back: your parents, your grandparents. This solid foundation will be the basis of your tree.\n\n**Step 2: Interview your family**\n\nYour relatives are a mine of information. Organize interviews with the oldest members of your family. Prepare your questions in advance:\n• Full names (including maiden names)\n• Important dates (births, marriages, deaths)\n• Places of residence and professions\n• Anecdotes and memories\n\n**Step 3: Gather documents**\n\nSome documents are precious for genealogy:\n• Family record books\n• Birth, marriage, death certificates\n• Old photos (look at the back!)\n• Correspondence and notebooks\n\n**Step 4: Organize your research**\n\nA good genealogist is an organized genealogist. Use AÏLA to centralize your information, create profiles for each ancestor, and visualize family connections.\n\n**Step 5: Go to the archives**\n\nOnce family information is collected, head to the archives! Online departmental archives are free and full of information.\n\n**Bonus tip**\n\nDon't get discouraged if you get stuck on an ancestor. Genealogy requires patience. Sometimes you just need to wait to find a new document or ask the community for help."
+      },
+      "mistakes": {
+        "title": "The 5 mistakes of beginner genealogists",
+        "excerpt": "Avoid classic pitfalls that can skew your research. Practical advice for reliable genealogy.",
+        "date": "October 2024",
+        "readTime": "6",
+        "content": "**Mistake #1: Going too fast**\n\nThe enthusiasm at the beginning often pushes you to want to go back as far as possible. Resist this temptation! Each generation must be solidly documented before moving on to the next. A tree built on assumptions will eventually collapse.\n\n**Mistake #2: Neglecting sources**\n\nAll information must be sourced. Where does this birth date come from? Who told you this maiden name? Without a source, it's impossible to verify and correct possible errors. With AÏLA, you can note your sources for each person.\n\n**Mistake #3: Ignoring name variations**\n\nBefore the 20th century, the spelling of names was not fixed. MARTIN could be spelled MARTEN, MARTAIN or MARTING depending on the civil registrar. Be flexible in your searches!\n\n**Mistake #4: Forgetting collaterals**\n\nThe siblings of your ancestors should not be neglected. They can help you identify parents, confirm dates, or reveal connections with other family branches.\n\n**Mistake #5: Working alone**\n\nGenealogy is more rewarding with family! Share your tree, ask for memories, involve your cousins. With AÏLA, invite your loved ones to contribute and enrich your tree together.\n\n**The ultimate tip**\n\nTake your time, verify everything, and savor each discovery. Genealogy is not a race, it's a journey."
+      },
+      "relationships": {
+        "title": "How to calculate family relationships",
+        "excerpt": "First cousin, second cousin, uncle once removed... Finally understand family connections!",
+        "date": "September 2024",
+        "readTime": "7",
+        "content": "**The basics of kinship**\n\nFamily relationships may seem complex, but they follow a simple logic once understood. Everything starts from a common ancestor.\n\n**Direct relationships**\n\nThe direct line connects people from generation to generation:\n• Parents → Children\n• Grandparents → Grandchildren\n• Great-grandparents → Great-grandchildren\n\n**Collateral relationships**\n\nThese are \"horizontal\" connections:\n• Brothers and sisters: same parents\n• Uncles and aunts: siblings of your parents\n• First cousins: children of your uncles/aunts\n\n**Degrees of cousinship**\n\n• First cousins: common ancestor = grandparents (2nd degree)\n• First cousins once removed: common ancestor = great-grandparents (3rd degree)\n• Second cousins: common ancestor = great-great-grandparents (4th degree)\n\n**The calculation rule**\n\nTo find the degree of cousinship, count the number of generations separating you from the common ancestor. If it's different for each person, we speak of \"removed\" cousins.\n\n**Practical example**\n\nYour grandfather and Marie's grandfather are brothers:\n→ You and Marie are first cousins (common ancestor: great-grandparents)\n\nMarie's son and you:\n→ You are Marie's first cousin, so \"first cousin once removed\" to her son\n\n**The AÏLA tip**\n\nOur app automatically calculates family relationships! Simply add people and their relationships, and AÏLA will tell you how you're connected."
+      }
+    }
   },
   "pricing": {
     "title": "Premium",
