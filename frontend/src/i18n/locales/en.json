@@ -49,7 +49,20 @@
     "write": "Write",
     "preserve": "Preserve",
     "dataProtected": "Your data is protected",
-    "about": "About"
+    "about": "About",
+    "shareMessage": "🌳 Discover AÏLA - The family tree that connects your family! Create, share, and preserve your family history. 👉 https://www.aila.family",
+    "shareTitle": "AÏLA - Family Tree",
+    "linkCopied": "Link copied! Share it with your family 🌳",
+    "pwaInstall": {
+      "instructions": "📲 To install AÏLA:\n\n• On Chrome/Edge: Click ⋮ then \"Install app\"\n• On Safari (iPhone): Click ⬆️ then \"Add to Home Screen\"\n• On Android: Click ⋮ then \"Add to Home Screen\""
+    }
+  },
+  "footer": {
+    "blog": "Blog",
+    "faq": "FAQ",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "admin": "Admin"
   },
   "nav": {
     "home": "Home",

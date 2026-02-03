@@ -49,7 +49,20 @@
     "write": "Schreiben",
     "preserve": "Bewahren",
     "dataProtected": "Ihre Daten sind geschützt",
-    "about": "Über uns"
+    "about": "Über uns",
+    "shareMessage": "🌳 Entdecken Sie AÏLA - Der Stammbaum, der Ihre Familie verbindet! Erstellen, teilen und bewahren Sie Ihre Familiengeschichte. 👉 https://www.aila.family",
+    "shareTitle": "AÏLA - Familienstammbaum",
+    "linkCopied": "Link kopiert! Teilen Sie ihn mit Ihrer Familie 🌳",
+    "pwaInstall": {
+      "instructions": "📲 So installieren Sie AÏLA:\n\n• In Chrome/Edge: Klicken Sie auf ⋮ dann \"App installieren\"\n• In Safari (iPhone): Klicken Sie auf ⬆️ dann \"Zum Home-Bildschirm\"\n• Auf Android: Klicken Sie auf ⋮ dann \"Zum Startbildschirm hinzufügen\""
+    }
+  },
+  "footer": {
+    "blog": "Blog",
+    "faq": "FAQ",
+    "privacy": "Datenschutz",
+    "terms": "AGB",
+    "admin": "Admin"
   },
   "nav": {
     "home": "Startseite",

@@ -60,12 +60,7 @@ export default function WelcomeScreen() {
     if (!deferredPrompt) {
       // Fallback instructions
       if (Platform.OS === 'web') {
-        window.alert(
-          '📲 Pour installer AÏLA :\n\n' +
-          '• Sur Chrome/Edge : Cliquez sur ⋮ puis "Installer l\'application"\n' +
-          '• Sur Safari (iPhone) : Cliquez sur ⬆️ puis "Sur l\'écran d\'accueil"\n' +
-          '• Sur Android : Cliquez sur ⋮ puis "Ajouter à l\'écran d\'accueil"'
-        );
+        window.alert(t('home.pwaInstall.instructions'));
       }
       return;
     }
@@ -108,7 +103,7 @@ export default function WelcomeScreen() {
     return (
       <View style={styles.loadingContainer}>
         <Ionicons name="leaf" size={60} color="#D4AF37" />
-        <Text style={styles.loadingText}>Chargement...</Text>
+        <Text style={styles.loadingText}>{t('common.loading')}</Text>
       </View>
     );
   }
@@ -127,27 +122,27 @@ export default function WelcomeScreen() {
   };
 
   const shareApp = async () => {
-    const shareMessage = "🌳 Découvrez AÏLA - L'arbre généalogique qui connecte votre famille ! Créez, partagez et préservez votre histoire familiale. 👉 https://www.aila.family";
+    const shareMessage = t('home.shareMessage');
     
     try {
       if (Platform.OS === 'web') {
         // Web Share API
         if (navigator.share) {
           await navigator.share({
-            title: 'AÏLA - Arbre Généalogique Familial',
+            title: t('home.shareTitle'),
             text: shareMessage,
             url: 'https://www.aila.family',
           });
         } else {
           // Fallback: copy to clipboard
           await navigator.clipboard.writeText(shareMessage);
-          window.alert('Lien copié ! Partagez-le avec votre famille 🌳');
+          window.alert(t('home.linkCopied'));
         }
       } else {
         // Mobile Share
         await Share.share({
           message: shareMessage,
-          title: 'AÏLA - Arbre Généalogique Familial',
+          title: t('home.shareTitle'),
         });
       }
     } catch (error) {
@@ -323,23 +318,23 @@ export default function WelcomeScreen() {
               </TouchableOpacity>
               <Text style={styles.legalSeparator}>•</Text>
               <TouchableOpacity onPress={() => router.push('/blog')}>
-                <Text style={styles.legalLink}>Blog</Text>
+                <Text style={styles.legalLink}>{t('footer.blog')}</Text>
               </TouchableOpacity>
               <Text style={styles.legalSeparator}>•</Text>
               <TouchableOpacity onPress={() => router.push('/faq')}>
-                <Text style={styles.legalLink}>FAQ</Text>
+                <Text style={styles.legalLink}>{t('footer.faq')}</Text>
               </TouchableOpacity>
               <Text style={styles.legalSeparator}>•</Text>
               <TouchableOpacity onPress={() => router.push('/privacy')}>
-                <Text style={styles.legalLink}>Confidentialité</Text>
+                <Text style={styles.legalLink}>{t('footer.privacy')}</Text>
               </TouchableOpacity>
               <Text style={styles.legalSeparator}>•</Text>
               <TouchableOpacity onPress={() => router.push('/terms')}>
-                <Text style={styles.legalLink}>CGU</Text>
+                <Text style={styles.legalLink}>{t('footer.terms')}</Text>
               </TouchableOpacity>
               <Text style={styles.legalSeparator}>•</Text>
               <TouchableOpacity onPress={() => router.push('/adminblog')}>
-                <Text style={styles.legalLink}>Admin</Text>
+                <Text style={styles.legalLink}>{t('footer.admin')}</Text>
               </TouchableOpacity>
             </View>
             

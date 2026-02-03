@@ -49,7 +49,20 @@
     "write": "Escrever",
     "preserve": "Preservar",
     "dataProtected": "Seus dados estão protegidos",
-    "about": "Sobre"
+    "about": "Sobre",
+    "shareMessage": "🌳 Descubra AÏLA - A árvore genealógica que conecta sua família! Crie, compartilhe e preserve sua história familiar. 👉 https://www.aila.family",
+    "shareTitle": "AÏLA - Árvore Genealógica Familiar",
+    "linkCopied": "Link copiado! Compartilhe com sua família 🌳",
+    "pwaInstall": {
+      "instructions": "📲 Para instalar AÏLA:\n\n• No Chrome/Edge: Clique em ⋮ e depois \"Instalar app\"\n• No Safari (iPhone): Clique em ⬆️ e depois \"Adicionar à Tela de Início\"\n• No Android: Clique em ⋮ e depois \"Adicionar à tela inicial\""
+    }
+  },
+  "footer": {
+    "blog": "Blog",
+    "faq": "FAQ",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "admin": "Admin"
   },
   "nav": {
     "home": "Início",
