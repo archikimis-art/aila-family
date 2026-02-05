@@ -645,6 +645,17 @@
     "registerFailed": "Error en el registro",
     "gdprRequired": "Debes aceptar la política de privacidad"
   },
+  "members": {
+    "title": "Miembros",
+    "count": "{{count}} persona(s)",
+    "searchPlaceholder": "Buscar un miembro...",
+    "noResults": "Sin resultados",
+    "noMembers": "Sin miembros",
+    "tryOtherTerms": "Intenta con otros términos",
+    "startAddingMembers": "Comienza agregando miembros a tu árbol",
+    "limitReached": "Límite alcanzado",
+    "previewLimit": "El modo de vista previa está limitado a 10 miembros."
+  },
   "alerts": {
     "confirmDelete": "¿Estás seguro de que quieres eliminar?",
     "confirmLogout": "¿Estás seguro de que quieres cerrar sesión?",

@@ -756,6 +756,17 @@
     "registerFailed": "Registration failed",
     "gdprRequired": "You must accept the privacy policy"
   },
+  "members": {
+    "title": "Members",
+    "count": "{{count}} person(s)",
+    "searchPlaceholder": "Search for a member...",
+    "noResults": "No results",
+    "noMembers": "No members",
+    "tryOtherTerms": "Try with other terms",
+    "startAddingMembers": "Start by adding members to your tree",
+    "limitReached": "Limit reached",
+    "previewLimit": "Preview mode is limited to 10 members."
+  },
   "alerts": {
     "confirmDelete": "Are you sure you want to delete?",
     "confirmLogout": "Are you sure you want to log out?",

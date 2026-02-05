@@ -134,6 +134,17 @@
     "emailAlreadyExists": "Un compte existe déjà avec cet email",
     "gdprRequired": "Vous devez accepter la politique de confidentialité"
   },
+  "members": {
+    "title": "Membres",
+    "count": "{{count}} personne(s)",
+    "searchPlaceholder": "Rechercher un membre...",
+    "noResults": "Aucun résultat",
+    "noMembers": "Aucun membre",
+    "tryOtherTerms": "Essayez avec d'autres termes",
+    "startAddingMembers": "Commencez par ajouter des membres à votre arbre",
+    "limitReached": "Limite atteinte",
+    "previewLimit": "Le mode aperçu est limité à 10 membres."
+  },
   "challenges": {
     "title": "Défis Familiaux",
     "dailyChallenge": "Défi du jour",

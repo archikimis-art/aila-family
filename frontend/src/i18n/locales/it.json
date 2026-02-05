@@ -645,6 +645,17 @@
     "registerFailed": "Registrazione fallita",
     "gdprRequired": "Devi accettare l'informativa sulla privacy"
   },
+  "members": {
+    "title": "Membri",
+    "count": "{{count}} persona/e",
+    "searchPlaceholder": "Cerca un membro...",
+    "noResults": "Nessun risultato",
+    "noMembers": "Nessun membro",
+    "tryOtherTerms": "Prova con altri termini",
+    "startAddingMembers": "Inizia aggiungendo membri al tuo albero",
+    "limitReached": "Limite raggiunto",
+    "previewLimit": "La modalità anteprima è limitata a 10 membri."
+  },
   "alerts": {
     "confirmDelete": "Sei sicuro di voler eliminare?",
     "confirmLogout": "Sei sicuro di voler uscire?",

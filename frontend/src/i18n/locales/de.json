@@ -645,6 +645,17 @@
     "registerFailed": "Registrierung fehlgeschlagen",
     "gdprRequired": "Sie müssen die Datenschutzrichtlinie akzeptieren"
   },
+  "members": {
+    "title": "Mitglieder",
+    "count": "{{count}} Person(en)",
+    "searchPlaceholder": "Mitglied suchen...",
+    "noResults": "Keine Ergebnisse",
+    "noMembers": "Keine Mitglieder",
+    "tryOtherTerms": "Versuchen Sie es mit anderen Begriffen",
+    "startAddingMembers": "Beginnen Sie, Mitglieder zu Ihrem Baum hinzuzufügen",
+    "limitReached": "Limit erreicht",
+    "previewLimit": "Der Vorschaumodus ist auf 10 Mitglieder begrenzt."
+  },
   "alerts": {
     "confirmDelete": "Sind Sie sicher, dass Sie löschen möchten?",
     "confirmLogout": "Sind Sie sicher, dass Sie sich abmelden möchten?",
