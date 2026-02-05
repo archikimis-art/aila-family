@@ -84,7 +84,16 @@
     "passwordMinChars": "Mot de passe (6 caractères min.)",
     "iAccept": "J'accepte la",
     "createFreeAccount": "Créer mon compte gratuit",
-    "reassurance": "Gratuit • Sans pub • Données protégées"
+    "reassurance": "Gratuit • Sans pub • Données protégées",
+    "forgotPasswordTitle": "Mot de passe oublié ?",
+    "forgotPasswordDesc": "Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+    "yourEmailAddress": "Votre adresse email",
+    "sendResetLink": "Envoyer le lien",
+    "backToLogin": "Retour à la connexion",
+    "emailSent": "Email envoyé !",
+    "resetEmailSentDesc": "Si un compte existe avec l'adresse {{email}}, vous recevrez un email avec un lien pour réinitialiser votre mot de passe.",
+    "checkSpam": "Pensez à vérifier vos spams.",
+    "enterYourEmail": "Veuillez entrer votre adresse email"
   },
   "common": {
     "loading": "Chargement...",

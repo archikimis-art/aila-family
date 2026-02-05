@@ -106,7 +106,16 @@
     "passwordMinChars": "Password (min. 6 caratteri)",
     "iAccept": "Accetto la",
     "createFreeAccount": "Crea il mio account gratuito",
-    "reassurance": "Gratuito • Senza pubblicità • Dati protetti"
+    "reassurance": "Gratuito • Senza pubblicità • Dati protetti",
+    "forgotPasswordTitle": "Password dimenticata?",
+    "forgotPasswordDesc": "Inserisci il tuo indirizzo email e ti invieremo un link per reimpostare la password.",
+    "yourEmailAddress": "Il tuo indirizzo email",
+    "sendResetLink": "Invia link",
+    "backToLogin": "Torna al login",
+    "emailSent": "Email inviata!",
+    "resetEmailSentDesc": "Se esiste un account con l'indirizzo {{email}}, riceverai un'email con un link per reimpostare la password.",
+    "checkSpam": "Non dimenticare di controllare la cartella spam.",
+    "enterYourEmail": "Per favore inserisci il tuo indirizzo email"
   },
   "challenges": {
     "title": "Sfide Familiari",

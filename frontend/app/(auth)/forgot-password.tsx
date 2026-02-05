@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -14,9 +14,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import api from '@/services/api';
+import { useTranslation } from 'react-i18next';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -24,7 +26,7 @@ export default function ForgotPasswordScreen() {
 
   const handleSubmit = async () => {
     if (!email.trim()) {
-      setError('Veuillez entrer votre adresse email');
+      setError(t('auth.enterYourEmail'));
       return;
     }
 
@@ -50,19 +52,19 @@ export default function ForgotPasswordScreen() {
             <View style={styles.successIcon}>
               <Ionicons name="mail" size={60} color="#48BB78" />
             </View>
-            <Text style={styles.successTitle}>Email envoyé !</Text>
+            <Text style={styles.successTitle}>{t('auth.emailSent')}</Text>
             <Text style={styles.successText}>
-              Si un compte existe avec l'adresse {email}, vous recevrez un email avec un lien pour réinitialiser votre mot de passe.
+              {t('auth.resetEmailSentDesc', { email })}
             </Text>
             <Text style={styles.successHint}>
-              Pensez à vérifier vos spams.
+              {t('auth.checkSpam')}
             </Text>
-            <TouchableOpacity
+            <Pressable
               style={styles.backButton}
               onPress={() => router.push('/(auth)/login')}
             >
-              <Text style={styles.backButtonText}>Retour à la connexion</Text>
-            </TouchableOpacity>
+              <Text style={styles.backButtonText}>{t('auth.backToLogin')}</Text>
+            </Pressable>
           </View>
         </View>
       </SafeAreaView>
@@ -78,12 +80,12 @@ export default function ForgotPasswordScreen() {
         <ScrollView contentContainerStyle={styles.scrollContent}>
           {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity
+            <Pressable
               style={styles.backArrow}
               onPress={() => router.back()}
             >
               <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           {/* Content */}
@@ -92,9 +94,9 @@ export default function ForgotPasswordScreen() {
               <Ionicons name="lock-open" size={50} color="#D4AF37" />
             </View>
             
-            <Text style={styles.title}>Mot de passe oublié ?</Text>
+            <Text style={styles.title}>{t('auth.forgotPasswordTitle')}</Text>
             <Text style={styles.subtitle}>
-              Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+              {t('auth.forgotPasswordDesc')}
             </Text>
 
             {/* Email Input */}
@@ -102,7 +104,7 @@ export default function ForgotPasswordScreen() {
               <Ionicons name="mail-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Votre adresse email"
+                placeholder={t('auth.yourEmailAddress')}
                 placeholderTextColor="#6B7C93"
                 value={email}
                 onChangeText={setEmail}
@@ -117,7 +119,7 @@ export default function ForgotPasswordScreen() {
             ) : null}
 
             {/* Submit Button */}
-            <TouchableOpacity
+            <Pressable
               style={[styles.submitButton, loading && styles.submitButtonDisabled]}
               onPress={handleSubmit}
               disabled={loading}
@@ -125,19 +127,19 @@ export default function ForgotPasswordScreen() {
               {loading ? (
                 <ActivityIndicator size="small" color="#0A1628" />
               ) : (
-                <Text style={styles.submitButtonText}>Envoyer le lien</Text>
+                <Text style={styles.submitButtonText}>{t('auth.sendResetLink')}</Text>
               )}
-            </TouchableOpacity>
+            </Pressable>
 
             {/* Back to Login */}
-            <TouchableOpacity
+            <Pressable
               style={styles.loginLink}
               onPress={() => router.push('/(auth)/login')}
             >
               <Text style={styles.loginLinkText}>
-                Retour à la connexion
+                {t('auth.backToLogin')}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -106,7 +106,16 @@
     "passwordMinChars": "Passwort (mind. 6 Zeichen)",
     "iAccept": "Ich akzeptiere die",
     "createFreeAccount": "Mein kostenloses Konto erstellen",
-    "reassurance": "Kostenlos • Werbefrei • Daten geschützt"
+    "reassurance": "Kostenlos • Werbefrei • Daten geschützt",
+    "forgotPasswordTitle": "Passwort vergessen?",
+    "forgotPasswordDesc": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+    "yourEmailAddress": "Ihre E-Mail-Adresse",
+    "sendResetLink": "Link senden",
+    "backToLogin": "Zurück zur Anmeldung",
+    "emailSent": "E-Mail gesendet!",
+    "resetEmailSentDesc": "Wenn ein Konto mit der Adresse {{email}} existiert, erhalten Sie eine E-Mail mit einem Link zum Zurücksetzen Ihres Passworts.",
+    "checkSpam": "Vergessen Sie nicht, Ihren Spam-Ordner zu überprüfen.",
+    "enterYourEmail": "Bitte geben Sie Ihre E-Mail-Adresse ein"
   },
   "challenges": {
     "title": "Familien-Herausforderungen",

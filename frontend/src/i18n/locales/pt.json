@@ -106,7 +106,16 @@
     "passwordMinChars": "Senha (mín. 6 caracteres)",
     "iAccept": "Eu aceito a",
     "createFreeAccount": "Criar minha conta grátis",
-    "reassurance": "Grátis • Sem anúncios • Dados protegidos"
+    "reassurance": "Grátis • Sem anúncios • Dados protegidos",
+    "forgotPasswordTitle": "Esqueceu a senha?",
+    "forgotPasswordDesc": "Digite seu endereço de e-mail e enviaremos um link para redefinir sua senha.",
+    "yourEmailAddress": "Seu endereço de e-mail",
+    "sendResetLink": "Enviar link",
+    "backToLogin": "Voltar ao login",
+    "emailSent": "E-mail enviado!",
+    "resetEmailSentDesc": "Se existir uma conta com o endereço {{email}}, você receberá um e-mail com um link para redefinir sua senha.",
+    "checkSpam": "Não esqueça de verificar sua pasta de spam.",
+    "enterYourEmail": "Por favor digite seu endereço de e-mail"
   },
   "challenges": {
     "title": "Desafios Familiares",

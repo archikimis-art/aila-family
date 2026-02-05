@@ -106,7 +106,16 @@
     "passwordMinChars": "Password (6 characters min.)",
     "iAccept": "I accept the",
     "createFreeAccount": "Create my free account",
-    "reassurance": "Free • No ads • Data protected"
+    "reassurance": "Free • No ads • Data protected",
+    "forgotPasswordTitle": "Forgot password?",
+    "forgotPasswordDesc": "Enter your email address and we'll send you a link to reset your password.",
+    "yourEmailAddress": "Your email address",
+    "sendResetLink": "Send reset link",
+    "backToLogin": "Back to login",
+    "emailSent": "Email sent!",
+    "resetEmailSentDesc": "If an account exists with the address {{email}}, you will receive an email with a link to reset your password.",
+    "checkSpam": "Don't forget to check your spam folder.",
+    "enterYourEmail": "Please enter your email address"
   },
   "challenges": {
     "title": "Family Challenges",
