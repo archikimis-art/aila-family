@@ -15,7 +15,11 @@
     "download": "Herunterladen",
     "search": "Suchen",
     "seeAll": "Alle anzeigen",
-    "language": "Sprache"
+    "language": "Sprache",
+    "or": "oder",
+    "yes": "Ja",
+    "no": "Nein",
+    "done": "Fertig"
   },
   "home": {
     "title": "AÏLA",
@@ -85,7 +89,16 @@
     "createAccount": "Konto erstellen",
     "alreadyHaveAccount": "Bereits ein Konto?",
     "noAccount": "Noch kein Konto?",
-    "signUp": "Registrieren"
+    "signUp": "Registrieren",
+    "welcomeToAila": "Willkommen bei AÏLA",
+    "loginToAccount": "Melden Sie sich bei Ihrem Konto an",
+    "chooseAccount": "Wählen Sie Ihr Konto",
+    "createYourAccount": "Erstellen Sie Ihr Konto",
+    "joinAila": "Treten Sie der AÏLA-Community bei",
+    "acceptTerms": "Mit der Registrierung akzeptieren Sie unsere",
+    "termsOfService": "Nutzungsbedingungen",
+    "and": "und unsere",
+    "privacyPolicy": "Datenschutzrichtlinie"
   },
   "challenges": {
     "title": "Familien-Herausforderungen",
@@ -605,7 +618,14 @@
     "passwordMismatch": "Die Passwörter stimmen nicht überein",
     "loginFailed": "Anmeldung fehlgeschlagen",
     "networkError": "Netzwerkverbindungsfehler",
-    "unknownError": "Ein Fehler ist aufgetreten"
+    "unknownError": "Ein Fehler ist aufgetreten",
+    "fillAllFields": "Bitte füllen Sie alle Felder aus",
+    "invalidCredentials": "Ungültige E-Mail oder Passwort",
+    "userNotFound": "Kein Konto mit dieser E-Mail gefunden",
+    "connectionError": "Verbindungsfehler. Bitte versuchen Sie es erneut.",
+    "googleLoginFailed": "Google-Anmeldung fehlgeschlagen",
+    "emailAlreadyExists": "Ein Konto mit dieser E-Mail existiert bereits",
+    "registerFailed": "Registrierung fehlgeschlagen"
   },
   "alerts": {
     "confirmDelete": "Sind Sie sicher, dass Sie löschen möchten?",

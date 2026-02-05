@@ -15,7 +15,11 @@
     "download": "Baixar",
     "search": "Pesquisar",
     "seeAll": "Ver tudo",
-    "language": "Idioma"
+    "language": "Idioma",
+    "or": "ou",
+    "yes": "Sim",
+    "no": "Não",
+    "done": "Feito"
   },
   "home": {
     "title": "AÏLA",
@@ -85,7 +89,16 @@
     "createAccount": "Criar uma conta",
     "alreadyHaveAccount": "Já tem uma conta?",
     "noAccount": "Não tem conta?",
-    "signUp": "Cadastrar-se"
+    "signUp": "Cadastrar-se",
+    "welcomeToAila": "Bem-vindo ao AÏLA",
+    "loginToAccount": "Faça login na sua conta",
+    "chooseAccount": "Escolha sua conta",
+    "createYourAccount": "Crie sua conta",
+    "joinAila": "Junte-se à comunidade AÏLA",
+    "acceptTerms": "Ao se registrar, você aceita nossos",
+    "termsOfService": "Termos de serviço",
+    "and": "e nossa",
+    "privacyPolicy": "Política de privacidade"
   },
   "challenges": {
     "title": "Desafios Familiares",
@@ -605,7 +618,14 @@
     "passwordMismatch": "As senhas não coincidem",
     "loginFailed": "Falha ao entrar",
     "networkError": "Erro de conexão de rede",
-    "unknownError": "Ocorreu um erro"
+    "unknownError": "Ocorreu um erro",
+    "fillAllFields": "Por favor, preencha todos os campos",
+    "invalidCredentials": "E-mail ou senha inválidos",
+    "userNotFound": "Nenhuma conta encontrada com este e-mail",
+    "connectionError": "Erro de conexão. Por favor, tente novamente.",
+    "googleLoginFailed": "Falha ao entrar com Google",
+    "emailAlreadyExists": "Já existe uma conta com este e-mail",
+    "registerFailed": "Falha no cadastro"
   },
   "alerts": {
     "confirmDelete": "Tem certeza de que deseja excluir?",

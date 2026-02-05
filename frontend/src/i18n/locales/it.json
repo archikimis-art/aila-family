@@ -15,7 +15,11 @@
     "download": "Scarica",
     "search": "Cerca",
     "seeAll": "Vedi tutto",
-    "language": "Lingua"
+    "language": "Lingua",
+    "or": "o",
+    "yes": "Sì",
+    "no": "No",
+    "done": "Fatto"
   },
   "home": {
     "title": "AÏLA",
@@ -85,7 +89,16 @@
     "createAccount": "Crea un account",
     "alreadyHaveAccount": "Hai già un account?",
     "noAccount": "Non hai un account?",
-    "signUp": "Registrati"
+    "signUp": "Registrati",
+    "welcomeToAila": "Benvenuto su AÏLA",
+    "loginToAccount": "Accedi al tuo account",
+    "chooseAccount": "Scegli il tuo account",
+    "createYourAccount": "Crea il tuo account",
+    "joinAila": "Unisciti alla community AÏLA",
+    "acceptTerms": "Registrandoti, accetti i nostri",
+    "termsOfService": "Termini di servizio",
+    "and": "e la nostra",
+    "privacyPolicy": "Informativa sulla privacy"
   },
   "challenges": {
     "title": "Sfide Familiari",
@@ -605,7 +618,14 @@
     "passwordMismatch": "Le password non corrispondono",
     "loginFailed": "Accesso fallito",
     "networkError": "Errore di connessione di rete",
-    "unknownError": "Si è verificato un errore"
+    "unknownError": "Si è verificato un errore",
+    "fillAllFields": "Per favore, compila tutti i campi",
+    "invalidCredentials": "E-mail o password non validi",
+    "userNotFound": "Nessun account trovato con questa e-mail",
+    "connectionError": "Errore di connessione. Per favore, riprova.",
+    "googleLoginFailed": "Accesso con Google fallito",
+    "emailAlreadyExists": "Esiste già un account con questa e-mail",
+    "registerFailed": "Registrazione fallita"
   },
   "alerts": {
     "confirmDelete": "Sei sicuro di voler eliminare?",

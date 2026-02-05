@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '@/services/api';
+import { useTranslation } from 'react-i18next';
 
 const GOOGLE_CLIENT_ID = '548263066328-916g23gmboqvmqtd7fi3ejatoseh4h09.apps.googleusercontent.com';
 
@@ -24,6 +25,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { login, refreshUser } = useAuth();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -191,13 +193,13 @@ export default function LoginScreen() {
     `;
 
     popup.innerHTML = `
-      <h3 style="margin: 0 0 8px 0; color: #333; font-size: 18px;">Se connecter avec Google</h3>
-      <p style="margin: 0 0 20px 0; color: #666; font-size: 14px;">Choisissez votre compte</p>
+      <h3 style="margin: 0 0 8px 0; color: #333; font-size: 18px;">${t('auth.loginWithGoogle')}</h3>
+      <p style="margin: 0 0 20px 0; color: #666; font-size: 14px;">${t('auth.chooseAccount')}</p>
       <div id="google-btn-login" style="display: flex; justify-content: center;"></div>
       <button id="google-cancel-login" style="
         margin-top: 16px; padding: 10px 24px; border: none; background: #f5f5f5;
         border-radius: 8px; cursor: pointer; color: #666; font-size: 14px;
-      ">Annuler</button>
+      ">${t('common.cancel')}</button>
     `;
 
     document.body.appendChild(backdrop);
@@ -226,13 +228,13 @@ export default function LoginScreen() {
           router.replace('/(tabs)/tree');
         } catch (error) {
           console.error('OAuth callback error:', error);
-          showError('Erreur lors de la connexion.');
+          showError(t('errors.connectionError'));
         } finally {
           setGoogleLoading(false);
         }
       }
       if (params.error) {
-        showError('La connexion Google a échoué.');
+        showError(t('errors.googleLoginFailed'));
       }
     };
     handleOAuthCallback();
@@ -241,13 +243,13 @@ export default function LoginScreen() {
   const showError = (message: string) => {
     setErrorMessage(message);
     if (Platform.OS !== 'web') {
-      Alert.alert('Erreur', message);
+      Alert.alert(t('common.error'), message);
     }
   };
 
   const handleLogin = async () => {
     if (!email.trim() || !password) {
-      showError('Veuillez remplir tous les champs.');
+      showError(t('errors.fillAllFields'));
       return;
     }
 
@@ -260,11 +262,11 @@ export default function LoginScreen() {
     } catch (error: any) {
       const detail = error.response?.data?.detail || '';
       if (detail.includes('Invalid credentials') || detail.includes('Identifiants invalides')) {
-        showError('Email ou mot de passe incorrect.');
+        showError(t('errors.invalidCredentials'));
       } else if (detail.includes('User not found')) {
-        showError('Aucun compte trouvé avec cet email.');
+        showError(t('errors.userNotFound'));
       } else {
-        showError(detail || 'Erreur de connexion. Veuillez réessayer.');
+        showError(detail || t('errors.connectionError'));
       }
     } finally {
       setLoading(false);
@@ -284,8 +286,8 @@ export default function LoginScreen() {
           {/* Logo and Title */}
           <View style={styles.header}>
             <Text style={styles.logo}>🌳</Text>
-            <Text style={styles.title}>Bienvenue sur AÏLA</Text>
-            <Text style={styles.subtitle}>Connectez-vous à votre compte</Text>
+            <Text style={styles.title}>{t('auth.welcomeToAila')}</Text>
+            <Text style={styles.subtitle}>{t('auth.loginToAccount')}</Text>
           </View>
 
           {/* Form */}
@@ -301,7 +303,7 @@ export default function LoginScreen() {
               <Ionicons name="mail-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder={t('auth.email')}
                 placeholderTextColor="#6B7C93"
                 value={email}
                 onChangeText={setEmail}
@@ -315,13 +317,13 @@ export default function LoginScreen() {
               <Ionicons name="lock-closed-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Mot de passe"
+                placeholder={t('auth.password')}
                 placeholderTextColor="#6B7C93"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
               />
-              <TouchableOpacity
+              <Pressable
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.eyeIcon}
               >
@@ -330,17 +332,17 @@ export default function LoginScreen() {
                   size={20}
                   color="#6B7C93"
                 />
-              </TouchableOpacity>
+              </Pressable>
             </View>
 
-            <TouchableOpacity
+            <Pressable
               style={styles.forgotPassword}
               onPress={() => router.push('/(auth)/forgot-password')}
             >
-              <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
-            </TouchableOpacity>
+              <Text style={styles.forgotPasswordText}>{t('auth.forgotPassword')}</Text>
+            </Pressable>
 
-            <TouchableOpacity
+            <Pressable
               style={[styles.loginButton, loading && styles.buttonDisabled]}
               onPress={handleLogin}
               disabled={loading}
@@ -349,22 +351,22 @@ export default function LoginScreen() {
                 <ActivityIndicator color="#0A1628" />
               ) : (
                 <>
-                  <Text style={styles.loginButtonText}>Se connecter</Text>
+                  <Text style={styles.loginButtonText}>{t('auth.login')}</Text>
                   <Ionicons name="arrow-forward" size={20} color="#0A1628" />
                 </>
               )}
-            </TouchableOpacity>
+            </Pressable>
 
             {/* Separator */}
             <View style={styles.separator}>
               <View style={styles.separatorLine} />
-              <Text style={styles.separatorText}>ou</Text>
+              <Text style={styles.separatorText}>{t('common.or')}</Text>
               <View style={styles.separatorLine} />
             </View>
 
             {/* Google Sign In Button */}
             {Platform.OS === 'web' && (
-              <TouchableOpacity
+              <Pressable
                 style={[styles.googleButton, googleLoading && styles.buttonDisabled]}
                 onPress={handleGoogleLogin}
                 disabled={googleLoading}
@@ -376,19 +378,19 @@ export default function LoginScreen() {
                     <View style={styles.googleIconContainer}>
                       <Text style={styles.googleIcon}>G</Text>
                     </View>
-                    <Text style={styles.googleButtonText}>Continuer avec Google</Text>
+                    <Text style={styles.googleButtonText}>{t('auth.loginWithGoogle')}</Text>
                   </>
                 )}
-              </TouchableOpacity>
+              </Pressable>
             )}
           </View>
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Pas encore de compte ?</Text>
-            <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-              <Text style={styles.registerLink}>Créer un compte</Text>
-            </TouchableOpacity>
+            <Text style={styles.footerText}>{t('auth.noAccount')}</Text>
+            <Pressable onPress={() => router.push('/(auth)/register')}>
+              <Text style={styles.registerLink}>{t('auth.createAccount')}</Text>
+            </Pressable>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

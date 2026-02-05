@@ -15,7 +15,11 @@
     "download": "Download",
     "search": "Search",
     "seeAll": "See all",
-    "language": "Language"
+    "language": "Language",
+    "or": "or",
+    "yes": "Yes",
+    "no": "No",
+    "done": "Done"
   },
   "home": {
     "title": "AÏLA",
@@ -85,7 +89,16 @@
     "createAccount": "Create an account",
     "alreadyHaveAccount": "Already have an account?",
     "noAccount": "Don't have an account?",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "welcomeToAila": "Welcome to AÏLA",
+    "loginToAccount": "Log in to your account",
+    "chooseAccount": "Choose your account",
+    "createYourAccount": "Create your account",
+    "joinAila": "Join the AÏLA community",
+    "acceptTerms": "By signing up, you accept our",
+    "termsOfService": "Terms of Service",
+    "and": "and our",
+    "privacyPolicy": "Privacy Policy"
   },
   "challenges": {
     "title": "Family Challenges",
@@ -716,7 +729,14 @@
     "passwordMismatch": "Passwords do not match",
     "loginFailed": "Login failed",
     "networkError": "Network connection error",
-    "unknownError": "An error occurred"
+    "unknownError": "An error occurred",
+    "fillAllFields": "Please fill in all fields",
+    "invalidCredentials": "Invalid email or password",
+    "userNotFound": "No account found with this email",
+    "connectionError": "Connection error. Please try again.",
+    "googleLoginFailed": "Google login failed",
+    "emailAlreadyExists": "An account already exists with this email",
+    "registerFailed": "Registration failed"
   },
   "alerts": {
     "confirmDelete": "Are you sure you want to delete?",
