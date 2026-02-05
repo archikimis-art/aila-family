@@ -21,33 +21,44 @@ Application React Native Expo déployée en web sur Vercel pour créer et gérer
 - **Genealogie-debutant-guide** (page SEO traduite)
 - **Retrouver-ancetres-gratuitement** (page SEO traduite - 7 sections complètes)
 - **Organiser-cousinade** (page SEO traduite)
-- **✅ traditions-familiales.tsx** (TRADUIT - 5 Février 2025)
-  - 6 sections complètes : Pourquoi les traditions, Quotidien, Fêtes, Culinaires, Vacances, Créer ses traditions
-  - Toutes les traductions en FR, EN, ES, DE, IT, PT
+- **traditions-familiales.tsx** (TRADUIT - 5 Février 2025)
+- **✅ pricing.tsx** (Page Premium TRADUIT - 5 Février 2025)
+  - Plans mensuel/annuel, services personnalisation, FAQ
+- **✅ login.tsx** (Page connexion TRADUIT - 5 Février 2025)
+  - Formulaire, erreurs, bouton Google, messages
 
-### 🟡 Pages SEO Restantes
-- traditions-familiales-creer.tsx (à traduire)
-- Autres éléments d'interface (boutons, textes) à auditer
+### 🟡 Pages restantes à traduire
+- register.tsx (inscription)
+- forgot-password.tsx
+- (tabs)/*.tsx (tree, members, chat, profile, share)
+- profile.tsx (page profil principale)
+- add-person.tsx
+- autres pages SEO non traduitescd
 
 ## Issues Connues
-1. **Backend persistence** (P1): Données stockées localement via AsyncStorage
-2. **Community messages cache** (P2): Messages démo ne se rafraîchissent pas au changement de langue
-3. **Language selector flags** (P3): Drapeaux non affichés
-4. **Blog admin** (P3): Fonctionnalité incomplète
+1. **Google Auth origin_mismatch** (P1): L'URL Vercel doit être ajoutée dans Google Cloud Console
+2. **Backend persistence** (P1): Données stockées localement via AsyncStorage
+3. **Community messages cache** (P2): Messages démo ne se rafraîchissent pas au changement de langue
+4. **Language selector flags** (P3): Drapeaux non affichés
+5. **Blog admin** (P3): Fonctionnalité incomplète
 
 ## Versions de Référence
 | Branche | Commit | Description |
 |---------|--------|-------------|
-| i18n/seo-pages-complete | 230d31eb9 | Avec traditions-familiales traduit (dernière version) |
+| i18n/seo-pages-complete | 38859e1bb | Avec Premium + login traduits |
 | main | 64faa757a | Production stable précédente |
-| aila-stable | 2a28b01de | Backup précédent |
 
 ## Règles de Développement
 1. Utiliser `Pressable` au lieu de `TouchableOpacity` pour compatibilité web
 2. Tester sur Vercel preview avant merge vers main
 3. Une page/feature par branche pour éviter régressions
 
+## Google Auth Fix
+L'erreur "origin_mismatch" nécessite d'ajouter le domaine dans Google Cloud Console:
+1. APIs & Services > Credentials > OAuth 2.0 Client IDs
+2. Ajouter le domaine de production dans "Authorized JavaScript origins"
+
 ## Prochaines Tâches (P0)
-1. Valider sur Vercel preview la page traditions-familiales
-2. Merger vers main après validation
-3. Auditer et traduire les éléments d'interface restants (boutons, textes)
+1. Traduire register.tsx
+2. Traduire les onglets (tabs)
+3. Merger vers main après validation
