@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -17,12 +17,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '@/services/api';
+import { useTranslation } from 'react-i18next';
 
 const GOOGLE_CLIENT_ID = '548263066328-916g23gmboqvmqtd7fi3ejatoseh4h09.apps.googleusercontent.com';
 
 export default function RegisterScreen() {
   const router = useRouter();
   const { register, refreshUser } = useAuth();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [gdprConsent, setGdprConsent] = useState(false);
@@ -199,13 +201,13 @@ export default function RegisterScreen() {
     `;
 
     popup.innerHTML = `
-      <h3 style="margin: 0 0 8px 0; color: #333; font-size: 18px;">S'inscrire avec Google</h3>
-      <p style="margin: 0 0 20px 0; color: #666; font-size: 14px;">Choisissez votre compte</p>
+      <h3 style="margin: 0 0 8px 0; color: #333; font-size: 18px;">${t('auth.signUpWithGoogle')}</h3>
+      <p style="margin: 0 0 20px 0; color: #666; font-size: 14px;">${t('auth.chooseAccount')}</p>
       <div id="google-btn-signup" style="display: flex; justify-content: center;"></div>
       <button id="google-cancel-btn" style="
         margin-top: 16px; padding: 10px 24px; border: none; background: #f5f5f5;
         border-radius: 8px; cursor: pointer; color: #666; font-size: 14px;
-      ">Annuler</button>
+      ">${t('common.cancel')}</button>
     `;
 
     document.body.appendChild(backdrop);
@@ -229,7 +231,7 @@ export default function RegisterScreen() {
     if (Platform.OS === 'web') {
       // Keep error visible on screen for web
     } else {
-      Alert.alert('Erreur', message);
+      Alert.alert(t('common.error'), message);
     }
   };
 
@@ -237,24 +239,24 @@ export default function RegisterScreen() {
     setErrorMessage('');
     
     if (!email || !password) {
-      showError('Veuillez remplir tous les champs');
+      showError(t('errors.fillAllFields'));
       return;
     }
 
     // Validation email simple
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      showError('Adresse email invalide');
+      showError(t('errors.invalidEmail'));
       return;
     }
 
     if (password.length < 6) {
-      showError('Le mot de passe doit contenir au moins 6 caractères');
+      showError(t('errors.passwordTooShort'));
       return;
     }
 
     if (!gdprConsent) {
-      showError('Vous devez accepter la politique de confidentialité');
+      showError(t('errors.gdprRequired'));
       return;
     }
 
@@ -277,13 +279,13 @@ export default function RegisterScreen() {
       
       // Messages d'erreur personnalisés
       if (detail.includes('already registered') || detail.includes('existe déjà')) {
-        showError('Cette adresse email est déjà utilisée. Veuillez vous connecter ou utiliser une autre adresse.');
+        showError(t('errors.emailAlreadyExists'));
       } else if (detail.includes('Invalid email')) {
-        showError('Adresse email invalide. Veuillez vérifier le format.');
+        showError(t('errors.invalidEmail'));
       } else if (detail) {
         showError(detail);
       } else {
-        showError('Erreur lors de l\'inscription. Veuillez réessayer.');
+        showError(t('errors.registerFailed'));
       }
     } finally {
       setLoading(false);
@@ -302,20 +304,20 @@ export default function RegisterScreen() {
           showsVerticalScrollIndicator={false}
         >
           {/* Header */}
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <Pressable style={styles.backButton} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={24} color="#D4AF37" />
-          </TouchableOpacity>
+          </Pressable>
 
           <View style={styles.header}>
             <Ionicons name="leaf" size={50} color="#D4AF37" />
-            <Text style={styles.title}>Créer un compte</Text>
-            <Text style={styles.subtitle}>Commencez votre arbre généalogique</Text>
+            <Text style={styles.title}>{t('auth.createAccount')}</Text>
+            <Text style={styles.subtitle}>{t('auth.startYourTree')}</Text>
           </View>
 
           {/* Google Sign Up Button - En premier pour plus de visibilité */}
           {Platform.OS === 'web' && (
             <View style={styles.googleSection}>
-              <TouchableOpacity
+              <Pressable
                 style={[styles.googleButton, googleLoading && styles.buttonDisabled]}
                 onPress={handleGoogleSignUp}
                 disabled={googleLoading}
@@ -327,15 +329,15 @@ export default function RegisterScreen() {
                     <View style={styles.googleIconContainer}>
                       <Text style={styles.googleIcon}>G</Text>
                     </View>
-                    <Text style={styles.googleButtonText}>S'inscrire avec Google</Text>
+                    <Text style={styles.googleButtonText}>{t('auth.signUpWithGoogle')}</Text>
                   </>
                 )}
-              </TouchableOpacity>
+              </Pressable>
               
               {/* Separator */}
               <View style={styles.separator}>
                 <View style={styles.separatorLine} />
-                <Text style={styles.separatorText}>ou par email</Text>
+                <Text style={styles.separatorText}>{t('auth.orByEmail')}</Text>
                 <View style={styles.separatorLine} />
               </View>
             </View>
@@ -356,15 +358,14 @@ export default function RegisterScreen() {
               <Ionicons name="mail-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Votre email"
+                placeholder={t('auth.yourEmail')}
                 placeholderTextColor="#6B7C93"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoComplete="email"
-                accessibilityLabel="Adresse email"
-                accessibilityHint="Entrez votre adresse email pour créer un compte"
+                accessibilityLabel={t('auth.email')}
               />
             </View>
 
@@ -373,77 +374,68 @@ export default function RegisterScreen() {
               <Ionicons name="lock-closed-outline" size={20} color="#6B7C93" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Mot de passe (6 caractères min.)"
+                placeholder={t('auth.passwordMinChars')}
                 placeholderTextColor="#6B7C93"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
-                accessibilityLabel="Mot de passe"
-                accessibilityHint="Créez un mot de passe d'au moins 6 caractères"
+                accessibilityLabel={t('auth.password')}
               />
-              <TouchableOpacity
+              <Pressable
                 onPress={() => setShowPassword(!showPassword)}
                 style={styles.eyeIcon}
-                accessibilityLabel={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-                accessibilityRole="button"
               >
                 <Ionicons
                   name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                   size={20}
                   color="#6B7C93"
                 />
-              </TouchableOpacity>
+              </Pressable>
             </View>
 
             {/* GDPR Consent - Checkbox style */}
-            <TouchableOpacity 
+            <Pressable 
               style={styles.gdprContainer}
               onPress={() => setGdprConsent(!gdprConsent)}
-              accessibilityLabel="Accepter la politique de confidentialité"
-              accessibilityRole="checkbox"
-              accessibilityState={{ checked: gdprConsent }}
             >
               <View style={[styles.checkbox, gdprConsent && styles.checkboxChecked]}>
                 {gdprConsent && <Ionicons name="checkmark" size={16} color="#0A1628" />}
               </View>
               <Text style={styles.gdprText}>
-                J'accepte la{' '}
-                <Text style={styles.gdprLink} onPress={() => router.push('/privacy')}>politique de confidentialité</Text>
+                {t('auth.iAccept')}{' '}
+                <Text style={styles.gdprLink} onPress={() => router.push('/privacy')}>{t('auth.privacyPolicy')}</Text>
               </Text>
-            </TouchableOpacity>
+            </Pressable>
 
             {/* Register Button */}
-            <TouchableOpacity
+            <Pressable
               style={[styles.registerButton, loading && styles.buttonDisabled]}
               onPress={handleRegister}
               disabled={loading}
-              accessibilityLabel="Créer mon compte"
-              accessibilityRole="button"
-              accessibilityHint="Crée votre compte et accède à votre arbre généalogique"
             >
               {loading ? (
                 <ActivityIndicator color="#0A1628" />
               ) : (
                 <>
-                  <Text style={styles.registerButtonText}>Créer mon compte gratuit</Text>
+                  <Text style={styles.registerButtonText}>{t('auth.createFreeAccount')}</Text>
                   <Ionicons name="arrow-forward" size={20} color="#0A1628" />
                 </>
               )}
-            </TouchableOpacity>
+            </Pressable>
 
             {/* Reassurance */}
             <View style={styles.reassurance}>
               <Ionicons name="shield-checkmark-outline" size={16} color="#4CAF50" />
-              <Text style={styles.reassuranceText}>Gratuit • Sans pub • Données protégées</Text>
+              <Text style={styles.reassuranceText}>{t('auth.reassurance')}</Text>
             </View>
           </View>
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Déjà un compte ?</Text>
-            <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
-              <Text style={styles.loginLink}>Se connecter</Text>
-            </TouchableOpacity>
+            <Text style={styles.footerText}>{t('auth.alreadyHaveAccount')}</Text>
+            <Pressable onPress={() => router.push('/(auth)/login')}>
+              <Text style={styles.loginLink}>{t('auth.login')}</Text>
+            </Pressable>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

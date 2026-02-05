@@ -98,7 +98,15 @@
     "acceptTerms": "Ao se registrar, você aceita nossos",
     "termsOfService": "Termos de serviço",
     "and": "e nossa",
-    "privacyPolicy": "Política de privacidade"
+    "privacyPolicy": "Política de privacidade",
+    "signUpWithGoogle": "Cadastrar-se com Google",
+    "startYourTree": "Comece sua árvore genealógica",
+    "orByEmail": "ou por e-mail",
+    "yourEmail": "Seu e-mail",
+    "passwordMinChars": "Senha (mín. 6 caracteres)",
+    "iAccept": "Eu aceito a",
+    "createFreeAccount": "Criar minha conta grátis",
+    "reassurance": "Grátis • Sem anúncios • Dados protegidos"
   },
   "challenges": {
     "title": "Desafios Familiares",
@@ -625,7 +633,8 @@
     "connectionError": "Erro de conexão. Por favor, tente novamente.",
     "googleLoginFailed": "Falha ao entrar com Google",
     "emailAlreadyExists": "Já existe uma conta com este e-mail",
-    "registerFailed": "Falha no cadastro"
+    "registerFailed": "Falha no cadastro",
+    "gdprRequired": "Você deve aceitar a política de privacidade"
   },
   "alerts": {
     "confirmDelete": "Tem certeza de que deseja excluir?",

@@ -98,7 +98,15 @@
     "acceptTerms": "Registrandoti, accetti i nostri",
     "termsOfService": "Termini di servizio",
     "and": "e la nostra",
-    "privacyPolicy": "Informativa sulla privacy"
+    "privacyPolicy": "Informativa sulla privacy",
+    "signUpWithGoogle": "Registrati con Google",
+    "startYourTree": "Inizia il tuo albero genealogico",
+    "orByEmail": "o via email",
+    "yourEmail": "La tua email",
+    "passwordMinChars": "Password (min. 6 caratteri)",
+    "iAccept": "Accetto la",
+    "createFreeAccount": "Crea il mio account gratuito",
+    "reassurance": "Gratuito • Senza pubblicità • Dati protetti"
   },
   "challenges": {
     "title": "Sfide Familiari",
@@ -625,7 +633,8 @@
     "connectionError": "Errore di connessione. Per favore, riprova.",
     "googleLoginFailed": "Accesso con Google fallito",
     "emailAlreadyExists": "Esiste già un account con questa e-mail",
-    "registerFailed": "Registrazione fallita"
+    "registerFailed": "Registrazione fallita",
+    "gdprRequired": "Devi accettare l'informativa sulla privacy"
   },
   "alerts": {
     "confirmDelete": "Sei sicuro di voler eliminare?",

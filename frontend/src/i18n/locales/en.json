@@ -98,7 +98,15 @@
     "acceptTerms": "By signing up, you accept our",
     "termsOfService": "Terms of Service",
     "and": "and our",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "signUpWithGoogle": "Sign up with Google",
+    "startYourTree": "Start your family tree",
+    "orByEmail": "or by email",
+    "yourEmail": "Your email",
+    "passwordMinChars": "Password (6 characters min.)",
+    "iAccept": "I accept the",
+    "createFreeAccount": "Create my free account",
+    "reassurance": "Free • No ads • Data protected"
   },
   "challenges": {
     "title": "Family Challenges",
@@ -736,7 +744,8 @@
     "connectionError": "Connection error. Please try again.",
     "googleLoginFailed": "Google login failed",
     "emailAlreadyExists": "An account already exists with this email",
-    "registerFailed": "Registration failed"
+    "registerFailed": "Registration failed",
+    "gdprRequired": "You must accept the privacy policy"
   },
   "alerts": {
     "confirmDelete": "Are you sure you want to delete?",

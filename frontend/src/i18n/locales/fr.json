@@ -76,7 +76,15 @@
     "acceptTerms": "En vous inscrivant, vous acceptez nos",
     "termsOfService": "Conditions d'utilisation",
     "and": "et notre",
-    "privacyPolicy": "Politique de confidentialité"
+    "privacyPolicy": "Politique de confidentialité",
+    "signUpWithGoogle": "S'inscrire avec Google",
+    "startYourTree": "Commencez votre arbre généalogique",
+    "orByEmail": "ou par email",
+    "yourEmail": "Votre email",
+    "passwordMinChars": "Mot de passe (6 caractères min.)",
+    "iAccept": "J'accepte la",
+    "createFreeAccount": "Créer mon compte gratuit",
+    "reassurance": "Gratuit • Sans pub • Données protégées"
   },
   "common": {
     "loading": "Chargement...",
@@ -114,7 +122,8 @@
     "userNotFound": "Aucun compte trouvé avec cet email",
     "connectionError": "Erreur lors de la connexion. Veuillez réessayer.",
     "googleLoginFailed": "La connexion Google a échoué",
-    "emailAlreadyExists": "Un compte existe déjà avec cet email"
+    "emailAlreadyExists": "Un compte existe déjà avec cet email",
+    "gdprRequired": "Vous devez accepter la politique de confidentialité"
   },
   "challenges": {
     "title": "Défis Familiaux",

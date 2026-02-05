@@ -98,7 +98,15 @@
     "acceptTerms": "Mit der Registrierung akzeptieren Sie unsere",
     "termsOfService": "Nutzungsbedingungen",
     "and": "und unsere",
-    "privacyPolicy": "Datenschutzrichtlinie"
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "signUpWithGoogle": "Mit Google registrieren",
+    "startYourTree": "Starten Sie Ihren Stammbaum",
+    "orByEmail": "oder per E-Mail",
+    "yourEmail": "Ihre E-Mail",
+    "passwordMinChars": "Passwort (mind. 6 Zeichen)",
+    "iAccept": "Ich akzeptiere die",
+    "createFreeAccount": "Mein kostenloses Konto erstellen",
+    "reassurance": "Kostenlos • Werbefrei • Daten geschützt"
   },
   "challenges": {
     "title": "Familien-Herausforderungen",
@@ -625,7 +633,8 @@
     "connectionError": "Verbindungsfehler. Bitte versuchen Sie es erneut.",
     "googleLoginFailed": "Google-Anmeldung fehlgeschlagen",
     "emailAlreadyExists": "Ein Konto mit dieser E-Mail existiert bereits",
-    "registerFailed": "Registrierung fehlgeschlagen"
+    "registerFailed": "Registrierung fehlgeschlagen",
+    "gdprRequired": "Sie müssen die Datenschutzrichtlinie akzeptieren"
   },
   "alerts": {
     "confirmDelete": "Sind Sie sicher, dass Sie löschen möchten?",

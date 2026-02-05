@@ -98,7 +98,15 @@
     "acceptTerms": "Al registrarte, aceptas nuestros",
     "termsOfService": "Términos de servicio",
     "and": "y nuestra",
-    "privacyPolicy": "Política de privacidad"
+    "privacyPolicy": "Política de privacidad",
+    "signUpWithGoogle": "Registrarse con Google",
+    "startYourTree": "Comienza tu árbol genealógico",
+    "orByEmail": "o por correo electrónico",
+    "yourEmail": "Tu correo electrónico",
+    "passwordMinChars": "Contraseña (6 caracteres mín.)",
+    "iAccept": "Acepto la",
+    "createFreeAccount": "Crear mi cuenta gratis",
+    "reassurance": "Gratis • Sin anuncios • Datos protegidos"
   },
   "challenges": {
     "title": "Retos Familiares",
@@ -625,7 +633,8 @@
     "connectionError": "Error de conexión. Por favor, inténtalo de nuevo.",
     "googleLoginFailed": "Error al iniciar sesión con Google",
     "emailAlreadyExists": "Ya existe una cuenta con este correo electrónico",
-    "registerFailed": "Error en el registro"
+    "registerFailed": "Error en el registro",
+    "gdprRequired": "Debes aceptar la política de privacidad"
   },
   "alerts": {
     "confirmDelete": "¿Estás seguro de que quieres eliminar?",
