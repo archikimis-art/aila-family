@@ -827,7 +827,44 @@
       "metaDescription": "Organize a successful family reunion! Complete guide: planning, budget, invitations, activities, meals. Free checklist to gather the whole family.",
       "badge": "🎉 Family Reunion",
       "title": "How to Organize a Successful Family Reunion",
-      "subtitle": "A family reunion is the perfect opportunity to bring the whole family together. Here's the complete guide to organizing it from A to Z."
+      "subtitle": "A family reunion is the perfect opportunity to bring the whole family together. Here's the complete guide to organizing it from A to Z.",
+      "checklistTitle": "📋 Quick Checklist",
+      "checklist": "✓ Set a date 6 months in advance\n✓ Create a list of all members\n✓ Choose a suitable venue\n✓ Send invitations 3 months before\n✓ Organize activities and meals\n✓ Plan photos and souvenirs",
+      "step1": {
+        "title": "📅 Step 1: Planning (6 months before)",
+        "task1": { "title": "Choose the date", "desc": "Prefer a summer weekend or holiday. Avoid school vacations if you want to maximize participation." },
+        "task2": { "title": "Create the organizing committee", "desc": "Form a team of 3-5 people from different branches. Distribute responsibilities." },
+        "task3": { "title": "List all members", "desc": "Use your AILA family tree to get the complete list. Don't forget anyone!" }
+      },
+      "step2": {
+        "title": "📍 Step 2: Choose the Venue",
+        "option1": { "title": "At a member's home", "pros": "✅ Free, intimate, practical", "cons": "❌ Limited capacity" },
+        "option2": { "title": "Cottage or campsite", "pros": "✅ Large capacity, weekend possible", "cons": "❌ Cost, advance booking" },
+        "option3": { "title": "Community hall", "pros": "✅ Equipped, spacious", "cons": "❌ May lack charm" }
+      },
+      "step3": {
+        "title": "💰 Step 3: Budget Guide",
+        "budget1": { "label": "Venue rental", "amount": "$0 - $500" },
+        "budget2": { "label": "Meals (per person)", "amount": "$10 - $25" },
+        "budget3": { "label": "Activities", "amount": "$50 - $200" },
+        "budget4": { "label": "Photos/Souvenirs", "amount": "$30 - $100" },
+        "tipTitle": "💡 Budget tip",
+        "tipText": "Ask for a contribution per family rather than per person. Potluck format for meals = guaranteed savings!"
+      },
+      "step4": {
+        "title": "🎯 Step 4: Must-Have Activities",
+        "activity1": "Group photo",
+        "activity2": "Tree presentation",
+        "activity3": "Intergenerational games",
+        "activity4": "Family quiz",
+        "activity5": "Story sharing",
+        "activity6": "Sports tournament"
+      },
+      "cta": {
+        "title": "🌳 Ready to Organize Your Family Reunion?",
+        "text": "Create your AILA family tree to identify all your family members and never forget anyone!",
+        "button": "Create My Free Tree"
+      }
     }
   }
 }

@@ -684,7 +684,44 @@
       "metaDescription": "¡Organiza una reunión familiar exitosa! Guía completa: planificación, presupuesto, invitaciones, actividades, comidas.",
       "badge": "🎉 Reunión Familiar",
       "title": "Cómo Organizar una Reunión Familiar Exitosa",
-      "subtitle": "Una reunión familiar es la ocasión perfecta para juntar a toda la familia. Aquí está la guía completa para organizarla de A a Z."
+      "subtitle": "Una reunión familiar es la ocasión perfecta para juntar a toda la familia. Aquí está la guía completa para organizarla de A a Z.",
+      "checklistTitle": "📋 Checklist rápido",
+      "checklist": "✓ Definir fecha 6 meses antes\n✓ Crear lista de todos los miembros\n✓ Elegir lugar adecuado\n✓ Enviar invitaciones 3 meses antes\n✓ Organizar actividades y comidas\n✓ Prever fotos y recuerdos",
+      "step1": {
+        "title": "📅 Paso 1: Planificación (6 meses antes)",
+        "task1": { "title": "Elegir la fecha", "desc": "Prefiere un fin de semana de verano o festivo. Evita vacaciones escolares si quieres maximizar participación." },
+        "task2": { "title": "Crear el comité organizador", "desc": "Forma un equipo de 3-5 personas de diferentes ramas. Reparte responsabilidades." },
+        "task3": { "title": "Listar todos los miembros", "desc": "Usa tu árbol genealógico AILA para tener la lista completa. ¡No olvides a nadie!" }
+      },
+      "step2": {
+        "title": "📍 Paso 2: Elegir el Lugar",
+        "option1": { "title": "En casa de un miembro", "pros": "✅ Gratis, íntimo, práctico", "cons": "❌ Capacidad limitada" },
+        "option2": { "title": "Casa rural o camping", "pros": "✅ Gran capacidad, fin de semana posible", "cons": "❌ Costo, reserva anticipada" },
+        "option3": { "title": "Salón de actos", "pros": "✅ Equipado, espacioso", "cons": "❌ Puede faltar encanto" }
+      },
+      "step3": {
+        "title": "💰 Paso 3: Presupuesto Tipo",
+        "budget1": { "label": "Alquiler lugar", "amount": "0€ - 500€" },
+        "budget2": { "label": "Comidas (por persona)", "amount": "10€ - 25€" },
+        "budget3": { "label": "Actividades", "amount": "50€ - 200€" },
+        "budget4": { "label": "Fotos/Recuerdos", "amount": "30€ - 100€" },
+        "tipTitle": "💡 Consejo de presupuesto",
+        "tipText": "Pide una contribución por familia en vez de por persona. ¡Formato 'cada uno trae algo' = ahorro garantizado!"
+      },
+      "step4": {
+        "title": "🎯 Paso 4: Actividades Imprescindibles",
+        "activity1": "Foto de grupo",
+        "activity2": "Presentación árbol",
+        "activity3": "Juegos intergeneracionales",
+        "activity4": "Quiz familiar",
+        "activity5": "Compartir historias",
+        "activity6": "Torneo deportivo"
+      },
+      "cta": {
+        "title": "🌳 ¿Listo para Organizar tu Reunión Familiar?",
+        "text": "¡Crea tu árbol genealógico AILA para identificar a todos los miembros y no olvidar a nadie!",
+        "button": "Crear Mi Árbol Gratis"
+      }
     }
   }
 }

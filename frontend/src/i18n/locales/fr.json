@@ -827,7 +827,44 @@
       "metaDescription": "Organisez une cousinade réussie ! Guide complet : planification, budget, invitations, activités, repas. Checklist gratuite pour réunir toute la famille.",
       "badge": "🎉 Réunion de Famille",
       "title": "Comment Organiser une Cousinade Réussie",
-      "subtitle": "Une cousinade est l'occasion parfaite de rassembler toute la famille. Voici le guide complet pour l'organiser de A à Z."
+      "subtitle": "Une cousinade est l'occasion parfaite de rassembler toute la famille. Voici le guide complet pour l'organiser de A à Z.",
+      "checklistTitle": "📋 Checklist rapide",
+      "checklist": "✓ Définir une date 6 mois à l'avance\n✓ Créer une liste de tous les membres\n✓ Choisir un lieu adapté au nombre\n✓ Envoyer les invitations 3 mois avant\n✓ Organiser activités et repas\n✓ Prévoir photos et souvenirs",
+      "step1": {
+        "title": "📅 Étape 1 : Planification (6 mois avant)",
+        "task1": { "title": "Choisir la date", "desc": "Préférez un week-end d'été ou un jour férié. Évitez les vacances scolaires si vous voulez maximiser la participation." },
+        "task2": { "title": "Créer le comité d'organisation", "desc": "Formez une équipe de 3-5 personnes de différentes branches. Répartissez les responsabilités." },
+        "task3": { "title": "Lister tous les membres", "desc": "Utilisez votre arbre généalogique AILA pour avoir la liste complète. N'oubliez personne !" }
+      },
+      "step2": {
+        "title": "📍 Étape 2 : Choisir le Lieu",
+        "option1": { "title": "Chez un membre", "pros": "✅ Gratuit, intime, pratique", "cons": "❌ Limité en capacité" },
+        "option2": { "title": "Gîte ou camping", "pros": "✅ Grande capacité, week-end possible", "cons": "❌ Coût, réservation anticipée" },
+        "option3": { "title": "Salle des fêtes", "pros": "✅ Équipée, spacieuse", "cons": "❌ Peut manquer de charme" }
+      },
+      "step3": {
+        "title": "💰 Étape 3 : Budget Type",
+        "budget1": { "label": "Location lieu", "amount": "0€ - 500€" },
+        "budget2": { "label": "Repas (par personne)", "amount": "10€ - 25€" },
+        "budget3": { "label": "Activités", "amount": "50€ - 200€" },
+        "budget4": { "label": "Photos/Souvenirs", "amount": "30€ - 100€" },
+        "tipTitle": "💡 Astuce budget",
+        "tipText": "Demandez une participation par famille plutôt que par personne. Format 'auberge espagnole' pour le repas = économies garanties !"
+      },
+      "step4": {
+        "title": "🎯 Étape 4 : Activités Incontournables",
+        "activity1": "Photo de groupe",
+        "activity2": "Présentation arbre",
+        "activity3": "Jeux intergénérationnels",
+        "activity4": "Quiz famille",
+        "activity5": "Partage d'histoires",
+        "activity6": "Tournoi sportif"
+      },
+      "cta": {
+        "title": "🌳 Prêt à Organiser Votre Cousinade ?",
+        "text": "Créez votre arbre généalogique AILA pour identifier tous les membres de votre famille et ne jamais oublier personne !",
+        "button": "Créer Mon Arbre Gratuit"
+      }
     }
   }
 }

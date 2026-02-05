@@ -684,7 +684,44 @@
       "metaDescription": "Organisieren Sie ein erfolgreiches Familientreffen! Kompletter Leitfaden: Planung, Budget, Einladungen, Aktivitäten, Mahlzeiten.",
       "badge": "🎉 Familientreffen",
       "title": "Wie Sie ein erfolgreiches Familientreffen organisieren",
-      "subtitle": "Ein Familientreffen ist die perfekte Gelegenheit, die ganze Familie zusammenzubringen. Hier ist der komplette Leitfaden für die Organisation."
+      "subtitle": "Ein Familientreffen ist die perfekte Gelegenheit, die ganze Familie zusammenzubringen. Hier ist der komplette Leitfaden für die Organisation.",
+      "checklistTitle": "📋 Schnelle Checkliste",
+      "checklist": "✓ Datum 6 Monate im Voraus festlegen\n✓ Liste aller Mitglieder erstellen\n✓ Geeigneten Ort wählen\n✓ Einladungen 3 Monate vorher versenden\n✓ Aktivitäten und Mahlzeiten organisieren\n✓ Fotos und Andenken planen",
+      "step1": {
+        "title": "📅 Schritt 1: Planung (6 Monate vorher)",
+        "task1": { "title": "Datum wählen", "desc": "Bevorzugen Sie ein Sommerwochenende oder Feiertag. Vermeiden Sie Schulferien für maximale Teilnahme." },
+        "task2": { "title": "Organisationskomitee bilden", "desc": "Bilden Sie ein Team von 3-5 Personen aus verschiedenen Zweigen. Verteilen Sie die Verantwortlichkeiten." },
+        "task3": { "title": "Alle Mitglieder auflisten", "desc": "Nutzen Sie Ihren AILA-Stammbaum für die vollständige Liste. Vergessen Sie niemanden!" }
+      },
+      "step2": {
+        "title": "📍 Schritt 2: Ort Wählen",
+        "option1": { "title": "Bei einem Mitglied", "pros": "✅ Kostenlos, intim, praktisch", "cons": "❌ Begrenzte Kapazität" },
+        "option2": { "title": "Ferienhaus oder Camping", "pros": "✅ Große Kapazität, Wochenende möglich", "cons": "❌ Kosten, Vorausbuchung" },
+        "option3": { "title": "Gemeindesaal", "pros": "✅ Ausgestattet, geräumig", "cons": "❌ Kann Charme fehlen" }
+      },
+      "step3": {
+        "title": "💰 Schritt 3: Typisches Budget",
+        "budget1": { "label": "Ortmiete", "amount": "0€ - 500€" },
+        "budget2": { "label": "Mahlzeiten (pro Person)", "amount": "10€ - 25€" },
+        "budget3": { "label": "Aktivitäten", "amount": "50€ - 200€" },
+        "budget4": { "label": "Fotos/Andenken", "amount": "30€ - 100€" },
+        "tipTitle": "💡 Budget-Tipp",
+        "tipText": "Bitten Sie um einen Beitrag pro Familie statt pro Person. Potluck-Format = garantierte Einsparungen!"
+      },
+      "step4": {
+        "title": "🎯 Schritt 4: Unverzichtbare Aktivitäten",
+        "activity1": "Gruppenfoto",
+        "activity2": "Stammbaum-Präsentation",
+        "activity3": "Generationenspiele",
+        "activity4": "Familien-Quiz",
+        "activity5": "Geschichten teilen",
+        "activity6": "Sportturnier"
+      },
+      "cta": {
+        "title": "🌳 Bereit, Ihr Familientreffen zu Organisieren?",
+        "text": "Erstellen Sie Ihren AILA-Stammbaum, um alle Familienmitglieder zu identifizieren und niemanden zu vergessen!",
+        "button": "Meinen Baum Kostenlos Erstellen"
+      }
     }
   }
 }
