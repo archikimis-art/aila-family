@@ -9,7 +9,7 @@ Application React Native Expo déployée en web sur Vercel pour créer et gérer
 - **Hébergement**: Vercel (www.aila.family)
 - **i18n**: i18next (6 langues: FR, EN, ES, DE, IT, PT)
 
-## État actuel - 5 Février 2025
+## État actuel - 6 Décembre 2025
 
 ### ✅ Pages i18n Complétées
 **Pages d'authentification:**
@@ -23,26 +23,49 @@ Application React Native Expo déployée en web sur Vercel pour créer et gérer
 **Pages SEO:**
 - traditions-familiales, genealogie-debutant-guide, retrouver-ancetres-gratuitement, organiser-cousinade
 
-**Onglets (tabs) - En cours:**
+**Onglets (tabs):**
 - ✅ members.tsx - Traduit
+- ✅ chat.tsx - Traduit (i18next)
+- ✅ share.tsx - Traduit (i18next)
+- ✅ tree.tsx - Messages principaux traduits (i18next)
 - 🟡 profile.tsx - Clés ajoutées, mise à jour TSX partielle
-- 🔴 tree.tsx, chat.tsx, share.tsx - À traduire
+
+### ✅ Fusion vers main effectuée
+Tous les fichiers traduits ont été fusionnés vers la branche `main` le 6 Décembre 2025:
+- Fichiers d'authentification (login, register, forgot-password)
+- Fichiers des onglets (members, profile, tree, chat, share)
+- Pages pricing et traditions-familiales
+- 6 fichiers de traduction JSON mis à jour
 
 ### 🟡 Restant à traduire
-- (tabs)/tree.tsx, chat.tsx, share.tsx
+- Finaliser profile.tsx (fichier volumineux +1000 lignes)
 - add-person.tsx, add-link.tsx
-- Finaliser profile.tsx
-
-## Versions de Référence
-| Branche | Commit | Description |
-|---------|--------|-------------|
-| i18n/seo-pages-complete | b246861c5 | Dernier commit |
-| main | 64faa757a | Production stable |
+- Quelques composants mineurs
 
 ## Google Auth
-Fonctionne uniquement sur www.aila.family (les URLs preview Vercel ne fonctionnent pas)
+- ✅ Fonctionne sur www.aila.family
+- ⚠️ Les URLs preview Vercel génèrent une erreur "origin_mismatch" - C'est normal, tester uniquement sur le domaine de production
 
-## Prochaines Tâches
+## Problèmes Connus
+1. **Messages Community**: Ne se mettent pas à jour au changement de langue (cache AsyncStorage)
+2. **Drapeaux sélecteur de langue**: Non affichés
+3. **Blog admin**: Fonctionnalité incomplète
+4. **Persistance backend**: Manquante (tout en AsyncStorage)
+
+## Prochaines Tâches (Priorité)
 1. Finaliser profile.tsx
-2. Traduire tree.tsx, chat.tsx, share.tsx
-3. Merger vers main après validation
+2. Traduire add-person.tsx, add-link.tsx
+3. Corriger le cache des messages Community
+4. Ajouter les drapeaux au sélecteur de langue
+
+## Tâches Futures (Backlog)
+- Implémenter persistance backend (remplacer AsyncStorage)
+- Fonctionnalité "pression sociale positive"
+- Option "Mode calme"
+- Mode "Cousinade" complet
+
+## Versions de Référence
+| Branche | Description |
+|---------|-------------|
+| main | Production - Contient toutes les traductions fusionnées |
+| i18n/seo-pages-complete | Ancienne branche feature (obsolète) |
