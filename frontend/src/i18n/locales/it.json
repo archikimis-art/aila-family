@@ -506,6 +506,98 @@
     "subscribe": "Abbonati",
     "alreadyPremium": "Sei Premium"
   },
+  "pricingPage": {
+    "header": "Offerte e Servizi",
+    "hero": {
+      "title": "Dai vita alla tua storia familiare",
+      "subtitle": "Scegli il piano che fa per te e personalizza la tua esperienza"
+    },
+    "status": {
+      "premium": "Sei Premium - Goditi tutti i vantaggi!",
+      "free": "Versione gratuita - Passa a Premium per più funzionalità"
+    },
+    "sections": {
+      "subscriptions": "Abbonamenti Premium",
+      "subscriptionsDesc": "Rimuovi la pubblicità e sblocca tutte le funzionalità",
+      "customization": "Personalizzazione",
+      "customizationDesc": "Arricchisci il tuo albero con questi servizi esclusivi (acquisto unico)",
+      "comingSoon": "Prossimamente",
+      "faq": "Domande frequenti"
+    },
+    "recommended": "CONSIGLIATO",
+    "choosePlan": "Scegli questo piano",
+    "alreadyPremium": "Già Premium",
+    "plans": {
+      "monthly": {
+        "name": "Mensile",
+        "period": "/mese",
+        "description": "Massima flessibilità"
+      },
+      "yearly": {
+        "name": "Annuale",
+        "period": "/anno",
+        "description": "Risparmia il 30%!",
+        "savings": "Risparmio di 11,89 €/anno"
+      }
+    },
+    "features": {
+      "noAds": "Nessuna pubblicità",
+      "unlimitedTree": "Albero illimitato",
+      "unlimitedCollaborators": "Collaboratori illimitati",
+      "exportFormats": "Esportazione JSON e GEDCOM",
+      "familyEvents": "Eventi familiari",
+      "allMonthlyFeatures": "Tutte le funzionalità mensili",
+      "save30": "Risparmia il 30%",
+      "prioritySupport": "Supporto prioritario",
+      "freePdfExports": "2 esportazioni PDF gratuite"
+    },
+    "services": {
+      "pdfExport": {
+        "name": "Esportazione PDF Premium",
+        "description": "Scarica il tuo albero genealogico in PDF di alta qualità, pronto per la stampa o la condivisione."
+      },
+      "themeGold": {
+        "name": "Tema Oro Reale",
+        "description": "Valorizza il tuo albero con un tema elegante con bordi dorati e finiture lussuose."
+      },
+      "themeNature": {
+        "name": "Tema Natura",
+        "description": "Un design ispirato alla natura con toni verdi rilassanti e motivi floreali."
+      },
+      "themeVintage": {
+        "name": "Tema Vintage",
+        "description": "Torna nel passato con questo stile retrò seppia, perfetto per un tocco nostalgico."
+      }
+    },
+    "comingSoon": {
+      "poster": {
+        "name": "Stampa Poster",
+        "description": "Stampa il tuo albero in grande formato su carta premium o tela."
+      },
+      "photoBook": {
+        "name": "Libro Fotografico di Famiglia",
+        "description": "Crea un bellissimo libro che racconta la storia della tua famiglia."
+      },
+      "research": {
+        "name": "Ricerca Genealogica",
+        "description": "Affida la tua ricerca a esperti per scoprire i tuoi antenati."
+      }
+    },
+    "faq": {
+      "cancel": {
+        "question": "Posso annullare il mio abbonamento?",
+        "answer": "Sì, in qualsiasi momento dal tuo profilo. Mantieni l'accesso fino alla fine del periodo pagato."
+      },
+      "permanent": {
+        "question": "Gli acquisti di personalizzazione sono definitivi?",
+        "answer": "Sì! Una volta acquistati, i temi e le esportazioni PDF rimangono disponibili a vita sul tuo account."
+      },
+      "pdfExport": {
+        "question": "Come funziona l'esportazione PDF?",
+        "answer": "Dopo l'acquisto, potrai scaricare il tuo albero in formato PDF ad alta risoluzione, perfetto per la stampa."
+      }
+    }
+  },
   "errors": {
     "required": "Questo campo è obbligatorio",
     "invalidEmail": "Indirizzo e-mail non valido",

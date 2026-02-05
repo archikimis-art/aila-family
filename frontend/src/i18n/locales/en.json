@@ -617,6 +617,98 @@
     "subscribe": "Subscribe",
     "alreadyPremium": "You are Premium"
   },
+  "pricingPage": {
+    "header": "Offers & Services",
+    "hero": {
+      "title": "Bring your family history to life",
+      "subtitle": "Choose the plan that suits you and personalize your experience"
+    },
+    "status": {
+      "premium": "You are Premium - Enjoy all the benefits!",
+      "free": "Free version - Go Premium for more features"
+    },
+    "sections": {
+      "subscriptions": "Premium Subscriptions",
+      "subscriptionsDesc": "Remove ads and unlock all features",
+      "customization": "Customization",
+      "customizationDesc": "Enhance your tree with these exclusive services (one-time purchase)",
+      "comingSoon": "Coming Soon",
+      "faq": "Frequently Asked Questions"
+    },
+    "recommended": "RECOMMENDED",
+    "choosePlan": "Choose this plan",
+    "alreadyPremium": "Already Premium",
+    "plans": {
+      "monthly": {
+        "name": "Monthly",
+        "period": "/month",
+        "description": "Maximum flexibility"
+      },
+      "yearly": {
+        "name": "Yearly",
+        "period": "/year",
+        "description": "Save 30%!",
+        "savings": "Save €11.89/year"
+      }
+    },
+    "features": {
+      "noAds": "No ads",
+      "unlimitedTree": "Unlimited tree",
+      "unlimitedCollaborators": "Unlimited collaborators",
+      "exportFormats": "JSON & GEDCOM export",
+      "familyEvents": "Family events",
+      "allMonthlyFeatures": "All monthly features",
+      "save30": "Save 30%",
+      "prioritySupport": "Priority support",
+      "freePdfExports": "2 free PDF exports"
+    },
+    "services": {
+      "pdfExport": {
+        "name": "Premium PDF Export",
+        "description": "Download your family tree as a high-quality PDF, ready to print or share."
+      },
+      "themeGold": {
+        "name": "Royal Gold Theme",
+        "description": "Enhance your tree with an elegant theme featuring golden borders and luxurious finishes."
+      },
+      "themeNature": {
+        "name": "Nature Theme",
+        "description": "A nature-inspired design with soothing green tones and floral patterns."
+      },
+      "themeVintage": {
+        "name": "Vintage Theme",
+        "description": "Step back in time with this retro sepia style, perfect for a nostalgic touch."
+      }
+    },
+    "comingSoon": {
+      "poster": {
+        "name": "Poster Printing",
+        "description": "Print your tree in large format on premium paper or canvas."
+      },
+      "photoBook": {
+        "name": "Family Photo Book",
+        "description": "Create a beautiful book chronicling your family's history."
+      },
+      "research": {
+        "name": "Genealogical Research",
+        "description": "Entrust your research to experts to discover your ancestors."
+      }
+    },
+    "faq": {
+      "cancel": {
+        "question": "Can I cancel my subscription?",
+        "answer": "Yes, at any time from your profile. You keep access until the end of the paid period."
+      },
+      "permanent": {
+        "question": "Are customization purchases permanent?",
+        "answer": "Yes! Once purchased, themes and PDF exports remain available for life on your account."
+      },
+      "pdfExport": {
+        "question": "How does PDF export work?",
+        "answer": "After purchase, you can download your tree in high-resolution PDF format, perfect for printing."
+      }
+    }
+  },
   "errors": {
     "required": "This field is required",
     "invalidEmail": "Invalid email address",

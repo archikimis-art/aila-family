@@ -506,6 +506,98 @@
     "subscribe": "Abonnieren",
     "alreadyPremium": "Sie sind Premium"
   },
+  "pricingPage": {
+    "header": "Angebote & Dienste",
+    "hero": {
+      "title": "Erwecken Sie Ihre Familiengeschichte zum Leben",
+      "subtitle": "Wählen Sie den Plan, der zu Ihnen passt, und personalisieren Sie Ihr Erlebnis"
+    },
+    "status": {
+      "premium": "Sie sind Premium - Genießen Sie alle Vorteile!",
+      "free": "Kostenlose Version - Werden Sie Premium für mehr Funktionen"
+    },
+    "sections": {
+      "subscriptions": "Premium-Abonnements",
+      "subscriptionsDesc": "Werbung entfernen und alle Funktionen freischalten",
+      "customization": "Personalisierung",
+      "customizationDesc": "Bereichern Sie Ihren Baum mit diesen exklusiven Diensten (Einmalkauf)",
+      "comingSoon": "Demnächst verfügbar",
+      "faq": "Häufig gestellte Fragen"
+    },
+    "recommended": "EMPFOHLEN",
+    "choosePlan": "Diesen Plan wählen",
+    "alreadyPremium": "Bereits Premium",
+    "plans": {
+      "monthly": {
+        "name": "Monatlich",
+        "period": "/Monat",
+        "description": "Maximale Flexibilität"
+      },
+      "yearly": {
+        "name": "Jährlich",
+        "period": "/Jahr",
+        "description": "30% sparen!",
+        "savings": "Ersparnis von 11,89 €/Jahr"
+      }
+    },
+    "features": {
+      "noAds": "Keine Werbung",
+      "unlimitedTree": "Unbegrenzter Baum",
+      "unlimitedCollaborators": "Unbegrenzte Mitarbeiter",
+      "exportFormats": "JSON- und GEDCOM-Export",
+      "familyEvents": "Familienereignisse",
+      "allMonthlyFeatures": "Alle Funktionen des Monatsplans",
+      "save30": "30% sparen",
+      "prioritySupport": "Prioritäts-Support",
+      "freePdfExports": "2 kostenlose PDF-Exporte"
+    },
+    "services": {
+      "pdfExport": {
+        "name": "Premium PDF-Export",
+        "description": "Laden Sie Ihren Stammbaum als hochwertiges PDF herunter, druckbereit oder zum Teilen."
+      },
+      "themeGold": {
+        "name": "Königliches Gold-Thema",
+        "description": "Verschönern Sie Ihren Baum mit einem eleganten Thema mit goldenen Rändern und luxuriösen Oberflächen."
+      },
+      "themeNature": {
+        "name": "Natur-Thema",
+        "description": "Ein von der Natur inspiriertes Design mit beruhigenden Grüntönen und floralen Mustern."
+      },
+      "themeVintage": {
+        "name": "Vintage-Thema",
+        "description": "Reisen Sie in die Vergangenheit mit diesem Retro-Sepia-Stil, perfekt für einen nostalgischen Touch."
+      }
+    },
+    "comingSoon": {
+      "poster": {
+        "name": "Posterdruck",
+        "description": "Drucken Sie Ihren Baum im Großformat auf Premiumpapier oder Leinwand."
+      },
+      "photoBook": {
+        "name": "Familienfotobuch",
+        "description": "Erstellen Sie ein wunderschönes Buch, das die Geschichte Ihrer Familie erzählt."
+      },
+      "research": {
+        "name": "Genealogische Forschung",
+        "description": "Vertrauen Sie Ihre Forschung Experten an, um Ihre Vorfahren zu entdecken."
+      }
+    },
+    "faq": {
+      "cancel": {
+        "question": "Kann ich mein Abonnement kündigen?",
+        "answer": "Ja, jederzeit über Ihr Profil. Sie behalten den Zugang bis zum Ende des bezahlten Zeitraums."
+      },
+      "permanent": {
+        "question": "Sind die Personalisierungskäufe endgültig?",
+        "answer": "Ja! Einmal gekauft, bleiben Themen und PDF-Exporte lebenslang auf Ihrem Konto verfügbar."
+      },
+      "pdfExport": {
+        "question": "Wie funktioniert der PDF-Export?",
+        "answer": "Nach dem Kauf können Sie Ihren Baum im hochauflösenden PDF-Format herunterladen, perfekt zum Drucken."
+      }
+    }
+  },
   "errors": {
     "required": "Dieses Feld ist erforderlich",
     "invalidEmail": "Ungültige E-Mail-Adresse",

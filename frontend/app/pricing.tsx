@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   ScrollView,
   ActivityIndicator,
@@ -12,105 +12,107 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
+import { useTranslation } from 'react-i18next';
 import api from '@/services/api';
-
-// Subscription Plans
-const PLANS = [
-  {
-    id: 'monthly',
-    name: 'Mensuel',
-    price: '2,99 €',
-    period: '/mois',
-    description: 'Flexibilité maximale',
-    features: [
-      'Aucune publicité',
-      'Arbre illimité',
-      'Collaborateurs illimités',
-      'Export JSON & GEDCOM',
-      'Événements familiaux',
-    ],
-    popular: false,
-    priceValue: 2.99,
-  },
-  {
-    id: 'yearly',
-    name: 'Annuel',
-    price: '24,99 €',
-    period: '/an',
-    description: 'Économisez 30% !',
-    features: [
-      'Aucune publicité',
-      'Tout le plan mensuel',
-      'Économisez 30%',
-      'Support prioritaire',
-      '2 exports PDF offerts',
-    ],
-    popular: true,
-    priceValue: 24.99,
-    savings: '11,89 €',
-  },
-];
-
-// Services à la carte - Achats uniques
-const SERVICES = [
-  {
-    id: 'pdf_export',
-    name: 'Export PDF Premium',
-    price: '0,99 €',
-    icon: 'document-text',
-    description: 'Téléchargez votre arbre généalogique en PDF haute qualité, prêt à imprimer ou partager.',
-    color: '#4A90D9',
-  },
-  {
-    id: 'theme_gold',
-    name: 'Thème Or Royal',
-    price: '1,99 €',
-    icon: 'color-palette',
-    description: 'Sublimez votre arbre avec un thème élégant aux bordures dorées et finitions luxueuses.',
-    color: '#D4AF37',
-  },
-  {
-    id: 'theme_nature',
-    name: 'Thème Nature',
-    price: '1,99 €',
-    icon: 'leaf',
-    description: 'Un design inspiré de la nature avec des tons verts apaisants et des motifs floraux.',
-    color: '#48BB78',
-  },
-  {
-    id: 'theme_vintage',
-    name: 'Thème Vintage',
-    price: '1,99 €',
-    icon: 'time',
-    description: 'Plongez dans le passé avec ce style rétro sépia, parfait pour une touche nostalgique.',
-    color: '#8B7355',
-  },
-];
-
-// Services à venir
-const COMING_SOON = [
-  {
-    icon: 'print',
-    name: 'Impression Poster',
-    description: 'Faites imprimer votre arbre en grand format sur papier premium ou canvas.',
-  },
-  {
-    icon: 'book',
-    name: 'Livre Photo Familial',
-    description: 'Créez un magnifique livre retraçant l\'histoire de votre famille.',
-  },
-  {
-    icon: 'search',
-    name: 'Recherche Généalogique',
-    description: 'Confiez vos recherches à des experts pour découvrir vos ancêtres.',
-  },
-];
 
 export default function PricingScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState<string | null>(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
+
+  // Plan data with translation keys
+  const PLANS = [
+    {
+      id: 'monthly',
+      nameKey: 'pricingPage.plans.monthly.name',
+      price: '2,99 €',
+      periodKey: 'pricingPage.plans.monthly.period',
+      descriptionKey: 'pricingPage.plans.monthly.description',
+      featuresKeys: [
+        'pricingPage.features.noAds',
+        'pricingPage.features.unlimitedTree',
+        'pricingPage.features.unlimitedCollaborators',
+        'pricingPage.features.exportFormats',
+        'pricingPage.features.familyEvents',
+      ],
+      popular: false,
+      priceValue: 2.99,
+    },
+    {
+      id: 'yearly',
+      nameKey: 'pricingPage.plans.yearly.name',
+      price: '24,99 €',
+      periodKey: 'pricingPage.plans.yearly.period',
+      descriptionKey: 'pricingPage.plans.yearly.description',
+      featuresKeys: [
+        'pricingPage.features.noAds',
+        'pricingPage.features.allMonthlyFeatures',
+        'pricingPage.features.save30',
+        'pricingPage.features.prioritySupport',
+        'pricingPage.features.freePdfExports',
+      ],
+      popular: true,
+      priceValue: 24.99,
+      savingsKey: 'pricingPage.plans.yearly.savings',
+    },
+  ];
+
+  // Services data with translation keys
+  const SERVICES = [
+    {
+      id: 'pdf_export',
+      nameKey: 'pricingPage.services.pdfExport.name',
+      price: '0,99 €',
+      icon: 'document-text',
+      descriptionKey: 'pricingPage.services.pdfExport.description',
+      color: '#4A90D9',
+    },
+    {
+      id: 'theme_gold',
+      nameKey: 'pricingPage.services.themeGold.name',
+      price: '1,99 €',
+      icon: 'color-palette',
+      descriptionKey: 'pricingPage.services.themeGold.description',
+      color: '#D4AF37',
+    },
+    {
+      id: 'theme_nature',
+      nameKey: 'pricingPage.services.themeNature.name',
+      price: '1,99 €',
+      icon: 'leaf',
+      descriptionKey: 'pricingPage.services.themeNature.description',
+      color: '#48BB78',
+    },
+    {
+      id: 'theme_vintage',
+      nameKey: 'pricingPage.services.themeVintage.name',
+      price: '1,99 €',
+      icon: 'time',
+      descriptionKey: 'pricingPage.services.themeVintage.description',
+      color: '#8B7355',
+    },
+  ];
+
+  // Coming soon items
+  const COMING_SOON = [
+    {
+      icon: 'print',
+      nameKey: 'pricingPage.comingSoon.poster.name',
+      descriptionKey: 'pricingPage.comingSoon.poster.description',
+    },
+    {
+      icon: 'book',
+      nameKey: 'pricingPage.comingSoon.photoBook.name',
+      descriptionKey: 'pricingPage.comingSoon.photoBook.description',
+    },
+    {
+      icon: 'search',
+      nameKey: 'pricingPage.comingSoon.research.name',
+      descriptionKey: 'pricingPage.comingSoon.research.description',
+    },
+  ];
 
   useEffect(() => {
     if (user) {
@@ -193,10 +195,10 @@ export default function PricingScreen() {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <Pressable style={styles.backButton} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Offres & Services</Text>
+        </Pressable>
+        <Text style={styles.headerTitle}>{t('pricingPage.header')}</Text>
         <View style={{ width: 40 }} />
       </View>
 
@@ -204,10 +206,8 @@ export default function PricingScreen() {
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <Text style={styles.heroEmoji}>🌳</Text>
-          <Text style={styles.heroTitle}>Donnez vie à votre histoire familiale</Text>
-          <Text style={styles.heroSubtitle}>
-            Choisissez l'offre qui vous convient et personnalisez votre expérience
-          </Text>
+          <Text style={styles.heroTitle}>{t('pricingPage.hero.title')}</Text>
+          <Text style={styles.heroSubtitle}>{t('pricingPage.hero.subtitle')}</Text>
         </View>
 
         {/* Current Status */}
@@ -220,8 +220,8 @@ export default function PricingScreen() {
             />
             <Text style={styles.statusText}>
               {isPremium 
-                ? 'Vous êtes Premium - Profitez de tous les avantages !' 
-                : 'Version gratuite - Passez Premium pour plus de fonctionnalités'}
+                ? t('pricingPage.status.premium') 
+                : t('pricingPage.status.free')}
             </Text>
           </View>
         )}
@@ -230,11 +230,9 @@ export default function PricingScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Ionicons name="diamond" size={24} color="#D4AF37" />
-            <Text style={styles.sectionTitle}>Abonnements Premium</Text>
+            <Text style={styles.sectionTitle}>{t('pricingPage.sections.subscriptions')}</Text>
           </View>
-          <Text style={styles.sectionDescription}>
-            Supprimez les publicités et débloquez toutes les fonctionnalités
-          </Text>
+          <Text style={styles.sectionDescription}>{t('pricingPage.sections.subscriptionsDesc')}</Text>
 
           <View style={styles.plansContainer}>
             {PLANS.map((plan) => (
@@ -244,31 +242,31 @@ export default function PricingScreen() {
               >
                 {plan.popular && (
                   <View style={styles.popularBadge}>
-                    <Text style={styles.popularBadgeText}>RECOMMANDÉ</Text>
+                    <Text style={styles.popularBadgeText}>{t('pricingPage.recommended')}</Text>
                   </View>
                 )}
                 
-                <Text style={styles.planName}>{plan.name}</Text>
+                <Text style={styles.planName}>{t(plan.nameKey)}</Text>
                 <View style={styles.priceRow}>
                   <Text style={styles.planPrice}>{plan.price}</Text>
-                  <Text style={styles.planPeriod}>{plan.period}</Text>
+                  <Text style={styles.planPeriod}>{t(plan.periodKey)}</Text>
                 </View>
-                {plan.savings && (
+                {plan.savingsKey && (
                   <View style={styles.savingsBadge}>
-                    <Text style={styles.savingsText}>Économie de {plan.savings}/an</Text>
+                    <Text style={styles.savingsText}>{t(plan.savingsKey)}</Text>
                   </View>
                 )}
                 
                 <View style={styles.featuresContainer}>
-                  {plan.features.map((feature, index) => (
+                  {plan.featuresKeys.map((featureKey, index) => (
                     <View key={index} style={styles.featureRow}>
                       <Ionicons name="checkmark-circle" size={16} color="#48BB78" />
-                      <Text style={styles.featureText}>{feature}</Text>
+                      <Text style={styles.featureText}>{t(featureKey)}</Text>
                     </View>
                   ))}
                 </View>
 
-                <TouchableOpacity
+                <Pressable
                   style={[
                     styles.selectButton,
                     plan.popular && styles.popularButton,
@@ -281,10 +279,10 @@ export default function PricingScreen() {
                     <ActivityIndicator size="small" color="#0A1628" />
                   ) : (
                     <Text style={[styles.selectButtonText, plan.popular && styles.popularButtonText]}>
-                      {isPremium ? 'Déjà Premium' : 'Choisir ce plan'}
+                      {isPremium ? t('pricingPage.alreadyPremium') : t('pricingPage.choosePlan')}
                     </Text>
                   )}
-                </TouchableOpacity>
+                </Pressable>
               </View>
             ))}
           </View>
@@ -294,39 +292,36 @@ export default function PricingScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Ionicons name="sparkles" size={24} color="#D4AF37" />
-            <Text style={styles.sectionTitle}>Personnalisation</Text>
+            <Text style={styles.sectionTitle}>{t('pricingPage.sections.customization')}</Text>
           </View>
-          <Text style={styles.sectionDescription}>
-            Enrichissez votre arbre avec ces services exclusifs (achat unique)
-          </Text>
+          <Text style={styles.sectionDescription}>{t('pricingPage.sections.customizationDesc')}</Text>
 
           <View style={styles.servicesContainer}>
             {SERVICES.map((service) => (
-              <TouchableOpacity 
+              <Pressable 
                 key={service.id} 
                 style={styles.serviceCard}
                 onPress={() => handlePurchaseService(service.id)}
                 disabled={loading !== null}
-                activeOpacity={0.8}
               >
                 <View style={[styles.serviceIconContainer, { backgroundColor: service.color + '20' }]}>
                   <Ionicons name={service.icon as any} size={28} color={service.color} />
                 </View>
                 <View style={styles.serviceContent}>
                   <View style={styles.serviceHeader}>
-                    <Text style={styles.serviceName}>{service.name}</Text>
+                    <Text style={styles.serviceName}>{t(service.nameKey)}</Text>
                     <View style={styles.servicePriceBadge}>
                       <Text style={styles.servicePriceText}>{service.price}</Text>
                     </View>
                   </View>
-                  <Text style={styles.serviceDescription}>{service.description}</Text>
+                  <Text style={styles.serviceDescription}>{t(service.descriptionKey)}</Text>
                 </View>
                 {loading === service.id ? (
                   <ActivityIndicator size="small" color="#D4AF37" />
                 ) : (
                   <Ionicons name="chevron-forward" size={20} color="#6B7C93" />
                 )}
-              </TouchableOpacity>
+              </Pressable>
             ))}
           </View>
         </View>
@@ -335,7 +330,7 @@ export default function PricingScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Ionicons name="rocket" size={24} color="#A0AEC0" />
-            <Text style={[styles.sectionTitle, { color: '#A0AEC0' }]}>Bientôt disponible</Text>
+            <Text style={[styles.sectionTitle, { color: '#A0AEC0' }]}>{t('pricingPage.sections.comingSoon')}</Text>
           </View>
 
           <View style={styles.comingSoonContainer}>
@@ -345,8 +340,8 @@ export default function PricingScreen() {
                   <Ionicons name={item.icon as any} size={24} color="#6B7C93" />
                 </View>
                 <View style={styles.comingSoonContent}>
-                  <Text style={styles.comingSoonName}>{item.name}</Text>
-                  <Text style={styles.comingSoonDescription}>{item.description}</Text>
+                  <Text style={styles.comingSoonName}>{t(item.nameKey)}</Text>
+                  <Text style={styles.comingSoonDescription}>{t(item.descriptionKey)}</Text>
                 </View>
               </View>
             ))}
@@ -357,29 +352,23 @@ export default function PricingScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Ionicons name="help-circle" size={24} color="#D4AF37" />
-            <Text style={styles.sectionTitle}>Questions fréquentes</Text>
+            <Text style={styles.sectionTitle}>{t('pricingPage.sections.faq')}</Text>
           </View>
 
           <View style={styles.faqContainer}>
             <View style={styles.faqItem}>
-              <Text style={styles.faqQuestion}>Puis-je annuler mon abonnement ?</Text>
-              <Text style={styles.faqAnswer}>
-                Oui, à tout moment depuis votre profil. Vous conservez l'accès jusqu'à la fin de la période payée.
-              </Text>
+              <Text style={styles.faqQuestion}>{t('pricingPage.faq.cancel.question')}</Text>
+              <Text style={styles.faqAnswer}>{t('pricingPage.faq.cancel.answer')}</Text>
             </View>
             
             <View style={styles.faqItem}>
-              <Text style={styles.faqQuestion}>Les achats de personnalisation sont-ils définitifs ?</Text>
-              <Text style={styles.faqAnswer}>
-                Oui ! Une fois achetés, les thèmes et exports PDF restent disponibles à vie sur votre compte.
-              </Text>
+              <Text style={styles.faqQuestion}>{t('pricingPage.faq.permanent.question')}</Text>
+              <Text style={styles.faqAnswer}>{t('pricingPage.faq.permanent.answer')}</Text>
             </View>
 
             <View style={styles.faqItem}>
-              <Text style={styles.faqQuestion}>Comment fonctionne l'export PDF ?</Text>
-              <Text style={styles.faqAnswer}>
-                Après achat, vous pourrez télécharger votre arbre en format PDF haute résolution, parfait pour l'impression.
-              </Text>
+              <Text style={styles.faqQuestion}>{t('pricingPage.faq.pdfExport.question')}</Text>
+              <Text style={styles.faqAnswer}>{t('pricingPage.faq.pdfExport.answer')}</Text>
             </View>
           </View>
         </View>
