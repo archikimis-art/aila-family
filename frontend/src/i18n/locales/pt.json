@@ -207,6 +207,14 @@
       "name": "Nome S.",
       "country": "Brasil 🇧🇷",
       "message": "Compartilhe suas origens, faça uma pergunta, dê uma dica..."
+    },
+    "demoMessages": {
+      "message1": "Olá a todos! Procuro informações sobre minha família originária da Bretanha. Meus bisavós viviam em Quimper. Alguém conhece os arquivos desta região?",
+      "country1": "França 🇫🇷",
+      "message2": "Minha família vem do Senegal, região de Dakar. Para nós, a tradição do chá é muito importante - preparamos em 3 serviços que representam a vida: amargo como a morte, doce como a vida, açucarado como o amor.",
+      "country2": "Senegal 🇸🇳",
+      "message3": "Dica: Para encontrar seus ancestrais italianos, o site Antenati.san.beniculturali.it oferece milhões de registros digitalizados gratuitamente!",
+      "country3": "Itália 🇮🇹"
     }
   },
   "socialProof": {

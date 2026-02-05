@@ -71,31 +71,31 @@ export default function CommunityScreen() {
       if (stored) {
         setMessages(JSON.parse(stored));
       } else {
-        // Messages de démonstration
+        // Messages de démonstration traduits
         const demoMessages: Message[] = [
           {
             id: '1',
-            content: "Bonjour à tous ! Je recherche des informations sur ma famille originaire de Bretagne. Mes arrière-grands-parents vivaient à Quimper. Quelqu'un connaît les archives de cette région ?",
+            content: t('community.demoMessages.message1'),
             author_name: "Marie L.",
-            author_country: "France 🇫🇷",
+            author_country: t('community.demoMessages.country1'),
             created_at: new Date(Date.now() - 86400000).toISOString(),
             likes: 3,
             topic: "help"
           },
           {
             id: '2',
-            content: "Ma famille vient du Sénégal, région de Dakar. Chez nous, la tradition du thé est très importante - on le prépare en 3 services qui représentent la vie : amer comme la mort, doux comme la vie, sucré comme l'amour.",
+            content: t('community.demoMessages.message2'),
             author_name: "Amadou D.",
-            author_country: "Sénégal 🇸🇳",
+            author_country: t('community.demoMessages.country2'),
             created_at: new Date(Date.now() - 172800000).toISOString(),
             likes: 8,
             topic: "origins"
           },
           {
             id: '3',
-            content: "Astuce : Pour retrouver vos ancêtres italiens, le site Antenati.san.beniculturali.it propose des millions de registres numérisés gratuitement !",
+            content: t('community.demoMessages.message3'),
             author_name: "Giuseppe M.",
-            author_country: "Italie 🇮🇹",
+            author_country: t('community.demoMessages.country3'),
             created_at: new Date(Date.now() - 259200000).toISOString(),
             likes: 12,
             topic: "tips"

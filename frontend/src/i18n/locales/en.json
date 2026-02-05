@@ -207,6 +207,14 @@
       "name": "First name L.",
       "country": "United States 🇺🇸",
       "message": "Share your origins, ask a question, give advice..."
+    },
+    "demoMessages": {
+      "message1": "Hello everyone! I'm looking for information about my family from Brittany. My great-grandparents lived in Quimper. Does anyone know the archives for this region?",
+      "country1": "France 🇫🇷",
+      "message2": "My family comes from Senegal, Dakar region. For us, the tea tradition is very important - we prepare it in 3 services that represent life: bitter like death, sweet like life, sugary like love.",
+      "country2": "Senegal 🇸🇳",
+      "message3": "Tip: To find your Italian ancestors, the site Antenati.san.beniculturali.it offers millions of digitized records for free!",
+      "country3": "Italy 🇮🇹"
     }
   },
   "socialProof": {

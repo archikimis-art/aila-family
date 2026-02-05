@@ -207,6 +207,14 @@
       "name": "Vorname N.",
       "country": "Deutschland 🇩🇪",
       "message": "Teilen Sie Ihre Herkunft, stellen Sie eine Frage, geben Sie einen Rat..."
+    },
+    "demoMessages": {
+      "message1": "Hallo zusammen! Ich suche Informationen über meine Familie aus der Bretagne. Meine Urgroßeltern lebten in Quimper. Kennt jemand die Archive dieser Region?",
+      "country1": "Frankreich 🇫🇷",
+      "message2": "Meine Familie kommt aus dem Senegal, Region Dakar. Bei uns ist die Tee-Tradition sehr wichtig - wir bereiten ihn in 3 Aufgüssen zu, die das Leben repräsentieren: bitter wie der Tod, süß wie das Leben, zuckersüß wie die Liebe.",
+      "country2": "Senegal 🇸🇳",
+      "message3": "Tipp: Um Ihre italienischen Vorfahren zu finden, bietet die Website Antenati.san.beniculturali.it Millionen von digitalisierten Registern kostenlos an!",
+      "country3": "Italien 🇮🇹"
     }
   },
   "socialProof": {
