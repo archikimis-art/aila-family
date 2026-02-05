@@ -685,7 +685,149 @@
       "metaDescription": "Descubra 50+ ideias de tradições familiares para criar ou perpetuar. Rituais diários, celebrações, refeições, viagens. Fortaleça os laços familiares.",
       "badge": "🎄 Vida Familiar • Guia 2025",
       "title": "Tradições Familiares: 50 Ideias para Criar Memórias Inesquecíveis",
-      "subtitle": "As tradições familiares são o cimento que une as gerações. Descubra como criar, perpetuar e transmitir esses momentos preciosos."
+      "subtitle": "As tradições familiares são o cimento que une as gerações. Descubra como criar, perpetuar e transmitir esses momentos preciosos que definem sua família.",
+      "authorName": "Escrito pela equipe AILA",
+      "authorCredentials": "Especialistas em vida familiar",
+      "authorDate": "Última atualização: Janeiro 2025",
+      "tocTitle": "📑 Índice",
+      "toc": {
+        "item1": "1. Por que as tradições são importantes",
+        "item2": "2. Tradições do dia a dia",
+        "item3": "3. Tradições de festas",
+        "item4": "4. Tradições culinárias",
+        "item5": "5. Tradições de férias",
+        "item6": "6. Como criar suas tradições"
+      },
+      "summaryTitle": "💡 Em resumo: Por que criar tradições familiares?",
+      "summaryText": "As tradições familiares fortalecem os laços, criam memórias duradouras, transmitem valores e dão um sentido de pertencimento. Comece de forma simples: um ritual de domingo, um prato especial para aniversários, ou uma atividade anual que reúne toda a família.",
+      "section1": {
+        "title": "1. Por Que as Tradições Familiares São Importantes",
+        "intro": "As tradições não são simples hábitos. Elas tecem o fio invisível que conecta as gerações e cria uma identidade familiar única.",
+        "benefit1": {
+          "title": "Fortalecimento dos laços",
+          "desc": "Os rituais compartilhados criam momentos de conexão autêntica entre os membros da família."
+        },
+        "benefit2": {
+          "title": "Sensação de segurança",
+          "desc": "As tradições oferecem um quadro tranquilizador e previsível, particularmente importante para as crianças."
+        },
+        "benefit3": {
+          "title": "Transmissão de valores",
+          "desc": "Cada tradição carrega consigo os valores e a história da sua família."
+        },
+        "benefit4": {
+          "title": "Criação de memórias",
+          "desc": "Esses momentos compartilhados se tornam as memórias mais preciosas que guardamos por toda a vida."
+        }
+      },
+      "section2": {
+        "title": "2. Tradições do Dia a Dia",
+        "intro": "As pequenas tradições diárias são as mais fáceis de implementar e criam uma rotina familiar reconfortante.",
+        "trad1": {
+          "title": "Ritual matinal",
+          "desc": "Um café da manhã juntos, uma música para acordar, ou um abraço matinal para começar bem o dia."
+        },
+        "trad2": {
+          "title": "História de ninar",
+          "desc": "A leitura antes de dormir é uma tradição atemporal que fortalece o vínculo entre pais e filhos."
+        },
+        "trad3": {
+          "title": "Noite de cinema",
+          "desc": "Escolha uma noite por semana para assistir um filme em família com pipoca e cobertores."
+        },
+        "trad4": {
+          "title": "Jantar em família",
+          "desc": "Um momento sagrado onde todos se reúnem à mesa, sem telas."
+        },
+        "trad5": {
+          "title": "Jogos de tabuleiro",
+          "desc": "Uma noite semanal dedicada aos jogos para rir e jogar juntos."
+        },
+        "trad6": {
+          "title": "Passeio de domingo",
+          "desc": "Um passeio regular em um parque ou na natureza para recarregar as energias em família."
+        }
+      },
+      "section3": {
+        "title": "3. Tradições de Festas",
+        "christmas": "🎄 Natal",
+        "birthdays": "🎂 Aniversários",
+        "trad1": {
+          "title": "Calendário do Advento caseiro",
+          "desc": "Crie um calendário personalizado com atividades, mensagens carinhosas ou pequenas surpresas."
+        },
+        "trad2": {
+          "title": "Decorar a árvore",
+          "desc": "Um momento mágico onde cada um pendura seus enfeites favoritos ouvindo canções de Natal."
+        },
+        "trad3": {
+          "title": "Abertura de presentes",
+          "desc": "Estabeleça seu próprio ritual: na véspera, na manhã de Natal, um por um ou todos juntos?"
+        },
+        "trad4": {
+          "title": "Bolo especial",
+          "desc": "Um bolo tradicional da família preparado juntos para celebrar cada aniversário."
+        },
+        "trad5": {
+          "title": "Álbum de fotos anual",
+          "desc": "Dê a cada criança um álbum com fotos do ano passado no dia do seu aniversário."
+        }
+      },
+      "section4": {
+        "title": "4. Tradições Culinárias",
+        "intro": "A cozinha é um maravilhoso veículo de transmissão. As receitas de família atravessam gerações e carregam memórias preciosas.",
+        "trad1": {
+          "title": "Receita secreta da família",
+          "desc": "Transmita uma receita de geração em geração: o bolo da avó, o molho do tio..."
+        },
+        "trad2": {
+          "title": "Caderno de receitas",
+          "desc": "Compile as receitas da família em um caderno para transmitir aos filhos."
+        },
+        "trad3": {
+          "title": "Cozinhar juntos",
+          "desc": "Envolva as crianças na preparação das refeições festivas para transmitir o know-how."
+        }
+      },
+      "section5": {
+        "title": "5. Tradições de Férias",
+        "trad1": {
+          "title": "Destino familiar",
+          "desc": "Volte todo ano ao mesmo lugar: a casa de férias, o camping favorito, a cidade dos avós."
+        },
+        "trad2": {
+          "title": "Diário de viagem",
+          "desc": "Cada membro escreve suas memórias e cola fotos em um diário compartilhado."
+        },
+        "trad3": {
+          "title": "Noite de apresentação de fotos",
+          "desc": "Na volta, organize uma noite para reviver juntos os melhores momentos das férias."
+        }
+      },
+      "section6": {
+        "title": "6. Como Criar Suas Próprias Tradições",
+        "tip1": {
+          "title": "Comece de forma simples",
+          "text": "Você não precisa de grandes eventos. As tradições mais duradouras nascem de momentos simples e autênticos."
+        },
+        "tip2": {
+          "title": "Envolva todos",
+          "text": "Peça a opinião de cada membro da família. Tradições impostas têm menos chance de perdurar."
+        },
+        "tip3": {
+          "title": "Seja constante",
+          "text": "A repetição é a chave. Uma atividade se torna tradição quando é esperada e antecipada."
+        },
+        "tip4": {
+          "title": "Adapte-se com o tempo",
+          "text": "As tradições podem evoluir. O importante é manter o espírito adaptando a forma."
+        }
+      },
+      "cta": {
+        "title": "🌳 Documente Suas Tradições Familiares",
+        "text": "Preserve suas tradições em sua árvore genealógica AILA. Adicione notas, fotos e anedotas para transmitir esses momentos preciosos às gerações futuras.",
+        "button": "Criar Minha Árvore Grátis"
+      }
     },
     "cousinade": {
       "metaTitle": "Como Organizar uma Reunião de Família: Guia Completo + Checklist | AILA",

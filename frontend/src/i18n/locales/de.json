@@ -685,7 +685,149 @@
       "metaDescription": "Entdecken Sie 50+ Ideen für Familientraditionen zum Schaffen oder Bewahren. Tägliche Rituale, Feiern, Mahlzeiten, Reisen. Stärken Sie die Familienbande.",
       "badge": "🎄 Familienleben • Leitfaden 2025",
       "title": "Familientraditionen: 50 Ideen für unvergessliche Erinnerungen",
-      "subtitle": "Familientraditionen sind der Kitt, der Generationen zusammenhält. Entdecken Sie, wie Sie diese kostbaren Momente schaffen, bewahren und weitergeben."
+      "subtitle": "Familientraditionen sind der Kitt, der Generationen zusammenhält. Entdecken Sie, wie Sie diese kostbaren Momente schaffen, bewahren und weitergeben.",
+      "authorName": "Verfasst vom AILA-Team",
+      "authorCredentials": "Experten für Familienleben",
+      "authorDate": "Letzte Aktualisierung: Januar 2025",
+      "tocTitle": "📑 Inhaltsverzeichnis",
+      "toc": {
+        "item1": "1. Warum Traditionen wichtig sind",
+        "item2": "2. Alltagstraditionen",
+        "item3": "3. Feiertagstraditionen",
+        "item4": "4. Kulinarische Traditionen",
+        "item5": "5. Urlaubstraditionen",
+        "item6": "6. Wie Sie Ihre Traditionen schaffen"
+      },
+      "summaryTitle": "💡 Kurz gesagt: Warum Familientraditionen schaffen?",
+      "summaryText": "Familientraditionen stärken die Bindungen, schaffen bleibende Erinnerungen, vermitteln Werte und geben ein Gefühl der Zugehörigkeit. Fangen Sie einfach an: ein Sonntagsritual, ein besonderes Gericht zu Geburtstagen oder eine jährliche Aktivität, die die ganze Familie zusammenbringt.",
+      "section1": {
+        "title": "1. Warum Familientraditionen wichtig sind",
+        "intro": "Traditionen sind nicht nur Gewohnheiten. Sie weben den unsichtbaren Faden, der Generationen verbindet und eine einzigartige Familienidentität schafft.",
+        "benefit1": {
+          "title": "Stärkung der Bindungen",
+          "desc": "Geteilte Rituale schaffen Momente echter Verbindung zwischen Familienmitgliedern."
+        },
+        "benefit2": {
+          "title": "Gefühl der Sicherheit",
+          "desc": "Traditionen bieten einen beruhigenden und vorhersehbaren Rahmen, besonders wichtig für Kinder."
+        },
+        "benefit3": {
+          "title": "Weitergabe von Werten",
+          "desc": "Jede Tradition trägt die Werte und Geschichte Ihrer Familie in sich."
+        },
+        "benefit4": {
+          "title": "Erinnerungen schaffen",
+          "desc": "Diese gemeinsamen Momente werden zu den kostbarsten Erinnerungen, die wir ein Leben lang bewahren."
+        }
+      },
+      "section2": {
+        "title": "2. Alltagstraditionen",
+        "intro": "Kleine tägliche Traditionen sind am einfachsten umzusetzen und schaffen eine beruhigende Familienroutine.",
+        "trad1": {
+          "title": "Morgenritual",
+          "desc": "Gemeinsames Frühstück, ein Aufwecklied oder eine Morgenumarmung für einen guten Start in den Tag."
+        },
+        "trad2": {
+          "title": "Gute-Nacht-Geschichte",
+          "desc": "Das Vorlesen vor dem Schlafengehen ist eine zeitlose Tradition, die die Eltern-Kind-Bindung stärkt."
+        },
+        "trad3": {
+          "title": "Filmabend",
+          "desc": "Wählen Sie einen Abend pro Woche, um gemeinsam einen Film mit Popcorn und Decken zu schauen."
+        },
+        "trad4": {
+          "title": "Familienessen",
+          "desc": "Ein heiliger Moment, in dem sich alle ohne Bildschirme am Tisch versammeln."
+        },
+        "trad5": {
+          "title": "Brettspiele",
+          "desc": "Ein wöchentlicher Abend für Spiele, zum Lachen und gemeinsamen Spielen."
+        },
+        "trad6": {
+          "title": "Sonntagsspaziergang",
+          "desc": "Ein regelmäßiger Spaziergang im Park oder in der Natur, um als Familie neue Kraft zu tanken."
+        }
+      },
+      "section3": {
+        "title": "3. Feiertagstraditionen",
+        "christmas": "🎄 Weihnachten",
+        "birthdays": "🎂 Geburtstage",
+        "trad1": {
+          "title": "Selbstgemachter Adventskalender",
+          "desc": "Erstellen Sie einen personalisierten Kalender mit Aktivitäten, liebevollen Nachrichten oder kleinen Überraschungen."
+        },
+        "trad2": {
+          "title": "Baumschmücken",
+          "desc": "Ein magischer Moment, in dem jeder seinen Lieblingsschmuck aufhängt und Weihnachtslieder hört."
+        },
+        "trad3": {
+          "title": "Geschenkeöffnen",
+          "desc": "Legen Sie Ihr eigenes Ritual fest: Heiligabend, Weihnachtsmorgen, nacheinander oder alle zusammen?"
+        },
+        "trad4": {
+          "title": "Besonderer Kuchen",
+          "desc": "Ein traditioneller Familienkuchen, der gemeinsam zubereitet wird, um jeden Geburtstag zu feiern."
+        },
+        "trad5": {
+          "title": "Jährliches Fotoalbum",
+          "desc": "Schenken Sie jedem Kind zum Geburtstag ein Album mit Fotos des vergangenen Jahres."
+        }
+      },
+      "section4": {
+        "title": "4. Kulinarische Traditionen",
+        "intro": "Kochen ist ein wunderbares Mittel der Überlieferung. Familienrezepte überdauern Generationen und tragen kostbare Erinnerungen in sich.",
+        "trad1": {
+          "title": "Geheimes Familienrezept",
+          "desc": "Geben Sie ein Rezept von Generation zu Generation weiter: Omas Kuchen, Onkels Soße..."
+        },
+        "trad2": {
+          "title": "Rezeptbuch",
+          "desc": "Sammeln Sie Familienrezepte in einem Buch, das an die Kinder weitergegeben wird."
+        },
+        "trad3": {
+          "title": "Gemeinsam kochen",
+          "desc": "Beziehen Sie Kinder in die Zubereitung festlicher Mahlzeiten ein, um das Know-how weiterzugeben."
+        }
+      },
+      "section5": {
+        "title": "5. Urlaubstraditionen",
+        "trad1": {
+          "title": "Familienziel",
+          "desc": "Kehren Sie jedes Jahr zum gleichen Ort zurück: das Ferienhaus, der Lieblingscampingplatz, das Dorf der Großeltern."
+        },
+        "trad2": {
+          "title": "Reisetagebuch",
+          "desc": "Jedes Mitglied schreibt seine Erinnerungen auf und klebt Fotos in ein gemeinsames Tagebuch."
+        },
+        "trad3": {
+          "title": "Diashow-Abend",
+          "desc": "Nach der Rückkehr organisieren Sie einen Abend, um die besten Urlaubsmomente gemeinsam zu erleben."
+        }
+      },
+      "section6": {
+        "title": "6. Wie Sie Ihre eigenen Traditionen schaffen",
+        "tip1": {
+          "title": "Fangen Sie einfach an",
+          "text": "Sie brauchen keine großen Ereignisse. Die beständigsten Traditionen entstehen aus einfachen und authentischen Momenten."
+        },
+        "tip2": {
+          "title": "Beziehen Sie alle ein",
+          "text": "Fragen Sie jedes Familienmitglied nach seiner Meinung. Aufgezwungene Traditionen halten weniger lang."
+        },
+        "tip3": {
+          "title": "Seien Sie konsequent",
+          "text": "Wiederholung ist der Schlüssel. Eine Aktivität wird zur Tradition, wenn sie erwartet und vorweggenommen wird."
+        },
+        "tip4": {
+          "title": "Passen Sie sich mit der Zeit an",
+          "text": "Traditionen können sich entwickeln. Das Wichtige ist, den Geist zu bewahren und die Form anzupassen."
+        }
+      },
+      "cta": {
+        "title": "🌳 Dokumentieren Sie Ihre Familientraditionen",
+        "text": "Bewahren Sie Ihre Traditionen in Ihrem AILA-Stammbaum. Fügen Sie Notizen, Fotos und Anekdoten hinzu, um diese kostbaren Momente an zukünftige Generationen weiterzugeben.",
+        "button": "Meinen kostenlosen Stammbaum erstellen"
+      }
     },
     "cousinade": {
       "metaTitle": "Wie Sie ein Familientreffen organisieren: Kompletter Leitfaden + Checkliste | AILA",
