@@ -690,8 +690,130 @@
       "authorCredentials": "Genealogy experts • 10+ years experience",
       "authorDate": "Last updated: January 2025",
       "tocTitle": "📑 Contents",
+      "toc": {
+        "item1": "1. Where to start your research?",
+        "item2": "2. Free online archives",
+        "item3": "3. Civil registry records",
+        "item4": "4. Genealogical databases",
+        "item5": "5. Step-by-step method",
+        "item6": "6. Mistakes to avoid",
+        "item7": "7. FAQ"
+      },
       "summaryTitle": "💡 In brief: How to find your ancestors for free?",
-      "summaryText": "To find your ancestors for free, start by interviewing your family, then check online departmental archives (civil records, censuses). Use free tools like FamilySearch or Geneanet to expand your research. Organize everything in a digital family tree like AILA."
+      "summaryText": "To find your ancestors for free, start by interviewing your family, then check online departmental archives (civil records, censuses). Use free tools like FamilySearch or Geneanet to expand your research. Organize everything in a digital family tree like AILA.",
+      "section1": {
+        "title": "1. Where to Start Your Genealogical Research?",
+        "intro": "Before diving into archives, the first step is often the simplest and richest: talking to your family.",
+        "tipTitle": "🎯 Expert tip",
+        "tipText": "ALWAYS start with what you know. Write down the names, dates, and places you already know. Each piece of information is a thread to pull.",
+        "checklistTitle": "Priority information to collect:",
+        "check1": "✅ Full names (including maiden names)",
+        "check2": "✅ Birth, marriage, death dates",
+        "check3": "✅ Locations (town, region)",
+        "check4": "✅ Professions",
+        "check5": "✅ Family anecdotes and stories",
+        "check6": "✅ Old photos with names on the back",
+        "outro": "Don't forget to search through drawers! Family record books, announcements, old letters... These documents are gold mines."
+      },
+      "section2": {
+        "title": "2. Free Online Departmental Archives",
+        "intro": "Good news: almost all French departmental archives are digitized and freely accessible online. This is THE essential resource for any genealogist.",
+        "cardTitle": "What you'll find there",
+        "card1": "• Parish registers (before 1792)",
+        "card2": "• Civil status (births, marriages, deaths)",
+        "card3": "• Population censuses",
+        "card4": "• Military matriculation registers",
+        "card5": "• Ten-year tables",
+        "card6": "• Cadastres and old maps",
+        "accessTitle": "How to access your department's archives?",
+        "accessText": "Search \"departmental archives + [department name]\" on Google, or check the France Archives portal which lists all sites.",
+        "warningTitle": "⚠️ Warning",
+        "warningText": "Records less than 75 years old (births) or 25 years (marriages/deaths) are generally not online for privacy reasons."
+      },
+      "section3": {
+        "title": "3. Civil Registry Records: How-To Guide",
+        "intro": "Civil registry records have been kept in duplicate since 1792: one at the town hall, one at the departmental archives.",
+        "methodTitle": "The ten-year tables method",
+        "methodText": "Ten-year tables are indexes that summarize all records over 10 years. They're your best friend for quickly finding a record!",
+        "step1": "Identify the municipality and approximate period",
+        "step2": "Check the corresponding ten-year table",
+        "step3": "Find the name and note the exact year",
+        "step4": "Access the register for that year",
+        "step5": "Read the complete record and note the information"
+      },
+      "section4": {
+        "title": "4. Free Genealogical Databases",
+        "intro": "In addition to official archives, several community sites offer valuable resources for free.",
+        "resource1": {
+          "name": "🌍 FamilySearch.org",
+          "desc": "The largest free database in the world. Billions of digitized documents and shared family trees. 100% free.",
+          "pros": "✅ Free • Huge database • International"
+        },
+        "resource2": {
+          "name": "🇫🇷 Geneanet.org",
+          "desc": "The French leader. Generous free version with access to shared trees and many collaborative databases.",
+          "pros": "✅ In French • Active community • Shared trees"
+        },
+        "resource3": {
+          "name": "📋 Filae.com",
+          "desc": "Limited free access but useful for civil status records. Paid version for full archive access.",
+          "pros": "✅ Indexed records • Easy search"
+        },
+        "resource4": {
+          "name": "⚔️ Mémoire des Hommes",
+          "desc": "Official site of the Ministry of Armed Forces. Files of soldiers who died for France, war diaries, military registers.",
+          "pros": "✅ 100% free • Official • Detailed"
+        }
+      },
+      "section5": {
+        "title": "5. Step by Step: Your First Month of Research",
+        "week1": {
+          "label": "Week 1",
+          "title": "Family collection",
+          "desc": "Interview parents, grandparents, uncles, aunts. Photograph all documents. Create your tree with what you know."
+        },
+        "week2": {
+          "label": "Week 2",
+          "title": "Online archives",
+          "desc": "Identify municipalities of origin. Access departmental archives. Search for your grandparents' records."
+        },
+        "week3": {
+          "label": "Week 3",
+          "title": "Going back generations",
+          "desc": "Use information from records to go back. Marriage records often mention the parents of the spouses."
+        },
+        "week4": {
+          "label": "Week 4",
+          "title": "Consolidation",
+          "desc": "Verify your sources. Complete your tree. Identify 'brick walls' to explore later."
+        }
+      },
+      "section6": {
+        "title": "6. The 7 Mistakes to Avoid in Genealogy",
+        "error1": { "title": "Not citing sources", "desc": "ALWAYS note where each piece of information comes from. In 6 months, you won't remember." },
+        "error2": { "title": "Confusing namesakes", "desc": "John Smith born in 1850, there are dozens! Always cross-reference multiple sources." },
+        "error3": { "title": "Trusting online trees", "desc": "Shared trees often contain copied errors. Verify with original sources." },
+        "error4": { "title": "Ignoring collaterals", "desc": "Brothers, sisters, uncles... Their records may contain info about your ancestors." },
+        "error5": { "title": "Forgetting name variations", "desc": "Smith, Smyth, Smithe... Spelling varied greatly. Think phonetically!" },
+        "error6": { "title": "Neglecting historical context", "desc": "Wars, epidemics, migrations... Understanding context helps explain gaps." },
+        "error7": { "title": "Wanting to go too fast", "desc": "Genealogy is a marathon, not a sprint. Take time to document properly." }
+      },
+      "faq": {
+        "title": "7. Frequently Asked Questions",
+        "q1": "How far back can you go for free?",
+        "a1": "In France, parish registers generally start in the 16th century (1539). With patience, you can go back 15-20 generations for free via departmental archives.",
+        "q2": "How long does it take to find your ancestors?",
+        "a2": "Count a few hours for great-grandparents, a few days for the 18th century, and several months/years for complete genealogy over 10+ generations.",
+        "q3": "Do you need to read old French?",
+        "a3": "For recent documents (after 1800), no. For older registers, paleography is learned gradually. Free guides exist online.",
+        "q4": "How to organize all this information?",
+        "a4": "Use family tree software or an app like AILA. This allows you to centralize information and easily visualize your tree."
+      },
+      "cta": {
+        "title": "🌳 Ready to Find Your Ancestors?",
+        "text": "Create your free family tree with AILA and organize all your discoveries. Share with your family and preserve your history.",
+        "button": "Create My Free Tree"
+      }
     },
     "traditions": {
       "metaTitle": "Family Traditions: 50 Ideas to Create and Perpetuate Your Own | AILA",

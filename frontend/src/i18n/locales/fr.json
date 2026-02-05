@@ -690,8 +690,130 @@
       "authorCredentials": "Experts en généalogie • 10+ ans d'expérience",
       "authorDate": "Dernière mise à jour : Janvier 2025",
       "tocTitle": "📑 Sommaire",
+      "toc": {
+        "item1": "1. Par où commencer ses recherches ?",
+        "item2": "2. Les archives en ligne gratuites",
+        "item3": "3. Les registres d'état civil",
+        "item4": "4. Les bases de données généalogiques",
+        "item5": "5. Méthode pas à pas",
+        "item6": "6. Erreurs à éviter",
+        "item7": "7. FAQ"
+      },
       "summaryTitle": "💡 En bref : Comment retrouver ses ancêtres gratuitement ?",
-      "summaryText": "Pour retrouver vos ancêtres gratuitement, commencez par interroger votre famille, puis consultez les archives départementales en ligne (état civil, recensements). Utilisez des outils gratuits comme FamilySearch ou Geneanet pour élargir vos recherches. Organisez tout dans un arbre généalogique numérique comme AILA."
+      "summaryText": "Pour retrouver vos ancêtres gratuitement, commencez par interroger votre famille, puis consultez les archives départementales en ligne (état civil, recensements). Utilisez des outils gratuits comme FamilySearch ou Geneanet pour élargir vos recherches. Organisez tout dans un arbre généalogique numérique comme AILA.",
+      "section1": {
+        "title": "1. Par Où Commencer ses Recherches Généalogiques ?",
+        "intro": "Avant de vous plonger dans les archives, la première étape est souvent la plus simple et la plus riche : parler à votre famille.",
+        "tipTitle": "🎯 Conseil d'expert",
+        "tipText": "Commencez TOUJOURS par ce que vous savez. Notez les noms, dates et lieux que vous connaissez déjà. Chaque information est un fil à tirer.",
+        "checklistTitle": "Les informations à collecter en priorité :",
+        "check1": "✅ Noms et prénoms complets (y compris noms de jeune fille)",
+        "check2": "✅ Dates de naissance, mariage, décès",
+        "check3": "✅ Lieux (commune, département)",
+        "check4": "✅ Professions",
+        "check5": "✅ Anecdotes et histoires familiales",
+        "check6": "✅ Photos anciennes avec noms au dos",
+        "outro": "N'oubliez pas de fouiller dans les tiroirs ! Livrets de famille, faire-part, lettres anciennes... Ces documents sont des mines d'or."
+      },
+      "section2": {
+        "title": "2. Les Archives Départementales en Ligne (100% Gratuit)",
+        "intro": "Bonne nouvelle : la quasi-totalité des archives départementales françaises sont numérisées et accessibles gratuitement en ligne. C'est LA ressource incontournable pour tout généalogiste.",
+        "cardTitle": "Ce que vous y trouverez",
+        "card1": "• Registres paroissiaux (avant 1792)",
+        "card2": "• État civil (naissances, mariages, décès)",
+        "card3": "• Recensements de population",
+        "card4": "• Registres matricules militaires",
+        "card5": "• Tables décennales",
+        "card6": "• Cadastres et plans anciens",
+        "accessTitle": "Comment accéder aux archives de votre département ?",
+        "accessText": "Recherchez \"archives départementales + [nom du département]\" sur Google, ou consultez le portail France Archives qui recense tous les sites.",
+        "warningTitle": "⚠️ Attention",
+        "warningText": "Les registres de moins de 75 ans (naissances) ou 25 ans (mariages/décès) ne sont généralement pas en ligne pour des raisons de vie privée."
+      },
+      "section3": {
+        "title": "3. Les Registres d'État Civil : Mode d'Emploi",
+        "intro": "Les registres d'état civil sont tenus en double exemplaire depuis 1792 : un en mairie, un aux archives départementales.",
+        "methodTitle": "La méthode des tables décennales",
+        "methodText": "Les tables décennales sont des index qui récapitulent tous les actes sur 10 ans. C'est votre meilleur ami pour trouver rapidement un acte !",
+        "step1": "Identifiez la commune et la période approximative",
+        "step2": "Consultez la table décennale correspondante",
+        "step3": "Trouvez le nom et notez l'année exacte",
+        "step4": "Accédez au registre de cette année",
+        "step5": "Lisez l'acte complet et notez les informations"
+      },
+      "section4": {
+        "title": "4. Les Bases de Données Généalogiques Gratuites",
+        "intro": "En plus des archives officielles, plusieurs sites communautaires offrent des ressources précieuses gratuitement.",
+        "resource1": {
+          "name": "🌍 FamilySearch.org",
+          "desc": "La plus grande base gratuite au monde. Des milliards de documents numérisés et des arbres généalogiques partagés. 100% gratuit.",
+          "pros": "✅ Gratuit • Énorme base • International"
+        },
+        "resource2": {
+          "name": "🇫🇷 Geneanet.org",
+          "desc": "Le leader français. Version gratuite généreuse avec accès aux arbres partagés et à de nombreuses bases de données collaboratives.",
+          "pros": "✅ En français • Communauté active • Arbres partagés"
+        },
+        "resource3": {
+          "name": "📋 Filae.com",
+          "desc": "Accès gratuit limité mais utile pour les relevés d'état civil. Version payante pour l'accès complet aux archives.",
+          "pros": "✅ Relevés indexés • Recherche facile"
+        },
+        "resource4": {
+          "name": "⚔️ Mémoire des Hommes",
+          "desc": "Site officiel du Ministère des Armées. Fiches de soldats morts pour la France, journaux de marche, registres matricules.",
+          "pros": "✅ 100% gratuit • Officiel • Détaillé"
+        }
+      },
+      "section5": {
+        "title": "5. Méthode Pas à Pas : Votre Premier Mois de Recherche",
+        "week1": {
+          "label": "Semaine 1",
+          "title": "Collecte familiale",
+          "desc": "Interrogez parents, grands-parents, oncles, tantes. Photographiez tous les documents. Créez votre arbre avec ce que vous savez."
+        },
+        "week2": {
+          "label": "Semaine 2",
+          "title": "Archives en ligne",
+          "desc": "Identifiez les communes d'origine. Accédez aux archives départementales. Recherchez les actes de vos grands-parents."
+        },
+        "week3": {
+          "label": "Semaine 3",
+          "title": "Remontée génération",
+          "desc": "Utilisez les informations des actes pour remonter. Les actes de mariage mentionnent souvent les parents des époux."
+        },
+        "week4": {
+          "label": "Semaine 4",
+          "title": "Consolidation",
+          "desc": "Vérifiez vos sources. Complétez votre arbre. Identifiez les \"murs de briques\" à creuser plus tard."
+        }
+      },
+      "section6": {
+        "title": "6. Les 7 Erreurs à Éviter en Généalogie",
+        "error1": { "title": "Ne pas citer ses sources", "desc": "Notez TOUJOURS d'où vient chaque information. Dans 6 mois, vous ne vous souviendrez plus." },
+        "error2": { "title": "Confondre homonymes", "desc": "Jean Dupont né en 1850, il y en a des dizaines ! Croisez toujours plusieurs sources." },
+        "error3": { "title": "Faire confiance aux arbres en ligne", "desc": "Les arbres partagés contiennent souvent des erreurs recopiées. Vérifiez aux sources." },
+        "error4": { "title": "Ignorer les collatéraux", "desc": "Frères, sœurs, oncles... Leurs actes peuvent contenir des infos sur vos ancêtres." },
+        "error5": { "title": "Oublier les variations de noms", "desc": "Lefevre, Lefebvre, Le Fèvre... L'orthographe variait énormément. Pensez phonétique !" },
+        "error6": { "title": "Négliger le contexte historique", "desc": "Guerres, épidémies, migrations... Comprendre le contexte aide à expliquer les trous." },
+        "error7": { "title": "Vouloir aller trop vite", "desc": "La généalogie est un marathon, pas un sprint. Prenez le temps de bien documenter." }
+      },
+      "faq": {
+        "title": "7. Questions Fréquentes",
+        "q1": "Jusqu'où peut-on remonter gratuitement ?",
+        "a1": "En France, les registres paroissiaux commencent généralement au XVIe siècle (1539). Avec de la patience, vous pouvez remonter jusqu'à 15-20 générations gratuitement via les archives départementales.",
+        "q2": "Combien de temps faut-il pour retrouver ses ancêtres ?",
+        "a2": "Comptez quelques heures pour les arrière-grands-parents, quelques jours pour le XVIIIe siècle, et plusieurs mois/années pour une généalogie complète sur 10+ générations.",
+        "q3": "Faut-il savoir lire l'ancien français ?",
+        "a3": "Pour les documents récents (après 1800), non. Pour les registres plus anciens, la paléographie s'apprend progressivement. Des guides gratuits existent en ligne.",
+        "q4": "Comment organiser toutes ces informations ?",
+        "a4": "Utilisez un logiciel ou une application d'arbre généalogique comme AILA. Cela vous permet de centraliser les informations et de visualiser facilement votre arbre."
+      },
+      "cta": {
+        "title": "🌳 Prêt à Retrouver Vos Ancêtres ?",
+        "text": "Créez votre arbre généalogique gratuit avec AILA et organisez toutes vos découvertes. Partagez avec votre famille et préservez votre histoire.",
+        "button": "Créer Mon Arbre Gratuit"
+      }
     },
     "traditions": {
       "metaTitle": "Traditions Familiales : 50 Idées pour Créer et Perpétuer les Vôtres | AILA",

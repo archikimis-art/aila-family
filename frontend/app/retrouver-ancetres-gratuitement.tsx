@@ -1,23 +1,23 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, Platform, Linking } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SEOFooter } from '@/components/SEOFooter';
 import { SEOBreadcrumbs, BREADCRUMB_CONFIGS } from '@/components/SEOBreadcrumbs';
-import { RelatedArticles, ContextualCTA } from '@/components/RelatedArticles';
+import { RelatedArticles } from '@/components/RelatedArticles';
+import { useTranslation } from 'react-i18next';
 
-const SEOHead = () => {
+const SEOHead = ({ t }: { t: any }) => {
   useEffect(() => {
     if (Platform.OS === 'web' && typeof document !== 'undefined') {
-      document.title = 'Comment Retrouver ses Ancêtres Gratuitement : Guide Complet 2025 | AILA';
-      
+      document.title = t('seoPages.ancestors.metaTitle');
       let metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) {
-        metaDesc.setAttribute('content', 'Découvrez comment retrouver vos ancêtres gratuitement en 2025. Guide complet avec archives en ligne, registres d\'état civil, méthodes de recherche et outils gratuits. Par des généalogistes experts.');
+        metaDesc.setAttribute('content', t('seoPages.ancestors.metaDescription'));
       }
     }
-  }, []);
+  }, [t]);
   return null;
 };
 
@@ -33,12 +33,12 @@ const SectionCard = ({ icon, title, children }: { icon: string; title: string; c
 
 export default function RetrouverAncetres() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView style={styles.container}>
-      <SEOHead />
+      <SEOHead t={t} />
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
         <View style={styles.header}>
           <Pressable onPress={() => router.push('/')} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#D4AF37" />
@@ -48,382 +48,266 @@ export default function RetrouverAncetres() {
           </Pressable>
         </View>
 
-        {/* Breadcrumb SEO */}
         <SEOBreadcrumbs items={BREADCRUMB_CONFIGS['retrouver-ancetres-gratuitement']} />
 
-        {/* Hero */}
         <View style={styles.hero}>
-          <Text style={styles.badge}>📚 Guide Expert • Mis à jour janvier 2025</Text>
-          <Text style={styles.h1}>Comment Retrouver ses Ancêtres Gratuitement</Text>
-          <Text style={styles.subtitle}>
-            Le guide complet pour débuter vos recherches généalogiques sans dépenser un centime. 
-            Méthodes, ressources et outils gratuits testés par notre équipe.
-          </Text>
+          <Text style={styles.badge}>{t('seoPages.ancestors.badge')}</Text>
+          <Text style={styles.h1}>{t('seoPages.ancestors.title')}</Text>
+          <Text style={styles.subtitle}>{t('seoPages.ancestors.subtitle')}</Text>
           
-          {/* Author box - EEAT */}
           <View style={styles.authorBox}>
             <View style={styles.authorAvatar}>
               <Text style={styles.authorAvatarText}>👨‍🏫</Text>
             </View>
             <View style={styles.authorInfo}>
-              <Text style={styles.authorName}>Rédigé par l'équipe AILA</Text>
-              <Text style={styles.authorCredentials}>Experts en généalogie • 10+ ans d'expérience</Text>
-              <Text style={styles.authorDate}>Dernière mise à jour : 12 janvier 2025</Text>
+              <Text style={styles.authorName}>{t('seoPages.ancestors.authorName')}</Text>
+              <Text style={styles.authorCredentials}>{t('seoPages.ancestors.authorCredentials')}</Text>
+              <Text style={styles.authorDate}>{t('seoPages.ancestors.authorDate')}</Text>
             </View>
           </View>
         </View>
 
-        {/* Table of Contents */}
         <View style={styles.tocBox}>
-          <Text style={styles.tocTitle}>📑 Sommaire</Text>
-          <Text style={styles.tocItem}>1. Par où commencer ses recherches ?</Text>
-          <Text style={styles.tocItem}>2. Les archives en ligne gratuites</Text>
-          <Text style={styles.tocItem}>3. Les registres d'état civil</Text>
-          <Text style={styles.tocItem}>4. Les bases de données généalogiques</Text>
-          <Text style={styles.tocItem}>5. Méthode pas à pas</Text>
-          <Text style={styles.tocItem}>6. Erreurs à éviter</Text>
-          <Text style={styles.tocItem}>7. FAQ</Text>
+          <Text style={styles.tocTitle}>{t('seoPages.ancestors.tocTitle')}</Text>
+          <Text style={styles.tocItem}>{t('seoPages.ancestors.toc.item1')}</Text>
+          <Text style={styles.tocItem}>{t('seoPages.ancestors.toc.item2')}</Text>
+          <Text style={styles.tocItem}>{t('seoPages.ancestors.toc.item3')}</Text>
+          <Text style={styles.tocItem}>{t('seoPages.ancestors.toc.item4')}</Text>
+          <Text style={styles.tocItem}>{t('seoPages.ancestors.toc.item5')}</Text>
+          <Text style={styles.tocItem}>{t('seoPages.ancestors.toc.item6')}</Text>
+          <Text style={styles.tocItem}>{t('seoPages.ancestors.toc.item7')}</Text>
         </View>
 
-        {/* Featured Snippet Box */}
         <View style={styles.featuredSnippet}>
-          <Text style={styles.featuredSnippetTitle}>💡 En bref : Comment retrouver ses ancêtres gratuitement ?</Text>
-          <Text style={styles.featuredSnippetText}>
-            Pour retrouver vos ancêtres gratuitement, commencez par interroger votre famille, 
-            puis consultez les archives départementales en ligne (état civil, recensements). 
-            Utilisez des outils gratuits comme FamilySearch ou Geneanet pour élargir vos recherches. 
-            Organisez tout dans un arbre généalogique numérique comme AILA.
-          </Text>
+          <Text style={styles.featuredSnippetTitle}>{t('seoPages.ancestors.summaryTitle')}</Text>
+          <Text style={styles.featuredSnippetText}>{t('seoPages.ancestors.summaryText')}</Text>
         </View>
 
         {/* Section 1 */}
         <View style={styles.section}>
-          <Text style={styles.h2}>1. Par Où Commencer ses Recherches Généalogiques ?</Text>
-          
-          <Text style={styles.paragraph}>
-            Avant de vous plonger dans les archives poussiéreuses (ou leurs versions numériques), 
-            la première étape est souvent la plus simple et la plus riche : <Text style={styles.bold}>parler à votre famille</Text>.
-          </Text>
+          <Text style={styles.h2}>{t('seoPages.ancestors.section1.title')}</Text>
+          <Text style={styles.paragraph}>{t('seoPages.ancestors.section1.intro')}</Text>
 
           <View style={styles.tipBox}>
-            <Text style={styles.tipTitle}>🎯 Conseil d'expert</Text>
-            <Text style={styles.tipText}>
-              Commencez TOUJOURS par ce que vous savez. Notez les noms, dates et lieux que vous 
-              connaissez déjà. Chaque information est un fil à tirer.
-            </Text>
+            <Text style={styles.tipTitle}>{t('seoPages.ancestors.section1.tipTitle')}</Text>
+            <Text style={styles.tipText}>{t('seoPages.ancestors.section1.tipText')}</Text>
           </View>
 
-          <Text style={styles.h3}>Les informations à collecter en priorité :</Text>
+          <Text style={styles.h3}>{t('seoPages.ancestors.section1.checklistTitle')}</Text>
           
           <View style={styles.checkList}>
-            <Text style={styles.checkItem}>✅ Noms et prénoms complets (y compris noms de jeune fille)</Text>
-            <Text style={styles.checkItem}>✅ Dates de naissance, mariage, décès</Text>
-            <Text style={styles.checkItem}>✅ Lieux (commune, département)</Text>
-            <Text style={styles.checkItem}>✅ Professions</Text>
-            <Text style={styles.checkItem}>✅ Anecdotes et histoires familiales</Text>
-            <Text style={styles.checkItem}>✅ Photos anciennes avec noms au dos</Text>
+            <Text style={styles.checkItem}>{t('seoPages.ancestors.section1.check1')}</Text>
+            <Text style={styles.checkItem}>{t('seoPages.ancestors.section1.check2')}</Text>
+            <Text style={styles.checkItem}>{t('seoPages.ancestors.section1.check3')}</Text>
+            <Text style={styles.checkItem}>{t('seoPages.ancestors.section1.check4')}</Text>
+            <Text style={styles.checkItem}>{t('seoPages.ancestors.section1.check5')}</Text>
+            <Text style={styles.checkItem}>{t('seoPages.ancestors.section1.check6')}</Text>
           </View>
 
-          <Text style={styles.paragraph}>
-            N'oubliez pas de fouiller dans les tiroirs ! Livrets de famille, faire-part, 
-            lettres anciennes... Ces documents sont des mines d'or.
-          </Text>
+          <Text style={styles.paragraph}>{t('seoPages.ancestors.section1.outro')}</Text>
         </View>
 
         {/* Section 2 */}
         <View style={[styles.section, styles.sectionAlt]}>
-          <Text style={styles.h2}>2. Les Archives Départementales en Ligne (100% Gratuit)</Text>
-          
-          <Text style={styles.paragraph}>
-            <Text style={styles.bold}>Bonne nouvelle :</Text> la quasi-totalité des archives départementales 
-            françaises sont numérisées et accessibles gratuitement en ligne. C'est LA ressource 
-            incontournable pour tout généalogiste.
-          </Text>
+          <Text style={styles.h2}>{t('seoPages.ancestors.section2.title')}</Text>
+          <Text style={styles.paragraph}>{t('seoPages.ancestors.section2.intro')}</Text>
 
-          <SectionCard icon="🏛️" title="Ce que vous y trouverez">
-            <Text style={styles.cardText}>• Registres paroissiaux (avant 1792)</Text>
-            <Text style={styles.cardText}>• État civil (naissances, mariages, décès)</Text>
-            <Text style={styles.cardText}>• Recensements de population</Text>
-            <Text style={styles.cardText}>• Registres matricules militaires</Text>
-            <Text style={styles.cardText}>• Tables décennales</Text>
-            <Text style={styles.cardText}>• Cadastres et plans anciens</Text>
+          <SectionCard icon="🏛️" title={t('seoPages.ancestors.section2.cardTitle')}>
+            <Text style={styles.cardText}>{t('seoPages.ancestors.section2.card1')}</Text>
+            <Text style={styles.cardText}>{t('seoPages.ancestors.section2.card2')}</Text>
+            <Text style={styles.cardText}>{t('seoPages.ancestors.section2.card3')}</Text>
+            <Text style={styles.cardText}>{t('seoPages.ancestors.section2.card4')}</Text>
+            <Text style={styles.cardText}>{t('seoPages.ancestors.section2.card5')}</Text>
+            <Text style={styles.cardText}>{t('seoPages.ancestors.section2.card6')}</Text>
           </SectionCard>
 
-          <Text style={styles.h3}>Comment accéder aux archives de votre département ?</Text>
-          
-          <Text style={styles.paragraph}>
-            Recherchez "archives départementales + [nom du département]" sur Google, ou consultez 
-            le portail France Archives qui recense tous les sites.
-          </Text>
+          <Text style={styles.h3}>{t('seoPages.ancestors.section2.accessTitle')}</Text>
+          <Text style={styles.paragraph}>{t('seoPages.ancestors.section2.accessText')}</Text>
 
           <View style={styles.warningBox}>
-            <Text style={styles.warningTitle}>⚠️ Attention</Text>
-            <Text style={styles.warningText}>
-              Les registres de moins de 75 ans (naissances) ou 25 ans (mariages/décès) ne sont 
-              généralement pas en ligne pour des raisons de vie privée.
-            </Text>
+            <Text style={styles.warningTitle}>{t('seoPages.ancestors.section2.warningTitle')}</Text>
+            <Text style={styles.warningText}>{t('seoPages.ancestors.section2.warningText')}</Text>
           </View>
         </View>
 
         {/* Section 3 */}
         <View style={styles.section}>
-          <Text style={styles.h2}>3. Les Registres d'État Civil : Mode d'Emploi</Text>
-          
-          <Text style={styles.paragraph}>
-            Les registres d'état civil sont tenus en double exemplaire depuis 1792 : 
-            un en mairie, un aux archives départementales. Voici comment les exploiter.
-          </Text>
-
-          <Text style={styles.h3}>La méthode des tables décennales</Text>
-          
-          <Text style={styles.paragraph}>
-            Les tables décennales sont des index qui récapitulent tous les actes sur 10 ans. 
-            C'est votre meilleur ami pour trouver rapidement un acte !
-          </Text>
+          <Text style={styles.h2}>{t('seoPages.ancestors.section3.title')}</Text>
+          <Text style={styles.paragraph}>{t('seoPages.ancestors.section3.intro')}</Text>
+          <Text style={styles.h3}>{t('seoPages.ancestors.section3.methodTitle')}</Text>
+          <Text style={styles.paragraph}>{t('seoPages.ancestors.section3.methodText')}</Text>
 
           <View style={styles.stepsBox}>
             <View style={styles.step}>
               <View style={styles.stepNum}><Text style={styles.stepNumText}>1</Text></View>
-              <Text style={styles.stepText}>Identifiez la commune et la période approximative</Text>
+              <Text style={styles.stepText}>{t('seoPages.ancestors.section3.step1')}</Text>
             </View>
             <View style={styles.step}>
               <View style={styles.stepNum}><Text style={styles.stepNumText}>2</Text></View>
-              <Text style={styles.stepText}>Consultez la table décennale correspondante</Text>
+              <Text style={styles.stepText}>{t('seoPages.ancestors.section3.step2')}</Text>
             </View>
             <View style={styles.step}>
               <View style={styles.stepNum}><Text style={styles.stepNumText}>3</Text></View>
-              <Text style={styles.stepText}>Trouvez le nom et notez l'année exacte</Text>
+              <Text style={styles.stepText}>{t('seoPages.ancestors.section3.step3')}</Text>
             </View>
             <View style={styles.step}>
               <View style={styles.stepNum}><Text style={styles.stepNumText}>4</Text></View>
-              <Text style={styles.stepText}>Accédez au registre de cette année</Text>
+              <Text style={styles.stepText}>{t('seoPages.ancestors.section3.step4')}</Text>
             </View>
             <View style={styles.step}>
               <View style={styles.stepNum}><Text style={styles.stepNumText}>5</Text></View>
-              <Text style={styles.stepText}>Lisez l'acte complet et notez les informations</Text>
+              <Text style={styles.stepText}>{t('seoPages.ancestors.section3.step5')}</Text>
             </View>
           </View>
         </View>
 
         {/* Section 4 */}
         <View style={[styles.section, styles.sectionAlt]}>
-          <Text style={styles.h2}>4. Les Bases de Données Généalogiques Gratuites</Text>
-          
-          <Text style={styles.paragraph}>
-            En plus des archives officielles, plusieurs sites communautaires offrent des 
-            ressources précieuses gratuitement.
-          </Text>
+          <Text style={styles.h2}>{t('seoPages.ancestors.section4.title')}</Text>
+          <Text style={styles.paragraph}>{t('seoPages.ancestors.section4.intro')}</Text>
 
           <View style={styles.resourceCard}>
-            <Text style={styles.resourceName}>🌍 FamilySearch.org</Text>
-            <Text style={styles.resourceDesc}>
-              La plus grande base gratuite au monde. Des milliards de documents numérisés 
-              et des arbres généalogiques partagés. 100% gratuit, géré par les Mormons.
-            </Text>
-            <Text style={styles.resourcePros}>✅ Gratuit • Énorme base • International</Text>
+            <Text style={styles.resourceName}>{t('seoPages.ancestors.section4.resource1.name')}</Text>
+            <Text style={styles.resourceDesc}>{t('seoPages.ancestors.section4.resource1.desc')}</Text>
+            <Text style={styles.resourcePros}>{t('seoPages.ancestors.section4.resource1.pros')}</Text>
           </View>
 
           <View style={styles.resourceCard}>
-            <Text style={styles.resourceName}>🇫🇷 Geneanet.org</Text>
-            <Text style={styles.resourceDesc}>
-              Le leader français. Version gratuite généreuse avec accès aux arbres partagés 
-              et à de nombreuses bases de données collaboratives.
-            </Text>
-            <Text style={styles.resourcePros}>✅ En français • Communauté active • Arbres partagés</Text>
+            <Text style={styles.resourceName}>{t('seoPages.ancestors.section4.resource2.name')}</Text>
+            <Text style={styles.resourceDesc}>{t('seoPages.ancestors.section4.resource2.desc')}</Text>
+            <Text style={styles.resourcePros}>{t('seoPages.ancestors.section4.resource2.pros')}</Text>
           </View>
 
           <View style={styles.resourceCard}>
-            <Text style={styles.resourceName}>📋 Filae.com</Text>
-            <Text style={styles.resourceDesc}>
-              Accès gratuit limité mais utile pour les relevés d'état civil. 
-              Version payante pour l'accès complet aux archives.
-            </Text>
-            <Text style={styles.resourcePros}>✅ Relevés indexés • Recherche facile</Text>
+            <Text style={styles.resourceName}>{t('seoPages.ancestors.section4.resource3.name')}</Text>
+            <Text style={styles.resourceDesc}>{t('seoPages.ancestors.section4.resource3.desc')}</Text>
+            <Text style={styles.resourcePros}>{t('seoPages.ancestors.section4.resource3.pros')}</Text>
           </View>
 
           <View style={styles.resourceCard}>
-            <Text style={styles.resourceName}>⚔️ Mémoire des Hommes</Text>
-            <Text style={styles.resourceDesc}>
-              Site officiel du Ministère des Armées. Fiches de soldats morts pour la France, 
-              journaux de marche, registres matricules.
-            </Text>
-            <Text style={styles.resourcePros}>✅ 100% gratuit • Officiel • Détaillé</Text>
+            <Text style={styles.resourceName}>{t('seoPages.ancestors.section4.resource4.name')}</Text>
+            <Text style={styles.resourceDesc}>{t('seoPages.ancestors.section4.resource4.desc')}</Text>
+            <Text style={styles.resourcePros}>{t('seoPages.ancestors.section4.resource4.pros')}</Text>
           </View>
         </View>
 
-        {/* Section 5 */}
+        {/* Section 5 - Timeline */}
         <View style={styles.section}>
-          <Text style={styles.h2}>5. Méthode Pas à Pas : Votre Premier Mois de Recherche</Text>
+          <Text style={styles.h2}>{t('seoPages.ancestors.section5.title')}</Text>
 
           <View style={styles.timelineBox}>
             <View style={styles.timelineItem}>
-              <Text style={styles.timelineWeek}>Semaine 1</Text>
-              <Text style={styles.timelineTitle}>Collecte familiale</Text>
-              <Text style={styles.timelineDesc}>
-                Interrogez parents, grands-parents, oncles, tantes. Photographiez tous les documents. 
-                Créez votre arbre avec ce que vous savez.
-              </Text>
+              <Text style={styles.timelineWeek}>{t('seoPages.ancestors.section5.week1.label')}</Text>
+              <Text style={styles.timelineTitle}>{t('seoPages.ancestors.section5.week1.title')}</Text>
+              <Text style={styles.timelineDesc}>{t('seoPages.ancestors.section5.week1.desc')}</Text>
             </View>
-            
             <View style={styles.timelineItem}>
-              <Text style={styles.timelineWeek}>Semaine 2</Text>
-              <Text style={styles.timelineTitle}>Archives en ligne</Text>
-              <Text style={styles.timelineDesc}>
-                Identifiez les communes d'origine. Accédez aux archives départementales. 
-                Recherchez les actes de vos grands-parents.
-              </Text>
+              <Text style={styles.timelineWeek}>{t('seoPages.ancestors.section5.week2.label')}</Text>
+              <Text style={styles.timelineTitle}>{t('seoPages.ancestors.section5.week2.title')}</Text>
+              <Text style={styles.timelineDesc}>{t('seoPages.ancestors.section5.week2.desc')}</Text>
             </View>
-            
             <View style={styles.timelineItem}>
-              <Text style={styles.timelineWeek}>Semaine 3</Text>
-              <Text style={styles.timelineTitle}>Remontée génération</Text>
-              <Text style={styles.timelineDesc}>
-                Utilisez les informations des actes pour remonter. Les actes de mariage 
-                mentionnent souvent les parents des époux.
-              </Text>
+              <Text style={styles.timelineWeek}>{t('seoPages.ancestors.section5.week3.label')}</Text>
+              <Text style={styles.timelineTitle}>{t('seoPages.ancestors.section5.week3.title')}</Text>
+              <Text style={styles.timelineDesc}>{t('seoPages.ancestors.section5.week3.desc')}</Text>
             </View>
-            
             <View style={styles.timelineItem}>
-              <Text style={styles.timelineWeek}>Semaine 4</Text>
-              <Text style={styles.timelineTitle}>Consolidation</Text>
-              <Text style={styles.timelineDesc}>
-                Vérifiez vos sources. Complétez votre arbre. Identifiez les "murs de briques" 
-                à creuser plus tard.
-              </Text>
+              <Text style={styles.timelineWeek}>{t('seoPages.ancestors.section5.week4.label')}</Text>
+              <Text style={styles.timelineTitle}>{t('seoPages.ancestors.section5.week4.title')}</Text>
+              <Text style={styles.timelineDesc}>{t('seoPages.ancestors.section5.week4.desc')}</Text>
             </View>
           </View>
         </View>
 
-        {/* Section 6 */}
+        {/* Section 6 - Errors */}
         <View style={[styles.section, styles.sectionAlt]}>
-          <Text style={styles.h2}>6. Les 7 Erreurs à Éviter en Généalogie</Text>
+          <Text style={styles.h2}>{t('seoPages.ancestors.section6.title')}</Text>
 
           <View style={styles.errorCard}>
             <Text style={styles.errorNum}>❌ 1</Text>
-            <Text style={styles.errorTitle}>Ne pas citer ses sources</Text>
-            <Text style={styles.errorDesc}>
-              Notez TOUJOURS d'où vient chaque information. Dans 6 mois, vous ne vous 
-              souviendrez plus pourquoi vous avez cette date.
-            </Text>
+            <View style={styles.errorContent}>
+              <Text style={styles.errorTitle}>{t('seoPages.ancestors.section6.error1.title')}</Text>
+              <Text style={styles.errorDesc}>{t('seoPages.ancestors.section6.error1.desc')}</Text>
+            </View>
           </View>
-
           <View style={styles.errorCard}>
             <Text style={styles.errorNum}>❌ 2</Text>
-            <Text style={styles.errorTitle}>Confondre homonymes</Text>
-            <Text style={styles.errorDesc}>
-              Jean Dupont né en 1850 à Lyon, il y en a des dizaines ! Croisez toujours 
-              plusieurs sources avant de valider.
-            </Text>
+            <View style={styles.errorContent}>
+              <Text style={styles.errorTitle}>{t('seoPages.ancestors.section6.error2.title')}</Text>
+              <Text style={styles.errorDesc}>{t('seoPages.ancestors.section6.error2.desc')}</Text>
+            </View>
           </View>
-
           <View style={styles.errorCard}>
             <Text style={styles.errorNum}>❌ 3</Text>
-            <Text style={styles.errorTitle}>Faire confiance aux arbres en ligne</Text>
-            <Text style={styles.errorDesc}>
-              Les arbres partagés contiennent souvent des erreurs recopiées. Vérifiez 
-              systématiquement avec les sources originales.
-            </Text>
+            <View style={styles.errorContent}>
+              <Text style={styles.errorTitle}>{t('seoPages.ancestors.section6.error3.title')}</Text>
+              <Text style={styles.errorDesc}>{t('seoPages.ancestors.section6.error3.desc')}</Text>
+            </View>
           </View>
-
           <View style={styles.errorCard}>
             <Text style={styles.errorNum}>❌ 4</Text>
-            <Text style={styles.errorTitle}>Ignorer les collatéraux</Text>
-            <Text style={styles.errorDesc}>
-              Frères, sœurs, oncles... Leurs actes peuvent contenir des infos sur vos 
-              ancêtres directs que vous ne trouvez pas ailleurs.
-            </Text>
+            <View style={styles.errorContent}>
+              <Text style={styles.errorTitle}>{t('seoPages.ancestors.section6.error4.title')}</Text>
+              <Text style={styles.errorDesc}>{t('seoPages.ancestors.section6.error4.desc')}</Text>
+            </View>
           </View>
-
           <View style={styles.errorCard}>
             <Text style={styles.errorNum}>❌ 5</Text>
-            <Text style={styles.errorTitle}>Oublier les variations de noms</Text>
-            <Text style={styles.errorDesc}>
-              Lefevre, Lefebvre, Le Fèvre, Lefèvre... L'orthographe variait énormément. 
-              Pensez phonétique !
-            </Text>
+            <View style={styles.errorContent}>
+              <Text style={styles.errorTitle}>{t('seoPages.ancestors.section6.error5.title')}</Text>
+              <Text style={styles.errorDesc}>{t('seoPages.ancestors.section6.error5.desc')}</Text>
+            </View>
           </View>
-
           <View style={styles.errorCard}>
             <Text style={styles.errorNum}>❌ 6</Text>
-            <Text style={styles.errorTitle}>Négliger le contexte historique</Text>
-            <Text style={styles.errorDesc}>
-              Guerres, épidémies, migrations... Comprendre le contexte aide à expliquer 
-              les "trous" dans les archives.
-            </Text>
+            <View style={styles.errorContent}>
+              <Text style={styles.errorTitle}>{t('seoPages.ancestors.section6.error6.title')}</Text>
+              <Text style={styles.errorDesc}>{t('seoPages.ancestors.section6.error6.desc')}</Text>
+            </View>
           </View>
-
           <View style={styles.errorCard}>
             <Text style={styles.errorNum}>❌ 7</Text>
-            <Text style={styles.errorTitle}>Vouloir aller trop vite</Text>
-            <Text style={styles.errorDesc}>
-              La généalogie est un marathon, pas un sprint. Prenez le temps de bien 
-              documenter chaque génération.
-            </Text>
+            <View style={styles.errorContent}>
+              <Text style={styles.errorTitle}>{t('seoPages.ancestors.section6.error7.title')}</Text>
+              <Text style={styles.errorDesc}>{t('seoPages.ancestors.section6.error7.desc')}</Text>
+            </View>
           </View>
         </View>
 
         {/* FAQ */}
         <View style={styles.section}>
-          <Text style={styles.h2}>7. Questions Fréquentes</Text>
+          <Text style={styles.h2}>{t('seoPages.ancestors.faq.title')}</Text>
 
           <View style={styles.faqItem}>
-            <Text style={styles.faqQuestion}>Jusqu'où peut-on remonter gratuitement ?</Text>
-            <Text style={styles.faqAnswer}>
-              En France, les registres paroissiaux commencent généralement au XVIe siècle (1539). 
-              Avec de la patience, vous pouvez donc remonter jusqu'à 15-20 générations, 
-              soit potentiellement le Moyen Âge tardif, gratuitement via les archives départementales.
-            </Text>
+            <Text style={styles.faqQuestion}>{t('seoPages.ancestors.faq.q1')}</Text>
+            <Text style={styles.faqAnswer}>{t('seoPages.ancestors.faq.a1')}</Text>
           </View>
-
           <View style={styles.faqItem}>
-            <Text style={styles.faqQuestion}>Combien de temps faut-il pour retrouver ses ancêtres ?</Text>
-            <Text style={styles.faqAnswer}>
-              Comptez quelques heures pour remonter jusqu'aux arrière-grands-parents, 
-              quelques jours pour atteindre le XVIIIe siècle, et plusieurs mois/années 
-              pour une généalogie complète sur 10+ générations.
-            </Text>
+            <Text style={styles.faqQuestion}>{t('seoPages.ancestors.faq.q2')}</Text>
+            <Text style={styles.faqAnswer}>{t('seoPages.ancestors.faq.a2')}</Text>
           </View>
-
           <View style={styles.faqItem}>
-            <Text style={styles.faqQuestion}>Faut-il savoir lire l'ancien français ?</Text>
-            <Text style={styles.faqAnswer}>
-              Pour les documents récents (après 1800), non. Pour les registres plus anciens, 
-              la paléographie (lecture des écritures anciennes) s'apprend progressivement. 
-              Des guides et tutoriels gratuits existent en ligne.
-            </Text>
+            <Text style={styles.faqQuestion}>{t('seoPages.ancestors.faq.q3')}</Text>
+            <Text style={styles.faqAnswer}>{t('seoPages.ancestors.faq.a3')}</Text>
           </View>
-
           <View style={styles.faqItem}>
-            <Text style={styles.faqQuestion}>Comment organiser toutes ces informations ?</Text>
-            <Text style={styles.faqAnswer}>
-              Utilisez un logiciel ou une application d'arbre généalogique comme AILA. 
-              Cela vous permet de centraliser les informations, d'ajouter des sources, 
-              et de visualiser facilement votre arbre.
-            </Text>
+            <Text style={styles.faqQuestion}>{t('seoPages.ancestors.faq.q4')}</Text>
+            <Text style={styles.faqAnswer}>{t('seoPages.ancestors.faq.a4')}</Text>
           </View>
         </View>
 
         {/* CTA */}
         <View style={[styles.section, styles.ctaSection]}>
-          <Text style={styles.ctaTitle}>🌳 Prêt à Retrouver Vos Ancêtres ?</Text>
-          <Text style={styles.ctaText}>
-            Créez votre arbre généalogique gratuit avec AILA et organisez toutes vos 
-            découvertes. Partagez avec votre famille et préservez votre histoire.
-          </Text>
+          <Text style={styles.ctaTitle}>{t('seoPages.ancestors.cta.title')}</Text>
+          <Text style={styles.ctaText}>{t('seoPages.ancestors.cta.text')}</Text>
           
-          <Pressable 
-            style={styles.ctaButton}
-            onPress={() => router.push('/(auth)/register')}
-          >
-            <Text style={styles.ctaButtonText}>Créer Mon Arbre Gratuit</Text>
+          <Pressable style={styles.ctaButton} onPress={() => router.push('/(auth)/register')}>
+            <Text style={styles.ctaButtonText}>{t('seoPages.ancestors.cta.button')}</Text>
             <Ionicons name="arrow-forward" size={20} color="#0A1628" />
           </Pressable>
         </View>
 
-        {/* Related Articles - Internal Linking */}
         <RelatedArticles silo="genealogie" currentPage="/retrouver-ancetres-gratuitement" />
-
-        {/* SEO Footer */}
         <SEOFooter currentPage="/retrouver-ancetres-gratuitement" />
       </ScrollView>
     </SafeAreaView>
@@ -436,8 +320,6 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', padding: 20, gap: 16 },
   backButton: { padding: 4 },
   logoText: { fontSize: 20, fontWeight: 'bold', color: '#D4AF37' },
-  breadcrumb: { paddingHorizontal: 20, marginBottom: 10 },
-  breadcrumbText: { fontSize: 12, color: '#6B7C93' },
   hero: { padding: 24, paddingTop: 10 },
   badge: { backgroundColor: 'rgba(76, 175, 80, 0.2)', color: '#4CAF50', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16, fontSize: 12, fontWeight: '600', alignSelf: 'flex-start', marginBottom: 16 },
   h1: { fontSize: 28, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 16, lineHeight: 36 },
@@ -460,7 +342,6 @@ const styles = StyleSheet.create({
   h2: { fontSize: 22, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 16 },
   h3: { fontSize: 18, fontWeight: '600', color: '#D4AF37', marginBottom: 12, marginTop: 20 },
   paragraph: { fontSize: 15, color: '#B8C5D6', lineHeight: 26, marginBottom: 16 },
-  bold: { fontWeight: 'bold', color: '#FFFFFF' },
   tipBox: { backgroundColor: 'rgba(212, 175, 55, 0.1)', borderRadius: 12, padding: 16, marginVertical: 16, borderLeftWidth: 4, borderLeftColor: '#D4AF37' },
   tipTitle: { fontSize: 14, fontWeight: 'bold', color: '#D4AF37', marginBottom: 8 },
   tipText: { fontSize: 14, color: '#B8C5D6', lineHeight: 22 },
@@ -490,8 +371,9 @@ const styles = StyleSheet.create({
   timelineDesc: { fontSize: 14, color: '#B8C5D6', lineHeight: 22 },
   errorCard: { backgroundColor: '#1A2A44', borderRadius: 12, padding: 16, marginBottom: 12, flexDirection: 'row', alignItems: 'flex-start' },
   errorNum: { fontSize: 18, marginRight: 12, width: 30 },
+  errorContent: { flex: 1 },
   errorTitle: { fontSize: 15, fontWeight: 'bold', color: '#FF6B6B', marginBottom: 4 },
-  errorDesc: { fontSize: 13, color: '#B8C5D6', lineHeight: 20, flex: 1 },
+  errorDesc: { fontSize: 13, color: '#B8C5D6', lineHeight: 20 },
   faqItem: { backgroundColor: '#1A2A44', borderRadius: 12, padding: 20, marginBottom: 16 },
   faqQuestion: { fontSize: 16, fontWeight: '600', color: '#D4AF37', marginBottom: 12 },
   faqAnswer: { fontSize: 14, color: '#B8C5D6', lineHeight: 24 },
@@ -500,8 +382,4 @@ const styles = StyleSheet.create({
   ctaText: { fontSize: 16, color: '#B8C5D6', textAlign: 'center', lineHeight: 24, maxWidth: 500, marginBottom: 24 },
   ctaButton: { backgroundColor: '#D4AF37', paddingHorizontal: 32, paddingVertical: 16, borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 8 },
   ctaButtonText: { color: '#0A1628', fontSize: 18, fontWeight: '600' },
-  footer: { padding: 40, alignItems: 'center', borderTopWidth: 1, borderTopColor: '#2A3F5A' },
-  footerText: { fontSize: 14, color: '#6B7C93', marginBottom: 16 },
-  footerLinks: { flexDirection: 'row', gap: 24 },
-  footerLink: { fontSize: 14, color: '#D4AF37' },
 });
