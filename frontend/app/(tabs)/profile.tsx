@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   Alert,
   ActivityIndicator,
@@ -16,10 +16,12 @@ import { useAuth } from '@/context/AuthContext';
 import api, { gdprAPI, treeAPI, exportAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdBanner from '@/components/AdBanner';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, logout, isAdmin } = useAuth();
+  const { t } = useTranslation();
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -40,9 +42,9 @@ export default function ProfileScreen() {
     } catch (error) {
       console.error('Logout error:', error);
       if (Platform.OS === 'web') {
-        window.alert('Problème lors de la déconnexion');
+        window.alert(t('profile.logoutError'));
       } else {
-        Alert.alert('Erreur', 'Problème lors de la déconnexion');
+        Alert.alert(t('common.error'), t('profile.logoutError'));
       }
     } finally {
       setLoggingOut(false);
@@ -52,19 +54,19 @@ export default function ProfileScreen() {
   const handleLogout = async () => {
     if (Platform.OS === 'web') {
       // On web, use window.confirm instead of Alert
-      const confirmed = window.confirm('Êtes-vous sûr de vouloir vous déconnecter ?');
+      const confirmed = window.confirm(t('profile.confirmLogout'));
       if (confirmed) {
         await performLogout();
       }
     } else {
       // On mobile, use Alert
       Alert.alert(
-        'Déconnexion',
-        'Êtes-vous sûr de vouloir vous déconnecter ?',
+        t('auth.logout'),
+        t('profile.confirmLogout'),
         [
-          { text: 'Annuler', style: 'cancel' },
+          { text: t('common.cancel'), style: 'cancel' },
           {
-            text: 'Déconnexion',
+            text: t('auth.logout'),
             style: 'destructive',
             onPress: performLogout,
           },
@@ -76,7 +78,7 @@ export default function ProfileScreen() {
   const handleExportData = async () => {
     if (!user) {
       if (Platform.OS === 'web') {
-        window.alert('Créez un compte pour exporter vos données.');
+        window.alert(t('profile.createAccountToExport'));
       } else {
         Alert.alert('Information', 'Créez un compte pour exporter vos données.');
       }
