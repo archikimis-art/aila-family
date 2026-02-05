@@ -21,24 +21,33 @@ Application React Native Expo déployée en web sur Vercel pour créer et gérer
 - **Genealogie-debutant-guide** (page SEO traduite)
 - **Retrouver-ancetres-gratuitement** (page SEO traduite - 7 sections complètes)
 - **Organiser-cousinade** (page SEO traduite)
+- **✅ traditions-familiales.tsx** (TRADUIT - 5 Février 2025)
+  - 6 sections complètes : Pourquoi les traditions, Quotidien, Fêtes, Culinaires, Vacances, Créer ses traditions
+  - Toutes les traductions en FR, EN, ES, DE, IT, PT
 
 ### 🟡 Pages SEO Restantes
-- traditions-familiales.tsx (à traduire - 500 lignes)
 - traditions-familiales-creer.tsx (à traduire)
+- Autres éléments d'interface (boutons, textes) à auditer
 
 ## Issues Connues
 1. **Backend persistence** (P1): Données stockées localement via AsyncStorage
-2. **Language selector flags** (P2): Drapeaux non affichés
-3. **Blog admin** (P2): Fonctionnalité incomplète
+2. **Community messages cache** (P2): Messages démo ne se rafraîchissent pas au changement de langue
+3. **Language selector flags** (P3): Drapeaux non affichés
+4. **Blog admin** (P3): Fonctionnalité incomplète
 
 ## Versions de Référence
 | Branche | Commit | Description |
 |---------|--------|-------------|
-| main | e51047b5f | Production avec pages SEO traduites |
+| i18n/seo-pages-complete | 230d31eb9 | Avec traditions-familiales traduit (dernière version) |
+| main | 64faa757a | Production stable précédente |
 | aila-stable | 2a28b01de | Backup précédent |
-| i18n/seo-pages-complete | e51047b5f | Identique à main |
 
 ## Règles de Développement
 1. Utiliser `Pressable` au lieu de `TouchableOpacity` pour compatibilité web
 2. Tester sur Vercel preview avant merge vers main
 3. Une page/feature par branche pour éviter régressions
+
+## Prochaines Tâches (P0)
+1. Valider sur Vercel preview la page traditions-familiales
+2. Merger vers main après validation
+3. Auditer et traduire les éléments d'interface restants (boutons, textes)
