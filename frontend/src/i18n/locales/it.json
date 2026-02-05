@@ -574,7 +574,103 @@
       "metaDescription": "Scopri come trovare i tuoi antenati gratis nel 2025. Guida completa con archivi online, registri civili, metodi di ricerca e strumenti gratuiti.",
       "badge": "📚 Guida Esperta • Gennaio 2025",
       "title": "Come Trovare i Tuoi Antenati Gratis",
-      "subtitle": "La guida completa per iniziare la tua ricerca genealogica senza spendere un centesimo. Metodi, risorse e strumenti gratuiti testati dal nostro team."
+      "subtitle": "La guida completa per iniziare la tua ricerca genealogica senza spendere un centesimo. Metodi, risorse e strumenti gratuiti testati dal nostro team.",
+      "authorName": "Scritto dal team AILA",
+      "authorCredentials": "Esperti di genealogia • 10+ anni di esperienza",
+      "authorDate": "Ultimo aggiornamento: Gennaio 2025",
+      "tocTitle": "📑 Indice",
+      "toc": {
+        "item1": "1. Da dove iniziare?",
+        "item2": "2. Archivi online gratuiti",
+        "item3": "3. Registri di stato civile",
+        "item4": "4. Database genealogici",
+        "item5": "5. Metodo passo per passo",
+        "item6": "6. Errori da evitare",
+        "item7": "7. FAQ"
+      },
+      "summaryTitle": "💡 In breve: Come trovare i tuoi antenati gratis?",
+      "summaryText": "Per trovare i tuoi antenati gratis, inizia intervistando la tua famiglia, poi consulta gli archivi dipartimentali online. Usa strumenti gratuiti come FamilySearch o Geneanet. Organizza tutto in un albero genealogico digitale come AILA.",
+      "section1": {
+        "title": "1. Da Dove Iniziare la Tua Ricerca?",
+        "intro": "Prima di immergerti negli archivi, il primo passo è spesso il più semplice: parlare con la tua famiglia.",
+        "tipTitle": "🎯 Consiglio dell'esperto",
+        "tipText": "Inizia SEMPRE con quello che sai. Annota nomi, date e luoghi che già conosci.",
+        "checklistTitle": "Informazioni prioritarie da raccogliere:",
+        "check1": "✅ Nomi completi (inclusi cognomi da nubile)",
+        "check2": "✅ Date di nascita, matrimonio, morte",
+        "check3": "✅ Luoghi (comune, regione)",
+        "check4": "✅ Professioni",
+        "check5": "✅ Aneddoti familiari",
+        "check6": "✅ Vecchie foto con nomi sul retro",
+        "outro": "Non dimenticare di cercare nei cassetti! Libretti di famiglia, partecipazioni, lettere antiche..."
+      },
+      "section2": {
+        "title": "2. Archivi Dipartimentali Online (100% Gratis)",
+        "intro": "Buone notizie: quasi tutti gli archivi dipartimentali francesi sono digitalizzati e accessibili gratuitamente online.",
+        "cardTitle": "Cosa troverai",
+        "card1": "• Registri parrocchiali (prima del 1792)",
+        "card2": "• Stato civile (nascite, matrimoni, morti)",
+        "card3": "• Censimenti",
+        "card4": "• Registri militari",
+        "card5": "• Tavole decennali",
+        "card6": "• Catasti e mappe antiche",
+        "accessTitle": "Come accedere agli archivi del tuo dipartimento?",
+        "accessText": "Cerca \"archivi dipartimentali + [nome dipartimento]\" su Google.",
+        "warningTitle": "⚠️ Attenzione",
+        "warningText": "I registri di meno di 75 anni (nascite) o 25 anni (matrimoni/morti) generalmente non sono online per privacy."
+      },
+      "section3": {
+        "title": "3. Registri di Stato Civile: Guida all'Uso",
+        "intro": "I registri di stato civile sono tenuti in duplice copia dal 1792.",
+        "methodTitle": "Il metodo delle tavole decennali",
+        "methodText": "Le tavole decennali sono indici che riassumono tutti gli atti in 10 anni. Il tuo miglior alleato!",
+        "step1": "Identifica il comune e il periodo approssimativo",
+        "step2": "Consulta la tavola decennale corrispondente",
+        "step3": "Trova il nome e annota l'anno esatto",
+        "step4": "Accedi al registro di quell'anno",
+        "step5": "Leggi l'atto completo e annota le informazioni"
+      },
+      "section4": {
+        "title": "4. Database Genealogici Gratuiti",
+        "intro": "Oltre agli archivi ufficiali, diversi siti comunitari offrono risorse preziose gratuitamente.",
+        "resource1": { "name": "🌍 FamilySearch.org", "desc": "Il più grande database gratuito al mondo. Miliardi di documenti.", "pros": "✅ Gratuito • Database enorme • Internazionale" },
+        "resource2": { "name": "🇫🇷 Geneanet.org", "desc": "Il leader francese. Versione gratuita generosa.", "pros": "✅ In francese • Comunità attiva" },
+        "resource3": { "name": "📋 Filae.com", "desc": "Accesso gratuito limitato ma utile per registri civili.", "pros": "✅ Registri indicizzati • Ricerca facile" },
+        "resource4": { "name": "⚔️ Mémoire des Hommes", "desc": "Sito ufficiale del Ministero delle Forze Armate.", "pros": "✅ 100% gratuito • Ufficiale" }
+      },
+      "section5": {
+        "title": "5. Passo Dopo Passo: Il Tuo Primo Mese",
+        "week1": { "label": "Settimana 1", "title": "Raccolta familiare", "desc": "Intervista genitori, nonni, zii. Fotografa tutti i documenti." },
+        "week2": { "label": "Settimana 2", "title": "Archivi online", "desc": "Identifica i comuni di origine. Accedi agli archivi dipartimentali." },
+        "week3": { "label": "Settimana 3", "title": "Risalire generazioni", "desc": "Usa le informazioni degli atti per risalire." },
+        "week4": { "label": "Settimana 4", "title": "Consolidamento", "desc": "Verifica le tue fonti. Completa il tuo albero." }
+      },
+      "section6": {
+        "title": "6. I 7 Errori da Evitare",
+        "error1": { "title": "Non citare le fonti", "desc": "Annota SEMPRE da dove viene ogni informazione." },
+        "error2": { "title": "Confondere omonimi", "desc": "Marco Rossi nato nel 1850, ce ne sono decine!" },
+        "error3": { "title": "Fidarsi degli alberi online", "desc": "Spesso contengono errori copiati." },
+        "error4": { "title": "Ignorare i collaterali", "desc": "Fratelli possono rivelare info sui tuoi antenati." },
+        "error5": { "title": "Dimenticare variazioni di nomi", "desc": "L'ortografia variava molto. Pensa foneticamente!" },
+        "error6": { "title": "Ignorare il contesto storico", "desc": "Guerre, epidemie... aiutano a spiegare i vuoti." },
+        "error7": { "title": "Voler andare troppo veloce", "desc": "La genealogia è una maratona, non uno sprint." }
+      },
+      "faq": {
+        "title": "7. Domande Frequenti",
+        "q1": "Quanto indietro si può andare gratis?",
+        "a1": "In Francia, i registri parrocchiali iniziano nel XVI secolo. Puoi risalire 15-20 generazioni gratis.",
+        "q2": "Quanto tempo serve per trovare antenati?",
+        "a2": "Qualche ora per bisnonni, qualche giorno per il XVIII secolo, diversi mesi per genealogia completa.",
+        "q3": "Bisogna saper leggere il francese antico?",
+        "a3": "Per documenti recenti (dopo il 1800) no. Per registri più antichi si impara gradualmente.",
+        "q4": "Come organizzare tutte queste informazioni?",
+        "a4": "Usa un software di albero genealogico come AILA."
+      },
+      "cta": {
+        "title": "🌳 Pronto a Trovare i Tuoi Antenati?",
+        "text": "Crea il tuo albero genealogico gratis con AILA e organizza tutte le tue scoperte.",
+        "button": "Crea il Mio Albero Gratis"
+      }
     },
     "traditions": {
       "metaTitle": "Tradizioni Familiari: 50 Idee per Creare e Perpetuare le Tue | AILA",

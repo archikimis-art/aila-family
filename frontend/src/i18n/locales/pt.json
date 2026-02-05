@@ -574,7 +574,103 @@
       "metaDescription": "Descubra como encontrar seus ancestrais de graça em 2025. Guia completo com arquivos online, registros civis, métodos de pesquisa e ferramentas gratuitas.",
       "badge": "📚 Guia Especialista • Janeiro 2025",
       "title": "Como Encontrar seus Ancestrais de Graça",
-      "subtitle": "O guia completo para começar sua pesquisa genealógica sem gastar um centavo. Métodos, recursos e ferramentas gratuitas testadas por nossa equipe."
+      "subtitle": "O guia completo para começar sua pesquisa genealógica sem gastar um centavo. Métodos, recursos e ferramentas gratuitas testadas por nossa equipe.",
+      "authorName": "Escrito pela equipe AILA",
+      "authorCredentials": "Especialistas em genealogia • 10+ anos de experiência",
+      "authorDate": "Última atualização: Janeiro 2025",
+      "tocTitle": "📑 Índice",
+      "toc": {
+        "item1": "1. Por onde começar?",
+        "item2": "2. Arquivos online gratuitos",
+        "item3": "3. Registros civis",
+        "item4": "4. Bancos de dados genealógicos",
+        "item5": "5. Método passo a passo",
+        "item6": "6. Erros a evitar",
+        "item7": "7. FAQ"
+      },
+      "summaryTitle": "💡 Em resumo: Como encontrar seus ancestrais de graça?",
+      "summaryText": "Para encontrar seus ancestrais de graça, comece entrevistando sua família, depois consulte os arquivos departamentais online. Use ferramentas gratuitas como FamilySearch ou Geneanet. Organize tudo em uma árvore genealógica digital como AILA.",
+      "section1": {
+        "title": "1. Por Onde Começar Sua Pesquisa?",
+        "intro": "Antes de mergulhar nos arquivos, o primeiro passo é frequentemente o mais simples: conversar com sua família.",
+        "tipTitle": "🎯 Dica de especialista",
+        "tipText": "SEMPRE comece com o que você sabe. Anote nomes, datas e lugares que você já conhece.",
+        "checklistTitle": "Informações prioritárias a coletar:",
+        "check1": "✅ Nomes completos (incluindo nomes de solteira)",
+        "check2": "✅ Datas de nascimento, casamento, óbito",
+        "check3": "✅ Locais (município, região)",
+        "check4": "✅ Profissões",
+        "check5": "✅ Anedotas familiares",
+        "check6": "✅ Fotos antigas com nomes no verso",
+        "outro": "Não esqueça de procurar nas gavetas! Cadernetas de família, convites, cartas antigas..."
+      },
+      "section2": {
+        "title": "2. Arquivos Departamentais Online (100% Grátis)",
+        "intro": "Boa notícia: quase todos os arquivos departamentais franceses estão digitalizados e acessíveis gratuitamente online.",
+        "cardTitle": "O que você encontrará",
+        "card1": "• Registros paroquiais (antes de 1792)",
+        "card2": "• Estado civil (nascimentos, casamentos, óbitos)",
+        "card3": "• Censos",
+        "card4": "• Registros militares",
+        "card5": "• Tabelas decenais",
+        "card6": "• Cadastros e mapas antigos",
+        "accessTitle": "Como acessar os arquivos do seu departamento?",
+        "accessText": "Pesquise \"arquivos departamentais + [nome do departamento]\" no Google.",
+        "warningTitle": "⚠️ Atenção",
+        "warningText": "Registros com menos de 75 anos (nascimentos) ou 25 anos (casamentos/óbitos) geralmente não estão online por privacidade."
+      },
+      "section3": {
+        "title": "3. Registros Civis: Guia de Uso",
+        "intro": "Os registros civis são mantidos em duplicata desde 1792.",
+        "methodTitle": "O método das tabelas decenais",
+        "methodText": "As tabelas decenais são índices que resumem todos os atos em 10 anos. Seu melhor aliado!",
+        "step1": "Identifique o município e o período aproximado",
+        "step2": "Consulte a tabela decenal correspondente",
+        "step3": "Encontre o nome e anote o ano exato",
+        "step4": "Acesse o registro daquele ano",
+        "step5": "Leia o ato completo e anote as informações"
+      },
+      "section4": {
+        "title": "4. Bancos de Dados Genealógicos Gratuitos",
+        "intro": "Além dos arquivos oficiais, vários sites comunitários oferecem recursos valiosos gratuitamente.",
+        "resource1": { "name": "🌍 FamilySearch.org", "desc": "O maior banco de dados gratuito do mundo. Bilhões de documentos.", "pros": "✅ Grátis • Base enorme • Internacional" },
+        "resource2": { "name": "🇫🇷 Geneanet.org", "desc": "O líder francês. Versão gratuita generosa.", "pros": "✅ Em francês • Comunidade ativa" },
+        "resource3": { "name": "📋 Filae.com", "desc": "Acesso gratuito limitado mas útil para registros civis.", "pros": "✅ Registros indexados • Busca fácil" },
+        "resource4": { "name": "⚔️ Mémoire des Hommes", "desc": "Site oficial do Ministério das Forças Armadas.", "pros": "✅ 100% grátis • Oficial" }
+      },
+      "section5": {
+        "title": "5. Passo a Passo: Seu Primeiro Mês",
+        "week1": { "label": "Semana 1", "title": "Coleta familiar", "desc": "Entreviste pais, avós, tios. Fotografe todos os documentos." },
+        "week2": { "label": "Semana 2", "title": "Arquivos online", "desc": "Identifique os municípios de origem. Acesse os arquivos departamentais." },
+        "week3": { "label": "Semana 3", "title": "Voltar gerações", "desc": "Use as informações dos atos para voltar." },
+        "week4": { "label": "Semana 4", "title": "Consolidação", "desc": "Verifique suas fontes. Complete sua árvore." }
+      },
+      "section6": {
+        "title": "6. Os 7 Erros a Evitar",
+        "error1": { "title": "Não citar fontes", "desc": "Anote SEMPRE de onde vem cada informação." },
+        "error2": { "title": "Confundir homônimos", "desc": "João Silva nascido em 1850, há dezenas!" },
+        "error3": { "title": "Confiar em árvores online", "desc": "Frequentemente contêm erros copiados." },
+        "error4": { "title": "Ignorar colaterais", "desc": "Irmãos podem revelar info sobre seus ancestrais." },
+        "error5": { "title": "Esquecer variações de nomes", "desc": "A ortografia variava muito. Pense foneticamente!" },
+        "error6": { "title": "Ignorar contexto histórico", "desc": "Guerras, epidemias... ajudam a explicar lacunas." },
+        "error7": { "title": "Querer ir rápido demais", "desc": "A genealogia é uma maratona, não um sprint." }
+      },
+      "faq": {
+        "title": "7. Perguntas Frequentes",
+        "q1": "Até onde se pode voltar de graça?",
+        "a1": "Na França, os registros paroquiais começam no século XVI. Você pode voltar 15-20 gerações de graça.",
+        "q2": "Quanto tempo leva para encontrar ancestrais?",
+        "a2": "Algumas horas para bisavós, alguns dias para o século XVIII, vários meses para genealogia completa.",
+        "q3": "Precisa saber ler francês antigo?",
+        "a3": "Para documentos recentes (após 1800) não. Para registros mais antigos aprende-se gradualmente.",
+        "q4": "Como organizar todas essas informações?",
+        "a4": "Use um software de árvore genealógica como AILA."
+      },
+      "cta": {
+        "title": "🌳 Pronto para Encontrar seus Ancestrais?",
+        "text": "Crie sua árvore genealógica grátis com AILA e organize todas as suas descobertas.",
+        "button": "Criar Minha Árvore Grátis"
+      }
     },
     "traditions": {
       "metaTitle": "Tradições Familiares: 50 Ideias para Criar e Perpetuar as Suas | AILA",

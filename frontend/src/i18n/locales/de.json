@@ -574,7 +574,103 @@
       "metaDescription": "Entdecken Sie, wie Sie Ihre Vorfahren 2025 kostenlos finden. Kompletter Leitfaden mit Online-Archiven, Standesamtsregistern und kostenlosen Tools.",
       "badge": "📚 Experten-Leitfaden • Januar 2025",
       "title": "Wie Sie Ihre Vorfahren kostenlos finden",
-      "subtitle": "Der komplette Leitfaden, um Ihre genealogische Recherche zu beginnen, ohne einen Cent auszugeben. Methoden, Ressourcen und kostenlose Tools."
+      "subtitle": "Der komplette Leitfaden, um Ihre genealogische Recherche zu beginnen, ohne einen Cent auszugeben. Methoden, Ressourcen und kostenlose Tools.",
+      "authorName": "Geschrieben vom AILA-Team",
+      "authorCredentials": "Genealogie-Experten • 10+ Jahre Erfahrung",
+      "authorDate": "Letzte Aktualisierung: Januar 2025",
+      "tocTitle": "📑 Inhaltsverzeichnis",
+      "toc": {
+        "item1": "1. Wo anfangen?",
+        "item2": "2. Kostenlose Online-Archive",
+        "item3": "3. Standesamtsregister",
+        "item4": "4. Genealogische Datenbanken",
+        "item5": "5. Schritt-für-Schritt-Methode",
+        "item6": "6. Zu vermeidende Fehler",
+        "item7": "7. FAQ"
+      },
+      "summaryTitle": "💡 Kurz gesagt: Wie finden Sie Ihre Vorfahren kostenlos?",
+      "summaryText": "Um Ihre Vorfahren kostenlos zu finden, beginnen Sie mit Familieninterviews, dann konsultieren Sie Online-Departementsarchive. Nutzen Sie kostenlose Tools wie FamilySearch oder Geneanet. Organisieren Sie alles in einem digitalen Stammbaum wie AILA.",
+      "section1": {
+        "title": "1. Wo Mit Ihrer Recherche Beginnen?",
+        "intro": "Bevor Sie in Archive eintauchen, ist der erste Schritt oft der einfachste: Mit Ihrer Familie sprechen.",
+        "tipTitle": "🎯 Experten-Tipp",
+        "tipText": "Beginnen Sie IMMER mit dem, was Sie wissen. Notieren Sie Namen, Daten und Orte, die Sie bereits kennen.",
+        "checklistTitle": "Prioritär zu sammelnde Informationen:",
+        "check1": "✅ Vollständige Namen (inkl. Mädchennamen)",
+        "check2": "✅ Geburts-, Heirats-, Sterbedaten",
+        "check3": "✅ Orte (Gemeinde, Region)",
+        "check4": "✅ Berufe",
+        "check5": "✅ Familienanekdoten",
+        "check6": "✅ Alte Fotos mit Namen auf der Rückseite",
+        "outro": "Vergessen Sie nicht, in Schubladen zu suchen! Familienbücher, Todesanzeigen, alte Briefe..."
+      },
+      "section2": {
+        "title": "2. Kostenlose Online-Departementsarchive",
+        "intro": "Gute Nachricht: Fast alle französischen Departementsarchive sind digitalisiert und kostenlos online zugänglich.",
+        "cardTitle": "Was Sie dort finden",
+        "card1": "• Kirchenbücher (vor 1792)",
+        "card2": "• Standesamt (Geburten, Heiraten, Todesfälle)",
+        "card3": "• Volkszählungen",
+        "card4": "• Militärregister",
+        "card5": "• Zehnjahrestabellen",
+        "card6": "• Kataster und alte Karten",
+        "accessTitle": "Wie auf die Archive Ihres Departements zugreifen?",
+        "accessText": "Suchen Sie \"Departementsarchive + [Departementsname]\" bei Google.",
+        "warningTitle": "⚠️ Achtung",
+        "warningText": "Register unter 75 Jahren (Geburten) oder 25 Jahren (Heiraten/Todesfälle) sind aus Datenschutzgründen meist nicht online."
+      },
+      "section3": {
+        "title": "3. Standesamtsregister: Anleitung",
+        "intro": "Standesamtsregister werden seit 1792 in doppelter Ausfertigung geführt.",
+        "methodTitle": "Die Zehnjahrestabellen-Methode",
+        "methodText": "Zehnjahrestabellen sind Indizes, die alle Einträge über 10 Jahre zusammenfassen. Ihr bester Freund!",
+        "step1": "Gemeinde und ungefähren Zeitraum identifizieren",
+        "step2": "Entsprechende Zehnjahrestabelle prüfen",
+        "step3": "Namen finden und genaues Jahr notieren",
+        "step4": "Auf das Register dieses Jahres zugreifen",
+        "step5": "Vollständigen Eintrag lesen und Informationen notieren"
+      },
+      "section4": {
+        "title": "4. Kostenlose Genealogische Datenbanken",
+        "intro": "Neben offiziellen Archiven bieten mehrere Community-Seiten wertvolle Ressourcen kostenlos an.",
+        "resource1": { "name": "🌍 FamilySearch.org", "desc": "Die größte kostenlose Datenbank der Welt. Milliarden von Dokumenten.", "pros": "✅ Kostenlos • Riesige Datenbank • International" },
+        "resource2": { "name": "🇫🇷 Geneanet.org", "desc": "Der französische Marktführer. Großzügige kostenlose Version.", "pros": "✅ Auf Französisch • Aktive Community" },
+        "resource3": { "name": "📋 Filae.com", "desc": "Begrenzter kostenloser Zugang aber nützlich für Standesamtseinträge.", "pros": "✅ Indexierte Einträge • Einfache Suche" },
+        "resource4": { "name": "⚔️ Mémoire des Hommes", "desc": "Offizielle Seite des Verteidigungsministeriums.", "pros": "✅ 100% kostenlos • Offiziell" }
+      },
+      "section5": {
+        "title": "5. Schritt für Schritt: Ihr Erster Monat",
+        "week1": { "label": "Woche 1", "title": "Familiensammlung", "desc": "Eltern, Großeltern, Onkel befragen. Alle Dokumente fotografieren." },
+        "week2": { "label": "Woche 2", "title": "Online-Archive", "desc": "Herkunftsgemeinden identifizieren. Auf Departementsarchive zugreifen." },
+        "week3": { "label": "Woche 3", "title": "Generationen zurück", "desc": "Informationen aus Einträgen nutzen, um zurückzugehen." },
+        "week4": { "label": "Woche 4", "title": "Konsolidierung", "desc": "Quellen überprüfen. Stammbaum vervollständigen." }
+      },
+      "section6": {
+        "title": "6. Die 7 Zu Vermeidenden Fehler",
+        "error1": { "title": "Quellen nicht zitieren", "desc": "Notieren Sie IMMER, woher jede Information stammt." },
+        "error2": { "title": "Namensvettern verwechseln", "desc": "Hans Müller geboren 1850, es gibt Dutzende!" },
+        "error3": { "title": "Online-Bäumen vertrauen", "desc": "Sie enthalten oft kopierte Fehler." },
+        "error4": { "title": "Seitenlinien ignorieren", "desc": "Geschwister können Info über Ihre Vorfahren enthüllen." },
+        "error5": { "title": "Namensvariationen vergessen", "desc": "Rechtschreibung variierte stark. Denken Sie phonetisch!" },
+        "error6": { "title": "Historischen Kontext ignorieren", "desc": "Kriege, Epidemien... helfen Lücken zu erklären." },
+        "error7": { "title": "Zu schnell vorgehen wollen", "desc": "Genealogie ist ein Marathon, kein Sprint." }
+      },
+      "faq": {
+        "title": "7. Häufig Gestellte Fragen",
+        "q1": "Wie weit kann man kostenlos zurückgehen?",
+        "a1": "In Frankreich beginnen Kirchenbücher im 16. Jahrhundert. Sie können 15-20 Generationen kostenlos zurückgehen.",
+        "q2": "Wie lange braucht man, um Vorfahren zu finden?",
+        "a2": "Einige Stunden für Urgroßeltern, einige Tage für das 18. Jahrhundert, mehrere Monate für vollständige Genealogie.",
+        "q3": "Muss man Altfranzösisch lesen können?",
+        "a3": "Für neuere Dokumente (nach 1800) nein. Für ältere Register lernt man es schrittweise.",
+        "q4": "Wie all diese Informationen organisieren?",
+        "a4": "Nutzen Sie eine Stammbaum-Software wie AILA."
+      },
+      "cta": {
+        "title": "🌳 Bereit, Ihre Vorfahren zu Finden?",
+        "text": "Erstellen Sie Ihren kostenlosen Stammbaum mit AILA und organisieren Sie alle Ihre Entdeckungen.",
+        "button": "Meinen Baum Kostenlos Erstellen"
+      }
     },
     "traditions": {
       "metaTitle": "Familientraditionen: 50 Ideen zum Schaffen und Bewahren | AILA",
