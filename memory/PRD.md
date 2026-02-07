@@ -9,7 +9,7 @@ Application React Native Expo déployée en web sur Vercel pour créer et gérer
 - **Hébergement**: Vercel (www.aila.family)
 - **i18n**: i18next (6 langues: FR, EN, ES, DE, IT, PT)
 
-## État actuel - 6 Décembre 2025
+## État actuel - 8 Décembre 2025
 
 ### ✅ Pages i18n Complétées
 
@@ -17,7 +17,7 @@ Application React Native Expo déployée en web sur Vercel pour créer et gérer
 - ✅ login.tsx, register.tsx, forgot-password.tsx
 
 **Pages principales:**
-- ✅ pricing.tsx (Premium)
+- ✅ **pricing.tsx (Premium)** - Entièrement traduit (hero, status, subscriptions, plans, features, services, coming soon, FAQ, alerts) - Commit `3ce489884`
 - ✅ Homepage, FAQ, Privacy, Terms, About, Challenges, Pourquoi AÏLA
 - ✅ Blog (5 articles), Community
 
@@ -30,18 +30,18 @@ Application React Native Expo déployée en web sur Vercel pour créer et gérer
 - ✅ share.tsx - Traduit (i18next)
 - ✅ tree.tsx - Messages principaux traduits (i18next)
 - ✅ profile.tsx - Alertes principales traduites (export, delete, clear tree)
+- ✅ add-person.tsx - Traduit
+- ✅ add-link.tsx - Traduit
 
-### ✅ Commits sur main (Session du 6 Décembre)
-1. `feat(i18n): Import all translated files from i18n/seo-pages-complete`
-2. `feat: Add remaining tab pages (tree, chat, share) from feature branch`
-3. `feat(i18n): Translate chat.tsx and share.tsx with i18next`
-4. `feat(i18n): Translate tree.tsx user-facing messages`
-5. `feat(i18n): Add i18n initialization file and import in index.js`
-6. `feat(i18n): Translate profile.tsx alerts and messages`
+### ✅ Commits sur main (Session du 8 Décembre)
+- `3ce489884` - feat(i18n): Complete translation of pricing.tsx page
+  - Remplacement de tous les textes français en dur par des clés de traduction
+  - Ajout de la section pricing complète aux 6 fichiers de langue (fr, en, de, es, it, pt)
+  - Ajout des traductions FAQ
+  - Correction de la section pricing dupliquée dans fr.json
 
 ### 🟡 Restant à traduire (priorité basse)
 - Quelques alertes secondaires dans profile.tsx (sendByEmail, formats)
-- add-person.tsx, add-link.tsx
 - Quelques composants mineurs
 
 ## Google Auth
@@ -55,9 +55,9 @@ Application React Native Expo déployée en web sur Vercel pour créer et gérer
 4. **Persistance backend**: Manquante (tout en AsyncStorage)
 
 ## Prochaines Tâches (Priorité)
-1. ✅ ~~Finaliser profile.tsx~~ (alertes principales faites)
-2. Corriger le cache des messages Community
-3. Ajouter les drapeaux au sélecteur de langue
+1. Corriger le cache des messages Community
+2. Ajouter les drapeaux au sélecteur de langue
+3. Audit final des fichiers pour textes non traduits restants
 
 ## Tâches Futures (Backlog)
 - Implémenter persistance backend (remplacer AsyncStorage)
