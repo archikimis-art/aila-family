@@ -12,6 +12,8 @@ import uuid
 from datetime import datetime, timezone, timedelta
 import bcrypt
 import jwt
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env', override=False)
@@ -27,8 +29,28 @@ JWT_SECRET = os.environ.get('JWT_SECRET', 'aila-secret-key-change-in-production-
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_HOURS = 24 * 7  # 7 days
 
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID = '548263066328-916g23gmboqvmqtd7fi3ejatoseh4h09.apps.googleusercontent.com'
+
 # Create the main app
 app = FastAPI(title="AÏLA API", version="1.0.0")
+
+# CORS Configuration - Required for frontend communication
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=[
+        "https://www.aila.family",
+        "https://aila.family", 
+        "http://localhost:3000",
+        "http://localhost:8081",
+        "http://localhost:19006",
+    ],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=600,
+)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -57,6 +79,10 @@ class UserCreate(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+class GoogleAuthRequest(BaseModel):
+    token: Optional[str] = None
+    id_token: Optional[str] = None
 
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -304,6 +330,55 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         created_at=current_user.get('created_at', ''),
         is_active=current_user.get('is_active', True)
     )
+
+@api_router.post("/auth/google", response_model=TokenResponse)
+async def google_auth(auth_data: GoogleAuthRequest):
+    """Authenticate with Google OAuth"""
+    try:
+        google_token = auth_data.token or auth_data.id_token
+        if not google_token:
+            raise HTTPException(status_code=400, detail="No Google token provided")
+        
+        try:
+            idinfo = id_token.verify_oauth2_token(google_token, google_requests.Request(), GOOGLE_CLIENT_ID)
+        except ValueError as e:
+            logger.error(f"Google token verification failed: {e}")
+            raise HTTPException(status_code=401, detail="Invalid Google token")
+        
+        google_email = idinfo.get('email', '').lower()
+        google_given_name = idinfo.get('given_name', '')
+        google_family_name = idinfo.get('family_name', '')
+        google_picture = idinfo.get('picture', '')
+        
+        if not google_email:
+            raise HTTPException(status_code=400, detail="Email not provided by Google")
+        
+        existing_user = await db.users.find_one({"email": google_email})
+        
+        if existing_user:
+            await db.users.update_one({"id": existing_user['id']}, {"$set": {"last_login": datetime.now(timezone.utc).isoformat(), "photo_url": google_picture}})
+            user_id = existing_user['id']
+            first_name = existing_user.get('first_name', google_given_name)
+            last_name = existing_user.get('last_name', google_family_name)
+            gdpr_consent = existing_user.get('gdpr_consent', False)
+            created_at = existing_user.get('created_at', datetime.now(timezone.utc).isoformat())
+            is_active = existing_user.get('is_active', True)
+        else:
+            user_id = str(uuid.uuid4())
+            first_name = google_given_name
+            last_name = google_family_name
+            gdpr_consent = False
+            created_at = datetime.now(timezone.utc).isoformat()
+            is_active = True
+            await db.users.insert_one({"id": user_id, "email": google_email, "first_name": first_name, "last_name": last_name, "photo_url": google_picture, "gdpr_consent": gdpr_consent, "created_at": created_at, "updated_at": created_at, "last_login": created_at, "is_active": is_active, "auth_provider": "google"})
+        
+        token = create_access_token(user_id, google_email)
+        return TokenResponse(access_token=token, user=UserResponse(id=user_id, email=google_email, first_name=first_name, last_name=last_name, gdpr_consent=gdpr_consent, created_at=created_at, is_active=is_active))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Google auth error: {e}")
+        raise HTTPException(status_code=500, detail="Google authentication failed")
 
 # ============================================================================
 # PERSONS ENDPOINTS
