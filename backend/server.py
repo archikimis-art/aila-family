@@ -35,6 +35,15 @@ GOOGLE_CLIENT_ID = '548263066328-916g23gmboqvmqtd7fi3ejatoseh4h09.apps.googleuse
 # Create the main app
 app = FastAPI(title="AÏLA API", version="1.0.0")
 
+# CORS Configuration - MUST be added immediately after app creation
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
@@ -1084,14 +1093,6 @@ async def get_reminder_templates():
 # ============================================================================
 # MIDDLEWARE & APP SETUP
 # ============================================================================
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Include the router in the main app (MUST be after all route definitions)
 app.include_router(api_router)
