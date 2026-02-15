@@ -160,6 +160,21 @@ export default function AddLinkScreen() {
     }
   };
 
+  const getRelationshipDescription = (type: string) => {
+    switch (type) {
+      case 'parent':
+        return 'est le parent de';
+      case 'child':
+        return 'est l\'enfant de';
+      case 'spouse':
+        return 'est le/la conjoint(e) de';
+      case 'sibling':
+        return 'est le frère/la sœur de';
+      default:
+        return 'est lié(e) à';
+    }
+  };
+
   const renderPersonSelector = (
     label: string,
     selectedPerson: Person | null,
