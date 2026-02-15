@@ -1,0 +1,1159 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "close": "Fechar",
+    "share": "Compartilhar",
+    "download": "Baixar",
+    "search": "Pesquisar",
+    "seeAll": "Ver tudo",
+    "language": "Idioma",
+    "information": "Informação"
+  },
+  "navigation": {
+    "tree": "Árvore",
+    "members": "Membros",
+    "chat": "Chat",
+    "share": "Ligações",
+    "profile": "Perfil"
+  },
+  "header": {
+    "myTree": "A Minha Árvore",
+    "treeOf": "Árvore de {{name}}",
+    "previewMode": "Modo de Pré-visualização"
+  },
+  "chatScreen": {
+    "title": "Chat",
+    "errorSend": "Não foi possível enviar a mensagem.",
+    "errorMissingId": "ID da mensagem ausente.",
+    "errorDelete": "Não foi possível excluir a mensagem.",
+    "confirmDelete": "Excluir mensagem",
+    "confirmDeleteText": "Tem certeza de que deseja excluir esta mensagem?",
+    "loading": "Carregando mensagens...",
+    "emptyTitle": "Discussão colaborativa",
+    "emptySubtitle": "Inicie sessão para conversar com outros membros da árvore familiar",
+    "noMessages": "Ainda não há mensagens",
+    "startConversation": "Seja o primeiro a iniciar a conversa!",
+    "placeholder": "Escreva uma mensagem..."
+  },
+  "personForm": {
+    "loadError": "Erro ao carregar os dados.",
+    "linkDeleted": "Vínculo excluído.",
+    "linkDeleteError": "Erro ao excluir o vínculo.",
+    "requiredFields": "Nome e sobrenome são obrigatórios.",
+    "personUpdated": "{{name}} foi atualizado/a.",
+    "personAdded": "{{name}} foi adicionado/a à árvore.",
+    "saveError": "Erro: {{message}}",
+    "title": "Nova pessoa",
+    "editTitle": "Editar",
+    "identity": "Identidade",
+    "firstName": "Nome",
+    "firstNamePlaceholder": "Nome",
+    "lastName": "Sobrenome",
+    "lastNamePlaceholder": "Sobrenome",
+    "required": "*",
+    "gender": "Gênero",
+    "male": "Homem",
+    "female": "Mulher",
+    "other": "Outro",
+    "dates": "Datas",
+    "birthDate": "Data de nascimento",
+    "birthPlace": "Local de nascimento",
+    "deathDate": "Data de falecimento",
+    "deathPlace": "Local de falecimento",
+    "geographicBranch": "Ramo geográfico",
+    "geographicBranchHint": "Ex: Família do Norte, Costa do Marfim...",
+    "notes": "Notas",
+    "notesPlaceholder": "Notas adicionais...",
+    "save": "Adicionar",
+    "saveEdit": "Salvar",
+    "cancel": "Cancelar",
+    "selectDate": "Selecionar",
+    "clearDate": "Limpar",
+    "locationPicker": {
+      "birthPlace": "Local de nascimento",
+      "deathPlace": "Local de falecimento",
+      "geographicBranch": "Ramo geográfico"
+    }
+  },
+  "linkForm": {
+    "title": "Novo vínculo",
+    "selectPerson1": "Primeira pessoa",
+    "selectPerson2": "Segunda pessoa",
+    "selectRelationType": "Tipo de relação",
+    "selectPlaceholder": "Selecionar uma pessoa",
+    "parent": "Pai/Mãe",
+    "child": "Filho/a",
+    "spouse": "Cônjuge",
+    "sibling": "Irmão/Irmã",
+    "selectTwoPersons": "Selecione duas pessoas.",
+    "differentPersons": "As duas pessoas devem ser diferentes.",
+    "linkCreated": "O vínculo familiar foi criado.",
+    "createError": "Erro: {{message}}",
+    "explanation": "{{person1}} é {{relation}} de {{person2}}"
+  },
+  "shareScreen": {
+    "title": "Partilhar",
+    "invite": "Convidar",
+    "enterEmail": "Por favor, insira um endereço de email",
+    "inviteSent": "Convite enviado para {{email}}!",
+    "inviteError": "Erro ao enviar convite",
+    "collaboratorRemoved": "{{email}} foi removido da sua árvore",
+    "removeError": "Não foi possível remover o colaborador",
+    "contributionApproved": "Contribuição aprovada",
+    "contributionRejected": "Contribuição rejeitada",
+    "contributionError": "Não foi possível processar a contribuição",
+    "confirmRemove": "Deseja remover {{email}} da sua árvore?",
+    "removeCollaboratorTitle": "Remover colaborador",
+    "tabs": {
+      "collaborators": "Colaboradores",
+      "shared": "Partilhados",
+      "pending": "Pendente"
+    },
+    "roles": {
+      "editor": "Editor",
+      "viewer": "Leitor",
+      "editorDesc": "Pode adicionar e editar",
+      "viewerDesc": "Só pode visualizar"
+    },
+    "status": {
+      "accepted": "Aceite",
+      "pending": "Pendente"
+    },
+    "actions": {
+      "add": "Adicionar",
+      "edit": "Editar",
+      "delete": "Eliminar"
+    },
+    "entities": {
+      "person": "pessoa",
+      "relation": "relação"
+    },
+    "empty": {
+      "collaboratorsTitle": "Sem colaboradores",
+      "collaboratorsSubtitle": "Convide a sua família para completar a árvore",
+      "sharedTitle": "Sem árvores partilhadas",
+      "sharedSubtitle": "Quando alguém o convidar, a árvore aparecerá aqui",
+      "contributionsTitle": "Sem contribuições",
+      "contributionsSubtitle": "As alterações propostas aparecerão aqui"
+    },
+    "login": {
+      "title": "Iniciar sessão",
+      "subtitle": "A colaboração requer uma conta",
+      "button": "Iniciar sessão"
+    },
+    "modal": {
+      "title": "Convidar um colaborador",
+      "emailLabel": "Endereço de email",
+      "emailPlaceholder": "email@exemplo.com",
+      "roleLabel": "Função",
+      "sendButton": "Enviar convite"
+    },
+    "members": "{{count}} membros"
+  },
+  "membersScreen": {
+    "title": "Membros",
+    "personCount": "{{count}} pessoa",
+    "personsCount": "{{count}} pessoas",
+    "searchPlaceholder": "Procurar um membro...",
+    "limitReached": "Limite atingido",
+    "limitMessage": "O modo de pré-visualização está limitado a 10 membros.",
+    "createAccount": "Criar conta",
+    "empty": {
+      "noResults": "Sem resultados",
+      "noMembers": "Sem membros",
+      "tryOther": "Tente com outros termos",
+      "startAdding": "Comece adicionando membros à sua árvore"
+    }
+  },
+  "treeScreen": {
+    "title": "Árvore",
+    "search": "Procurar",
+    "filters": "Filtros",
+    "addPerson": "Adicionar",
+    "viewMode": "Vista",
+    "export": "Exportar",
+    "share": "Partilhar",
+    "zoom": "Zoom",
+    "center": "Centrar",
+    "previewLimit": "O modo de pré-visualização está limitado a 10 membros. Crie uma conta para árvore ilimitada.",
+    "addTwoPersons": "Adicione pelo menos 2 pessoas para criar um vínculo familiar.",
+    "printWebOnly": "A impressão está disponível na versão web.",
+    "importSuccess": "{{count}} membros adicionados à sua árvore!",
+    "zoomHint": "👆 Arrastar • 🤏 Beliscar • Duplo toque: reiniciar",
+    "actions": {
+      "add": "Adicionar",
+      "link": "Vínculo",
+      "refresh": "Atualizar",
+      "save": "Guardar"
+    },
+    "preview": {
+      "title": "Modo Demo - Família Martin",
+      "subtitle": "Explore livremente • Adicione membros • Crie vínculos",
+      "createTree": "Criar a minha árvore"
+    },
+    "sharedTree": {
+      "viewing": "Está a ver a árvore de {{name}} ({{role}})",
+      "editor": "Editor",
+      "viewer": "Leitor"
+    },
+    "guide": {
+      "title": "Guia de utilização",
+      "understood": "Entendido!",
+      "step1Title": "Criar pessoas",
+      "step1Text": "Clique no botão \"Adicionar\" na parte inferior do ecrã para criar uma nova pessoa.",
+      "step2Title": "Criar vínculos familiares",
+      "step2Text": "Uma vez criadas pelo menos 2 pessoas, clique em \"Vínculo\" para estabelecer relações.",
+      "step3Title": "Atualizar a visualização",
+      "step3Text": "Após criar pessoas ou vínculos, clique em \"Atualizar\" para atualizar a vista da árvore.",
+      "step4Title": "Ordem de criação recomendada",
+      "step4Text": "Para uma árvore bem organizada:",
+      "step5Title": "Partilhar a sua árvore",
+      "step5Text": "Vá ao separador \"Partilhar\" para convidar familiares a colaborar.",
+      "tip": "Clique numa pessoa na árvore para ver os seus detalhes e editar as suas informações."
+    },
+    "events": {
+      "title": "Eventos Familiares",
+      "upcomingBirthdays": "Próximos aniversários",
+      "noBirthdays": "Sem aniversários nos próximos 30 dias",
+      "today": "Hoje!",
+      "inDays": "Em {{days}} dias",
+      "turnsAge": "faz {{age}}"
+    },
+    "debug": {
+      "title": "DEBUG - Vínculos e Níveis",
+      "persons": "Pessoas",
+      "parentLinks": "Vínculos pai",
+      "spouseLinks": "Vínculos cônjuge",
+      "calculatedLevels": "Níveis calculados",
+      "rawLinks": "Vínculos brutos"
+    },
+    "empty": {
+      "title": "A sua árvore está vazia",
+      "subtitle": "Comece adicionando o primeiro membro da sua família",
+      "addFirst": "Adicionar uma pessoa"
+    },
+    "person": {
+      "born": "Nascido/a em",
+      "died": "Falecido/a em",
+      "age": "{{years}} anos",
+      "relations": "Relações",
+      "addRelation": "Adicionar uma relação",
+      "edit": "Editar",
+      "delete": "Eliminar"
+    },
+    "relations": {
+      "father": "Pai",
+      "mother": "Mãe",
+      "spouse": "Cônjuge",
+      "child": "Filho/a",
+      "sibling": "Irmão/Irmã"
+    },
+    "confirmDelete": "Tem certeza de que deseja eliminar esta pessoa?",
+    "deleteWarning": "Esta ação não pode ser desfeita.",
+    "personDeleted": "{{name}} foi eliminado/a",
+    "errorDelete": "Erro ao eliminar"
+  },
+  "profileScreen": {
+    "title": "Perfil",
+    "myAccount": "Minha conta",
+    "email": "Email",
+    "name": "Nome",
+    "language": "Idioma",
+    "notifications": "Notificações",
+    "premium": "Premium",
+    "subscription": "Assinatura",
+    "logout": "Terminar sessão",
+    "loggingOut": "Terminando sessão...",
+    "deleteAccount": "Eliminar minha conta",
+    "confirmLogout": "Tem certeza de que quer terminar sessão?",
+    "confirmDelete": "Deseja realmente eliminar a sua conta?",
+    "deleteWarning": "Todos os seus dados serão eliminados permanentemente.",
+    "logoutError": "Problema ao terminar sessão",
+    "settings": {
+      "title": "Definições",
+      "appearance": "Aparência",
+      "darkMode": "Modo escuro",
+      "privacy": "Privacidade",
+      "security": "Segurança",
+      "about": "Sobre"
+    },
+    "stats": {
+      "title": "Estatísticas",
+      "members": "Membros",
+      "generations": "Gerações",
+      "relations": "Relações"
+    },
+    "preview": {
+      "title": "Modo de Pré-visualização",
+      "notConnected": "Não conectado",
+      "description": "Crie uma conta para guardar a sua árvore",
+      "createAccount": "Criar conta grátis",
+      "clearData": "Limpar dados de pré-visualização"
+    },
+    "admin": {
+      "title": "Administração",
+      "manageUsers": "Gerir utilizadores"
+    },
+    "account": {
+      "title": "Conta",
+      "login": "Iniciar sessão",
+      "register": "Criar conta"
+    },
+    "premiumSection": {
+      "title": "Premium",
+      "viewOffers": "Ver ofertas Premium"
+    },
+    "treeManagement": {
+      "title": "Gestão da árvore",
+      "mergeTrees": "Fundir árvores",
+      "deleteTree": "Eliminar árvore",
+      "treeDeleted": "Árvore eliminada com sucesso!",
+      "personsDeleted": "{{count}} pessoas eliminadas",
+      "linksDeleted": "{{count}} ligações eliminadas",
+      "deleteTreeWarning": "ATENÇÃO: Esta ação é irreversível!\n\nTodas as pessoas e ligações da sua árvore serão eliminadas.\n\nA sua conta permanecerá ativa.",
+      "deleteAll": "Eliminar tudo",
+      "deleteTreeError": "Erro ao eliminar a árvore"
+    },
+    "gdpr": {
+      "title": "Proteção de dados (RGPD)",
+      "description": "De acordo com o RGPD, pode aceder, exportar ou eliminar os seus dados a qualquer momento.",
+      "viewData": "Ver os meus dados",
+      "downloadJSON": "Transferir árvore (JSON)",
+      "printPDF": "Imprimir / Exportar PDF",
+      "exportExcel": "Exportar Excel / CSV",
+      "importGedcom": "Importar ficheiro GEDCOM",
+      "sendByEmail": "Enviar árvore por email",
+      "exportSuccess": "Exportação bem-sucedida",
+      "exportError": "Não é possível exportar os dados",
+      "downloadSuccess": "Ficheiro transferido com sucesso!",
+      "downloadError": "Erro ao transferir",
+      "loginRequired": "Inicie sessão para transferir a sua árvore",
+      "gedcomWebOnly": "A importação GEDCOM está disponível na versão web",
+      "pdfWebOnly": "A impressão PDF está disponível na versão web"
+    },
+    "support": {
+      "title": "Suporte e Contacto",
+      "contactUs": "Contacte-nos",
+      "contactMessage": "Para qualquer questão, sugestão ou problema:\n\ncontact@aila.family\n\nResponderemos o mais rápido possível."
+    },
+    "info": {
+      "title": "Informações",
+      "description": "AÏLA é uma aplicação de genealogia para preservar e partilhar a história da sua família. Os seus dados são armazenados de forma segura e mantém o controlo total.",
+      "contact": "Contacto: contact@aila.family"
+    },
+    "backHome": "Voltar ao início",
+    "version": "Versão",
+    "scrollDown": "Deslize para baixo para ver todas as opções",
+    "deleteAccountWarning": "Esta ação é IRREVERSÍVEL.\nTodos os seus dados serão eliminados permanentemente.",
+    "finalConfirmation": "CONFIRMAÇÃO FINAL\n\nTem mesmo certeza de que quer eliminar a sua conta?",
+    "accountDeleted": "Conta eliminada com sucesso!",
+    "deletionFailed": "Falha ao eliminar a conta",
+    "mustBeLoggedIn": "Deve iniciar sessão para eliminar a sua conta",
+    "clearPreviewData": "Limpar dados",
+    "clearPreviewMessage": "Os dados do modo de pré-visualização serão eliminados.",
+    "clearPreviewSuccess": "Os dados do modo de pré-visualização foram limpos.",
+    "loginToManageTree": "Inicie sessão para gerir a sua árvore",
+    "createAccountToExport": "Crie uma conta para exportar os seus dados"
+  },
+  "home": {
+    "title": "AÏLA",
+    "subtitle": "A árvore genealógica que conecta sua família",
+    "features": {
+      "simple": "Simples e intuitivo",
+      "collaborate": "Colabore em família",
+      "free": "Sua árvore genealógica gratuita"
+    },
+    "cta": {
+      "tryNow": "Experimentar agora",
+      "createTree": "Crie sua árvore em 5 min",
+      "createAccount": "Criar conta gratuita",
+      "alreadyMember": "Já tem conta?",
+      "login": "Entrar"
+    },
+    "reassurance": {
+      "noAccount": "Sem conta",
+      "free": "Grátis",
+      "noCommitment": "Sem compromisso"
+    },
+    "discover": "Descobrir AÏLA",
+    "challenges": "Desafios",
+    "whyAila": "Por que AÏLA?",
+    "blog": "Blog",
+    "community": "Comunidade",
+    "ancestors": "Ancestrais",
+    "beginner": "Iniciante",
+    "traditions": "Tradições",
+    "cousinade": "Reunião familiar",
+    "write": "Escrever",
+    "preserve": "Preservar",
+    "dataProtected": "Seus dados estão protegidos",
+    "about": "Sobre",
+    "shareMessage": "🌳 Descubra AÏLA - A árvore genealógica que conecta sua família! Crie, compartilhe e preserve sua história familiar. 👉 https://www.aila.family",
+    "shareTitle": "AÏLA - Árvore Genealógica Familiar",
+    "linkCopied": "Link copiado! Compartilhe com sua família 🌳",
+    "pwaInstall": {
+      "instructions": "📲 Para instalar AÏLA:\n\n• No Chrome/Edge: Clique em ⋮ e depois \"Instalar app\"\n• No Safari (iPhone): Clique em ⬆️ e depois \"Adicionar à Tela de Início\"\n• No Android: Clique em ⋮ e depois \"Adicionar à tela inicial\""
+    }
+  },
+  "footer": {
+    "blog": "Blog",
+    "faq": "FAQ",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "admin": "Admin"
+  },
+  "nav": {
+    "home": "Início",
+    "share": "Compartilhar",
+    "download": "Baixar",
+    "premium": "Premium"
+  },
+  "auth": {
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "logout": "Sair",
+    "email": "E-mail",
+    "password": "Senha",
+    "confirmPassword": "Confirmar senha",
+    "firstName": "Nome",
+    "lastName": "Sobrenome",
+    "forgotPassword": "Esqueceu a senha?",
+    "resetPassword": "Redefinir senha",
+    "loginWithGoogle": "Continuar com Google",
+    "createAccount": "Criar uma conta",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "noAccount": "Não tem conta?",
+    "signUp": "Cadastrar-se"
+  },
+  "challenges": {
+    "title": "Desafios Familiares",
+    "dailyChallenge": "Desafio do dia",
+    "points": "Pontos",
+    "badges": "Medalhas",
+    "completed": "Concluído",
+    "share": "Compartilhar",
+    "startChallenge": "Começar",
+    "challengeCompleted": "Desafio concluído",
+    "yourBadges": "Suas medalhas",
+    "challengesLabel": "Desafios",
+    "allChallenges": "Todos os desafios",
+    "categories": {
+      "all": "Todos",
+      "tree": "Árvore",
+      "memory": "Memória",
+      "connection": "Vínculo",
+      "tradition": "Tradição"
+    },
+    "list": {
+      "tree3gen": {
+        "title": "Raízes profundas",
+        "description": "Complete sua árvore em 3 gerações (você, pais, avós)",
+        "badge": "Guardião das Raízes",
+        "action": "Completar minha árvore"
+      },
+      "firstMemory": {
+        "title": "Primeira lembrança",
+        "description": "Adicione uma história ou lembrança a um membro da família",
+        "badge": "Guardião das Memórias",
+        "action": "Adicionar uma lembrança"
+      },
+      "askGrandparent": {
+        "title": "Ponte entre gerações",
+        "description": "Faça 3 perguntas a um avô ou avó e anote as respostas",
+        "badge": "Tecelão de Vínculos",
+        "action": "Ver perguntas sugeridas"
+      },
+      "familyTradition": {
+        "title": "Tradição viva",
+        "description": "Documente uma tradição familiar (receita, ritual, festa...)",
+        "badge": "Portador de Tradições",
+        "action": "Adicionar uma tradição"
+      },
+      "shareCommunity": {
+        "title": "Voz da família",
+        "description": "Compartilhe sua história ou dica com a comunidade AÏLA",
+        "badge": "Voz da Comunidade",
+        "action": "Entrar na comunidade"
+      }
+    },
+    "needInspiration": "Precisa de inspiração?",
+    "exploreBlog": "Descubra nossos artigos para enriquecer sua história familiar",
+    "viewBlog": "Explorar o blog",
+    "congratulations": "Parabéns!",
+    "badgeEarned": "Você ganhou a medalha",
+    "shareQuestion": "Quer compartilhar esta conquista com a comunidade?",
+    "celebrationMessage": "Você está dando vida à sua história familiar!"
+  },
+  "dailyChallenge": {
+    "addPerson": {
+      "title": "Adicione um familiar",
+      "description": "Enriqueça sua árvore com um novo membro"
+    },
+    "addMemory": {
+      "title": "Compartilhe uma lembrança",
+      "description": "Adicione uma anedota à sua história familiar"
+    },
+    "inviteFamily": {
+      "title": "Convide um familiar",
+      "description": "Sua árvore é mais rica em conjunto"
+    },
+    "exploreBlog": {
+      "title": "Descubra uma dica",
+      "description": "Leia um artigo do blog para se inspirar"
+    },
+    "communityPost": {
+      "title": "Compartilhe sua história",
+      "description": "Publique uma mensagem na comunidade"
+    }
+  },
+  "community": {
+    "title": "Comunidade AÏLA",
+    "liveActivity": "Atividade ao vivo",
+    "writeMessage": "Escrever uma mensagem",
+    "newMessage": "Nova mensagem",
+    "yourName": "Seu nome",
+    "country": "País / Região",
+    "topic": "Assunto",
+    "yourMessage": "Sua mensagem",
+    "publish": "Publicar",
+    "publishing": "Publicando...",
+    "noMessages": "Nenhuma mensagem nesta categoria",
+    "beFirst": "Seja o primeiro a compartilhar!",
+    "readArticles": "Ler nossos artigos",
+    "joinChallenges": "Participar dos desafios familiares",
+    "errorFillFields": "Por favor, preencha seu nome e sua mensagem",
+    "notSpecified": "Não especificado",
+    "thanks": "Obrigado!",
+    "messagePublished": "Sua mensagem foi publicada.",
+    "errorPublish": "Não foi possível publicar a mensagem",
+    "challengeCompleted": "Desafio concluído",
+    "challengeLabel": "🎮 Desafio",
+    "general": "Geral",
+    "time": {
+      "justNow": "Agora mesmo",
+      "hoursAgo": "Há {{hours}}h",
+      "daysAgo": "Há {{days}}d"
+    },
+    "topics": {
+      "all": "Todos",
+      "origins": "Origens",
+      "help": "Ajuda",
+      "tips": "Dicas",
+      "stories": "Histórias"
+    },
+    "placeholder": {
+      "name": "Nome S.",
+      "country": "Brasil 🇧🇷",
+      "message": "Compartilhe suas origens, faça uma pergunta, dê uma dica..."
+    },
+    "demoMessages": {
+      "message1": "Olá a todos! Procuro informações sobre minha família originária da Bretanha. Meus bisavós viviam em Quimper. Alguém conhece os arquivos desta região?",
+      "country1": "França 🇫🇷",
+      "message2": "Minha família vem do Senegal, região de Dakar. Para nós, a tradição do chá é muito importante - preparamos em 3 serviços que representam a vida: amargo como a morte, doce como a vida, açucarado como o amor.",
+      "country2": "Senegal 🇸🇳",
+      "message3": "Dica: Para encontrar seus ancestrais italianos, o site Antenati.san.beniculturali.it oferece milhões de registros digitalizados gratuitamente!",
+      "country3": "Itália 🇮🇹"
+    }
+  },
+  "socialProof": {
+    "activities": {
+      "badge1": "ganhou o distintivo \"Guardião das Raízes\"",
+      "tree1": "adicionou 5 pessoas à sua árvore",
+      "memory1": "compartilhou uma memória familiar",
+      "community1": "entrou para a comunidade AÏLA",
+      "badge2": "completou o desafio \"Ponte entre gerações\""
+    },
+    "time": {
+      "2min": "há 2 min",
+      "8min": "há 8 min",
+      "15min": "há 15 min",
+      "23min": "há 23 min",
+      "31min": "há 31 min"
+    }
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "level": "Nível",
+    "points": "pontos",
+    "myBadges": "Minhas Medalhas",
+    "noBadges": "Nenhuma medalha ainda",
+    "startChallenges": "Começar os desafios",
+    "quickActions": "Ações rápidas",
+    "familyChallenges": "Desafios familiares",
+    "earnBadges": "Ganhe medalhas e pontos",
+    "communityTitle": "Comunidade",
+    "shareExchange": "Compartilhe e troque ideias",
+    "blogInspiration": "Blog e Inspiração",
+    "articlesAdvice": "Artigos e dicas",
+    "account": "Conta",
+    "goPremium": "Seja Premium",
+    "unlockFeatures": "Desbloqueie todas as funções",
+    "logout": "Sair",
+    "levels": {
+      "explorer": "Explorador",
+      "researcher": "Pesquisador",
+      "historian": "Historiador",
+      "guardian": "Guardião",
+      "sage": "Sábio"
+    }
+  },
+  "whyAila": {
+    "title": "Por que AÏLA?",
+    "subtitle": "Descubra o que torna o AÏLA o app ideal para criar e compartilhar sua árvore genealógica familiar.",
+    "backHome": "← Voltar para a página inicial",
+    "cta": {
+      "title": "Pronto para começar?",
+      "subtitle": "Crie sua árvore genealógica em minutos"
+    },
+    "features": {
+      "simple": {
+        "title": "Simples e Intuitivo",
+        "subtitle": "Crie sua árvore em 5 minutos",
+        "description": "O AÏLA foi projetado para ser usado por todos, mesmo sem habilidades técnicas. A interface intuitiva guia você passo a passo na criação de sua árvore genealógica. Adicione membros, crie vínculos familiares e visualize sua história familiar em poucos cliques.",
+        "benefits": ["Interface limpa e moderna", "Tutoriais integrados", "Sem necessidade de treinamento"]
+      },
+      "collaborative": {
+        "title": "Colaborativo",
+        "subtitle": "Convide sua família",
+        "description": "A genealogia é uma aventura familiar! Com o AÏLA, convide seus entes queridos para contribuir com a árvore. Cada um pode adicionar informações, fotos e anedotas. Juntos, vocês constroem a memória de sua família.",
+        "benefits": ["Convites por email", "Contribuições em tempo real", "Histórico de alterações"]
+      },
+      "chat": {
+        "title": "Chat Familiar Seguro",
+        "subtitle": "Converse em particular",
+        "description": "Mantenha-se conectado com sua família através do chat integrado. Compartilhe memórias, faça perguntas sobre seus antepassados ou organize reuniões de família. Todas as suas conversas são privadas e seguras.",
+        "benefits": ["Mensagens instantâneas", "Compartilhamento de fotos", "Notificações push"]
+      },
+      "import": {
+        "title": "Importar e Exportar",
+        "subtitle": "Excel e PDF inclusos",
+        "description": "Importe facilmente seus dados de um arquivo Excel ou exporte sua árvore em PDF de alta qualidade para imprimir e emoldurar. O AÏLA se adapta às suas necessidades e permite salvar seu trabalho em diferentes formatos.",
+        "benefits": ["Importação Excel automática", "Exportação PDF profissional", "Backup GEDCOM"]
+      },
+      "security": {
+        "title": "LGPD e Segurança",
+        "subtitle": "Seus dados protegidos",
+        "description": "Seus dados familiares são preciosos. O AÏLA cumpre rigorosamente a LGPD e usa criptografia de nível bancário. Você mantém o controle total: exporte ou exclua seus dados a qualquer momento.",
+        "benefits": ["Conforme à LGPD", "Criptografia SSL", "Direito ao esquecimento garantido"]
+      },
+      "free": {
+        "title": "100% Grátis",
+        "subtitle": "Sem compromisso",
+        "description": "O AÏLA é completamente gratuito para as funcionalidades essenciais. Sem assinatura oculta, sem limite de tempo. Crie sua árvore, convide sua família e aproveite todas as funcionalidades básicas sem gastar um centavo.",
+        "benefits": ["Árvore ilimitada", "Sem publicidade intrusiva", "Funções premium opcionais"]
+      }
+    }
+  },
+  "about": {
+    "title": "Sobre o AÏLA",
+    "tagline": "Sua árvore genealógica inteligente",
+    "backHome": "Voltar para a página inicial",
+    "version": "Versão 1.0.0",
+    "copyright": "© 2024 AÏLA. Todos os direitos reservados.",
+    "mission": {
+      "title": "Nossa Missão",
+      "description": "O AÏLA é um aplicativo inovador dedicado à criação e gestão da sua árvore genealógica familiar. Nossa missão é ajudá-lo a preservar e compartilhar a história da sua família através das gerações."
+    },
+    "features": {
+      "title": "Funcionalidades Principais",
+      "tree": {
+        "title": "Árvore Genealógica Interativa",
+        "description": "Visualize sua família em uma árvore dinâmica com conexões claras entre as gerações."
+      },
+      "members": {
+        "title": "Gestão de Membros",
+        "description": "Adicione facilmente membros da família com suas informações pessoais, fotos e datas importantes."
+      },
+      "chat": {
+        "title": "Chat Familiar",
+        "description": "Comunique-se com os membros da família através do nosso sistema de chat integrado e privado."
+      },
+      "share": {
+        "title": "Compartilhamento Seguro",
+        "description": "Compartilhe sua árvore com seus entes queridos de forma segura através de links de visualização."
+      },
+      "reminders": {
+        "title": "Lembretes de Eventos",
+        "description": "Nunca mais perca um aniversário ou data importante graças às nossas notificações automáticas."
+      }
+    },
+    "whyChoose": {
+      "title": "Por que escolher o AÏLA?",
+      "list": "• Interface intuitiva e elegante\n• Privacidade e proteção de dados\n• Sincronização automática em todos os dispositivos\n• Suporte multilíngue\n• Exporte seus dados a qualquer momento\n• Equipe de suporte responsiva"
+    },
+    "contact": {
+      "title": "Entre em Contato",
+      "description": "Para qualquer pergunta ou sugestão, não hesite em nos contatar:\nEmail: contact@aila.family\nSite: www.aila.family"
+    }
+  },
+  "faq": {
+    "title": "FAQ - Perguntas Frequentes",
+    "introTitle": "Como podemos ajudar?",
+    "introText": "Encontre rapidamente respostas sobre o AÏLA.",
+    "backHome": "Voltar ao início",
+    "footer": "© 2025 AÏLA - A árvore genealógica que conecta sua família",
+    "categories": {
+      "all": "Todos",
+      "gettingStarted": "Primeiros passos",
+      "treeManagement": "Gestão da árvore",
+      "navigation": "Navegação",
+      "sharing": "Compartilhamento",
+      "chat": "Chat familiar",
+      "privacy": "Privacidade",
+      "technical": "Técnico"
+    },
+    "contact": {
+      "title": "Não encontrou sua resposta?",
+      "text": "Nossa equipe está aqui para ajudar.",
+      "button": "Entre em contato"
+    },
+    "items": {
+      "createTree": { "question": "Como crio minha primeira árvore?", "answer": "Crie uma conta gratuita e clique em 'Adicionar pessoa'." },
+      "needAccount": { "question": "Preciso de uma conta?", "answer": "Você pode testar em modo de visualização. Para salvar, precisa de conta gratuita." },
+      "isFree": { "question": "O AÏLA é gratuito?", "answer": "Sim, versão gratuita completa. Funções premium disponíveis." },
+      "addPerson": { "question": "Como adiciono uma pessoa?", "answer": "Clique em 'Adicionar' e preencha as informações." },
+      "createLink": { "question": "Como crio um vínculo?", "answer": "Clique em 'Vínculo', escolha o tipo e as pessoas." },
+      "editPerson": { "question": "Posso editar informações?", "answer": "Sim, clique no cartão da pessoa." },
+      "deletePerson": { "question": "Como excluo uma pessoa?", "answer": "Vá ao perfil e clique em 'Excluir'." },
+      "mobileNav": { "question": "Como navego no celular?", "answer": "Arraste, belisque para zoom, toque duplo para centralizar." },
+      "cardColors": { "question": "O que significam as cores?", "answer": "Azul homens, rosa mulheres, cinza não especificado." },
+      "shareTree": { "question": "Como compartilho minha árvore?", "answer": "No perfil com 'Compartilhar árvore'." },
+      "mergeTree": { "question": "O que é fusão de árvores?", "answer": "Função premium para combinar duas árvores." },
+      "familyChat": { "question": "Como funciona o chat?", "answer": "Membros da família se comunicam diretamente no app." },
+      "dataSecure": { "question": "Meus dados estão seguros?", "answer": "Sim, criptografia SSL e conformidade com LGPD." },
+      "exportData": { "question": "Como exporto dados?", "answer": "No perfil em JSON e GEDCOM." },
+      "deleteAccount": { "question": "Posso excluir minha conta?", "answer": "Sim, seção 'Proteção de dados' do perfil." },
+      "offline": { "question": "Funciona offline?", "answer": "AÏLA precisa de conexão para sincronização." },
+      "devices": { "question": "Em quais dispositivos?", "answer": "Smartphones, tablets e computadores." },
+      "displayIssue": { "question": "O que fazer se não exibir?", "answer": "Atualize a página ou limpe o cache." }
+    }
+  },
+  "privacy": {
+    "title": "Política de Privacidade",
+    "lastUpdate": "Última atualização: Dezembro 2024",
+    "backHome": "Voltar ao início",
+    "sections": {
+      "intro": { "title": "Introdução", "content": "Bem-vindo ao AÏLA. Comprometemo-nos a proteger sua privacidade e dados pessoais." },
+      "dataCollected": { "title": "Dados Coletados", "content": "Coletamos: dados de conta, dados genealógicos e dados de uso." },
+      "dataUse": { "title": "Uso dos Dados", "content": "Seus dados são usados para fornecer e melhorar serviços." },
+      "dataSecurity": { "title": "Segurança dos Dados", "content": "Usamos criptografia SSL e backups regulares." },
+      "yourRights": { "title": "Seus Direitos (LGPD)", "content": "Você tem direito de acessar, retificar e excluir seus dados." },
+      "cookies": { "title": "Cookies", "content": "Usamos cookies essenciais e de análise." },
+      "thirdParty": { "title": "Serviços de Terceiros", "content": "Usamos serviços seguros de terceiros." },
+      "changes": { "title": "Alterações", "content": "Podemos atualizar esta política." },
+      "contact": { "title": "Contato", "content": "contact@aila.family" }
+    }
+  },
+  "terms": {
+    "title": "Termos de Uso",
+    "lastUpdate": "Última atualização: Dezembro 2024",
+    "backHome": "Voltar ao início",
+    "sections": {
+      "acceptance": { "title": "Aceitação dos Termos", "content": "Ao usar o AÏLA, você aceita estes termos." },
+      "service": { "title": "Descrição do Serviço", "content": "AÏLA é um app de árvore genealógica." },
+      "account": { "title": "Conta de Usuário", "content": "Você é responsável por suas credenciais." },
+      "conduct": { "title": "Código de Conduta", "content": "Você concorda em usar o AÏLA legalmente." },
+      "intellectualProperty": { "title": "Propriedade Intelectual", "content": "AÏLA é protegido por direitos autorais." },
+      "liability": { "title": "Limitação de Responsabilidade", "content": "AÏLA é fornecido 'como está'." },
+      "termination": { "title": "Rescisão", "content": "Podemos suspender contas por violações." },
+      "modifications": { "title": "Modificações", "content": "Podemos modificar estes termos." },
+      "law": { "title": "Lei Aplicável", "content": "Aplica-se a lei francesa." },
+      "contact": { "title": "Contato", "content": "contact@aila.family" }
+    }
+  },
+  "blog": {
+    "title": "Blog AÏLA",
+    "article": "Artigo",
+    "articles": "Artigos",
+    "reading": "min de leitura",
+    "readMore": "Ler mais",
+    "backToList": "Voltar aos artigos",
+    "readTime": "min de leitura",
+    "introTitle": "Dicas e Truques de Genealogia",
+    "introText": "Descubra nossos artigos para criar e enriquecer sua árvore genealógica familiar.",
+    "joinCommunity": "Junte-se à comunidade",
+    "guides": "📚 Guias práticos",
+    "guideAncestors": "Como encontrar seus ancestrais de graça",
+    "guideBeginner": "Guia para iniciantes: primeiros passos",
+    "guideRegion": "🆕 Pesquisa por região e país",
+    "articlesSection": "📖 Todos os nossos artigos",
+    "takeAction": "Passe à ação!",
+    "transformReading": "Transforme sua leitura em ação familiar",
+    "viewChallenges": "Ver os desafios",
+    "readyToStart": "Pronto para começar?",
+    "createTreeFree": "Crie sua árvore genealógica grátis com AÏLA.",
+    "createMyTree": "Criar minha árvore",
+    "createMyTreeFree": "Criar minha árvore grátis",
+    "backHome": "Voltar ao início",
+    "viewAllChallenges": "Ver todos os desafios",
+    "copyright": "© 2025 AÏLA - A árvore genealógica que conecta sua família",
+    "articles": {
+      "region": {
+        "title": "Pesquisa genealógica por região e país",
+        "excerpt": "Descubra os recursos e arquivos específicos de cada região francesa e países francófonos para encontrar seus ancestrais.",
+        "date": "Janeiro 2025",
+        "readTime": "12",
+        "content": "**Introdução à pesquisa regional**\n\nA genealogia não é feita da mesma maneira em todas as regiões. Cada departamento francês tem seus próprios arquivos, particularidades históricas e recursos online. Este guia ajudará você a navegar essa diversidade.\n\n**Arquivos departamentais**\n\nOs arquivos departamentais são seu primeiro recurso. Quase todos os departamentos franceses digitalizaram seus registros paroquiais e civis. Veja como acessá-los:\n\n• Acesse o site de arquivos do seu departamento\n• Procure a seção \"Estado civil\" ou \"Registros paroquiais\"\n• Os registros geralmente estão disponíveis até 1902-1912\n\n**Particularidades regionais**\n\n• Alsácia-Mosela: Registros em alemão durante certos períodos, sistema legal diferente\n• Bretanha: Sobrenomes bretões, arquivos às vezes em bretão\n• Saboia e Nice: Anexadas à França tardiamente (1860)\n• Córsega: Arquivos às vezes em italiano, nomes latinizados\n• Ultramar: Arquivos específicos, registros de escravos libertos\n\n**Pesquisa internacional**\n\nPara ancestrais que emigraram ou imigraram:\n\n• Bélgica: Arquivos do Estado belga online\n• Suíça: Portal de arquivos cantonais\n• Quebec: BAnQ e Généalogie Québec\n• Norte da África: Arquivos Nacionais de Ultramar (ANOM)\n\n**Recursos adicionais**\n\n• Associações genealógicas regionais\n• Fóruns especializados por região\n• Grupos de Facebook dedicados\n• Bancos de dados colaborativos\n\n**Dica prática**\n\nSempre comece identificando a localização exata (município, paróquia) antes de pesquisar nos arquivos. O mesmo sobrenome pode ter origens muito diferentes dependendo da região."
+      },
+      "ancestors": {
+        "title": "Como encontrar seus ancestrais de graça",
+        "excerpt": "Guia completo para começar sua pesquisa genealógica sem gastar um centavo. Arquivos online, recursos gratuitos e métodos eficazes.",
+        "date": "Dezembro 2024",
+        "readTime": "10",
+        "content": "**Por que procurar seus ancestrais?**\n\nA genealogia é muito mais que um simples hobby. É uma busca de identidade, uma viagem no tempo que conecta você às suas raízes. Descobrir de onde você vem frequentemente ajuda a entender quem você é.\n\n**Arquivos online gratuitos**\n\nA França tem um tesouro: arquivos departamentais digitalizados. Cada departamento disponibiliza online gratuitamente seus registros paroquiais e civis. Aqui estão os passos:\n\n• Identifique o departamento onde seus ancestrais nasceram\n• Acesse o site dos arquivos departamentais\n• Acesse a seção \"Estado civil\" ou \"Registros paroquiais\"\n• Pesquise por município e data\n\n**Recursos gratuitos essenciais**\n\n• FamilySearch.org: Banco de dados mundial gratuito\n• Geneanet: Versão gratuita com milhões de árvores\n• Filae: Algumas funções gratuitas\n• Arquivos Nacionais: Documentos históricos\n\n**Método passo a passo**\n\n1. Comece por você mesmo e volte geração por geração\n2. Entreviste seus parentes, especialmente os mais velhos\n3. Reúna documentos familiares (caderneta de família, fotos)\n4. Anote tudo: datas, lugares, anedotas\n5. Verifique cada informação nos arquivos oficiais\n\n**Erros a evitar**\n\n• Não pule gerações\n• Verifique homônimos (muito comuns)\n• Atenção às variações ortográficas de nomes\n• Cruze várias fontes\n\n**Dica AÏLA**\n\nUse nosso aplicativo para organizar suas descobertas e compartilhar sua árvore com sua família. Juntos, vocês irão mais rápido e mais longe!"
+      },
+      "start": {
+        "title": "Começar sua árvore genealógica: os primeiros passos",
+        "excerpt": "Quer criar sua árvore genealógica mas não sabe por onde começar? Aqui estão os passos essenciais para começar.",
+        "date": "Novembro 2024",
+        "readTime": "8",
+        "content": "**Por que criar sua árvore genealógica?**\n\nCriar sua árvore genealógica significa embarcar em uma descoberta da história da sua família. É entender de onde você vem, descobrir ancestrais com trajetórias às vezes extraordinárias e transmitir essa memória para as gerações futuras.\n\n**Passo 1: Comece por você**\n\nO ponto de partida é você! Anote seu nome completo, data e local de nascimento. Depois volte: seus pais, seus avós. Essa base sólida será o fundamento da sua árvore.\n\n**Passo 2: Entreviste sua família**\n\nSeus parentes são uma mina de informações. Organize entrevistas com os membros mais velhos da sua família. Prepare suas perguntas com antecedência:\n• Nomes completos (incluindo nomes de solteira)\n• Datas importantes (nascimentos, casamentos, mortes)\n• Locais de residência e profissões\n• Anedotas e memórias\n\n**Passo 3: Reúna documentos**\n\nAlguns documentos são preciosos para a genealogia:\n• Cadernetas de família\n• Certidões de nascimento, casamento, óbito\n• Fotos antigas (olhe no verso!)\n• Correspondências e cadernos\n\n**Passo 4: Organize sua pesquisa**\n\nUm bom genealogista é um genealogista organizado. Use AÏLA para centralizar suas informações, criar perfis para cada ancestral e visualizar as conexões familiares.\n\n**Passo 5: Vá aos arquivos**\n\nUma vez coletadas as informações familiares, vá aos arquivos! Os arquivos departamentais online são gratuitos e cheios de informações.\n\n**Dica bônus**\n\nNão desanime se você travar em um ancestral. A genealogia requer paciência. Às vezes você só precisa esperar para encontrar um novo documento ou pedir ajuda à comunidade."
+      },
+      "mistakes": {
+        "title": "Os 5 erros do genealogista iniciante",
+        "excerpt": "Evite as armadilhas clássicas que podem distorcer sua pesquisa. Conselhos práticos para uma genealogia confiável.",
+        "date": "Outubro 2024",
+        "readTime": "6",
+        "content": "**Erro #1: Ir rápido demais**\n\nO entusiasmo inicial frequentemente nos impulsiona a querer voltar o mais longe possível. Resista a essa tentação! Cada geração deve ser solidamente documentada antes de passar para a próxima. Uma árvore construída sobre suposições eventualmente desmoronará.\n\n**Erro #2: Negligenciar as fontes**\n\nToda informação deve ter fonte. De onde vem essa data de nascimento? Quem te disse esse nome de solteira? Sem fonte, é impossível verificar e corrigir possíveis erros. Com AÏLA, você pode anotar suas fontes para cada pessoa.\n\n**Erro #3: Ignorar variações de nomes**\n\nAntes do século XX, a ortografia dos nomes não era fixa. MARTIN podia ser escrito MARTEN, MARTAIN ou MARTING dependendo do oficial do registro civil. Seja flexível em suas buscas!\n\n**Erro #4: Esquecer os colaterais**\n\nOs irmãos dos seus ancestrais não devem ser negligenciados. Eles podem ajudá-lo a identificar os pais, confirmar datas ou revelar conexões com outros ramos familiares.\n\n**Erro #5: Trabalhar sozinho**\n\nA genealogia é mais gratificante em família! Compartilhe sua árvore, peça memórias, envolva seus primos. Com AÏLA, convide seus entes queridos a contribuir e enriqueça sua árvore juntos.\n\n**A dica definitiva**\n\nTome seu tempo, verifique tudo e saboreie cada descoberta. A genealogia não é uma corrida, é uma viagem."
+      },
+      "relationships": {
+        "title": "Como calcular os laços de parentesco",
+        "excerpt": "Primo de primeiro grau, primo de segundo grau, tio... Finalmente entenda as conexões familiares!",
+        "date": "Setembro 2024",
+        "readTime": "7",
+        "content": "**As bases do parentesco**\n\nAs relações familiares podem parecer complexas, mas seguem uma lógica simples uma vez compreendida. Tudo parte de um ancestral comum.\n\n**Relações diretas**\n\nA linha direta conecta pessoas de geração em geração:\n• Pais → Filhos\n• Avós → Netos\n• Bisavós → Bisnetos\n\n**Relações colaterais**\n\nEstas são conexões \"horizontais\":\n• Irmãos e irmãs: mesmos pais\n• Tios e tias: irmãos dos seus pais\n• Primos de primeiro grau: filhos dos seus tios/tias\n\n**Graus de parentesco**\n\n• Primos de primeiro grau: ancestral comum = avós (2º grau)\n• Primos de segundo grau: ancestral comum = bisavós (3º grau)\n• Primos de terceiro grau: ancestral comum = trisavós (4º grau)\n\n**A regra de cálculo**\n\nPara encontrar o grau de parentesco, conte o número de gerações que o separam do ancestral comum. Se for diferente para cada pessoa, falamos de primos \"distantes\".\n\n**Exemplo prático**\n\nSeu avô e o avô de Maria são irmãos:\n→ Você e Maria são primos de primeiro grau (ancestral comum: bisavós)\n\nO filho de Maria e você:\n→ Você é primo de primeiro grau de Maria, então \"primo de primeiro grau uma vez removido\" do filho dela\n\n**A dica AÏLA**\n\nNosso aplicativo calcula automaticamente as relações familiares! Simplesmente adicione pessoas e suas relações, e AÏLA dirá como vocês estão conectados."
+      }
+    }
+  },
+  "pricing": {
+    "title": "Ofertas e Serviços",
+    "hero": {
+      "emoji": "🌳",
+      "title": "Dê vida à sua história familiar",
+      "subtitle": "Escolha a oferta que mais combina com você e personalize sua experiência"
+    },
+    "status": {
+      "premium": "Você é Premium - Aproveite todos os benefícios!",
+      "free": "Versão gratuita - Seja Premium para mais recursos"
+    },
+    "subscriptions": {
+      "title": "Assinaturas Premium",
+      "description": "Remova anúncios e desbloqueie todos os recursos",
+      "recommended": "RECOMENDADO",
+      "subscribe": "Assinar",
+      "current": "Assinatura atual",
+      "savings": "Economia"
+    },
+    "plans": {
+      "monthly": {
+        "name": "Mensal",
+        "period": "/mês",
+        "description": "Máxima flexibilidade"
+      },
+      "yearly": {
+        "name": "Anual",
+        "period": "/ano",
+        "description": "Economize 30%!"
+      }
+    },
+    "features": {
+      "noAds": "Sem anúncios",
+      "unlimitedTree": "Árvore ilimitada",
+      "unlimitedCollaborators": "Colaboradores ilimitados",
+      "exportJson": "Exportação JSON e GEDCOM",
+      "familyEvents": "Eventos familiares",
+      "allMonthly": "Tudo do plano mensal",
+      "save30": "Economize 30%",
+      "prioritySupport": "Suporte prioritário",
+      "freePdf": "2 exportações PDF grátis"
+    },
+    "services": {
+      "title": "Personalização",
+      "description": "Enriqueça sua árvore com estes serviços exclusivos (compra única)",
+      "buy": "Comprar",
+      "pdfExport": {
+        "name": "Exportação PDF Premium",
+        "description": "Baixe sua árvore genealógica em PDF de alta qualidade, pronto para imprimir ou compartilhar."
+      },
+      "themeGold": {
+        "name": "Tema Ouro Real",
+        "description": "Embeleze sua árvore com um tema elegante com bordas douradas e acabamentos luxuosos."
+      },
+      "themeNature": {
+        "name": "Tema Natureza",
+        "description": "Um design inspirado na natureza com tons verdes relaxantes e padrões florais."
+      },
+      "themeVintage": {
+        "name": "Tema Vintage",
+        "description": "Mergulhe no passado com este estilo sépia retrô, perfeito para um toque nostálgico."
+      }
+    },
+    "comingSoon": {
+      "title": "Em Breve",
+      "description": "Novos recursos chegando em breve",
+      "badge": "BREVE",
+      "poster": {
+        "name": "Impressão de Pôster",
+        "description": "Imprima sua árvore em grande formato em papel premium ou canvas."
+      },
+      "photoBook": {
+        "name": "Livro de Fotos Familiar",
+        "description": "Crie um lindo livro contando a história da sua família."
+      },
+      "research": {
+        "name": "Pesquisa Genealógica",
+        "description": "Confie sua pesquisa a especialistas para descobrir seus antepassados."
+      }
+    },
+    "alerts": {
+      "loginRequired": "Por favor, faça login para assinar.",
+      "loginToPurchase": "Por favor, faça login para fazer uma compra.",
+      "paymentError": "Erro ao criar pagamento.",
+      "purchaseError": "Erro durante a compra."
+    },
+    "faq": {
+      "title": "Perguntas Frequentes",
+      "q1": "Posso cancelar minha assinatura?",
+      "a1": "Sim, a qualquer momento pelo seu perfil. Você mantém o acesso até o final do período pago.",
+      "q2": "As compras de personalização são permanentes?",
+      "a2": "Sim! Uma vez comprados, os temas e exportações PDF permanecem disponíveis para sempre na sua conta.",
+      "q3": "Como funciona a exportação PDF?",
+      "a3": "Após a compra, você poderá baixar sua árvore em formato PDF de alta resolução, perfeito para impressão."
+    }
+  },
+  "errors": {
+    "required": "Este campo é obrigatório",
+    "invalidEmail": "E-mail inválido",
+    "passwordTooShort": "A senha deve ter pelo menos 6 caracteres",
+    "passwordMismatch": "As senhas não coincidem",
+    "loginFailed": "Falha ao entrar",
+    "networkError": "Erro de conexão de rede",
+    "unknownError": "Ocorreu um erro"
+  },
+  "alerts": {
+    "confirmDelete": "Tem certeza de que deseja excluir?",
+    "confirmLogout": "Tem certeza de que deseja sair?",
+    "saved": "Salvo com sucesso",
+    "deleted": "Excluído com sucesso",
+    "shared": "Compartilhado com sucesso",
+    "connectionRequired": "Login necessário",
+    "createAccountPrompt": "Crie uma conta gratuita para participar dos desafios e ganhar medalhas!",
+    "later": "Mais tarde",
+    "signUp": "Cadastrar-se"
+  },
+  "seoPages": {
+    "beginner": {
+      "metaTitle": "Genealogia para Iniciantes: Por Onde Começar? Guia 2025 | AILA",
+      "metaDescription": "Novo na genealogia? Descubra por onde começar sua pesquisa. Guia completo para iniciantes: método, ferramentas gratuitas, dicas de especialistas.",
+      "badge": "🎓 Guia para Iniciantes • 2025",
+      "title": "Genealogia para Iniciantes: Por Onde Começar?",
+      "subtitle": "Quer descobrir a história da sua família mas não sabe por onde começar? Este guia acompanha você passo a passo nas suas primeiras pesquisas genealógicas.",
+      "summaryTitle": "💡 Em resumo: Por onde começar a genealogia?",
+      "summaryText": "1. Entreviste sua família e colete os documentos existentes\n2. Crie sua árvore com o que você já sabe\n3. Consulte os arquivos departamentais online (grátis)\n4. Volte geração por geração, sem pular etapas",
+      "step1": {
+        "title": "Passo 1: Comece por Você",
+        "text": "A genealogia sempre começa por si mesmo. Anote seu nome completo, data e local de nascimento. Depois volte gradualmente.",
+        "tipTitle": "🎯 Regra de ouro",
+        "tipText": "Nunca pule uma geração! Cada ancestral deve ser verificado antes de passar para o próximo."
+      },
+      "step2": {
+        "title": "Passo 2: Entreviste Sua Família",
+        "text": "Seus pais, avós, tios e tias são tesouros de informação. Prepare uma lista de perguntas e grave as respostas.",
+        "check1": "✅ Nomes dos ancestrais",
+        "check2": "✅ Datas importantes (nascimento, casamento, morte)",
+        "check3": "✅ Locais de residência",
+        "check4": "✅ Profissões",
+        "check5": "✅ Anedotas familiares"
+      },
+      "step3": {
+        "title": "Passo 3: Crie Sua Árvore",
+        "text": "Uma árvore genealógica permite visualizar suas pesquisas e identificar as lacunas a preencher. Use uma ferramenta digital como AILA para organizar facilmente suas descobertas."
+      },
+      "step4": {
+        "title": "Passo 4: Os Arquivos Online",
+        "text": "Os arquivos departamentais estão digitalizados e acessíveis gratuitamente. Você encontrará registros civis, censos e muito mais.",
+        "resourceTitle": "🏛️ Recursos gratuitos",
+        "resource1": "• Arquivos departamentais de cada região",
+        "resource2": "• FamilySearch.org - Base mundial gratuita",
+        "resource3": "• Geneanet.org - Comunidade francófona",
+        "resource4": "• Arquivos Militares"
+      },
+      "errors": {
+        "title": "Os 5 Erros do Iniciante",
+        "error1": { "title": "❌ 1. Querer ir rápido demais", "desc": "Tome o tempo de verificar cada informação." },
+        "error2": { "title": "❌ 2. Não anotar as fontes", "desc": "De onde vem esta info? Anote sistematicamente." },
+        "error3": { "title": "❌ 3. Confundir homônimos", "desc": "João Silva, há milhares! Verifique." },
+        "error4": { "title": "❌ 4. Copiar árvores online", "desc": "Frequentemente contêm erros. Verifique nas fontes." },
+        "error5": { "title": "❌ 5. Negligenciar os colaterais", "desc": "Irmãos podem revelar informações sobre seus ancestrais." }
+      },
+      "cta": {
+        "title": "🌳 Pronto para Começar?",
+        "text": "Crie sua árvore genealógica gratuita com AILA e comece sua jornada na história familiar.",
+        "button": "Criar Minha Árvore Grátis"
+      }
+    },
+    "ancestors": {
+      "metaTitle": "Como Encontrar seus Ancestrais de Graça: Guia Completo 2025 | AILA",
+      "metaDescription": "Descubra como encontrar seus ancestrais de graça em 2025. Guia completo com arquivos online, registros civis, métodos de pesquisa e ferramentas gratuitas.",
+      "badge": "📚 Guia Especialista • Janeiro 2025",
+      "title": "Como Encontrar seus Ancestrais de Graça",
+      "subtitle": "O guia completo para começar sua pesquisa genealógica sem gastar um centavo. Métodos, recursos e ferramentas gratuitas testadas por nossa equipe.",
+      "authorName": "Escrito pela equipe AILA",
+      "authorCredentials": "Especialistas em genealogia • 10+ anos de experiência",
+      "authorDate": "Última atualização: Janeiro 2025",
+      "tocTitle": "📑 Índice",
+      "toc": {
+        "item1": "1. Por onde começar?",
+        "item2": "2. Arquivos online gratuitos",
+        "item3": "3. Registros civis",
+        "item4": "4. Bancos de dados genealógicos",
+        "item5": "5. Método passo a passo",
+        "item6": "6. Erros a evitar",
+        "item7": "7. FAQ"
+      },
+      "summaryTitle": "💡 Em resumo: Como encontrar seus ancestrais de graça?",
+      "summaryText": "Para encontrar seus ancestrais de graça, comece entrevistando sua família, depois consulte os arquivos departamentais online. Use ferramentas gratuitas como FamilySearch ou Geneanet. Organize tudo em uma árvore genealógica digital como AILA.",
+      "section1": {
+        "title": "1. Por Onde Começar Sua Pesquisa?",
+        "intro": "Antes de mergulhar nos arquivos, o primeiro passo é frequentemente o mais simples: conversar com sua família.",
+        "tipTitle": "🎯 Dica de especialista",
+        "tipText": "SEMPRE comece com o que você sabe. Anote nomes, datas e lugares que você já conhece.",
+        "checklistTitle": "Informações prioritárias a coletar:",
+        "check1": "✅ Nomes completos (incluindo nomes de solteira)",
+        "check2": "✅ Datas de nascimento, casamento, óbito",
+        "check3": "✅ Locais (município, região)",
+        "check4": "✅ Profissões",
+        "check5": "✅ Anedotas familiares",
+        "check6": "✅ Fotos antigas com nomes no verso",
+        "outro": "Não esqueça de procurar nas gavetas! Cadernetas de família, convites, cartas antigas..."
+      },
+      "section2": {
+        "title": "2. Arquivos Departamentais Online (100% Grátis)",
+        "intro": "Boa notícia: quase todos os arquivos departamentais franceses estão digitalizados e acessíveis gratuitamente online.",
+        "cardTitle": "O que você encontrará",
+        "card1": "• Registros paroquiais (antes de 1792)",
+        "card2": "• Estado civil (nascimentos, casamentos, óbitos)",
+        "card3": "• Censos",
+        "card4": "• Registros militares",
+        "card5": "• Tabelas decenais",
+        "card6": "• Cadastros e mapas antigos",
+        "accessTitle": "Como acessar os arquivos do seu departamento?",
+        "accessText": "Pesquise \"arquivos departamentais + [nome do departamento]\" no Google.",
+        "warningTitle": "⚠️ Atenção",
+        "warningText": "Registros com menos de 75 anos (nascimentos) ou 25 anos (casamentos/óbitos) geralmente não estão online por privacidade."
+      },
+      "section3": {
+        "title": "3. Registros Civis: Guia de Uso",
+        "intro": "Os registros civis são mantidos em duplicata desde 1792.",
+        "methodTitle": "O método das tabelas decenais",
+        "methodText": "As tabelas decenais são índices que resumem todos os atos em 10 anos. Seu melhor aliado!",
+        "step1": "Identifique o município e o período aproximado",
+        "step2": "Consulte a tabela decenal correspondente",
+        "step3": "Encontre o nome e anote o ano exato",
+        "step4": "Acesse o registro daquele ano",
+        "step5": "Leia o ato completo e anote as informações"
+      },
+      "section4": {
+        "title": "4. Bancos de Dados Genealógicos Gratuitos",
+        "intro": "Além dos arquivos oficiais, vários sites comunitários oferecem recursos valiosos gratuitamente.",
+        "resource1": { "name": "🌍 FamilySearch.org", "desc": "O maior banco de dados gratuito do mundo. Bilhões de documentos.", "pros": "✅ Grátis • Base enorme • Internacional" },
+        "resource2": { "name": "🇫🇷 Geneanet.org", "desc": "O líder francês. Versão gratuita generosa.", "pros": "✅ Em francês • Comunidade ativa" },
+        "resource3": { "name": "📋 Filae.com", "desc": "Acesso gratuito limitado mas útil para registros civis.", "pros": "✅ Registros indexados • Busca fácil" },
+        "resource4": { "name": "⚔️ Mémoire des Hommes", "desc": "Site oficial do Ministério das Forças Armadas.", "pros": "✅ 100% grátis • Oficial" }
+      },
+      "section5": {
+        "title": "5. Passo a Passo: Seu Primeiro Mês",
+        "week1": { "label": "Semana 1", "title": "Coleta familiar", "desc": "Entreviste pais, avós, tios. Fotografe todos os documentos." },
+        "week2": { "label": "Semana 2", "title": "Arquivos online", "desc": "Identifique os municípios de origem. Acesse os arquivos departamentais." },
+        "week3": { "label": "Semana 3", "title": "Voltar gerações", "desc": "Use as informações dos atos para voltar." },
+        "week4": { "label": "Semana 4", "title": "Consolidação", "desc": "Verifique suas fontes. Complete sua árvore." }
+      },
+      "section6": {
+        "title": "6. Os 7 Erros a Evitar",
+        "error1": { "title": "Não citar fontes", "desc": "Anote SEMPRE de onde vem cada informação." },
+        "error2": { "title": "Confundir homônimos", "desc": "João Silva nascido em 1850, há dezenas!" },
+        "error3": { "title": "Confiar em árvores online", "desc": "Frequentemente contêm erros copiados." },
+        "error4": { "title": "Ignorar colaterais", "desc": "Irmãos podem revelar info sobre seus ancestrais." },
+        "error5": { "title": "Esquecer variações de nomes", "desc": "A ortografia variava muito. Pense foneticamente!" },
+        "error6": { "title": "Ignorar contexto histórico", "desc": "Guerras, epidemias... ajudam a explicar lacunas." },
+        "error7": { "title": "Querer ir rápido demais", "desc": "A genealogia é uma maratona, não um sprint." }
+      },
+      "faq": {
+        "title": "7. Perguntas Frequentes",
+        "q1": "Até onde se pode voltar de graça?",
+        "a1": "Na França, os registros paroquiais começam no século XVI. Você pode voltar 15-20 gerações de graça.",
+        "q2": "Quanto tempo leva para encontrar ancestrais?",
+        "a2": "Algumas horas para bisavós, alguns dias para o século XVIII, vários meses para genealogia completa.",
+        "q3": "Precisa saber ler francês antigo?",
+        "a3": "Para documentos recentes (após 1800) não. Para registros mais antigos aprende-se gradualmente.",
+        "q4": "Como organizar todas essas informações?",
+        "a4": "Use um software de árvore genealógica como AILA."
+      },
+      "cta": {
+        "title": "🌳 Pronto para Encontrar seus Ancestrais?",
+        "text": "Crie sua árvore genealógica grátis com AILA e organize todas as suas descobertas.",
+        "button": "Criar Minha Árvore Grátis"
+      }
+    },
+    "traditions": {
+      "metaTitle": "Tradições Familiares: 50 Ideias para Criar e Perpetuar as Suas | AILA",
+      "metaDescription": "Descubra 50+ ideias de tradições familiares para criar ou perpetuar. Rituais diários, celebrações, refeições, viagens. Fortaleça os laços familiares.",
+      "badge": "🎄 Vida Familiar • Guia 2025",
+      "title": "Tradições Familiares: 50 Ideias para Criar Memórias Inesquecíveis",
+      "subtitle": "As tradições familiares são o cimento que une as gerações. Descubra como criar, perpetuar e transmitir esses momentos preciosos."
+    },
+    "cousinade": {
+      "metaTitle": "Como Organizar uma Reunião de Família: Guia Completo + Checklist | AILA",
+      "metaDescription": "Organize uma reunião de família de sucesso! Guia completo: planejamento, orçamento, convites, atividades, refeições.",
+      "badge": "🎉 Reunião de Família",
+      "title": "Como Organizar uma Reunião de Família de Sucesso",
+      "subtitle": "Uma reunião de família é a ocasião perfeita para juntar toda a família. Aqui está o guia completo para organizá-la de A a Z.",
+      "checklistTitle": "📋 Checklist rápido",
+      "checklist": "✓ Definir data 6 meses antes\n✓ Criar lista de todos os membros\n✓ Escolher local adequado\n✓ Enviar convites 3 meses antes\n✓ Organizar atividades e refeições\n✓ Prever fotos e lembranças",
+      "step1": {
+        "title": "📅 Passo 1: Planejamento (6 meses antes)",
+        "task1": { "title": "Escolher a data", "desc": "Prefira um fim de semana de verão ou feriado. Evite férias escolares para maximizar participação." },
+        "task2": { "title": "Criar o comitê organizador", "desc": "Forme uma equipe de 3-5 pessoas de diferentes ramos. Distribua responsabilidades." },
+        "task3": { "title": "Listar todos os membros", "desc": "Use sua árvore genealógica AILA para a lista completa. Não esqueça ninguém!" }
+      },
+      "step2": {
+        "title": "📍 Passo 2: Escolher o Local",
+        "option1": { "title": "Na casa de um membro", "pros": "✅ Grátis, íntimo, prático", "cons": "❌ Capacidade limitada" },
+        "option2": { "title": "Pousada ou camping", "pros": "✅ Grande capacidade, fim de semana possível", "cons": "❌ Custo, reserva antecipada" },
+        "option3": { "title": "Salão de festas", "pros": "✅ Equipado, espaçoso", "cons": "❌ Pode faltar charme" }
+      },
+      "step3": {
+        "title": "💰 Passo 3: Orçamento Tipo",
+        "budget1": { "label": "Aluguel do local", "amount": "R$0 - R$2500" },
+        "budget2": { "label": "Refeições (por pessoa)", "amount": "R$50 - R$125" },
+        "budget3": { "label": "Atividades", "amount": "R$250 - R$1000" },
+        "budget4": { "label": "Fotos/Lembranças", "amount": "R$150 - R$500" },
+        "tipTitle": "💡 Dica de orçamento",
+        "tipText": "Peça uma contribuição por família em vez de por pessoa. Formato 'cada um traz algo' = economia garantida!"
+      },
+      "step4": {
+        "title": "🎯 Passo 4: Atividades Imperdíveis",
+        "activity1": "Foto de grupo",
+        "activity2": "Apresentação da árvore",
+        "activity3": "Jogos intergeracionais",
+        "activity4": "Quiz familiar",
+        "activity5": "Compartilhar histórias",
+        "activity6": "Torneio esportivo"
+      },
+      "cta": {
+        "title": "🌳 Pronto para Organizar sua Reunião?",
+        "text": "Crie sua árvore genealógica AILA para identificar todos os membros e não esquecer ninguém!",
+        "button": "Criar Minha Árvore Grátis"
+      }
+    }
+  }
+}

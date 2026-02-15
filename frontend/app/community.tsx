@@ -1,0 +1,709 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Pressable,
+  Alert,
+  Platform,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
+
+interface Message {
+  id: string;
+  content: string;
+  author_name: string;
+  author_country: string;
+  created_at: string;
+  likes: number;
+  topic: string;
+}
+
+const MESSAGES_STORAGE_KEY = 'aila_community_messages';
+
+export default function CommunityScreen() {
+  const router = useRouter();
+  const { t, i18n } = useTranslation();
+  
+  // Topics with memoization based on language
+  const topics = useMemo(() => [
+    { id: 'all', label: t('community.topics.all'), icon: 'chatbubbles-outline' },
+    { id: 'origins', label: t('community.topics.origins'), icon: 'earth-outline' },
+    { id: 'help', label: t('community.topics.help'), icon: 'help-circle-outline' },
+    { id: 'tips', label: t('community.topics.tips'), icon: 'bulb-outline' },
+    { id: 'stories', label: t('community.topics.stories'), icon: 'book-outline' },
+  ], [i18n.language, t]);
+  
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [selectedTopic, setSelectedTopic] = useState('all');
+  
+  // Form fields
+  const [content, setContent] = useState('');
+  const [authorName, setAuthorName] = useState('');
+  const [authorCountry, setAuthorCountry] = useState('');
+  const [messageTopic, setMessageTopic] = useState('origins');
+
+  // Generate demo messages based on current language
+  const getDemoMessages = (): Message[] => [
+    {
+      id: 'demo1',
+      content: t('community.demoMessages.message1'),
+      author_name: "Marie L.",
+      author_country: t('community.demoMessages.country1'),
+      created_at: new Date(Date.now() - 86400000).toISOString(),
+      likes: 3,
+      topic: "help"
+    },
+    {
+      id: 'demo2',
+      content: t('community.demoMessages.message2'),
+      author_name: "Amadou D.",
+      author_country: t('community.demoMessages.country2'),
+      created_at: new Date(Date.now() - 172800000).toISOString(),
+      likes: 8,
+      topic: "origins"
+    },
+    {
+      id: 'demo3',
+      content: t('community.demoMessages.message3'),
+      author_name: "Giuseppe M.",
+      author_country: t('community.demoMessages.country3'),
+      created_at: new Date(Date.now() - 259200000).toISOString(),
+      likes: 12,
+      topic: "tips"
+    },
+  ];
+
+  useEffect(() => {
+    loadMessages();
+    loadAuthorInfo();
+  }, []);
+
+  // Reload demo messages when language changes
+  useEffect(() => {
+    // Check if current messages are demo messages (start with 'demo')
+    const hasOnlyDemoMessages = messages.length > 0 && messages.every(m => m.id.startsWith('demo'));
+    if (hasOnlyDemoMessages || messages.length === 0) {
+      setMessages(getDemoMessages());
+    }
+  }, [i18n.language]);
+
+  const loadAuthorInfo = async () => {
+    try {
+      const name = await AsyncStorage.getItem('aila_author_name');
+      const country = await AsyncStorage.getItem('aila_author_country');
+      if (name) setAuthorName(name);
+      if (country) setAuthorCountry(country);
+    } catch (e) {}
+  };
+
+  const loadMessages = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(MESSAGES_STORAGE_KEY);
+      if (stored) {
+        const parsedMessages = JSON.parse(stored);
+        // Check if stored messages are user messages (not demo)
+        const hasUserMessages = parsedMessages.some((m: Message) => !m.id.startsWith('demo'));
+        if (hasUserMessages) {
+          setMessages(parsedMessages);
+        } else {
+          // Only demo messages stored, regenerate with current language
+          setMessages(getDemoMessages());
+        }
+      } else {
+        // No stored messages, use demo messages
+        setMessages(getDemoMessages());
+      }
+    } catch (error) {
+      console.error('Error loading messages:', error);
+      setMessages(getDemoMessages());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const submitMessage = async () => {
+    if (!content.trim() || !authorName.trim()) {
+      Alert.alert(t('common.error'), t('community.errorFillFields'));
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const newMessage: Message = {
+        id: Date.now().toString(),
+        content: content.trim(),
+        author_name: authorName.trim(),
+        author_country: authorCountry.trim() || t('community.notSpecified'),
+        created_at: new Date().toISOString(),
+        likes: 0,
+        topic: messageTopic,
+      };
+
+      const updatedMessages = [newMessage, ...messages];
+      await AsyncStorage.setItem(MESSAGES_STORAGE_KEY, JSON.stringify(updatedMessages));
+      await AsyncStorage.setItem('aila_author_name', authorName);
+      await AsyncStorage.setItem('aila_author_country', authorCountry);
+      
+      setMessages(updatedMessages);
+      setContent('');
+      setShowForm(false);
+      
+      Alert.alert(t('community.thanks'), t('community.messagePublished'));
+    } catch (error) {
+      Alert.alert(t('common.error'), t('community.errorPublish'));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const likeMessage = async (messageId: string) => {
+    const updated = messages.map(m => 
+      m.id === messageId ? { ...m, likes: m.likes + 1 } : m
+    );
+    setMessages(updated);
+    await AsyncStorage.setItem(MESSAGES_STORAGE_KEY, JSON.stringify(updated));
+  };
+
+  const filteredMessages = selectedTopic === 'all' 
+    ? messages 
+    : messages.filter(m => m.topic === selectedTopic);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    if (diffHours < 1) return t('community.time.justNow');
+    if (diffHours < 24) return t('community.time.hoursAgo', { hours: diffHours });
+    if (diffDays < 7) return t('community.time.daysAgo', { days: diffDays });
+    return date.toLocaleDateString();
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Pressable onPress={() => router.push('/')} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="#D4AF37" />
+        </Pressable>
+        <Text style={styles.headerTitle}>{t('community.title')}</Text>
+        <Pressable onPress={() => setShowForm(true)}>
+          <Ionicons name="create-outline" size={24} color="#D4AF37" />
+        </Pressable>
+      </View>
+
+      {/* Topics Filter */}
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        style={styles.topicsContainer}
+        contentContainerStyle={styles.topicsContent}
+      >
+        {topics.map(topic => (
+          <Pressable
+            key={topic.id}
+            style={[
+              styles.topicChip,
+              selectedTopic === topic.id && styles.topicChipActive
+            ]}
+            onPress={() => setSelectedTopic(topic.id)}
+          >
+            <Ionicons 
+              name={topic.icon as any} 
+              size={16} 
+              color={selectedTopic === topic.id ? '#0A1628' : '#D4AF37'} 
+            />
+            <Text style={[
+              styles.topicChipText,
+              selectedTopic === topic.id && styles.topicChipTextActive
+            ]}>
+              {topic.label}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+
+      {/* Write Button (visible when form is hidden) */}
+      {!showForm && (
+        <Pressable style={styles.writeButton} onPress={() => setShowForm(true)}>
+          <Ionicons name="chatbubble-ellipses" size={20} color="#0A1628" />
+          <Text style={styles.writeButtonText}>{t('community.writeMessage')}</Text>
+        </Pressable>
+      )}
+
+      {/* Write Form */}
+      {showForm && (
+        <View style={styles.formContainer}>
+          <View style={styles.formHeader}>
+            <Text style={styles.formTitle}>{t('community.newMessage')}</Text>
+            <Pressable onPress={() => setShowForm(false)}>
+              <Ionicons name="close" size={24} color="#6B7C93" />
+            </Pressable>
+          </View>
+
+          <View style={styles.formRow}>
+            <View style={styles.formField}>
+              <Text style={styles.label}>{t('community.yourName')} *</Text>
+              <TextInput
+                style={styles.input}
+                placeholder={t('community.placeholder.name')}
+                placeholderTextColor="#6B7C93"
+                value={authorName}
+                onChangeText={setAuthorName}
+              />
+            </View>
+            <View style={styles.formField}>
+              <Text style={styles.label}>{t('community.country')}</Text>
+              <TextInput
+                style={styles.input}
+                placeholder={t('community.placeholder.country')}
+                placeholderTextColor="#6B7C93"
+                value={authorCountry}
+                onChangeText={setAuthorCountry}
+              />
+            </View>
+          </View>
+
+          <Text style={styles.label}>{t('community.topic')}</Text>
+          <View style={styles.topicSelector}>
+            {topics.filter(t => t.id !== 'all').map(topic => (
+              <Pressable
+                key={topic.id}
+                style={[
+                  styles.topicOption,
+                  messageTopic === topic.id && styles.topicOptionActive
+                ]}
+                onPress={() => setMessageTopic(topic.id)}
+              >
+                <Text style={[
+                  styles.topicOptionText,
+                  messageTopic === topic.id && styles.topicOptionTextActive
+                ]}>
+                  {topic.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+
+          <Text style={styles.label}>{t('community.yourMessage')} *</Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder={t('community.placeholder.message')}
+            placeholderTextColor="#6B7C93"
+            value={content}
+            onChangeText={setContent}
+            multiline
+            numberOfLines={4}
+          />
+
+          <Pressable 
+            style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
+            onPress={submitMessage}
+            disabled={submitting}
+          >
+            <Text style={styles.submitButtonText}>
+              {submitting ? t('community.publishing') : t('community.publish')}
+            </Text>
+          </Pressable>
+        </View>
+      )}
+
+      {/* Messages List */}
+      <ScrollView style={styles.messagesList} showsVerticalScrollIndicator={false}>
+        {filteredMessages.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Ionicons name="chatbubbles-outline" size={48} color="#6B7C93" />
+            <Text style={styles.emptyText}>{t('community.noMessages')}</Text>
+            <Text style={styles.emptySubtext}>{t('community.beFirst')}</Text>
+          </View>
+        ) : (
+          filteredMessages.map(message => {
+            const isChallenge = (message as any).isChallenge;
+            return (
+              <View key={message.id} style={[styles.messageCard, isChallenge && styles.challengeMessageCard]}>
+                {isChallenge && (
+                  <View style={styles.challengeBadgeHeader}>
+                    <Ionicons name="trophy" size={14} color="#4CAF50" />
+                    <Text style={styles.challengeBadgeText}>{t('community.challengeCompleted')}</Text>
+                  </View>
+                )}
+                <View style={styles.messageHeader}>
+                  <View style={[styles.avatar, isChallenge && styles.challengeAvatar]}>
+                    <Text style={styles.avatarText}>
+                      {message.author_name.charAt(0).toUpperCase()}
+                    </Text>
+                  </View>
+                  <View style={styles.authorInfo}>
+                    <Text style={styles.authorName}>{message.author_name}</Text>
+                    <Text style={styles.authorCountry}>{message.author_country}</Text>
+                  </View>
+                  <Text style={styles.messageDate}>{formatDate(message.created_at)}</Text>
+                </View>
+                
+                <Text style={styles.messageContent}>{message.content}</Text>
+                
+                <View style={styles.messageFooter}>
+                  <View style={[styles.topicBadge, isChallenge && styles.challengeTopicBadge]}>
+                    <Text style={[styles.topicBadgeText, isChallenge && styles.challengeTopicBadgeText]}>
+                      {isChallenge ? t('community.challengeLabel') : topics.find(tp => tp.id === message.topic)?.label || t('community.general')}
+                    </Text>
+                  </View>
+                  <Pressable 
+                    style={styles.likeButton}
+                    onPress={() => likeMessage(message.id)}
+                  >
+                    <Ionicons name="heart-outline" size={18} color="#D4AF37" />
+                    <Text style={styles.likeCount}>{message.likes}</Text>
+                  </Pressable>
+                </View>
+              </View>
+            );
+          })
+        )}
+        
+        {/* Lien vers les défis */}
+        <Pressable 
+          style={styles.challengesLink}
+          onPress={() => router.push('/challenges')}
+        >
+          <Ionicons name="trophy-outline" size={18} color="#4CAF50" />
+          <Text style={styles.challengesLinkText}>{t('community.joinChallenges')}</Text>
+        </Pressable>
+        
+        {/* Lien vers le blog */}
+        <Pressable 
+          style={styles.blogLink}
+          onPress={() => router.push('/blog')}
+        >
+          <Ionicons name="newspaper-outline" size={18} color="#D4AF37" />
+          <Text style={styles.blogLinkText}>{t('community.readArticles')}</Text>
+        </Pressable>
+        
+        <View style={styles.bottomPadding} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0A1628',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1E3A5F',
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  topicsContainer: {
+    maxHeight: 50,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1E3A5F',
+  },
+  topicsContent: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 8,
+    flexDirection: 'row',
+  },
+  topicChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.4)',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginRight: 8,
+    gap: 6,
+  },
+  topicChipActive: {
+    backgroundColor: '#D4AF37',
+    borderColor: '#D4AF37',
+  },
+  topicChipText: {
+    color: '#D4AF37',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  topicChipTextActive: {
+    color: '#0A1628',
+  },
+  writeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#D4AF37',
+    margin: 16,
+    padding: 14,
+    borderRadius: 12,
+    gap: 8,
+  },
+  writeButtonText: {
+    color: '#0A1628',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  formContainer: {
+    backgroundColor: '#1E3A5F',
+    margin: 16,
+    padding: 16,
+    borderRadius: 12,
+  },
+  formHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  formTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  formRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  formField: {
+    flex: 1,
+  },
+  label: {
+    color: '#B8C5D6',
+    fontSize: 13,
+    marginBottom: 6,
+    marginTop: 12,
+  },
+  input: {
+    backgroundColor: '#0A1628',
+    borderRadius: 8,
+    padding: 12,
+    color: '#FFFFFF',
+    fontSize: 15,
+  },
+  textArea: {
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
+  topicSelector: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  topicOption: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.4)',
+  },
+  topicOptionActive: {
+    backgroundColor: '#D4AF37',
+    borderColor: '#D4AF37',
+  },
+  topicOptionText: {
+    color: '#D4AF37',
+    fontSize: 13,
+  },
+  topicOptionTextActive: {
+    color: '#0A1628',
+  },
+  submitButton: {
+    backgroundColor: '#D4AF37',
+    padding: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  submitButtonDisabled: {
+    opacity: 0.7,
+  },
+  submitButtonText: {
+    color: '#0A1628',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  messagesList: {
+    flex: 1,
+    padding: 16,
+  },
+  emptyState: {
+    alignItems: 'center',
+    padding: 40,
+  },
+  emptyText: {
+    color: '#B8C5D6',
+    fontSize: 16,
+    marginTop: 12,
+  },
+  emptySubtext: {
+    color: '#6B7C93',
+    fontSize: 14,
+    marginTop: 4,
+  },
+  messageCard: {
+    backgroundColor: '#1E3A5F',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+  },
+  messageHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  avatar: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: '#D4AF37',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  avatarText: {
+    color: '#0A1628',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  authorInfo: {
+    flex: 1,
+  },
+  authorName: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  authorCountry: {
+    color: '#6B7C93',
+    fontSize: 13,
+  },
+  messageDate: {
+    color: '#6B7C93',
+    fontSize: 12,
+  },
+  messageContent: {
+    color: '#B8C5D6',
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  messageFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.1)',
+  },
+  topicBadge: {
+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  topicBadgeText: {
+    color: '#D4AF37',
+    fontSize: 12,
+  },
+  likeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  likeCount: {
+    color: '#D4AF37',
+    fontSize: 14,
+  },
+  challengeMessageCard: {
+    borderWidth: 1,
+    borderColor: 'rgba(76, 175, 80, 0.4)',
+    backgroundColor: 'rgba(76, 175, 80, 0.05)',
+  },
+  challengeBadgeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 10,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(76, 175, 80, 0.2)',
+  },
+  challengeBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#4CAF50',
+  },
+  challengeAvatar: {
+    backgroundColor: '#4CAF50',
+  },
+  challengeTopicBadge: {
+    backgroundColor: 'rgba(76, 175, 80, 0.15)',
+  },
+  challengeTopicBadgeText: {
+    color: '#4CAF50',
+  },
+  challengesLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+    marginHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(76, 175, 80, 0.4)',
+    borderRadius: 8,
+    gap: 8,
+  },
+  challengesLinkText: {
+    color: '#4CAF50',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  blogLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+    marginHorizontal: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(212, 175, 55, 0.4)',
+    borderRadius: 8,
+    gap: 8,
+  },
+  blogLinkText: {
+    color: '#D4AF37',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  bottomPadding: {
+    height: 40,
+  },
+});
