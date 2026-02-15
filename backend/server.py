@@ -1189,6 +1189,46 @@ async def reset_user_password(user_id: str, data: PasswordReset, admin: dict = D
     logger.info(f"Admin reset password for user: {user['email']}")
     return {"success": True, "message": f"Password reset for {user['email']}"}
 
+@api_router.post("/admin/migrate-to-aila-db")
+async def migrate_to_aila_db(admin: dict = Depends(verify_admin_token)):
+    """Migrate data from 'aila' database to 'aila_db' database"""
+    try:
+        # Connect to both databases
+        source_db = client['aila']
+        target_db = client['aila_db']
+        
+        migrated = {"users": 0, "persons": 0, "links": 0}
+        
+        # Migrate users
+        source_users = await source_db.users.find({}, {"_id": 0}).to_list(1000)
+        for user in source_users:
+            existing = await target_db.users.find_one({"email": user.get("email")})
+            if not existing:
+                await target_db.users.insert_one(user)
+                migrated["users"] += 1
+        
+        # Migrate persons
+        source_persons = await source_db.persons.find({}, {"_id": 0}).to_list(10000)
+        for person in source_persons:
+            existing = await target_db.persons.find_one({"id": person.get("id")})
+            if not existing:
+                await target_db.persons.insert_one(person)
+                migrated["persons"] += 1
+        
+        # Migrate links
+        source_links = await source_db.links.find({}, {"_id": 0}).to_list(10000)
+        for link in source_links:
+            existing = await target_db.links.find_one({"id": link.get("id")})
+            if not existing:
+                await target_db.links.insert_one(link)
+                migrated["links"] += 1
+        
+        logger.info(f"Migration complete: {migrated}")
+        return {"success": True, "migrated": migrated}
+    except Exception as e:
+        logger.error(f"Migration error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.delete("/admin/users/{user_id}")
 async def delete_user_admin(user_id: str, admin: dict = Depends(verify_admin_token)):
     """Delete a user (admin only)"""
