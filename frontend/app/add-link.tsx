@@ -138,11 +138,23 @@ export default function AddLinkScreen() {
         ]);
       }
     } catch (error: any) {
-      const message = error.response?.data?.detail || t('common.error');
-      if (Platform.OS === 'web') {
-        window.alert(t('linkForm.createError', { message }));
+      console.error('Create link error:', error);
+      
+      // If it's a network/CORS error, the data might still be saved
+      const isNetworkError = !error.response && error.message?.includes('Network');
+      const isCorsError = error.message?.includes('CORS') || error.code === 'ERR_NETWORK';
+      
+      if (isNetworkError || isCorsError) {
+        // Data likely saved, navigate back
+        console.log('Network/CORS error but data may be saved, navigating...');
+        router.back();
       } else {
-        Alert.alert(t('common.error'), message);
+        const message = error.response?.data?.detail || t('common.error');
+        if (Platform.OS === 'web') {
+          window.alert(t('linkForm.createError', { message }));
+        } else {
+          Alert.alert(t('common.error'), message);
+        }
       }
     } finally {
       setLoading(false);

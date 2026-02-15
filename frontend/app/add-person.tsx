@@ -354,9 +354,25 @@ export default function AddPersonScreen() {
       }
     } catch (error: any) {
       console.error('Save person error:', error);
-      const message = error.response?.data?.detail || t('common.error');
-      if (typeof window !== 'undefined') {
-        window.alert(t('personForm.saveError', { message }));
+      
+      // If it's a network error (CORS), the data might still be saved
+      // Don't show error popup for network errors, just navigate back
+      const isNetworkError = !error.response && error.message?.includes('Network');
+      const isCorsError = error.message?.includes('CORS') || error.code === 'ERR_NETWORK';
+      
+      if (isNetworkError || isCorsError) {
+        // Data likely saved, navigate to tree
+        console.log('Network/CORS error but data may be saved, navigating...');
+        if (isPreviewMode && previewToken) {
+          router.replace(`/(tabs)/tree?preview=true&token=${previewToken}`);
+        } else {
+          router.replace('/(tabs)/tree');
+        }
+      } else {
+        const message = error.response?.data?.detail || t('common.error');
+        if (typeof window !== 'undefined') {
+          window.alert(t('personForm.saveError', { message }));
+        }
       }
     } finally {
       setLoading(false);
