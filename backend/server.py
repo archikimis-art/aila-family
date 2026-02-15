@@ -1121,15 +1121,24 @@ async def get_admin_stats(admin: dict = Depends(verify_admin_token)):
     total_persons = await db.persons.count_documents({})
     total_links = await db.links.count_documents({})
     
-    # Users created in last 7 days
-    week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
-    new_users = await db.users.count_documents({"created_at": {"$gte": week_ago}})
+    # Users created in different time periods
+    now = datetime.now(timezone.utc)
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    week_ago = (now - timedelta(days=7)).isoformat()
+    month_ago = (now - timedelta(days=30)).isoformat()
+    
+    users_today = await db.users.count_documents({"created_at": {"$gte": today_start}})
+    users_this_week = await db.users.count_documents({"created_at": {"$gte": week_ago}})
+    users_this_month = await db.users.count_documents({"created_at": {"$gte": month_ago}})
     
     return {
         "total_users": total_users,
         "total_persons": total_persons,
         "total_links": total_links,
-        "new_users_last_week": new_users
+        "users_today": users_today,
+        "users_this_week": users_this_week,
+        "users_this_month": users_this_month,
+        "premium_users": 0
     }
 
 @api_router.get("/admin/users")
@@ -1143,8 +1152,9 @@ async def get_admin_users(limit: int = 100, search: str = None, admin: dict = De
             {"last_name": {"$regex": search, "$options": "i"}}
         ]}
     
+    total = await db.users.count_documents(query)
     users = await db.users.find(query, {"_id": 0, "password_hash": 0}).limit(limit).to_list(limit)
-    return users
+    return {"users": users, "total": total}
 
 @api_router.get("/admin/users/{user_id}")
 async def get_admin_user(user_id: str, admin: dict = Depends(verify_admin_token)):
