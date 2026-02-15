@@ -39,9 +39,18 @@ app = FastAPI(title="AÏLA API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=[
+        "https://www.aila.family",
+        "https://aila.family",
+        "http://localhost:3000",
+        "http://localhost:8081",
+        "http://localhost:19006",
+        "*"
+    ],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=600,
 )
 
 # Create a router with the /api prefix
