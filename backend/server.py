@@ -318,12 +318,10 @@ async def get_me(current_user: dict = Depends(get_current_user)):
 async def google_auth(auth_data: GoogleAuthRequest):
     """Authenticate with Google OAuth"""
     try:
-        # Get the token (frontend sends it as 'token' or 'id_token')
         google_token = auth_data.token or auth_data.id_token
         if not google_token:
             raise HTTPException(status_code=400, detail="No Google token provided")
         
-        # Verify the Google ID token
         try:
             idinfo = id_token.verify_oauth2_token(
                 google_token,
@@ -334,7 +332,6 @@ async def google_auth(auth_data: GoogleAuthRequest):
             logger.error(f"Google token verification failed: {e}")
             raise HTTPException(status_code=401, detail="Invalid Google token")
         
-        # Extract user info from Google token
         google_email = idinfo.get('email', '').lower()
         google_name = idinfo.get('name', '')
         google_picture = idinfo.get('picture', '')
@@ -344,17 +341,12 @@ async def google_auth(auth_data: GoogleAuthRequest):
         if not google_email:
             raise HTTPException(status_code=400, detail="Email not provided by Google")
         
-        # Check if user already exists
         existing_user = await db.users.find_one({"email": google_email})
         
         if existing_user:
-            # Update last login
             await db.users.update_one(
                 {"id": existing_user['id']},
-                {"$set": {
-                    "last_login": datetime.now(timezone.utc).isoformat(),
-                    "photo_url": google_picture
-                }}
+                {"$set": {"last_login": datetime.now(timezone.utc).isoformat(), "photo_url": google_picture}}
             )
             user_id = existing_user['id']
             first_name = existing_user.get('first_name', google_given_name)
@@ -362,48 +354,27 @@ async def google_auth(auth_data: GoogleAuthRequest):
             gdpr_consent = existing_user.get('gdpr_consent', False)
             created_at = existing_user.get('created_at', datetime.now(timezone.utc).isoformat())
             is_active = existing_user.get('is_active', True)
-            
             logger.info(f"Google user logged in: {google_email}")
         else:
-            # Create new user
             user_id = str(uuid.uuid4())
-            first_name = google_given_name or google_name.split()[0] if google_name else ''
+            first_name = google_given_name or (google_name.split()[0] if google_name else '')
             last_name = google_family_name or (google_name.split()[1] if len(google_name.split()) > 1 else '')
             gdpr_consent = False
             created_at = datetime.now(timezone.utc).isoformat()
             is_active = True
             
-            new_user = {
-                "id": user_id,
-                "email": google_email,
-                "first_name": first_name,
-                "last_name": last_name,
-                "photo_url": google_picture,
-                "gdpr_consent": gdpr_consent,
-                "created_at": created_at,
-                "updated_at": created_at,
-                "last_login": created_at,
-                "is_active": is_active,
-                "auth_provider": "google"
-            }
-            
-            await db.users.insert_one(new_user)
+            await db.users.insert_one({
+                "id": user_id, "email": google_email, "first_name": first_name, "last_name": last_name,
+                "photo_url": google_picture, "gdpr_consent": gdpr_consent, "created_at": created_at,
+                "updated_at": created_at, "last_login": created_at, "is_active": is_active, "auth_provider": "google"
+            })
             logger.info(f"New Google user registered: {google_email}")
         
-        # Create JWT token
         token = create_access_token(user_id, google_email)
-        
         return TokenResponse(
             access_token=token,
-            user=UserResponse(
-                id=user_id,
-                email=google_email,
-                first_name=first_name,
-                last_name=last_name,
-                gdpr_consent=gdpr_consent,
-                created_at=created_at,
-                is_active=is_active
-            )
+            user=UserResponse(id=user_id, email=google_email, first_name=first_name, last_name=last_name,
+                              gdpr_consent=gdpr_consent, created_at=created_at, is_active=is_active)
         )
     except HTTPException:
         raise
