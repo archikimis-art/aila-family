@@ -1080,6 +1080,122 @@ async def get_reminder_templates():
     return templates
 
 # ============================================================================
+# ADMIN ENDPOINTS
+# ============================================================================
+
+# Admin credentials (in production, use environment variables)
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@aila.family')
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'AilaAdmin2024!')
+
+class AdminLogin(BaseModel):
+    email: str
+    password: str
+
+class PasswordReset(BaseModel):
+    new_password: str
+
+@api_router.post("/admin/login")
+async def admin_login(credentials: AdminLogin):
+    """Admin login endpoint"""
+    if credentials.email == ADMIN_EMAIL and credentials.password == ADMIN_PASSWORD:
+        token = create_access_token("admin", ADMIN_EMAIL)
+        return {"access_token": token, "token_type": "bearer", "role": "admin"}
+    raise HTTPException(status_code=401, detail="Invalid admin credentials")
+
+async def verify_admin_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Verify admin token"""
+    if not credentials:
+        raise HTTPException(status_code=401, detail="Admin authentication required")
+    try:
+        payload = decode_token(credentials.credentials)
+        if payload.get('email') != ADMIN_EMAIL:
+            raise HTTPException(status_code=403, detail="Admin access required")
+        return payload
+    except:
+        raise HTTPException(status_code=401, detail="Invalid admin token")
+
+@api_router.get("/admin/stats")
+async def get_admin_stats(admin: dict = Depends(verify_admin_token)):
+    """Get admin statistics"""
+    total_users = await db.users.count_documents({})
+    total_persons = await db.persons.count_documents({})
+    total_links = await db.links.count_documents({})
+    
+    # Users created in last 7 days
+    week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    new_users = await db.users.count_documents({"created_at": {"$gte": week_ago}})
+    
+    return {
+        "total_users": total_users,
+        "total_persons": total_persons,
+        "total_links": total_links,
+        "new_users_last_week": new_users
+    }
+
+@api_router.get("/admin/users")
+async def get_admin_users(limit: int = 100, search: str = None, admin: dict = Depends(verify_admin_token)):
+    """Get all users for admin"""
+    query = {}
+    if search:
+        query = {"$or": [
+            {"email": {"$regex": search, "$options": "i"}},
+            {"first_name": {"$regex": search, "$options": "i"}},
+            {"last_name": {"$regex": search, "$options": "i"}}
+        ]}
+    
+    users = await db.users.find(query, {"_id": 0, "password_hash": 0}).limit(limit).to_list(limit)
+    return users
+
+@api_router.get("/admin/users/{user_id}")
+async def get_admin_user(user_id: str, admin: dict = Depends(verify_admin_token)):
+    """Get specific user details"""
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "password_hash": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Get user's tree stats
+    persons_count = await db.persons.count_documents({"owner_id": user_id})
+    links_count = await db.links.count_documents({"owner_id": user_id})
+    
+    user["persons_count"] = persons_count
+    user["links_count"] = links_count
+    return user
+
+@api_router.post("/admin/users/{user_id}/reset-password")
+async def reset_user_password(user_id: str, data: PasswordReset, admin: dict = Depends(verify_admin_token)):
+    """Reset a user's password (admin only)"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Hash new password
+    new_hash = hash_password(data.new_password)
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"password_hash": new_hash, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    logger.info(f"Admin reset password for user: {user['email']}")
+    return {"success": True, "message": f"Password reset for {user['email']}"}
+
+@api_router.delete("/admin/users/{user_id}")
+async def delete_user_admin(user_id: str, admin: dict = Depends(verify_admin_token)):
+    """Delete a user (admin only)"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Delete user's data
+    await db.persons.delete_many({"owner_id": user_id})
+    await db.links.delete_many({"owner_id": user_id})
+    await db.events.delete_many({"owner_id": user_id})
+    await db.users.delete_one({"id": user_id})
+    
+    logger.info(f"Admin deleted user: {user['email']}")
+    return {"success": True, "message": f"User {user['email']} deleted"}
+
+# ============================================================================
 # MIDDLEWARE & APP SETUP
 # ============================================================================
 
