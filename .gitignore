@@ -256,3 +256,7 @@ aila-github/.git/objects/pack/pack-5e21b6121421ce53a5f8caa8a796816f0c2d0b1e.pack
 # Environment files
 *.env
 *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
