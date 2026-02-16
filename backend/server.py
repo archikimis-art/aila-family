@@ -287,20 +287,23 @@ async def login(credentials: UserLogin):
         
         # Verify password - check both password_hash and password fields for legacy support
         password_hash = user.get('password_hash') or user.get('password', '')
-        if not password_hash or not verify_password(credentials.password, password_hash):
+        if not password_hash:
+            logger.error(f"No password hash found for user: {credentials.email}")
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        
+        if not verify_password(credentials.password, password_hash):
+            logger.error(f"Password verification failed for user: {credentials.email}")
             raise HTTPException(status_code=401, detail="Invalid email or password")
         
         # Get or generate user ID (legacy accounts may not have 'id' field)
-        user_id = user.get('id') or str(user.get('_id', '')) or user['email']
+        user_id = user.get('id') or str(uuid.uuid4())
         
         # If user doesn't have an 'id' field, add one
         if not user.get('id'):
-            new_id = str(uuid.uuid4())
             await db.users.update_one(
                 {"email": user['email']},
-                {"$set": {"id": new_id}}
+                {"$set": {"id": user_id}}
             )
-            user_id = new_id
         
         # Update last login
         await db.users.update_one(
@@ -310,6 +313,13 @@ async def login(credentials: UserLogin):
         
         # Create token
         token = create_access_token(user_id, user['email'])
+        
+        # Handle created_at - could be string or datetime
+        created_at = user.get('created_at', '')
+        if hasattr(created_at, 'isoformat'):
+            created_at = created_at.isoformat()
+        elif not isinstance(created_at, str):
+            created_at = str(created_at) if created_at else ''
         
         logger.info(f"User logged in: {user['email']}")
         
@@ -321,14 +331,14 @@ async def login(credentials: UserLogin):
                 first_name=user.get('first_name', ''),
                 last_name=user.get('last_name', ''),
                 gdpr_consent=user.get('gdpr_consent', False),
-                created_at=user.get('created_at', ''),
+                created_at=created_at,
                 is_active=user.get('is_active', True)
             )
         )
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Login error: {e}")
+        logger.error(f"Login error for {credentials.email}: {e}")
         raise HTTPException(status_code=500, detail="Login failed")
 
 @api_router.get("/auth/me", response_model=UserResponse)
