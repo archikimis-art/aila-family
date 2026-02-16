@@ -871,6 +871,72 @@ async def delete_account(current_user: dict = Depends(get_current_user)):
     return {"success": True, "message": "Account deleted"}
 
 # ============================================================================
+# TREE EXPORT ENDPOINTS
+# ============================================================================
+
+@api_router.get("/tree/export/json")
+async def export_tree_json(current_user: dict = Depends(get_current_user)):
+    """Export family tree as JSON"""
+    persons = await db.persons.find({"owner_id": current_user['id']}, {"_id": 0}).to_list(1000)
+    links = await db.links.find({"owner_id": current_user['id']}, {"_id": 0}).to_list(1000)
+    
+    return {
+        "format": "AILA JSON",
+        "version": "1.0",
+        "exported_at": datetime.now(timezone.utc).isoformat(),
+        "owner": {
+            "email": current_user.get('email'),
+            "name": f"{current_user.get('first_name', '')} {current_user.get('last_name', '')}".strip()
+        },
+        "persons": persons,
+        "links": links,
+        "stats": {
+            "total_persons": len(persons),
+            "total_links": len(links)
+        }
+    }
+
+@api_router.get("/tree/export/gedcom")
+async def export_tree_gedcom(current_user: dict = Depends(get_current_user)):
+    """Export family tree as GEDCOM format"""
+    persons = await db.persons.find({"owner_id": current_user['id']}, {"_id": 0}).to_list(1000)
+    links = await db.links.find({"owner_id": current_user['id']}, {"_id": 0}).to_list(1000)
+    
+    # Generate GEDCOM content
+    gedcom_lines = [
+        "0 HEAD",
+        "1 SOUR AILA",
+        "2 VERS 1.0",
+        "1 GEDC",
+        "2 VERS 5.5.1",
+        "2 FORM LINEAGE-LINKED",
+        "1 CHAR UTF-8",
+        f"1 DATE {datetime.now(timezone.utc).strftime('%d %b %Y').upper()}",
+    ]
+    
+    # Add individuals
+    for person in persons:
+        pid = person.get('id', '')[:8]
+        gedcom_lines.append(f"0 @I{pid}@ INDI")
+        gedcom_lines.append(f"1 NAME {person.get('first_name', '')} /{person.get('last_name', '')}/")
+        if person.get('gender'):
+            sex = 'M' if person.get('gender') == 'male' else 'F' if person.get('gender') == 'female' else 'U'
+            gedcom_lines.append(f"1 SEX {sex}")
+        if person.get('birth_date'):
+            gedcom_lines.append("1 BIRT")
+            gedcom_lines.append(f"2 DATE {person.get('birth_date')}")
+        if person.get('death_date'):
+            gedcom_lines.append("1 DEAT")
+            gedcom_lines.append(f"2 DATE {person.get('death_date')}")
+    
+    gedcom_lines.append("0 TRLR")
+    
+    return {
+        "content": "\n".join(gedcom_lines),
+        "filename": f"aila_tree_{datetime.now(timezone.utc).strftime('%Y%m%d')}.ged"
+    }
+
+# ============================================================================
 # STATUS ENDPOINTS
 # ============================================================================
 
@@ -881,6 +947,25 @@ async def root():
 @api_router.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
+
+# ============================================================================
+# STUB ENDPOINTS (to prevent 404 errors)
+# ============================================================================
+
+@api_router.get("/stripe/subscription-status")
+async def get_subscription_status(current_user: dict = Depends(get_current_user)):
+    """Get subscription status (stub - premium not implemented)"""
+    return {"status": "free", "plan": "free", "features": []}
+
+@api_router.get("/collaborators")
+async def get_collaborators(current_user: dict = Depends(get_current_user)):
+    """Get collaborators (stub - collaboration not implemented)"""
+    return []
+
+@api_router.get("/collaborators/shared-with-me")
+async def get_shared_trees(current_user: dict = Depends(get_current_user)):
+    """Get trees shared with current user (stub)"""
+    return []
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
