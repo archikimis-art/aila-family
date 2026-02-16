@@ -2186,6 +2186,7 @@ export default function TreeScreen() {
             <View style={styles.emptyImportContainer}>
               <Text style={styles.emptyImportText}>{t('treeScreen.empty.orImport', { defaultValue: 'ou importez depuis Excel' })}</Text>
               <ExcelImport 
+                variant="button"
                 onImportSuccess={(count) => {
                   Alert.alert(t('common.success'), t('treeScreen.importSuccess', { count }));
                   onRefresh();

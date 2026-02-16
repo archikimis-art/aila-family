@@ -29,6 +29,7 @@ const getApiUrl = () => {
 interface ExcelImportProps {
   onImportSuccess?: (count: number) => void;
   onClose?: () => void;
+  variant?: 'icon' | 'button';  // 'icon' = small icon button, 'button' = full button with text
 }
 
 interface ImportResult {
@@ -39,7 +40,7 @@ interface ImportResult {
   errors: string[];
 }
 
-export const ExcelImport: React.FC<ExcelImportProps> = ({ onImportSuccess, onClose }) => {
+export const ExcelImport: React.FC<ExcelImportProps> = ({ onImportSuccess, onClose, variant = 'icon' }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
@@ -300,10 +301,17 @@ export const ExcelImport: React.FC<ExcelImportProps> = ({ onImportSuccess, onClo
 
   return (
     <>
-      {/* Trigger Button - Compact icon only, matches zoom buttons style */}
-      <TouchableOpacity style={styles.triggerButton} onPress={openModal}>
-        <Ionicons name="document-text-outline" size={16} color="#D4AF37" />
-      </TouchableOpacity>
+      {/* Trigger Button - Variant-based display */}
+      {variant === 'button' ? (
+        <TouchableOpacity style={styles.fullButton} onPress={openModal}>
+          <Ionicons name="document-text-outline" size={20} color="#0A1628" />
+          <Text style={styles.fullButtonText}>Importer depuis Excel</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity style={styles.triggerButton} onPress={openModal}>
+          <Ionicons name="document-text-outline" size={16} color="#D4AF37" />
+        </TouchableOpacity>
+      )}
 
       {/* Modal */}
       <Modal
@@ -341,6 +349,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: 36,
     height: 36,
+  },
+  fullButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#D4AF37',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 10,
+    gap: 8,
+  },
+  fullButtonText: {
+    color: '#0A1628',
+    fontSize: 15,
+    fontWeight: '600',
   },
   modalOverlay: {
     flex: 1,
