@@ -2181,6 +2181,17 @@ export default function TreeScreen() {
               <Ionicons name="add" size={24} color="#0A1628" />
               <Text style={styles.emptyButtonText}>{t('treeScreen.empty.addFirst')}</Text>
             </TouchableOpacity>
+            
+            {/* Excel Import - Also visible when tree is empty */}
+            <View style={styles.emptyImportContainer}>
+              <Text style={styles.emptyImportText}>{t('treeScreen.empty.orImport', { defaultValue: 'ou importez depuis Excel' })}</Text>
+              <ExcelImport 
+                onImportSuccess={(count) => {
+                  Alert.alert(t('common.success'), t('treeScreen.importSuccess', { count }));
+                  onRefresh();
+                }}
+              />
+            </View>
           </View>
         ) : (
           <>
@@ -2957,6 +2968,15 @@ const styles = StyleSheet.create({
     color: '#0A1628',
     fontSize: 16,
     fontWeight: '600',
+  },
+  emptyImportContainer: {
+    marginTop: 32,
+    alignItems: 'center',
+    gap: 12,
+  },
+  emptyImportText: {
+    color: '#6B7C93',
+    fontSize: 14,
   },
   actionsContainer: {
     flexDirection: 'row',
