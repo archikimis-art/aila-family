@@ -424,24 +424,28 @@ async def get_person(person_id: str, current_user: dict = Depends(get_current_us
 @api_router.post("/persons")
 async def create_person(person_data: PersonCreate, current_user: dict = Depends(get_current_user)):
     """Create a new person"""
-    person = Person(
-        owner_id=current_user['id'],
-        first_name=person_data.first_name,
-        last_name=person_data.last_name,
-        birth_date=person_data.birth_date,
-        death_date=person_data.death_date,
-        gender=person_data.gender,
-        photo_url=person_data.photo_url,
-        bio=person_data.bio
-    )
-    
-    doc = person.model_dump()
-    for key in ['created_at', 'updated_at']:
-        if doc.get(key):
-            doc[key] = doc[key].isoformat()
-    
-    await db.persons.insert_one(doc)
-    return doc
+    try:
+        doc = {
+            "id": str(uuid.uuid4()),
+            "owner_id": current_user['id'],
+            "first_name": person_data.first_name,
+            "last_name": person_data.last_name,
+            "birth_date": person_data.birth_date,
+            "death_date": person_data.death_date,
+            "gender": person_data.gender,
+            "photo_url": person_data.photo_url,
+            "bio": person_data.bio,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.persons.insert_one(doc)
+        # Remove _id before returning
+        doc.pop('_id', None)
+        return doc
+    except Exception as e:
+        logger.error(f"Error creating person: {e}")
+        raise HTTPException(status_code=500, detail=f"Error creating person: {str(e)}")
 
 @api_router.put("/persons/{person_id}")
 async def update_person(person_id: str, person_data: PersonCreate, current_user: dict = Depends(get_current_user)):
@@ -486,25 +490,31 @@ async def get_links(current_user: dict = Depends(get_current_user)):
 @api_router.post("/links")
 async def create_link(link_data: LinkCreate, current_user: dict = Depends(get_current_user)):
     """Create a new link between two persons"""
-    # Verify both persons exist and belong to user
-    person1 = await db.persons.find_one({"id": link_data.person_id_1, "owner_id": current_user['id']})
-    person2 = await db.persons.find_one({"id": link_data.person_id_2, "owner_id": current_user['id']})
-    
-    if not person1 or not person2:
-        raise HTTPException(status_code=404, detail="One or both persons not found")
-    
-    link = Link(
-        owner_id=current_user['id'],
-        person_id_1=link_data.person_id_1,
-        person_id_2=link_data.person_id_2,
-        link_type=link_data.link_type
-    )
-    
-    doc = link.model_dump()
-    doc['created_at'] = doc['created_at'].isoformat()
-    
-    await db.links.insert_one(doc)
-    return doc
+    try:
+        # Verify both persons exist and belong to user
+        person1 = await db.persons.find_one({"id": link_data.person_id_1, "owner_id": current_user['id']})
+        person2 = await db.persons.find_one({"id": link_data.person_id_2, "owner_id": current_user['id']})
+        
+        if not person1 or not person2:
+            raise HTTPException(status_code=404, detail="One or both persons not found")
+        
+        doc = {
+            "id": str(uuid.uuid4()),
+            "owner_id": current_user['id'],
+            "person_id_1": link_data.person_id_1,
+            "person_id_2": link_data.person_id_2,
+            "link_type": link_data.link_type,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.links.insert_one(doc)
+        doc.pop('_id', None)
+        return doc
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating link: {e}")
+        raise HTTPException(status_code=500, detail=f"Error creating link: {str(e)}")
 
 @api_router.delete("/links/{link_id}")
 async def delete_link(link_id: str, current_user: dict = Depends(get_current_user)):
