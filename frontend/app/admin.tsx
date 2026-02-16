@@ -1308,17 +1308,18 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   sendReminderButton: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#D4AF37',
-    paddingVertical: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
     borderRadius: 12,
-    marginBottom: 24,
-    gap: 10,
+    gap: 8,
   },
   sendReminderButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#0A1628',
   },
@@ -1518,8 +1519,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   autoReminderButton: {
-    flex: 0,
-    paddingHorizontal: 20,
+    backgroundColor: '#4CAF50',
   },
   
   // Incomplete Trees List

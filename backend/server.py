@@ -1651,6 +1651,349 @@ async def send_family_reminder(reminder: FamilyReminderCreate):
         logger.error(f"Error sending family reminder: {e}")
         return {"success": False, "message": str(e)}
 
+@api_router.get("/reminders/analyze-trees")
+async def analyze_incomplete_trees(limit: int = 20):
+    """Analyze trees and find users who need reminders"""
+    try:
+        users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(100)
+        analysis = []
+        
+        for user in users:
+            user_id = user.get('id')
+            if not user_id:
+                continue
+                
+            # Count persons and links
+            person_count = await db.persons.count_documents({"owner_id": user_id})
+            link_count = await db.links.count_documents({"owner_id": user_id})
+            
+            # Calculate completion score (simple heuristic)
+            # A "complete" tree has at least 10 persons and links connecting them
+            if person_count == 0:
+                completion_score = 0
+            elif person_count < 3:
+                completion_score = 10
+            elif person_count < 10:
+                completion_score = 30 + (person_count * 3)
+            else:
+                link_ratio = link_count / person_count if person_count > 0 else 0
+                completion_score = min(100, 50 + (person_count * 2) + (link_ratio * 20))
+            
+            # Check last activity
+            last_person = await db.persons.find_one(
+                {"owner_id": user_id}, 
+                sort=[("created_at", -1)]
+            )
+            last_activity = last_person.get('created_at') if last_person else user.get('created_at')
+            
+            analysis.append({
+                "user_id": user_id,
+                "user_name": f"{user.get('first_name', '')} {user.get('last_name', '')}".strip() or "Utilisateur",
+                "user_email": user.get('email'),
+                "person_count": person_count,
+                "link_count": link_count,
+                "completion_score": int(completion_score),
+                "last_activity": last_activity,
+                "needs_reminder": completion_score < 50 or person_count < 5
+            })
+        
+        # Sort by completion score (lowest first)
+        analysis.sort(key=lambda x: x['completion_score'])
+        
+        return analysis[:limit]
+    except Exception as e:
+        logger.error(f"Error analyzing trees: {e}")
+        return []
+
+@api_router.post("/reminders/send-auto")
+async def send_auto_reminders(dry_run: bool = True, min_days_inactive: int = 7):
+    """Send automatic reminders to inactive users
+    
+    Args:
+        dry_run: If True, only preview what would be sent without actually sending
+        min_days_inactive: Minimum days of inactivity before sending reminder
+    """
+    try:
+        users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(100)
+        
+        reminders_to_send = []
+        now = datetime.now(timezone.utc)
+        
+        for user in users:
+            user_id = user.get('id')
+            if not user_id:
+                continue
+            
+            # Check tree status
+            person_count = await db.persons.count_documents({"owner_id": user_id})
+            
+            # Check last activity
+            last_person = await db.persons.find_one(
+                {"owner_id": user_id},
+                sort=[("created_at", -1)]
+            )
+            
+            if last_person and last_person.get('created_at'):
+                try:
+                    last_activity_str = last_person.get('created_at')
+                    if isinstance(last_activity_str, str):
+                        last_activity = datetime.fromisoformat(last_activity_str.replace('Z', '+00:00'))
+                    else:
+                        last_activity = last_activity_str
+                    days_inactive = (now - last_activity).days
+                except:
+                    days_inactive = 999
+            else:
+                days_inactive = 999
+            
+            # Check if reminder already sent recently
+            recent_reminder = await db.user_reminders.find_one({
+                "user_id": user_id,
+                "created_at": {"$gte": (now - timedelta(days=7)).isoformat()}
+            })
+            
+            if recent_reminder:
+                continue
+            
+            # Determine reminder type based on tree status
+            if person_count == 0:
+                reminder_type = "continue_tree"
+                title = "Commencez votre arbre ! 🌳"
+                message = "Vous n'avez pas encore ajouté de personnes. Commencez par vous-même !"
+            elif person_count < 5:
+                reminder_type = "invite_family"
+                title = "Invitez votre famille ! 👨‍👩‍👧‍👦"
+                message = f"Votre arbre a {person_count} personnes. Invitez vos proches pour le compléter !"
+            elif days_inactive >= min_days_inactive:
+                reminder_type = "continue_tree"
+                title = "Continuez votre arbre ! 🌳"
+                message = f"Cela fait {days_inactive} jours que vous n'avez pas enrichi votre arbre."
+            else:
+                continue
+            
+            reminders_to_send.append({
+                "user_id": user_id,
+                "user_email": user.get('email'),
+                "user_name": f"{user.get('first_name', '')} {user.get('last_name', '')}".strip(),
+                "reminder_type": reminder_type,
+                "title": title,
+                "message": message,
+                "days_inactive": days_inactive,
+                "person_count": person_count
+            })
+        
+        if dry_run:
+            return {
+                "dry_run": True,
+                "reminders_count": len(reminders_to_send),
+                "reminders_preview": reminders_to_send
+            }
+        
+        # Actually send reminders
+        sent_count = 0
+        for reminder_data in reminders_to_send:
+            try:
+                doc = {
+                    "id": str(uuid.uuid4()),
+                    "user_id": reminder_data["user_id"],
+                    "reminder_type": reminder_data["reminder_type"],
+                    "title": reminder_data["title"],
+                    "message": reminder_data["message"],
+                    "status": "sent",
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "sent_at": datetime.now(timezone.utc).isoformat()
+                }
+                await db.user_reminders.insert_one(doc)
+                sent_count += 1
+                logger.info(f"Auto reminder sent to {reminder_data['user_email']}")
+            except Exception as e:
+                logger.error(f"Error sending reminder to {reminder_data['user_email']}: {e}")
+        
+        return {
+            "dry_run": False,
+            "reminders_sent": sent_count,
+            "reminders_failed": len(reminders_to_send) - sent_count
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in send_auto_reminders: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/reminders/auto-schedule")
+async def schedule_auto_reminders(current_user: dict = Depends(get_current_user)):
+    """Schedule automatic reminders based on user activity"""
+    try:
+        user_id = current_user['id']
+        
+        # Check user's tree activity
+        persons_count = await db.persons.count_documents({"owner_id": user_id})
+        last_activity = await db.persons.find_one(
+            {"owner_id": user_id}, 
+            sort=[("updated_at", -1)]
+        )
+        
+        # Determine appropriate reminders
+        reminders_to_schedule = []
+        
+        if persons_count == 0:
+            # New user - encourage to start
+            reminders_to_schedule.append({
+                "reminder_type": "continue_tree",
+                "title": "Commencez votre arbre familial ! 🌱",
+                "message": "Créez votre premier profil et commencez à construire votre histoire familiale.",
+                "scheduled_at": datetime.now(timezone.utc) + timedelta(days=1)
+            })
+        elif persons_count < 5:
+            # Small tree - encourage growth
+            reminders_to_schedule.append({
+                "reminder_type": "continue_tree", 
+                "title": "Agrandissez votre arbre ! 🌳",
+                "message": f"Vous avez {persons_count} membres. Ajoutez parents, grands-parents ou enfants !",
+                "scheduled_at": datetime.now(timezone.utc) + timedelta(days=3)
+            })
+        
+        # Check for incomplete profiles
+        incomplete_profiles = await db.persons.count_documents({
+            "owner_id": user_id,
+            "$or": [
+                {"birth_date": {"$in": [None, ""]}},
+                {"photo_url": {"$in": [None, ""]}}
+            ]
+        })
+        
+        if incomplete_profiles > 0:
+            reminders_to_schedule.append({
+                "reminder_type": "complete_profile",
+                "title": "Complétez vos profils ! ✏️", 
+                "message": f"{incomplete_profiles} profils peuvent être enrichis avec dates et photos.",
+                "scheduled_at": datetime.now(timezone.utc) + timedelta(days=7)
+            })
+        
+        # Schedule the reminders
+        scheduled_count = 0
+        for reminder_data in reminders_to_schedule:
+            reminder = {
+                "id": str(uuid.uuid4()),
+                "user_id": user_id,
+                "reminder_type": reminder_data["reminder_type"],
+                "title": reminder_data["title"],
+                "message": reminder_data["message"],
+                "send_email": False,
+                "send_push": True,
+                "scheduled_at": reminder_data["scheduled_at"].isoformat(),
+                "status": "scheduled",
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "created_by": "auto_scheduler"
+            }
+            await db.user_reminders.insert_one(reminder)
+            scheduled_count += 1
+        
+        return {
+            "success": True,
+            "scheduled_count": scheduled_count,
+            "message": f"{scheduled_count} rappels automatiques programmés"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error scheduling auto reminders: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la programmation des rappels")
+
+@api_router.get("/reminders/missing-trees")
+async def analyze_missing_trees(current_user: dict = Depends(get_current_user)):
+    """Analyze what's missing in the user's family tree"""
+    try:
+        user_id = current_user['id']
+        
+        # Get all persons and links
+        persons = await db.persons.find({"owner_id": user_id}, {"_id": 0}).to_list(1000)
+        links = await db.links.find({"owner_id": user_id}, {"_id": 0}).to_list(1000)
+        
+        # Build family relationships map
+        relationships = {}
+        for link in links:
+            person1_id = link.get('person_id_1')
+            person2_id = link.get('person_id_2')
+            link_type = link.get('link_type')
+            
+            if person1_id not in relationships:
+                relationships[person1_id] = {'parents': [], 'children': [], 'spouses': []}
+            if person2_id not in relationships:
+                relationships[person2_id] = {'parents': [], 'children': [], 'spouses': []}
+            
+            if link_type == 'parent':
+                relationships[person2_id]['parents'].append(person1_id)
+                relationships[person1_id]['children'].append(person2_id)
+            elif link_type == 'spouse':
+                relationships[person1_id]['spouses'].append(person2_id)
+                relationships[person2_id]['spouses'].append(person1_id)
+        
+        # Analyze missing elements
+        missing_analysis = {
+            "persons_without_parents": [],
+            "persons_without_spouse": [],
+            "persons_without_children": [],
+            "incomplete_profiles": [],
+            "suggestions": []
+        }
+        
+        for person in persons:
+            person_id = person.get('id')
+            person_rels = relationships.get(person_id, {'parents': [], 'children': [], 'spouses': []})
+            
+            # Check for missing parents (except for oldest generation)
+            if len(person_rels['parents']) == 0:
+                missing_analysis["persons_without_parents"].append({
+                    "id": person_id,
+                    "name": f"{person.get('first_name', '')} {person.get('last_name', '')}".strip()
+                })
+            
+            # Check for incomplete profiles
+            if not person.get('birth_date') or not person.get('photo_url'):
+                missing_fields = []
+                if not person.get('birth_date'):
+                    missing_fields.append('date de naissance')
+                if not person.get('photo_url'):
+                    missing_fields.append('photo')
+                
+                missing_analysis["incomplete_profiles"].append({
+                    "id": person_id,
+                    "name": f"{person.get('first_name', '')} {person.get('last_name', '')}".strip(),
+                    "missing_fields": missing_fields
+                })
+        
+        # Generate suggestions
+        if missing_analysis["persons_without_parents"]:
+            missing_analysis["suggestions"].append({
+                "type": "add_parents",
+                "priority": "high",
+                "message": f"Ajoutez les parents de {len(missing_analysis['persons_without_parents'])} personnes pour enrichir votre arbre"
+            })
+        
+        if missing_analysis["incomplete_profiles"]:
+            missing_analysis["suggestions"].append({
+                "type": "complete_profiles", 
+                "priority": "medium",
+                "message": f"Complétez {len(missing_analysis['incomplete_profiles'])} profils avec dates et photos"
+            })
+        
+        if len(persons) < 10:
+            missing_analysis["suggestions"].append({
+                "type": "expand_tree",
+                "priority": "medium", 
+                "message": "Votre arbre peut grandir ! Ajoutez grands-parents, oncles, tantes ou cousins"
+            })
+        
+        return {
+            "total_persons": len(persons),
+            "total_links": len(links),
+            "analysis": missing_analysis,
+            "completion_score": max(0, 100 - len(missing_analysis["persons_without_parents"]) * 10 - len(missing_analysis["incomplete_profiles"]) * 5)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error analyzing missing trees: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'analyse de l'arbre")
+
 @api_router.get("/reminders/templates")
 async def get_reminder_templates():
     """Get predefined reminder templates"""
