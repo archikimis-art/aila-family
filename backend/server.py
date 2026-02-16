@@ -959,13 +959,83 @@ async def get_subscription_status(current_user: dict = Depends(get_current_user)
 
 @api_router.get("/collaborators")
 async def get_collaborators(current_user: dict = Depends(get_current_user)):
-    """Get collaborators (stub - collaboration not implemented)"""
-    return []
+    """Get collaborators for current user's tree"""
+    collaborators = await db.collaborators.find(
+        {"owner_id": current_user['id']}, 
+        {"_id": 0}
+    ).to_list(100)
+    return collaborators
 
 @api_router.get("/collaborators/shared-with-me")
 async def get_shared_trees(current_user: dict = Depends(get_current_user)):
-    """Get trees shared with current user (stub)"""
-    return []
+    """Get trees shared with current user"""
+    shared = await db.collaborators.find(
+        {"email": current_user.get('email')}, 
+        {"_id": 0}
+    ).to_list(100)
+    return shared
+
+@api_router.post("/collaborators/invite")
+async def invite_collaborator(data: dict, current_user: dict = Depends(get_current_user)):
+    """Invite someone to collaborate on your tree"""
+    email = data.get('email', '').strip().lower()
+    role = data.get('role', 'viewer')
+    
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+    
+    # Check if already invited
+    existing = await db.collaborators.find_one({
+        "owner_id": current_user['id'],
+        "email": email
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="This person is already invited")
+    
+    # Create invitation
+    invitation = {
+        "id": str(uuid.uuid4()),
+        "owner_id": current_user['id'],
+        "owner_name": f"{current_user.get('first_name', '')} {current_user.get('last_name', '')}".strip(),
+        "owner_email": current_user.get('email'),
+        "email": email,
+        "role": role,
+        "status": "pending",
+        "invited_at": datetime.now(timezone.utc).isoformat(),
+    }
+    
+    await db.collaborators.insert_one(invitation)
+    logger.info(f"Invitation sent from {current_user['email']} to {email}")
+    
+    return {"success": True, "message": f"Invitation envoyée à {email}"}
+
+@api_router.post("/collaborators/accept/{invite_id}")
+async def accept_invitation(invite_id: str, current_user: dict = Depends(get_current_user)):
+    """Accept a collaboration invitation"""
+    invitation = await db.collaborators.find_one({"id": invite_id})
+    if not invitation:
+        raise HTTPException(status_code=404, detail="Invitation not found")
+    
+    if invitation.get('email') != current_user.get('email'):
+        raise HTTPException(status_code=403, detail="This invitation is not for you")
+    
+    await db.collaborators.update_one(
+        {"id": invite_id},
+        {"$set": {"status": "accepted", "accepted_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    return {"success": True, "message": "Invitation acceptée"}
+
+@api_router.delete("/collaborators/{collaborator_id}")
+async def remove_collaborator(collaborator_id: str, current_user: dict = Depends(get_current_user)):
+    """Remove a collaborator"""
+    result = await db.collaborators.delete_one({
+        "id": collaborator_id,
+        "owner_id": current_user['id']
+    })
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Collaborator not found")
+    return {"success": True}
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
