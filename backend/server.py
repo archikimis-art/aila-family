@@ -1309,6 +1309,33 @@ async def fix_owner_ids(admin: dict = Depends(verify_admin_token)):
         logger.error(f"Fix owner_ids error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.get("/admin/debug-owners")
+async def debug_owners(admin: dict = Depends(verify_admin_token)):
+    """Debug: show unique owner_ids in persons and links"""
+    try:
+        # Get unique owner_ids from persons
+        persons = await db.persons.find({}, {"owner_id": 1, "_id": 0}).to_list(10000)
+        person_owners = list(set([p.get('owner_id', 'NONE') for p in persons]))
+        
+        # Get unique owner_ids from links
+        links = await db.links.find({}, {"owner_id": 1, "_id": 0}).to_list(10000)
+        link_owners = list(set([l.get('owner_id', 'NONE') for l in links]))
+        
+        # Get all user IDs
+        users = await db.users.find({}, {"id": 1, "email": 1, "_id": 0}).to_list(1000)
+        user_info = [{"id": u.get('id', 'NO ID'), "email": u.get('email', '')} for u in users]
+        
+        return {
+            "person_owner_ids": person_owners[:20],  # Limit to 20
+            "link_owner_ids": link_owners[:20],
+            "users": user_info[:20],
+            "total_persons": len(persons),
+            "total_links": len(links)
+        }
+    except Exception as e:
+        logger.error(f"Debug owners error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.delete("/admin/users/{user_id}")
 async def delete_user_admin(user_id: str, admin: dict = Depends(verify_admin_token)):
     """Delete a user (admin only)"""
