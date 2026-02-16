@@ -1373,6 +1373,40 @@ async def transfer_ownership(old_owner_id: str, new_owner_id: str, admin: dict =
         logger.error(f"Transfer ownership error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.post("/admin/fix-empty-ids")
+async def fix_empty_ids(admin: dict = Depends(verify_admin_token)):
+    """Add IDs to persons and links that don't have one"""
+    try:
+        fixed = {"persons": 0, "links": 0}
+        
+        # Fix persons without ID
+        persons = await db.persons.find({}).to_list(10000)
+        for person in persons:
+            if not person.get('id') or person.get('id') == '' or person.get('id') is None:
+                new_id = str(uuid.uuid4())
+                await db.persons.update_one(
+                    {"_id": person['_id']},
+                    {"$set": {"id": new_id}}
+                )
+                fixed["persons"] += 1
+        
+        # Fix links without ID
+        links = await db.links.find({}).to_list(10000)
+        for link in links:
+            if not link.get('id') or link.get('id') == '' or link.get('id') is None:
+                new_id = str(uuid.uuid4())
+                await db.links.update_one(
+                    {"_id": link['_id']},
+                    {"$set": {"id": new_id}}
+                )
+                fixed["links"] += 1
+        
+        logger.info(f"Fixed empty IDs: {fixed}")
+        return {"success": True, "fixed": fixed}
+    except Exception as e:
+        logger.error(f"Fix empty IDs error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.delete("/admin/users/{user_id}")
 async def delete_user_admin(user_id: str, admin: dict = Depends(verify_admin_token)):
     """Delete a user (admin only)"""
