@@ -103,7 +103,7 @@ class UserResponse(BaseModel):
     first_name: str
     last_name: str
     gdpr_consent: bool
-    created_at: str
+    created_at: Any  # Can be string or datetime
     is_active: bool
 
 class TokenResponse(BaseModel):
