@@ -223,7 +223,11 @@ export default function AdminScreen() {
 
   const handleSendReminder = async () => {
     if (!reminderTitle || !reminderMessage) {
-      Alert.alert('Erreur', 'Veuillez remplir le titre et le message');
+      if (typeof window !== 'undefined') {
+        window.alert('Veuillez remplir le titre et le message');
+      } else {
+        Alert.alert('Erreur', 'Veuillez remplir le titre et le message');
+      }
       return;
     }
 
@@ -247,17 +251,31 @@ export default function AdminScreen() {
 
       if (response.ok) {
         const target = sendToAll ? 'tous les utilisateurs' : selectedUser?.email;
-        Alert.alert('Succès', `Rappel envoyé à ${target}`);
+        // Close modal FIRST
         setShowReminderModal(false);
         setReminderTitle('');
         setReminderMessage('');
         setSelectedTemplate(null);
+        
+        // Show success message
+        if (typeof window !== 'undefined') {
+          window.alert(`✅ Rappel envoyé avec succès à ${target} !`);
+        } else {
+          Alert.alert('Succès', `Rappel envoyé à ${target}`);
+        }
+        
+        // Reload data
         await loadData();
       } else {
-        throw new Error('Erreur lors de l\'envoi');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Erreur lors de l\'envoi');
       }
     } catch (error: any) {
-      Alert.alert('Erreur', error.message || 'Impossible d\'envoyer le rappel');
+      if (typeof window !== 'undefined') {
+        window.alert(`❌ Erreur: ${error.message || 'Impossible d\'envoyer le rappel'}`);
+      } else {
+        Alert.alert('Erreur', error.message || 'Impossible d\'envoyer le rappel');
+      }
     } finally {
       setActionLoading(false);
     }
@@ -285,9 +303,15 @@ export default function AdminScreen() {
         const preview = await response.json();
         setAutoReminderPreview(preview);
         setShowAutoReminderModal(true);
+      } else {
+        throw new Error('Erreur serveur');
       }
     } catch (error) {
-      Alert.alert('Erreur', 'Impossible de charger la prévisualisation');
+      if (typeof window !== 'undefined') {
+        window.alert('❌ Impossible de charger la prévisualisation');
+      } else {
+        Alert.alert('Erreur', 'Impossible de charger la prévisualisation');
+      }
     } finally {
       setAutoReminderLoading(false);
     }
@@ -307,12 +331,28 @@ export default function AdminScreen() {
       
       if (response.ok) {
         const result = await response.json();
-        Alert.alert('Succès', `${result.reminders_sent} rappels envoyés !`);
+        // Close modal FIRST
         setShowAutoReminderModal(false);
+        setAutoReminderPreview(null);
+        
+        // Show success message
+        if (typeof window !== 'undefined') {
+          window.alert(`✅ ${result.reminders_sent} rappels envoyés avec succès !`);
+        } else {
+          Alert.alert('Succès', `${result.reminders_sent} rappels envoyés !`);
+        }
+        
+        // Reload data
         await loadData();
+      } else {
+        throw new Error('Erreur serveur');
       }
     } catch (error) {
-      Alert.alert('Erreur', 'Impossible d\'envoyer les rappels');
+      if (typeof window !== 'undefined') {
+        window.alert('❌ Impossible d\'envoyer les rappels');
+      } else {
+        Alert.alert('Erreur', 'Impossible d\'envoyer les rappels');
+      }
     } finally {
       setAutoReminderLoading(false);
     }
