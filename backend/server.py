@@ -1252,6 +1252,63 @@ async def migrate_to_aila_db(admin: dict = Depends(verify_admin_token)):
         logger.error(f"Migration error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.post("/admin/fix-owner-ids")
+async def fix_owner_ids(admin: dict = Depends(verify_admin_token)):
+    """Fix owner_id in persons and links to match user IDs"""
+    try:
+        fixed = {"persons": 0, "links": 0}
+        
+        # Get all users with their emails and IDs
+        users = await db.users.find({}, {"_id": 0}).to_list(1000)
+        email_to_id = {}
+        for user in users:
+            if user.get('id') and user.get('email'):
+                email_to_id[user['email'].lower()] = user['id']
+                # Also map old-style owner_id (email) to new ID
+                email_to_id[user['email']] = user['id']
+        
+        # Fix persons - update owner_id if it's an email to use the user's ID
+        persons = await db.persons.find({}, {"_id": 0}).to_list(10000)
+        for person in persons:
+            owner_id = person.get('owner_id', '')
+            # Check if owner_id is an email (contains @)
+            if '@' in str(owner_id) and owner_id.lower() in email_to_id:
+                new_owner_id = email_to_id[owner_id.lower()]
+                await db.persons.update_one(
+                    {"id": person['id']},
+                    {"$set": {"owner_id": new_owner_id}}
+                )
+                fixed["persons"] += 1
+            # Also check if owner_id doesn't exist in users
+            elif owner_id and owner_id not in [u.get('id') for u in users]:
+                # Try to find user by matching patterns
+                for email, uid in email_to_id.items():
+                    if email in str(owner_id).lower() or str(owner_id) in email:
+                        await db.persons.update_one(
+                            {"id": person['id']},
+                            {"$set": {"owner_id": uid}}
+                        )
+                        fixed["persons"] += 1
+                        break
+        
+        # Fix links - same logic
+        links = await db.links.find({}, {"_id": 0}).to_list(10000)
+        for link in links:
+            owner_id = link.get('owner_id', '')
+            if '@' in str(owner_id) and owner_id.lower() in email_to_id:
+                new_owner_id = email_to_id[owner_id.lower()]
+                await db.links.update_one(
+                    {"id": link['id']},
+                    {"$set": {"owner_id": new_owner_id}}
+                )
+                fixed["links"] += 1
+        
+        logger.info(f"Fixed owner_ids: {fixed}")
+        return {"success": True, "fixed": fixed}
+    except Exception as e:
+        logger.error(f"Fix owner_ids error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.delete("/admin/users/{user_id}")
 async def delete_user_admin(user_id: str, admin: dict = Depends(verify_admin_token)):
     """Delete a user (admin only)"""
