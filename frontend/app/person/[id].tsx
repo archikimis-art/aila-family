@@ -13,6 +13,24 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { personsAPI, linksAPI, previewAPI } from '@/services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// Cache keys - must match tree.tsx
+const CACHE_KEYS = {
+  TREE_DATA: 'cached_tree_data',
+  TREE_TIMESTAMP: 'cached_tree_timestamp',
+};
+
+// Function to clear tree cache
+const clearTreeCache = async () => {
+  try {
+    await AsyncStorage.removeItem(CACHE_KEYS.TREE_DATA);
+    await AsyncStorage.removeItem(CACHE_KEYS.TREE_TIMESTAMP);
+    console.log('[CACHE] Tree cache cleared after delete');
+  } catch (error) {
+    console.error('[CACHE] Error clearing cache:', error);
+  }
+};
 
 interface Person {
   id: string;
@@ -152,6 +170,9 @@ export default function PersonDetailScreen() {
         console.log('Deleting from authenticated:', personId);
         await personsAPI.delete(personId);
       }
+      
+      // IMPORTANT: Clear tree cache to prevent ghost data
+      await clearTreeCache();
       
       // Show success and navigate back
       if (typeof window !== 'undefined') {
