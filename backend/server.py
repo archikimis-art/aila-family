@@ -1336,6 +1336,43 @@ async def debug_owners(admin: dict = Depends(verify_admin_token)):
         logger.error(f"Debug owners error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.post("/admin/transfer-ownership")
+async def transfer_ownership(old_owner_id: str, new_owner_id: str, admin: dict = Depends(verify_admin_token)):
+    """Transfer all persons and links from one owner to another"""
+    try:
+        # Update persons
+        persons_result = await db.persons.update_many(
+            {"owner_id": old_owner_id},
+            {"$set": {"owner_id": new_owner_id}}
+        )
+        
+        # Update links
+        links_result = await db.links.update_many(
+            {"owner_id": old_owner_id},
+            {"$set": {"owner_id": new_owner_id}}
+        )
+        
+        # Also handle NONE owner_id
+        persons_none = await db.persons.update_many(
+            {"owner_id": {"$in": [None, "NONE", ""]}},
+            {"$set": {"owner_id": new_owner_id}}
+        )
+        
+        links_none = await db.links.update_many(
+            {"owner_id": {"$in": [None, "NONE", ""]}},
+            {"$set": {"owner_id": new_owner_id}}
+        )
+        
+        logger.info(f"Transferred ownership from {old_owner_id} to {new_owner_id}")
+        return {
+            "success": True,
+            "persons_updated": persons_result.modified_count + persons_none.modified_count,
+            "links_updated": links_result.modified_count + links_none.modified_count
+        }
+    except Exception as e:
+        logger.error(f"Transfer ownership error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.delete("/admin/users/{user_id}")
 async def delete_user_admin(user_id: str, admin: dict = Depends(verify_admin_token)):
     """Delete a user (admin only)"""
