@@ -1538,44 +1538,46 @@ class ReminderStats(BaseModel):
     total_pending: int
     read_rate: float
 
-@api_router.post("/reminders", response_model=Reminder)
+@api_router.post("/reminders")
 async def create_reminder(reminder: ReminderCreate):
     """Create a new reminder (admin only)"""
     try:
-        reminder_obj = Reminder(
-            user_id=reminder.user_id,
-            reminder_type=reminder.reminder_type,
-            title=reminder.title,
-            message=reminder.message,
-            send_email=reminder.send_email,
-            send_push=reminder.send_push,
-            scheduled_at=reminder.scheduled_at,
-            status="pending" if reminder.scheduled_at else "sent",
-            sent_at=None if reminder.scheduled_at else datetime.now(timezone.utc)
-        )
-        
-        doc = reminder_obj.model_dump()
-        for key in ['scheduled_at', 'sent_at', 'read_at', 'created_at']:
-            if doc.get(key):
-                doc[key] = doc[key].isoformat()
+        doc = {
+            "id": str(uuid.uuid4()),
+            "user_id": reminder.user_id,
+            "reminder_type": reminder.reminder_type,
+            "title": reminder.title,
+            "message": reminder.message,
+            "send_email": reminder.send_email,
+            "send_push": reminder.send_push,
+            "scheduled_at": reminder.scheduled_at.isoformat() if reminder.scheduled_at else None,
+            "status": "pending" if reminder.scheduled_at else "sent",
+            "sent_at": None if reminder.scheduled_at else datetime.now(timezone.utc).isoformat(),
+            "read_at": None,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
         
         await db.reminders.insert_one(doc)
         
+        # If user_id is None, send to all users
         if reminder.user_id is None:
             users = await db.users.find({}, {"id": 1}).to_list(10000)
             for user in users:
                 user_reminder = doc.copy()
                 user_reminder['id'] = str(uuid.uuid4())
                 user_reminder['user_id'] = user.get('id')
+                user_reminder.pop('_id', None)
                 await db.user_reminders.insert_one(user_reminder)
         else:
+            doc.pop('_id', None)
             await db.user_reminders.insert_one(doc)
         
-        logger.info(f"Reminder created: {reminder_obj.id}")
-        return reminder_obj
+        logger.info(f"Reminder created: {doc['id']}")
+        doc.pop('_id', None)
+        return doc
     except Exception as e:
         logger.error(f"Error creating reminder: {e}")
-        raise
+        raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/reminders", response_model=List[Reminder])
 async def get_reminders(limit: int = 50, skip: int = 0):
