@@ -285,25 +285,38 @@ async def login(credentials: UserLogin):
         if not user:
             raise HTTPException(status_code=401, detail="Invalid email or password")
         
-        # Verify password
-        if not verify_password(credentials.password, user.get('password_hash', '')):
+        # Verify password - check both password_hash and password fields for legacy support
+        password_hash = user.get('password_hash') or user.get('password', '')
+        if not password_hash or not verify_password(credentials.password, password_hash):
             raise HTTPException(status_code=401, detail="Invalid email or password")
+        
+        # Get or generate user ID (legacy accounts may not have 'id' field)
+        user_id = user.get('id') or str(user.get('_id', '')) or user['email']
+        
+        # If user doesn't have an 'id' field, add one
+        if not user.get('id'):
+            new_id = str(uuid.uuid4())
+            await db.users.update_one(
+                {"email": user['email']},
+                {"$set": {"id": new_id}}
+            )
+            user_id = new_id
         
         # Update last login
         await db.users.update_one(
-            {"id": user['id']},
+            {"email": user['email']},
             {"$set": {"last_login": datetime.now(timezone.utc).isoformat()}}
         )
         
         # Create token
-        token = create_access_token(user['id'], user['email'])
+        token = create_access_token(user_id, user['email'])
         
         logger.info(f"User logged in: {user['email']}")
         
         return TokenResponse(
             access_token=token,
             user=UserResponse(
-                id=user['id'],
+                id=user_id,
                 email=user['email'],
                 first_name=user.get('first_name', ''),
                 last_name=user.get('last_name', ''),
