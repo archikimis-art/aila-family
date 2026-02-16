@@ -1007,6 +1007,26 @@ async def root():
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
 
+@api_router.post("/test-insert")
+async def test_insert(current_user: dict = Depends(get_current_user)):
+    """Debug endpoint to test MongoDB insert"""
+    try:
+        test_doc = {
+            "id": str(uuid.uuid4()),
+            "owner_id": current_user['id'],
+            "first_name": "TEST",
+            "last_name": "DELETE_ME",
+            "gender": "male",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        result = await db.persons.insert_one(test_doc)
+        # Delete immediately
+        await db.persons.delete_one({"id": test_doc["id"]})
+        return {"success": True, "inserted_id": str(result.inserted_id)}
+    except Exception as e:
+        import traceback
+        return {"error": str(e), "traceback": traceback.format_exc()}
+
 # ============================================================================
 # STUB ENDPOINTS (to prevent 404 errors)
 # ============================================================================
