@@ -568,17 +568,66 @@ async def create_preview_session():
 
 @api_router.post("/preview/demo")
 async def create_demo_session():
-    """Create a demo session with sample data"""
+    """Create a demo session with GENERIC sample family data"""
     session_token = str(uuid.uuid4())
+    
+    # Generic demo family - NOT real user data
+    demo_persons = [
+        {"id": str(uuid.uuid4()), "session_token": session_token, "first_name": "Jean", "last_name": "DUPONT", "gender": "male", "birth_date": "1940-05-15"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "first_name": "Marie", "last_name": "DUPONT", "gender": "female", "birth_date": "1942-08-22"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "first_name": "Pierre", "last_name": "DUPONT", "gender": "male", "birth_date": "1965-03-10"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "first_name": "Sophie", "last_name": "MARTIN", "gender": "female", "birth_date": "1968-11-28"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "first_name": "Lucas", "last_name": "DUPONT", "gender": "male", "birth_date": "1995-07-04"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "first_name": "Emma", "last_name": "DUPONT", "gender": "female", "birth_date": "1998-01-19"},
+    ]
+    
+    # Create family links
+    demo_links = [
+        {"id": str(uuid.uuid4()), "session_token": session_token, "person_id_1": demo_persons[0]["id"], "person_id_2": demo_persons[1]["id"], "link_type": "spouse"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "person_id_1": demo_persons[0]["id"], "person_id_2": demo_persons[2]["id"], "link_type": "parent"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "person_id_1": demo_persons[1]["id"], "person_id_2": demo_persons[2]["id"], "link_type": "parent"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "person_id_1": demo_persons[2]["id"], "person_id_2": demo_persons[3]["id"], "link_type": "spouse"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "person_id_1": demo_persons[2]["id"], "person_id_2": demo_persons[4]["id"], "link_type": "parent"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "person_id_1": demo_persons[3]["id"], "person_id_2": demo_persons[4]["id"], "link_type": "parent"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "person_id_1": demo_persons[2]["id"], "person_id_2": demo_persons[5]["id"], "link_type": "parent"},
+        {"id": str(uuid.uuid4()), "session_token": session_token, "person_id_1": demo_persons[3]["id"], "person_id_2": demo_persons[5]["id"], "link_type": "parent"},
+    ]
+    
+    # Create session
     session = {
         "token": session_token,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "expires_at": (datetime.now(timezone.utc) + timedelta(hours=24)).isoformat(),
-        "persons": [],
-        "links": []
     }
-    await db.preview_sessions.insert_one(session)
-    return {"token": session_token, "expires_in": 86400}
+    
+    try:
+        await db.preview_sessions.insert_one(session)
+        
+        # Insert demo persons
+        for person in demo_persons:
+            person["created_at"] = datetime.now(timezone.utc).isoformat()
+            await db.preview_persons.insert_one(person)
+        
+        # Insert demo links
+        for link in demo_links:
+            link["created_at"] = datetime.now(timezone.utc).isoformat()
+            await db.preview_links.insert_one(link)
+            
+    except Exception as e:
+        logger.error(f"Error creating demo session: {e}")
+        # Even if DB inserts fail, return the demo data directly
+    
+    # Return persons and links without session_token field (clean for frontend)
+    clean_persons = [{k: v for k, v in p.items() if k != 'session_token'} for p in demo_persons]
+    clean_links = [{k: v for k, v in l.items() if k != 'session_token'} for l in demo_links]
+    
+    return {
+        "session_token": session_token,
+        "token": session_token,
+        "expires_in": 86400,
+        "persons": clean_persons,
+        "links": clean_links
+    }
 
 @api_router.get("/preview/{token}")
 async def get_preview_session(token: str):
