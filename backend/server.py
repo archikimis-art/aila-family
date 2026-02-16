@@ -1037,6 +1037,378 @@ async def remove_collaborator(collaborator_id: str, current_user: dict = Depends
         raise HTTPException(status_code=404, detail="Collaborator not found")
     return {"success": True}
 
+# ============================================================================
+# SHARED TREE ENDPOINTS
+# ============================================================================
+
+@api_router.get("/tree/shared/{owner_id}")
+async def get_shared_tree(owner_id: str, current_user: dict = Depends(get_current_user)):
+    """Get a shared tree by owner ID"""
+    # Check if user has access to this tree
+    collaboration = await db.collaborators.find_one({
+        "owner_id": owner_id,
+        "email": current_user.get('email'),
+        "status": "accepted"
+    })
+    if not collaboration:
+        raise HTTPException(status_code=403, detail="You don't have access to this tree")
+    
+    persons = await db.persons.find({"owner_id": owner_id}, {"_id": 0}).to_list(1000)
+    links = await db.links.find({"owner_id": owner_id}, {"_id": 0}).to_list(1000)
+    
+    return {"persons": persons, "links": links}
+
+@api_router.post("/tree/shared/{owner_id}/persons")
+async def add_person_to_shared_tree(owner_id: str, person_data: dict, current_user: dict = Depends(get_current_user)):
+    """Add a person to a shared tree (creates a contribution for review)"""
+    collaboration = await db.collaborators.find_one({
+        "owner_id": owner_id,
+        "email": current_user.get('email'),
+        "status": "accepted"
+    })
+    if not collaboration or collaboration.get('role') != 'editor':
+        raise HTTPException(status_code=403, detail="You don't have edit access to this tree")
+    
+    # Create contribution for review
+    contribution = {
+        "id": str(uuid.uuid4()),
+        "tree_owner_id": owner_id,
+        "contributor_id": current_user['id'],
+        "contributor_email": current_user.get('email'),
+        "type": "add_person",
+        "data": person_data,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.contributions.insert_one(contribution)
+    return {"success": True, "message": "Contribution soumise pour révision", "contribution_id": contribution["id"]}
+
+@api_router.post("/tree/shared/{owner_id}/links")
+async def add_link_to_shared_tree(owner_id: str, link_data: dict, current_user: dict = Depends(get_current_user)):
+    """Add a link to a shared tree (creates a contribution for review)"""
+    collaboration = await db.collaborators.find_one({
+        "owner_id": owner_id,
+        "email": current_user.get('email'),
+        "status": "accepted"
+    })
+    if not collaboration or collaboration.get('role') != 'editor':
+        raise HTTPException(status_code=403, detail="You don't have edit access to this tree")
+    
+    contribution = {
+        "id": str(uuid.uuid4()),
+        "tree_owner_id": owner_id,
+        "contributor_id": current_user['id'],
+        "contributor_email": current_user.get('email'),
+        "type": "add_link",
+        "data": link_data,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.contributions.insert_one(contribution)
+    return {"success": True, "message": "Contribution soumise pour révision", "contribution_id": contribution["id"]}
+
+# ============================================================================
+# CONTRIBUTIONS ENDPOINTS
+# ============================================================================
+
+@api_router.post("/contributions")
+async def create_contribution(data: dict, owner_id: str = None, current_user: dict = Depends(get_current_user)):
+    """Create a contribution"""
+    contribution = {
+        "id": str(uuid.uuid4()),
+        "tree_owner_id": owner_id or data.get('owner_id'),
+        "contributor_id": current_user['id'],
+        "contributor_email": current_user.get('email'),
+        "type": data.get('type', 'suggestion'),
+        "data": data,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.contributions.insert_one(contribution)
+    return {"success": True, "contribution_id": contribution["id"]}
+
+@api_router.get("/contributions/pending")
+async def get_pending_contributions(current_user: dict = Depends(get_current_user)):
+    """Get pending contributions for trees you own"""
+    contributions = await db.contributions.find({
+        "tree_owner_id": current_user['id'],
+        "status": "pending"
+    }, {"_id": 0}).to_list(100)
+    return contributions
+
+@api_router.get("/contributions/my")
+async def get_my_contributions(current_user: dict = Depends(get_current_user)):
+    """Get contributions made by current user"""
+    contributions = await db.contributions.find({
+        "contributor_id": current_user['id']
+    }, {"_id": 0}).to_list(100)
+    return contributions
+
+@api_router.post("/contributions/{contribution_id}/review")
+async def review_contribution(contribution_id: str, data: dict, current_user: dict = Depends(get_current_user)):
+    """Review a contribution (approve/reject)"""
+    contribution = await db.contributions.find_one({"id": contribution_id})
+    if not contribution:
+        raise HTTPException(status_code=404, detail="Contribution not found")
+    
+    if contribution.get('tree_owner_id') != current_user['id']:
+        raise HTTPException(status_code=403, detail="You can only review contributions to your own tree")
+    
+    status = data.get('status')  # 'approved' or 'rejected'
+    note = data.get('note', '')
+    
+    await db.contributions.update_one(
+        {"id": contribution_id},
+        {"$set": {
+            "status": status,
+            "review_note": note,
+            "reviewed_at": datetime.now(timezone.utc).isoformat(),
+            "reviewed_by": current_user['id']
+        }}
+    )
+    
+    # If approved, apply the contribution
+    if status == 'approved':
+        if contribution.get('type') == 'add_person':
+            person_data = contribution.get('data', {})
+            person = {
+                "id": str(uuid.uuid4()),
+                "owner_id": current_user['id'],
+                **person_data,
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.persons.insert_one(person)
+        elif contribution.get('type') == 'add_link':
+            link_data = contribution.get('data', {})
+            link = {
+                "id": str(uuid.uuid4()),
+                "owner_id": current_user['id'],
+                **link_data,
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.links.insert_one(link)
+    
+    return {"success": True, "status": status}
+
+# ============================================================================
+# CHAT ENDPOINTS
+# ============================================================================
+
+@api_router.get("/chat/messages")
+async def get_chat_messages(limit: int = 50, skip: int = 0, current_user: dict = Depends(get_current_user)):
+    """Get family chat messages"""
+    messages = await db.chat_messages.find(
+        {"tree_owner_id": current_user['id']},
+        {"_id": 0}
+    ).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    return messages
+
+@api_router.post("/chat/messages")
+async def send_chat_message(data: dict, current_user: dict = Depends(get_current_user)):
+    """Send a chat message"""
+    message = {
+        "id": str(uuid.uuid4()),
+        "tree_owner_id": current_user['id'],
+        "sender_id": current_user['id'],
+        "sender_name": f"{current_user.get('first_name', '')} {current_user.get('last_name', '')}".strip(),
+        "sender_email": current_user.get('email'),
+        "message": data.get('message', ''),
+        "mentioned_person_id": data.get('mentioned_person_id'),
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.chat_messages.insert_one(message)
+    return message
+
+@api_router.delete("/chat/messages/{message_id}")
+async def delete_chat_message(message_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a chat message"""
+    result = await db.chat_messages.delete_one({
+        "id": message_id,
+        "sender_id": current_user['id']
+    })
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Message not found or not yours")
+    return {"success": True}
+
+# ============================================================================
+# TREE MERGE ENDPOINTS
+# ============================================================================
+
+@api_router.get("/tree/merge/shared-trees")
+async def get_mergeable_trees(current_user: dict = Depends(get_current_user)):
+    """Get trees that can be merged with current user's tree"""
+    # Find trees shared with current user
+    collaborations = await db.collaborators.find({
+        "email": current_user.get('email'),
+        "status": "accepted"
+    }, {"_id": 0}).to_list(100)
+    
+    mergeable = []
+    for collab in collaborations:
+        owner = await db.users.find_one({"id": collab.get('owner_id')}, {"_id": 0, "password_hash": 0})
+        if owner:
+            person_count = await db.persons.count_documents({"owner_id": collab.get('owner_id')})
+            mergeable.append({
+                "owner_id": collab.get('owner_id'),
+                "owner_name": f"{owner.get('first_name', '')} {owner.get('last_name', '')}".strip(),
+                "owner_email": owner.get('email'),
+                "person_count": person_count,
+                "role": collab.get('role')
+            })
+    
+    return mergeable
+
+@api_router.post("/tree/merge/analyze")
+async def analyze_merge(source_tree_owner_id: str, current_user: dict = Depends(get_current_user)):
+    """Analyze potential merge conflicts between two trees"""
+    # Get both trees
+    my_persons = await db.persons.find({"owner_id": current_user['id']}, {"_id": 0}).to_list(1000)
+    source_persons = await db.persons.find({"owner_id": source_tree_owner_id}, {"_id": 0}).to_list(1000)
+    
+    # Find potential duplicates by name
+    duplicates = []
+    for sp in source_persons:
+        for mp in my_persons:
+            if (sp.get('first_name', '').lower() == mp.get('first_name', '').lower() and
+                sp.get('last_name', '').lower() == mp.get('last_name', '').lower()):
+                duplicates.append({
+                    "source_person": sp,
+                    "my_person": mp,
+                    "match_type": "name"
+                })
+    
+    return {
+        "my_tree_count": len(my_persons),
+        "source_tree_count": len(source_persons),
+        "potential_duplicates": duplicates,
+        "new_persons": len(source_persons) - len(duplicates)
+    }
+
+@api_router.post("/tree/merge/execute")
+async def execute_merge(data: dict, current_user: dict = Depends(get_current_user)):
+    """Execute a tree merge"""
+    source_tree_owner_id = data.get('source_tree_owner_id')
+    merge_strategy = data.get('merge_strategy', 'add_new')  # 'add_new', 'replace', 'skip_duplicates'
+    
+    source_persons = await db.persons.find({"owner_id": source_tree_owner_id}, {"_id": 0}).to_list(1000)
+    source_links = await db.links.find({"owner_id": source_tree_owner_id}, {"_id": 0}).to_list(1000)
+    
+    merged_persons = 0
+    merged_links = 0
+    
+    # Map old IDs to new IDs for link migration
+    id_map = {}
+    
+    for person in source_persons:
+        old_id = person.get('id')
+        new_id = str(uuid.uuid4())
+        id_map[old_id] = new_id
+        
+        new_person = {
+            **person,
+            "id": new_id,
+            "owner_id": current_user['id'],
+            "merged_from": source_tree_owner_id,
+            "merged_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.persons.insert_one(new_person)
+        merged_persons += 1
+    
+    for link in source_links:
+        new_link = {
+            **link,
+            "id": str(uuid.uuid4()),
+            "owner_id": current_user['id'],
+            "person_id_1": id_map.get(link.get('person_id_1'), link.get('person_id_1')),
+            "person_id_2": id_map.get(link.get('person_id_2'), link.get('person_id_2')),
+            "merged_from": source_tree_owner_id,
+            "merged_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.links.insert_one(new_link)
+        merged_links += 1
+    
+    return {
+        "success": True,
+        "merged_persons": merged_persons,
+        "merged_links": merged_links
+    }
+
+# ============================================================================
+# AUTH - FORGOT/RESET PASSWORD ENDPOINTS
+# ============================================================================
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(data: dict):
+    """Request password reset"""
+    email = data.get('email', '').strip().lower()
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+    
+    user = await db.users.find_one({"email": email})
+    if not user:
+        # Don't reveal if email exists or not
+        return {"success": True, "message": "Si cet email existe, vous recevrez un lien de réinitialisation."}
+    
+    # Generate reset token
+    reset_token = str(uuid.uuid4())
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+    
+    await db.password_resets.insert_one({
+        "token": reset_token,
+        "user_id": user.get('id'),
+        "email": email,
+        "expires_at": expires_at.isoformat(),
+        "used": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    # TODO: Send email with reset link
+    logger.info(f"Password reset requested for {email}, token: {reset_token}")
+    
+    return {"success": True, "message": "Si cet email existe, vous recevrez un lien de réinitialisation."}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(data: dict):
+    """Reset password with token"""
+    token = data.get('token', '')
+    new_password = data.get('password', '')
+    
+    if not token or not new_password:
+        raise HTTPException(status_code=400, detail="Token and password are required")
+    
+    if len(new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    reset_request = await db.password_resets.find_one({
+        "token": token,
+        "used": False
+    })
+    
+    if not reset_request:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+    
+    # Check expiration
+    expires_at = datetime.fromisoformat(reset_request['expires_at'].replace('Z', '+00:00'))
+    if datetime.now(timezone.utc) > expires_at:
+        raise HTTPException(status_code=400, detail="Token has expired")
+    
+    # Update password
+    new_hash = hash_password(new_password)
+    await db.users.update_one(
+        {"id": reset_request['user_id']},
+        {"$set": {"password_hash": new_hash, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Mark token as used
+    await db.password_resets.update_one(
+        {"token": token},
+        {"$set": {"used": True}}
+    )
+    
+    logger.info(f"Password reset completed for user {reset_request['user_id']}")
+    
+    return {"success": True, "message": "Mot de passe réinitialisé avec succès"}
+
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
     status_dict = input.model_dump()
