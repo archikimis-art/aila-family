@@ -10,15 +10,20 @@ import { Platform } from 'react-native';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
 
-// Lazy import AdMob only on native platforms
+// Lazy import AdMob only on native platforms - wrapped in try-catch to prevent crashes
 let initializeAds: () => Promise<void> = async () => {};
 let onPageChange: (pageName?: string) => Promise<void> = async () => {};
 
 if (Platform.OS !== 'web') {
-  // Dynamic import for native only
-  const AdMobModule = require('@/services/AdMobInterstitial');
-  initializeAds = AdMobModule.initializeAds;
-  onPageChange = AdMobModule.onPageChange;
+  try {
+    // Dynamic import for native only - wrapped to prevent crash
+    const AdMobModule = require('@/services/AdMobInterstitial');
+    initializeAds = AdMobModule.initializeAds || (async () => {});
+    onPageChange = AdMobModule.onPageChange || (async () => {});
+  } catch (error) {
+    console.warn('[AdMob] Failed to load AdMob module:', error);
+    // Keep default empty functions to prevent crashes
+  }
 }
 
 // SEO Meta Tags and Structured Data - Optimisé pour Google & IA

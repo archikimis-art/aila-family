@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "AÏLA",
+    "name": "aila.Family",
     "slug": "aila",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "aila",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "extra": {
       "eas": {}
     },
@@ -38,9 +38,9 @@
         "backgroundColor": "#0A1628"
       },
       "edgeToEdgeEnabled": true,
-      "jsEngine": "jsc",
-      "package": "com.aila.family",
-      "versionCode": 1,
+      "jsEngine": "hermes",
+      "package": "com.kimi.aila",
+      "versionCode": 3,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.ACCESS_NETWORK_STATE",
@@ -68,16 +68,19 @@
         {
           "androidAppId": "ca-app-pub-8309745338282834~6476050996",
           "iosAppId": "ca-app-pub-8309745338282834~5153578079",
-          "userTrackingUsageDescription": "Cette autorisation nous permet de vous proposer des publicités personnalisées."
+          "userTrackingUsageDescription": "Cette autorisation nous permet de vous proposer des publicités personnalisées.",
+          "delayAppMeasurementInit": true
         }
       ],
       [
         "expo-build-properties",
         {
           "android": {
-            "compileSdkVersion": 34,
-            "targetSdkVersion": 34,
-            "buildToolsVersion": "34.0.0"
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0",
+            "minSdkVersion": 24,
+            "usesCleartextTraffic": true
           },
           "ios": {
             "deploymentTarget": "15.1"
