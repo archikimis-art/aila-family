@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,10 +8,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // Google AdSense Publisher ID (Web)
 const ADSENSE_CLIENT = 'ca-pub-8309745338282834';
 
-// Google AdMob Ad Unit IDs (Mobile)
-const ADMOB_BANNER_ANDROID = 'ca-app-pub-8309745338282834/9092823082';
-const ADMOB_BANNER_IOS = 'ca-app-pub-8309745338282834/8092384991';
-const ADMOB_INTERSTITIAL = 'ca-app-pub-8309745338282834/8765520025';
+// Note: Google Mobile Ads temporarily disabled for build compatibility
+// Will be re-enabled in a future update
 
 interface AdBannerProps {
   style?: object;
@@ -19,8 +17,6 @@ interface AdBannerProps {
 
 // Web AdSense Banner Component
 const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
-  const adRef = useRef<HTMLDivElement>(null);
-  const adInitialized = useRef(false);
   const [adLoaded, setAdLoaded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -29,54 +25,14 @@ const WebAdBanner = ({ onRemoveAds }: { onRemoveAds: () => void }) => {
     setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!isMounted) return;
-    
-    if (typeof window !== 'undefined' && adRef.current && !adInitialized.current) {
-      try {
-        // Create the ad element
-        const ins = document.createElement('ins');
-        ins.className = 'adsbygoogle';
-        ins.style.display = 'block';
-        ins.style.width = '100%';
-        ins.style.height = '60px';
-        ins.setAttribute('data-ad-client', ADSENSE_CLIENT);
-        ins.setAttribute('data-ad-slot', 'auto');
-        ins.setAttribute('data-ad-format', 'horizontal');
-        ins.setAttribute('data-full-width-responsive', 'true');
-        
-        // Clear and append
-        if (adRef.current) {
-          adRef.current.innerHTML = '';
-          adRef.current.appendChild(ins);
-        }
-
-        // Push ad
-        setTimeout(() => {
-          try {
-            ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-            adInitialized.current = true;
-            setAdLoaded(true);
-          } catch (e) {
-            console.log('AdSense push error:', e);
-          }
-        }, 100);
-      } catch (error) {
-        console.log('AdSense initialization error:', error);
-      }
-    }
-  }, []);
-
   return (
     <div style={webStyles.container}>
-      <div ref={adRef} style={webStyles.adContainer}>
+      <div style={webStyles.adContainer}>
         {/* Placeholder affiché en attendant l'approbation AdSense */}
-        {!adLoaded && (
-          <div style={webStyles.placeholder}>
-            <span style={webStyles.placeholderIcon}>📢</span>
-            <span style={webStyles.placeholderText}>Espace publicitaire</span>
-          </div>
-        )}
+        <div style={webStyles.placeholder}>
+          <span style={webStyles.placeholderIcon}>📢</span>
+          <span style={webStyles.placeholderText}>Espace publicitaire</span>
+        </div>
       </div>
       <button onClick={onRemoveAds} style={webStyles.premiumButton}>
         <span style={webStyles.premiumIcon}>⭐</span>

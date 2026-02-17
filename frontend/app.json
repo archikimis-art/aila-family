@@ -43,8 +43,7 @@
       "versionCode": 3,
       "permissions": [
         "android.permission.INTERNET",
-        "android.permission.ACCESS_NETWORK_STATE",
-        "com.google.android.gms.permission.AD_ID"
+        "android.permission.ACCESS_NETWORK_STATE"
       ]
     },
     "web": {
@@ -61,15 +60,6 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#0A1628"
-        }
-      ],
-      [
-        "react-native-google-mobile-ads",
-        {
-          "androidAppId": "ca-app-pub-8309745338282834~6476050996",
-          "iosAppId": "ca-app-pub-8309745338282834~5153578079",
-          "userTrackingUsageDescription": "Cette autorisation nous permet de vous proposer des publicités personnalisées.",
-          "delayAppMeasurementInit": true
         }
       ],
       [
