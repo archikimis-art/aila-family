@@ -217,10 +217,39 @@ export default function PersonDetailScreen() {
     
     setDeleting(true);
     try {
-      if (isPreviewMode && previewToken) {
-        // Delete from preview session
-        console.log('Deleting from preview:', previewToken, personId);
-        await previewAPI.deletePerson(previewToken, personId);
+      if (isPreviewMode) {
+        // Delete from local AsyncStorage (preview mode)
+        console.log('[PersonDetail] Deleting from preview mode - personId:', personId);
+        
+        // Get current data from AsyncStorage
+        const storedPersons = await AsyncStorage.getItem(PREVIEW_PERSONS_KEY);
+        const storedLinks = await AsyncStorage.getItem(PREVIEW_LINKS_KEY);
+        
+        if (storedPersons) {
+          const persons = JSON.parse(storedPersons);
+          const links = storedLinks ? JSON.parse(storedLinks) : [];
+          
+          // Remove the person
+          const updatedPersons = persons.filter((p: Person) => p.id !== personId);
+          // Remove all links associated with this person
+          const updatedLinks = links.filter((l: FamilyLink) => 
+            l.person_id_1 !== personId && l.person_id_2 !== personId
+          );
+          
+          // Save back to AsyncStorage
+          await AsyncStorage.setItem(PREVIEW_PERSONS_KEY, JSON.stringify(updatedPersons));
+          await AsyncStorage.setItem(PREVIEW_LINKS_KEY, JSON.stringify(updatedLinks));
+          console.log('[PersonDetail] Deleted from AsyncStorage - remaining persons:', updatedPersons.length);
+        }
+        
+        // Also try API (may fail but that's ok)
+        if (previewToken) {
+          try {
+            await previewAPI.deletePerson(previewToken, personId);
+          } catch (e) {
+            console.log('[PersonDetail] API delete failed (expected), using local storage');
+          }
+        }
       } else {
         // Delete from authenticated user's data
         console.log('Deleting from authenticated:', personId);
@@ -234,7 +263,13 @@ export default function PersonDetailScreen() {
       if (typeof window !== 'undefined') {
         window.alert('La personne a été supprimée avec succès.');
       }
-      router.back();
+      
+      // Navigate back to tree
+      if (isPreviewMode) {
+        router.replace('/(tabs)/tree?preview=true');
+      } else {
+        router.back();
+      }
     } catch (error) {
       console.error('Delete error:', error);
       if (typeof window !== 'undefined') {
