@@ -15,20 +15,53 @@ import { Ionicons } from '@expo/vector-icons';
 import { personsAPI, linksAPI, previewAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Cache keys - must match tree.tsx
-const CACHE_KEYS = {
-  TREE_DATA: 'cached_tree_data',
-  TREE_TIMESTAMP: 'cached_tree_timestamp',
-};
+// Keys for AsyncStorage - must match tree.tsx exactly
+const PREVIEW_TOKEN_KEY = 'preview_token';
+const PREVIEW_PERSONS_KEY = 'preview_persons';
+const PREVIEW_LINKS_KEY = 'preview_links';
 
 // Function to clear tree cache
 const clearTreeCache = async () => {
   try {
-    await AsyncStorage.removeItem(CACHE_KEYS.TREE_DATA);
-    await AsyncStorage.removeItem(CACHE_KEYS.TREE_TIMESTAMP);
-    console.log('[CACHE] Tree cache cleared after delete');
+    await AsyncStorage.removeItem('cached_tree_data');
+    await AsyncStorage.removeItem('cached_tree_timestamp');
+    console.log('[PersonDetail] Tree cache cleared');
   } catch (error) {
-    console.error('[CACHE] Error clearing cache:', error);
+    console.error('[PersonDetail] Error clearing cache:', error);
+  }
+};
+
+// Helper to get preview data from AsyncStorage (primary) or API (fallback)
+const getPreviewData = async (): Promise<{ persons: Person[], links: FamilyLink[], token: string | null }> => {
+  try {
+    const token = await AsyncStorage.getItem(PREVIEW_TOKEN_KEY);
+    const storedPersons = await AsyncStorage.getItem(PREVIEW_PERSONS_KEY);
+    const storedLinks = await AsyncStorage.getItem(PREVIEW_LINKS_KEY);
+    
+    if (storedPersons) {
+      console.log('[PersonDetail] Using AsyncStorage data');
+      return {
+        persons: JSON.parse(storedPersons),
+        links: storedLinks ? JSON.parse(storedLinks) : [],
+        token
+      };
+    }
+    
+    // Fallback to API if AsyncStorage is empty
+    if (token) {
+      console.log('[PersonDetail] Trying API fallback...');
+      const response = await previewAPI.getSession(token);
+      return {
+        persons: response.data.persons || [],
+        links: response.data.links || [],
+        token
+      };
+    }
+    
+    return { persons: [], links: [], token: null };
+  } catch (error) {
+    console.error('[PersonDetail] Error getting preview data:', error);
+    return { persons: [], links: [], token: null };
   }
 };
 
@@ -57,8 +90,10 @@ export default function PersonDetailScreen() {
   const params = useLocalSearchParams();
   const personId = params.id as string;
   const isPreviewMode = params.preview === 'true';
-  const previewToken = params.token as string;
   const startInEditMode = params.edit === 'true';
+  
+  // State to hold the actual preview token
+  const [previewToken, setPreviewToken] = useState<string | null>(null);
 
   const [person, setPerson] = useState<Person | null>(null);
   const [allPersons, setAllPersons] = useState<Person[]>([]);
@@ -78,28 +113,49 @@ export default function PersonDetailScreen() {
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
+    console.log('[PersonDetail] Component mounted - personId:', personId, 'isPreviewMode:', isPreviewMode);
     loadData();
   }, [personId]);
 
   const loadData = async () => {
+    console.log('[PersonDetail] loadData called - isPreviewMode:', isPreviewMode);
+    
     try {
-      if (isPreviewMode && previewToken) {
-        const response = await previewAPI.getSession(previewToken);
-        const persons = response.data.persons || [];
-        const foundPerson = persons.find((p: Person) => p.id === personId);
-        setPerson(foundPerson || null);
-        setAllPersons(persons);
-        setLinks(response.data.links || []);
-        if (foundPerson) {
-          setFirstName(foundPerson.first_name);
-          setLastName(foundPerson.last_name);
-          setBirthDate(foundPerson.birth_date || '');
-          setBirthPlace(foundPerson.birth_place || '');
-          setDeathDate(foundPerson.death_date || '');
-          setDeathPlace(foundPerson.death_place || '');
-          setNotes(foundPerson.notes || '');
+      if (isPreviewMode) {
+        // Get preview data from AsyncStorage (primary source)
+        const { persons, links, token } = await getPreviewData();
+        console.log('[PersonDetail] Preview data - persons:', persons.length, 'token:', token ? 'YES' : 'NO');
+        
+        if (token) {
+          setPreviewToken(token);
+        }
+        
+        if (persons.length > 0) {
+          const foundPerson = persons.find((p: Person) => p.id === personId);
+          
+          if (foundPerson) {
+            console.log('[PersonDetail] Found person:', foundPerson.first_name, foundPerson.last_name);
+            setPerson(foundPerson);
+            setAllPersons(persons);
+            setLinks(links);
+            setFirstName(foundPerson.first_name);
+            setLastName(foundPerson.last_name);
+            setBirthDate(foundPerson.birth_date || '');
+            setBirthPlace(foundPerson.birth_place || '');
+            setDeathDate(foundPerson.death_date || '');
+            setDeathPlace(foundPerson.death_place || '');
+            setNotes(foundPerson.notes || '');
+          } else {
+            console.warn('[PersonDetail] Person not found - personId:', personId);
+            Alert.alert('Erreur', 'Personne non trouvée. Retournez à l\'arbre et réessayez.');
+          }
+        } else {
+          console.error('[PersonDetail] No preview data available!');
+          Alert.alert('Erreur', 'Session de prévisualisation expirée. Retournez à l\'arbre et réessayez.');
         }
       } else {
+        // Authenticated user mode
+        console.log('[PersonDetail] Loading authenticated user data for personId:', personId);
         const [personRes, allPersonsRes, linksRes] = await Promise.all([
           personsAPI.getOne(personId),
           personsAPI.getAll(),
@@ -116,8 +172,8 @@ export default function PersonDetailScreen() {
         setDeathPlace(personRes.data.death_place || '');
         setNotes(personRes.data.notes || '');
       }
-    } catch (error) {
-      console.error('Error loading person:', error);
+    } catch (error: any) {
+      console.error('[PersonDetail] Error loading person:', error);
       Alert.alert('Erreur', 'Impossible de charger les informations.');
     } finally {
       setLoading(false);

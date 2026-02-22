@@ -473,11 +473,16 @@ export default function TreeScreen() {
           token = response.data.session_token;
           if (token) {
             await AsyncStorage.setItem('preview_token', token);
+            // Store persons and links in AsyncStorage for child pages to access
+            const persons = response.data.persons || [];
+            const links = response.data.links || [];
+            await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+            await AsyncStorage.setItem('preview_links', JSON.stringify(links));
             // Utiliser directement les données de la réponse (famille exemple)
-            setPersons(response.data.persons || []);
-            setLinks(response.data.links || []);
+            setPersons(persons);
+            setLinks(links);
             setPreviewToken(token);
-            console.log('Demo session created with', response.data.persons?.length, 'persons');
+            console.log('Demo session created with', persons.length, 'persons - stored in AsyncStorage');
             setLoading(false);
             setRefreshing(false);
             return;
@@ -487,8 +492,41 @@ export default function TreeScreen() {
           setPreviewToken(token);
           try {
             const sessionData = await previewAPI.getSession(token);
-            setPersons(sessionData.data.persons || []);
-            setLinks(sessionData.data.links || []);
+            const persons = sessionData.data.persons || [];
+            const links = sessionData.data.links || [];
+            
+            // If API returned data, update AsyncStorage
+            if (persons.length > 0) {
+              await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+              await AsyncStorage.setItem('preview_links', JSON.stringify(links));
+              setPersons(persons);
+              setLinks(links);
+            } else {
+              // API returned empty - try to get from AsyncStorage (fallback)
+              console.log('API returned empty, trying AsyncStorage fallback...');
+              const storedPersons = await AsyncStorage.getItem('preview_persons');
+              const storedLinks = await AsyncStorage.getItem('preview_links');
+              if (storedPersons) {
+                setPersons(JSON.parse(storedPersons));
+                setLinks(storedLinks ? JSON.parse(storedLinks) : []);
+                console.log('Loaded from AsyncStorage fallback');
+              } else {
+                // No data anywhere - create new demo session
+                console.log('No data found, creating new demo session...');
+                const response = await previewAPI.createDemoSession();
+                token = response.data.session_token;
+                if (token) {
+                  await AsyncStorage.setItem('preview_token', token);
+                  const newPersons = response.data.persons || [];
+                  const newLinks = response.data.links || [];
+                  await AsyncStorage.setItem('preview_persons', JSON.stringify(newPersons));
+                  await AsyncStorage.setItem('preview_links', JSON.stringify(newLinks));
+                  setPreviewToken(token);
+                  setPersons(newPersons);
+                  setLinks(newLinks);
+                }
+              }
+            }
           } catch (e: any) {
             if (e.response?.status === 404 || e.response?.status === 410) {
               // Session expirée - créer une nouvelle session DEMO
@@ -497,9 +535,13 @@ export default function TreeScreen() {
               token = response.data.session_token;
               if (token) {
                 await AsyncStorage.setItem('preview_token', token);
+                const persons = response.data.persons || [];
+                const links = response.data.links || [];
+                await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+                await AsyncStorage.setItem('preview_links', JSON.stringify(links));
                 setPreviewToken(token);
-                setPersons(response.data.persons || []);
-                setLinks(response.data.links || []);
+                setPersons(persons);
+                setLinks(links);
               }
             }
           }
@@ -2974,6 +3016,7 @@ const styles = StyleSheet.create({
     marginTop: 32,
     alignItems: 'center',
     gap: 12,
+    maxWidth: 280,
   },
   emptyImportText: {
     color: '#6B7C93',

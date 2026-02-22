@@ -17,6 +17,57 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { personsAPI, previewAPI } from '@/services/api';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// Keys for AsyncStorage - must match tree.tsx exactly
+const PREVIEW_TOKEN_KEY = 'preview_token';
+const PREVIEW_PERSONS_KEY = 'preview_persons';
+const PREVIEW_LINKS_KEY = 'preview_links';
+
+// Helper to get preview data from AsyncStorage
+const getPreviewData = async (): Promise<{ persons: any[], links: any[], token: string | null }> => {
+  try {
+    const token = await AsyncStorage.getItem(PREVIEW_TOKEN_KEY);
+    const storedPersons = await AsyncStorage.getItem(PREVIEW_PERSONS_KEY);
+    const storedLinks = await AsyncStorage.getItem(PREVIEW_LINKS_KEY);
+    
+    if (storedPersons) {
+      console.log('[AddPerson] Using AsyncStorage data');
+      return {
+        persons: JSON.parse(storedPersons),
+        links: storedLinks ? JSON.parse(storedLinks) : [],
+        token
+      };
+    }
+    
+    // Fallback to API if AsyncStorage is empty
+    if (token) {
+      console.log('[AddPerson] Trying API fallback...');
+      const response = await previewAPI.getSession(token);
+      return {
+        persons: response.data.persons || [],
+        links: response.data.links || [],
+        token
+      };
+    }
+    
+    return { persons: [], links: [], token: null };
+  } catch (error) {
+    console.error('[AddPerson] Error getting preview data:', error);
+    return { persons: [], links: [], token: null };
+  }
+};
+
+// Helper to update preview data in AsyncStorage
+const updatePreviewData = async (persons: any[], links: any[]) => {
+  try {
+    await AsyncStorage.setItem(PREVIEW_PERSONS_KEY, JSON.stringify(persons));
+    await AsyncStorage.setItem(PREVIEW_LINKS_KEY, JSON.stringify(links));
+    console.log('[AddPerson] Updated AsyncStorage with new data');
+  } catch (error) {
+    console.error('[AddPerson] Error updating AsyncStorage:', error);
+  }
+};
 
 // ===================== DONNÉES GÉOGRAPHIQUES MONDIALES =====================
 const WORLD_LOCATIONS: Record<string, Record<string, string[]>> = {
@@ -95,10 +146,12 @@ export default function AddPersonScreen() {
   const params = useLocalSearchParams();
   const { t } = useTranslation();
   const isPreviewMode = params.preview === 'true';
-  const previewToken = params.token as string;
   const sharedOwnerId = params.sharedOwnerId as string | undefined;
-  const editPersonId = params.editId as string | undefined; // Mode édition
+  const editPersonId = params.editId as string | undefined;
   const isEditMode = !!editPersonId;
+  
+  // State to hold the actual preview token
+  const [previewToken, setPreviewToken] = useState<string | null>(null);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -110,41 +163,51 @@ export default function AddPersonScreen() {
   const [geographicBranch, setGeographicBranch] = useState('');
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(isEditMode);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [showWilayaList, setShowWilayaList] = useState(false);
   
   // Pour le mode édition - liens familiaux
   const [familyLinks, setFamilyLinks] = useState<any[]>([]);
   const [allPersons, setAllPersons] = useState<any[]>([]);
   
-  // Charger les données en mode édition
+  // Initialize on mount
   useEffect(() => {
-    if (isEditMode && editPersonId) {
-      loadPersonData();
-    }
-  }, [editPersonId]);
+    console.log('[AddPerson] Component mounted - isPreviewMode:', isPreviewMode, 'isEditMode:', isEditMode);
+    initializeScreen();
+  }, []);
 
-  const loadPersonData = async () => {
-    setInitialLoading(true);
+  const initializeScreen = async () => {
     try {
-      if (isPreviewMode && previewToken) {
-        const response = await previewAPI.getSession(previewToken);
-        const persons = response.data.persons || [];
-        const foundPerson = persons.find((p: any) => p.id === editPersonId);
-        if (foundPerson) {
-          setFirstName(foundPerson.first_name || '');
-          setLastName(foundPerson.last_name || '');
-          setGender(foundPerson.gender || 'unknown');
-          setBirthDate(foundPerson.birth_date || '');
-          setBirthPlace(foundPerson.birth_place || '');
-          setDeathDate(foundPerson.death_date || '');
-          setDeathPlace(foundPerson.death_place || '');
-          setGeographicBranch(foundPerson.geographic_branch || '');
-          setNotes(foundPerson.notes || '');
+      if (isPreviewMode) {
+        // Get preview data from AsyncStorage
+        const { persons, links, token } = await getPreviewData();
+        console.log('[AddPerson] Preview data - persons:', persons.length, 'token:', token ? 'YES' : 'NO');
+        
+        if (token) {
+          setPreviewToken(token);
         }
         setAllPersons(persons);
-        setFamilyLinks(response.data.links || []);
-      } else if (editPersonId) {
+        setFamilyLinks(links);
+        
+        // If editing, load person data
+        if (isEditMode && editPersonId) {
+          const foundPerson = persons.find((p: any) => p.id === editPersonId);
+          if (foundPerson) {
+            console.log('[AddPerson] Found person to edit:', foundPerson.first_name);
+            setFirstName(foundPerson.first_name || '');
+            setLastName(foundPerson.last_name || '');
+            setGender(foundPerson.gender || 'unknown');
+            setBirthDate(foundPerson.birth_date || '');
+            setBirthPlace(foundPerson.birth_place || '');
+            setDeathDate(foundPerson.death_date || '');
+            setDeathPlace(foundPerson.death_place || '');
+            setGeographicBranch(foundPerson.geographic_branch || '');
+            setNotes(foundPerson.notes || '');
+          }
+        }
+      } else if (isEditMode && editPersonId) {
+        // Authenticated user - load person data
+        console.log('[AddPerson] Loading authenticated user data');
         const [personRes, allPersonsRes, linksRes] = await Promise.all([
           personsAPI.getOne(editPersonId),
           personsAPI.getAll(),
@@ -164,13 +227,18 @@ export default function AddPersonScreen() {
         setFamilyLinks(linksRes.data || []);
       }
     } catch (error) {
-      console.error('Error loading person:', error);
+      console.error('[AddPerson] Error initializing:', error);
       if (typeof window !== 'undefined') {
         window.alert(t('personForm.loadError'));
       }
     } finally {
       setInitialLoading(false);
     }
+  };
+
+  const loadPersonData = async () => {
+    // This function is kept for compatibility but initializeScreen handles everything now
+    await initializeScreen();
   };
 
   // Obtenir les liens de cette personne
@@ -299,6 +367,12 @@ export default function AddPersonScreen() {
 
     setLoading(true);
     try {
+      // Get preview data from AsyncStorage
+      const { persons, links, token } = await getPreviewData();
+      let tokenToUse = previewToken || token;
+      
+      console.log('[AddPerson] handleSave - isPreviewMode:', isPreviewMode, 'token:', tokenToUse ? 'YES' : 'NULL');
+      
       const personData = {
         first_name: firstName.trim(),
         last_name: lastName.trim(),
@@ -311,44 +385,71 @@ export default function AddPersonScreen() {
         notes: notes || null,
       };
 
-      console.log('Saving person:', personData, 'Edit mode:', isEditMode);
-
       const personName = `${firstName} ${lastName}`;
 
       if (isEditMode && editPersonId) {
-        // Mode édition - mettre à jour la personne existante
-        if (isPreviewMode && previewToken) {
-          await previewAPI.updatePerson(previewToken, editPersonId, personData);
-        } else {
+        // Edit mode
+        if (isPreviewMode) {
+          console.log('[AddPerson] Updating preview person locally...');
+          // Update in local storage
+          const updatedPersons = persons.map(p => 
+            p.id === editPersonId ? { ...p, ...personData } : p
+          );
+          await updatePreviewData(updatedPersons, links);
+          // Also try API (may fail but that's ok)
+          if (tokenToUse) {
+            try {
+              await previewAPI.updatePerson(tokenToUse, editPersonId, personData);
+            } catch (e) {
+              console.log('[AddPerson] API update failed (expected), using local storage');
+            }
+          }
+        } else if (!isPreviewMode) {
           await personsAPI.update(editPersonId, personData);
+        } else {
+          throw new Error('Session de prévisualisation expirée');
         }
         if (typeof window !== 'undefined') {
           window.alert(t('personForm.personUpdated', { name: personName }));
         }
-      } else if (isPreviewMode && previewToken) {
-        // Mode aperçu - ajouter
-        await previewAPI.addPerson(previewToken, personData);
+      } else if (isPreviewMode) {
+        // Add new person in preview mode - save locally
+        console.log('[AddPerson] Adding preview person locally...');
+        const newPerson = {
+          id: 'local-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+          ...personData,
+          created_at: new Date().toISOString(),
+        };
+        const updatedPersons = [...persons, newPerson];
+        await updatePreviewData(updatedPersons, links);
+        
+        // Also try API (may fail but that's ok)
+        if (tokenToUse) {
+          try {
+            await previewAPI.addPerson(tokenToUse, personData);
+          } catch (e) {
+            console.log('[AddPerson] API add failed (expected), using local storage');
+          }
+        }
         if (typeof window !== 'undefined') {
           window.alert(t('personForm.personAdded', { name: personName }));
         }
       } else if (sharedOwnerId) {
-        // Arbre partagé - utiliser l'endpoint spécifique pour les éditeurs
         const { collaboratorsAPI } = await import('@/services/api');
         await collaboratorsAPI.createPersonInSharedTree(sharedOwnerId, personData);
         if (typeof window !== 'undefined') {
           window.alert(t('personForm.personAdded', { name: personName }));
         }
       } else {
-        // Mon propre arbre - ajouter
         await personsAPI.create(personData);
         if (typeof window !== 'undefined') {
           window.alert(t('personForm.personAdded', { name: personName }));
         }
       }
       
-      // Navigate to tree with proper parameters
-      if (isPreviewMode && previewToken) {
-        router.replace(`/(tabs)/tree?preview=true&token=${previewToken}`);
+      // Navigate back to tree
+      if (isPreviewMode) {
+        router.replace('/(tabs)/tree?preview=true');
       } else {
         router.replace('/(tabs)/tree');
       }
@@ -363,8 +464,8 @@ export default function AddPersonScreen() {
       if (isNetworkError || isCorsError) {
         // Data likely saved, navigate to tree
         console.log('Network/CORS error but data may be saved, navigating...');
-        if (isPreviewMode && previewToken) {
-          router.replace(`/(tabs)/tree?preview=true&token=${previewToken}`);
+        if (isPreviewMode) {
+          router.replace('/(tabs)/tree?preview=true');
         } else {
           router.replace('/(tabs)/tree');
         }
