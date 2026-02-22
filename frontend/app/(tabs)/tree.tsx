@@ -546,6 +546,7 @@ export default function TreeScreen() {
                   setPersons(persons);
                   setLinks(links);
                 }
+              }
             }
           }
         }
