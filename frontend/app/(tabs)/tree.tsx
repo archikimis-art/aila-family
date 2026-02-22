@@ -490,28 +490,32 @@ export default function TreeScreen() {
         }
         if (token) {
           setPreviewToken(token);
-          try {
-            const sessionData = await previewAPI.getSession(token);
-            const persons = sessionData.data.persons || [];
-            const links = sessionData.data.links || [];
-            
-            // If API returned data, update AsyncStorage
-            if (persons.length > 0) {
-              await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
-              await AsyncStorage.setItem('preview_links', JSON.stringify(links));
-              setPersons(persons);
-              setLinks(links);
-            } else {
-              // API returned empty - try to get from AsyncStorage (fallback)
-              console.log('API returned empty, trying AsyncStorage fallback...');
-              const storedPersons = await AsyncStorage.getItem('preview_persons');
-              const storedLinks = await AsyncStorage.getItem('preview_links');
-              if (storedPersons) {
-                setPersons(JSON.parse(storedPersons));
-                setLinks(storedLinks ? JSON.parse(storedLinks) : []);
-                console.log('Loaded from AsyncStorage fallback');
+          
+          // In preview mode, ALWAYS prioritize AsyncStorage (local data) over API
+          // This ensures user-added persons are not lost
+          const storedPersons = await AsyncStorage.getItem('preview_persons');
+          const storedLinks = await AsyncStorage.getItem('preview_links');
+          
+          if (storedPersons) {
+            const parsedPersons = JSON.parse(storedPersons);
+            const parsedLinks = storedLinks ? JSON.parse(storedLinks) : [];
+            console.log('Loading from AsyncStorage - persons:', parsedPersons.length);
+            setPersons(parsedPersons);
+            setLinks(parsedLinks);
+          } else {
+            // No local data - try API first, then create new session if needed
+            try {
+              const sessionData = await previewAPI.getSession(token);
+              const persons = sessionData.data.persons || [];
+              const links = sessionData.data.links || [];
+              
+              if (persons.length > 0) {
+                await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+                await AsyncStorage.setItem('preview_links', JSON.stringify(links));
+                setPersons(persons);
+                setLinks(links);
               } else {
-                // No data anywhere - create new demo session
+                // API returned empty and no local data - create new demo session
                 console.log('No data found, creating new demo session...');
                 const response = await previewAPI.createDemoSession();
                 token = response.data.session_token;
@@ -526,23 +530,22 @@ export default function TreeScreen() {
                   setLinks(newLinks);
                 }
               }
-            }
-          } catch (e: any) {
-            if (e.response?.status === 404 || e.response?.status === 410) {
-              // Session expirée - créer une nouvelle session DEMO
-              console.log('Session expired, creating new demo session...');
-              const response = await previewAPI.createDemoSession();
-              token = response.data.session_token;
-              if (token) {
-                await AsyncStorage.setItem('preview_token', token);
-                const persons = response.data.persons || [];
-                const links = response.data.links || [];
-                await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
-                await AsyncStorage.setItem('preview_links', JSON.stringify(links));
-                setPreviewToken(token);
-                setPersons(persons);
-                setLinks(links);
-              }
+            } catch (e: any) {
+              if (e.response?.status === 404 || e.response?.status === 410) {
+                // Session expirée - créer une nouvelle session DEMO
+                console.log('Session expired, creating new demo session...');
+                const response = await previewAPI.createDemoSession();
+                token = response.data.session_token;
+                if (token) {
+                  await AsyncStorage.setItem('preview_token', token);
+                  const persons = response.data.persons || [];
+                  const links = response.data.links || [];
+                  await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+                  await AsyncStorage.setItem('preview_links', JSON.stringify(links));
+                  setPreviewToken(token);
+                  setPersons(persons);
+                  setLinks(links);
+                }
             }
           }
         }
