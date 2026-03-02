@@ -49,15 +49,31 @@ export default function MembersScreen() {
   const loadData = async () => {
     try {
       if (isPreviewMode) {
+        // ============================================================================
+        // SECURITY FIX: Read demo data from AsyncStorage (set by tree.tsx)
+        // This ensures we show only demo data, never user data
+        // ============================================================================
+        const storedPersons = await AsyncStorage.getItem('preview_persons');
         const token = await AsyncStorage.getItem('preview_token');
-        if (token) {
+        
+        if (storedPersons) {
+          // Use cached demo data from tree.tsx
+          setPreviewToken(token);
+          setPersons(JSON.parse(storedPersons));
+          console.log('[SECURITY] Members: Loaded demo persons from AsyncStorage');
+        } else if (token) {
+          // Fallback: try to get from API
           setPreviewToken(token);
           try {
             const sessionData = await previewAPI.getSession(token);
             setPersons(sessionData.data.persons || []);
           } catch {
+            // On error, show empty state rather than potentially leaked data
             setPersons([]);
           }
+        } else {
+          // No preview data at all - show empty state
+          setPersons([]);
         }
       } else {
         const response = await personsAPI.getAll();
