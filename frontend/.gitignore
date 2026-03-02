@@ -21,3 +21,11 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Expo/Metro cache
+.metro-cache/
+.expo/
+
+# Native builds (generated - should not be committed)
+android/
+ios/

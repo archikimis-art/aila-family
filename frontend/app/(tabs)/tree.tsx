@@ -465,90 +465,40 @@ export default function TreeScreen() {
       // STEP 2: Fetch fresh data from server in background
       // ============================================================================
       if (isPreviewMode) {
-        let token: string | null = await AsyncStorage.getItem('preview_token');
-        if (!token) {
-          // Créer une session DEMO avec une famille exemple pré-remplie
-          console.log('Creating demo session with sample family...');
+        // ============================================================================
+        // SECURITY FIX: ALWAYS clear preview cache to prevent data leaks
+        // This ensures no user data can ever appear in preview mode
+        // We MUST clear the cache BEFORE loading any data
+        // ============================================================================
+        console.log('[SECURITY] Preview mode: Clearing cache to prevent data leaks...');
+        await AsyncStorage.removeItem('preview_token');
+        await AsyncStorage.removeItem('preview_persons');
+        await AsyncStorage.removeItem('preview_links');
+        
+        // Always create a fresh demo session with clean data from API
+        console.log('[SECURITY] Creating fresh demo session...');
+        try {
           const response = await previewAPI.createDemoSession();
-          token = response.data.session_token;
+          const token = response.data.session_token;
           if (token) {
+            // Store demo data in AsyncStorage for child pages
+            const demoPersons = response.data.persons || [];
+            const demoLinks = response.data.links || [];
             await AsyncStorage.setItem('preview_token', token);
-            // Store persons and links in AsyncStorage for child pages to access
-            const persons = response.data.persons || [];
-            const links = response.data.links || [];
-            await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
-            await AsyncStorage.setItem('preview_links', JSON.stringify(links));
-            // Utiliser directement les données de la réponse (famille exemple)
-            setPersons(persons);
-            setLinks(links);
+            await AsyncStorage.setItem('preview_persons', JSON.stringify(demoPersons));
+            await AsyncStorage.setItem('preview_links', JSON.stringify(demoLinks));
+            
+            // Use ONLY the demo data from API - never mix with user data
+            setPersons(demoPersons);
+            setLinks(demoLinks);
             setPreviewToken(token);
-            console.log('Demo session created with', persons.length, 'persons - stored in AsyncStorage');
-            setLoading(false);
-            setRefreshing(false);
-            return;
+            console.log('[SECURITY] Fresh demo session created with', demoPersons.length, 'demo persons');
           }
-        }
-        if (token) {
-          setPreviewToken(token);
-          
-          // In preview mode, ALWAYS prioritize AsyncStorage (local data) over API
-          // This ensures user-added persons are not lost
-          const storedPersons = await AsyncStorage.getItem('preview_persons');
-          const storedLinks = await AsyncStorage.getItem('preview_links');
-          
-          if (storedPersons) {
-            const parsedPersons = JSON.parse(storedPersons);
-            const parsedLinks = storedLinks ? JSON.parse(storedLinks) : [];
-            console.log('Loading from AsyncStorage - persons:', parsedPersons.length);
-            setPersons(parsedPersons);
-            setLinks(parsedLinks);
-          } else {
-            // No local data - try API first, then create new session if needed
-            try {
-              const sessionData = await previewAPI.getSession(token);
-              const persons = sessionData.data.persons || [];
-              const links = sessionData.data.links || [];
-              
-              if (persons.length > 0) {
-                await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
-                await AsyncStorage.setItem('preview_links', JSON.stringify(links));
-                setPersons(persons);
-                setLinks(links);
-              } else {
-                // API returned empty and no local data - create new demo session
-                console.log('No data found, creating new demo session...');
-                const response = await previewAPI.createDemoSession();
-                token = response.data.session_token;
-                if (token) {
-                  await AsyncStorage.setItem('preview_token', token);
-                  const newPersons = response.data.persons || [];
-                  const newLinks = response.data.links || [];
-                  await AsyncStorage.setItem('preview_persons', JSON.stringify(newPersons));
-                  await AsyncStorage.setItem('preview_links', JSON.stringify(newLinks));
-                  setPreviewToken(token);
-                  setPersons(newPersons);
-                  setLinks(newLinks);
-                }
-              }
-            } catch (e: any) {
-              if (e.response?.status === 404 || e.response?.status === 410) {
-                // Session expirée - créer une nouvelle session DEMO
-                console.log('Session expired, creating new demo session...');
-                const response = await previewAPI.createDemoSession();
-                token = response.data.session_token;
-                if (token) {
-                  await AsyncStorage.setItem('preview_token', token);
-                  const persons = response.data.persons || [];
-                  const links = response.data.links || [];
-                  await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
-                  await AsyncStorage.setItem('preview_links', JSON.stringify(links));
-                  setPreviewToken(token);
-                  setPersons(persons);
-                  setLinks(links);
-                }
-              }
-            }
-          }
+        } catch (e: any) {
+          console.error('[SECURITY] Failed to create demo session:', e);
+          // On error, ensure we show empty state rather than potentially leaked data
+          setPersons([]);
+          setLinks([]);
         }
       } else if (user) {
         log('[LOAD] Fetching fresh data from server...');
