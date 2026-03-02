@@ -582,13 +582,38 @@ export default function TreeScreen() {
     }
   };
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    setIsFromCache(false);
-    try {
-      if (isPreviewMode) {
-        let token: string | null = await AsyncStorage.getItem('preview_token');
+  if (isPreviewMode) {
+        // SECURITY: On refresh in preview mode, create fresh demo session
+        console.log('[SECURITY] Refresh: Creating fresh demo session...');
+        await AsyncStorage.removeItem('preview_token');
+        await AsyncStorage.removeItem('preview_persons');
+        await AsyncStorage.removeItem('preview_links');
+        
+        let response;
+        let token: string | null = null;
+        
+        try {
+          response = await previewAPI.createDemoSession();
+        } catch (firstErr) {
+          console.warn('Demo API refresh failed, retrying...', firstErr);
+          await new Promise((r) => setTimeout(r, 3000));
+          response = await previewAPI.createDemoSession();
+        }
+        
+        token = response.data.session_token;
         if (token) {
+          await AsyncStorage.setItem('preview_token', token);
+          const demoPersons = response.data.persons || [];
+          const demoLinks = response.data.links || [];
+          await AsyncStorage.setItem('preview_persons', JSON.stringify(demoPersons));
+          await AsyncStorage.setItem('preview_links', JSON.stringify(demoLinks));
+          const { persons: np, links: nl } = normalizeTreeData(demoPersons, demoLinks);
+          setPersons(np);
+          setLinks(nl);
+          setPreviewToken(token);
+        }
+      } else if (user) {
+
           const sessionData = await previewAPI.getSession(token);
           setPersons(sessionData.data.persons || []);
           setLinks(sessionData.data.links || []);
