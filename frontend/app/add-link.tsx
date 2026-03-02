@@ -14,6 +14,11 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { personsAPI, linksAPI, previewAPI } from '@/services/api';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const PREVIEW_TOKEN_KEY = 'preview_token';
+const PREVIEW_PERSONS_KEY = 'preview_persons';
+const PREVIEW_LINKS_KEY = 'preview_links';
 
 interface Person {
   id: string;
@@ -53,10 +58,29 @@ export default function AddLinkScreen() {
 
   const loadPersons = async () => {
     try {
-      if (isPreviewMode && previewToken) {
-        // Mode aperçu
-        const response = await previewAPI.getSession(previewToken);
-        setPersons(response.data.persons || []);
+      if (isPreviewMode) {
+        // Mode aperçu : priorité AsyncStorage (données locales) puis API
+        const storedPersons = await AsyncStorage.getItem(PREVIEW_PERSONS_KEY);
+        if (storedPersons) {
+          const parsed = JSON.parse(storedPersons);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setPersons(parsed);
+            return;
+          }
+        }
+        const token = previewToken || (await AsyncStorage.getItem(PREVIEW_TOKEN_KEY));
+        if (token) {
+          try {
+            const response = await previewAPI.getSession(token);
+            const p = response.data.persons || [];
+            if (p.length > 0) {
+              await AsyncStorage.setItem(PREVIEW_PERSONS_KEY, JSON.stringify(p));
+              setPersons(p);
+            }
+          } catch (e) {
+            console.log('[AddLink] API session failed, using empty list');
+          }
+        }
       } else if (sharedOwnerId) {
         // Arbre partagé - charger les personnes de l'arbre du propriétaire
         const { collaboratorsAPI } = await import('@/services/api');
@@ -117,9 +141,27 @@ export default function AddLinkScreen() {
         };
       }
 
-      if (isPreviewMode && previewToken) {
-        // Mode aperçu
-        await previewAPI.addLink(previewToken, linkData);
+      if (isPreviewMode) {
+        // Mode aperçu : sauvegarder dans AsyncStorage (source principale pour l'arbre)
+        const storedPersons = await AsyncStorage.getItem(PREVIEW_PERSONS_KEY);
+        const storedLinks = await AsyncStorage.getItem(PREVIEW_LINKS_KEY);
+        const persons = storedPersons ? JSON.parse(storedPersons) : [];
+        const links = storedLinks ? JSON.parse(storedLinks) : [];
+        const newLink = {
+          id: 'local-link-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+          ...linkData,
+        };
+        const updatedLinks = [...links, newLink];
+        await AsyncStorage.setItem(PREVIEW_LINKS_KEY, JSON.stringify(updatedLinks));
+        // Tenter aussi l'API (peut échouer si session expirée)
+        const token = previewToken || (await AsyncStorage.getItem(PREVIEW_TOKEN_KEY));
+        if (token) {
+          try {
+            await previewAPI.addLink(token, linkData);
+          } catch (e) {
+            console.log('[AddLink] API addLink failed, link saved locally');
+          }
+        }
       } else if (sharedOwnerId) {
         // Arbre partagé - utiliser l'endpoint spécifique
         const { collaboratorsAPI } = await import('@/services/api');
@@ -131,10 +173,14 @@ export default function AddLinkScreen() {
 
       if (Platform.OS === 'web') {
         window.alert(t('linkForm.linkCreated'));
-        router.back();
+        if (isPreviewMode) {
+          router.replace('/(tabs)/tree?preview=true');
+        } else {
+          router.back();
+        }
       } else {
         Alert.alert(t('common.success'), t('linkForm.linkCreated'), [
-          { text: 'OK', onPress: () => router.back() },
+          { text: 'OK', onPress: () => isPreviewMode ? router.replace('/(tabs)/tree?preview=true') : router.back() },
         ]);
       }
     } catch (error: any) {
@@ -160,6 +206,9 @@ export default function AddLinkScreen() {
       setLoading(false);
     }
   };
+
+  const getPersonName = (p: Person) =>
+    `${(p as any).first_name || (p as any).firstName || ''} ${(p as any).last_name || (p as any).lastName || ''}`.trim() || 'Sans nom';
 
   const getGenderColor = (gender: string) => {
     switch (gender) {
@@ -205,7 +254,7 @@ export default function AddLinkScreen() {
           <View style={styles.selectedPerson}>
             <View style={[styles.personDot, { backgroundColor: getGenderColor(selectedPerson.gender) }]} />
             <Text style={styles.selectedPersonText}>
-              {selectedPerson.first_name} {selectedPerson.last_name}
+              {getPersonName(selectedPerson)}
             </Text>
           </View>
         ) : (
@@ -220,9 +269,9 @@ export default function AddLinkScreen() {
       {showList && (
         <View style={styles.personList}>
           <ScrollView style={styles.personListScroll} nestedScrollEnabled>
-            {persons
-              .filter((p) => p.id !== excludeId)
-              .map((person) => (
+                    {persons
+                      .filter((p) => (p as any).id && (p as any).id !== excludeId)
+                      .map((person) => (
                 <TouchableOpacity
                   key={person.id}
                   style={[
@@ -241,7 +290,7 @@ export default function AddLinkScreen() {
                       selectedPerson?.id === person.id && styles.personItemTextActive,
                     ]}
                   >
-                    {person.first_name} {person.last_name}
+                    {getPersonName(person)}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -348,13 +397,13 @@ export default function AddLinkScreen() {
           <View style={styles.previewCard}>
             <Ionicons name="git-merge" size={24} color="#D4AF37" />
             <Text style={styles.previewText}>
-              <Text style={styles.previewName}>{person1.first_name} {person1.last_name}</Text>
+              <Text style={styles.previewName}>{getPersonName(person1)}</Text>
               {' est '}
               <Text style={styles.previewRelation}>
                 {getRelationshipDescription(linkType)}
               </Text>
               {' '}
-              <Text style={styles.previewName}>{person2.first_name} {person2.last_name}</Text>
+              <Text style={styles.previewName}>{getPersonName(person2)}</Text>
             </Text>
           </View>
         )}

@@ -3,45 +3,20 @@ import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
 // ============================================================
-// CONFIGURATION API - NE PAS MODIFIER CETTE SECTION
+// CONFIGURATION API - Toujours production Render
 // ============================================================
-// URL du backend de production Render - FIXE ET DÉFINITIVE
 const PRODUCTION_API_URL = 'https://aila-backend-hc1m.onrender.com';
-
-// Determine API URL based on environment
-const getApiUrl = () => {
-  // Sur le WEB : toujours utiliser la production SAUF localhost
-  if (Platform.OS === 'web' && typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    
-    // Seul localhost utilise le backend local
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      const devUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
-      console.log('[API] DEV MODE - localhost:', devUrl);
-      return devUrl;
-    }
-    
-    // TOUS les autres domaines (aila.family, vercel, preview, etc.) → PRODUCTION
-    console.log('[API] PRODUCTION MODE for domain:', hostname);
-    return PRODUCTION_API_URL;
-  }
-  
-  // Mobile natif : utiliser la production par défaut
-  console.log('[API] MOBILE/NATIVE MODE → PRODUCTION');
-  return PRODUCTION_API_URL;
-};
-
-const API_URL = getApiUrl();
-console.log('[API] ========================================');
-console.log('[API] FINAL API URL:', API_URL);
-console.log('[API] ========================================');
+// @ts-ignore - EXPO_PUBLIC_* remplacé au build
+const devUrl = typeof process !== 'undefined' ? process.env?.EXPO_PUBLIC_BACKEND_URL : undefined;
+const API_URL = devUrl || PRODUCTION_API_URL;
+export { API_URL }; // pour debug
 
 const api = axios.create({
   baseURL: `${API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000,
+  timeout: 60000, // 60s pour cold start Render
 });
 
 // Request interceptor for logging
