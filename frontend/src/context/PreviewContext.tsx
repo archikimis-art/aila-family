@@ -51,19 +51,15 @@ export function PreviewProvider({ children }: { children: ReactNode }) {
     const checkPreviewMode = async () => {
       console.log('[PreviewContext] Checking preview mode...');
       
-      // Check URL param first (highest priority)
+      // URL param is the PRIMARY source of truth
       const urlPreview = params.preview === 'true';
       
-      // Check AsyncStorage flag
-      const storedFlag = await AsyncStorage.getItem(PREVIEW_MODE_KEY);
-      const storedPreview = storedFlag === 'true';
-      
-      const shouldBePreview = urlPreview || storedPreview;
-      
-      console.log('[PreviewContext] URL preview:', urlPreview, 'Stored:', storedPreview, '→', shouldBePreview);
-      
-      if (shouldBePreview) {
-        // Load preview data
+      if (urlPreview) {
+        // Entering preview mode via URL
+        console.log('[PreviewContext] URL has preview=true → PREVIEW MODE');
+        await AsyncStorage.setItem(PREVIEW_MODE_KEY, 'true');
+        
+        // Load existing preview data if any
         const token = await AsyncStorage.getItem(PREVIEW_TOKEN_KEY);
         const personsStr = await AsyncStorage.getItem(PREVIEW_PERSONS_KEY);
         const linksStr = await AsyncStorage.getItem(PREVIEW_LINKS_KEY);
@@ -72,10 +68,13 @@ export function PreviewProvider({ children }: { children: ReactNode }) {
         setPreviewPersons(personsStr ? JSON.parse(personsStr) : []);
         setPreviewLinks(linksStr ? JSON.parse(linksStr) : []);
         setIsPreviewMode(true);
-        
-        // Ensure flag is set
-        await AsyncStorage.setItem(PREVIEW_MODE_KEY, 'true');
       } else {
+        // NO preview param in URL → EXIT preview mode completely
+        console.log('[PreviewContext] No preview param → USER MODE, clearing preview data');
+        await AsyncStorage.removeItem(PREVIEW_MODE_KEY);
+        await AsyncStorage.removeItem(PREVIEW_TOKEN_KEY);
+        await AsyncStorage.removeItem(PREVIEW_PERSONS_KEY);
+        await AsyncStorage.removeItem(PREVIEW_LINKS_KEY);
         setIsPreviewMode(false);
         setPreviewPersons([]);
         setPreviewLinks([]);

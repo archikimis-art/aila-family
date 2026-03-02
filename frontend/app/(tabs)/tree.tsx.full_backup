@@ -14,9 +14,6 @@ const CACHE_KEYS = {
   LAST_PING: 'last_backend_ping',
 };
 
-// SECURITY: Global preview mode flag key (must match _layout.tsx and members.tsx)
-const PREVIEW_MODE_ACTIVE_KEY = 'preview_mode_active';
-
 // Cache duration: 5 minutes (data is still fresh)
 const CACHE_DURATION = 5 * 60 * 1000;
 
@@ -239,22 +236,7 @@ export default function TreeScreen() {
   const params = useLocalSearchParams();
   const { user, refreshUser } = useAuth();
   const { t } = useTranslation();
-  
-  // SECURITY: Import preview context
-  const { 
-    isPreviewMode: contextPreviewMode, 
-    isLoading: previewContextLoading,
-    previewPersons,
-    previewLinks,
-    previewToken: contextPreviewToken,
-    enterPreviewMode,
-    exitPreviewMode,
-    setPreviewData
-  } = require('@/context/PreviewContext').usePreview();
-  
-  // URL param is the ONLY source of truth for preview mode
   const isPreviewMode = params.preview === 'true';
-  
   const inviteToken = params.invite as string | undefined;
   const sharedOwnerId = params.sharedOwnerId as string | undefined;
   const sharedOwnerName = params.sharedOwnerName as string | undefined;
@@ -263,20 +245,12 @@ export default function TreeScreen() {
   const googleToken = params.token as string | undefined;
   const googleAuthSuccess = params.google_auth === 'success';
 
-  // SECURITY: In preview mode, use context data. In user mode, use local state.
-  const [userPersons, setUserPersons] = useState<Person[]>([]);
-  const [userLinks, setUserLinks] = useState<FamilyLink[]>([]);
-  
-  // The displayed data depends on mode
-  const persons = isPreviewMode ? previewPersons : userPersons;
-  const links = isPreviewMode ? previewLinks : userLinks;
-  const setPersons = isPreviewMode ? () => {} : setUserPersons; // No-op in preview
-  const setLinks = isPreviewMode ? () => {} : setUserLinks; // No-op in preview
-  
+  const [persons, setPersons] = useState<Person[]>([]);
+  const [links, setLinks] = useState<FamilyLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [isFromCache, setIsFromCache] = useState(false);
-  const [previewToken, setPreviewToken] = useState<string | null>(contextPreviewToken);
+  const [isFromCache, setIsFromCache] = useState(false); // NEW: Track if data is from cache
+  const [previewToken, setPreviewToken] = useState<string | null>(null);
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   const [sharedTreeOwner, setSharedTreeOwner] = useState<{id: string, name: string, role: string} | null>(null);
   const [inviteMessage, setInviteMessage] = useState<string | null>(null);
@@ -474,77 +448,134 @@ export default function TreeScreen() {
   const loadData = async () => {
     try {
       // ============================================================================
-      // PREVIEW MODE: Use PreviewContext to manage data
+      // STEP 1: Load from cache IMMEDIATELY for instant display
       // ============================================================================
-      if (isPreviewMode) {
-        console.log('[SECURITY] Preview mode - entering via PreviewContext');
-        
-        // Enter preview mode in context
-        await enterPreviewMode();
-        
-        // If context already has data, use it
-        if (previewPersons.length > 0) {
-          console.log('[SECURITY] Using existing preview data from context:', previewPersons.length, 'persons');
-          setPreviewToken(contextPreviewToken);
-          setLoading(false);
-          return;
-        }
-        
-        // Otherwise create fresh demo session
-        console.log('[SECURITY] Creating fresh demo session...');
-        try {
-          const response = await previewAPI.createDemoSession();
-          const token = response.data.session_token;
-          if (token) {
-            const demoPersons = response.data.persons || [];
-            const demoLinks = response.data.links || [];
-            
-            // Store in PreviewContext (this updates all components)
-            await setPreviewData(demoPersons, demoLinks, token);
-            setPreviewToken(token);
-            console.log('[SECURITY] Fresh demo session created with', demoPersons.length, 'demo persons');
-          }
-        } catch (e: any) {
-          console.error('[SECURITY] Failed to create demo session:', e);
-        }
-        
-        setLoading(false);
-        setRefreshing(false);
-        return;
-      }
-      
-      // ============================================================================
-      // USER MODE: Exit preview and load user data
-      // ============================================================================
-      console.log('[SECURITY] User mode - exiting preview, loading user data');
-      await exitPreviewMode();
-      
-      // Load from cache first for instant display
-      if (user) {
+      if (!isPreviewMode && user) {
         const cachedData = await loadFromCache();
         if (cachedData && cachedData.persons.length > 0) {
           log('[LOAD] Displaying cached data instantly');
-          setUserPersons(cachedData.persons);
-          setUserLinks(cachedData.links);
+          setPersons(cachedData.persons);
+          setLinks(cachedData.links);
           setIsFromCache(true);
-          setLoading(false);
+          setLoading(false); // Stop loading immediately
         }
-        
-        // Then fetch fresh data
+      }
+
+      // ============================================================================
+      // STEP 2: Fetch fresh data from server in background
+      // ============================================================================
+      if (isPreviewMode) {
+        let token: string | null = await AsyncStorage.getItem('preview_token');
+        if (!token) {
+          // Créer une session DEMO avec une famille exemple pré-remplie
+          console.log('Creating demo session with sample family...');
+          const response = await previewAPI.createDemoSession();
+          token = response.data.session_token;
+          if (token) {
+            await AsyncStorage.setItem('preview_token', token);
+            // Store persons and links in AsyncStorage for child pages to access
+            const persons = response.data.persons || [];
+            const links = response.data.links || [];
+            await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+            await AsyncStorage.setItem('preview_links', JSON.stringify(links));
+            // Utiliser directement les données de la réponse (famille exemple)
+            setPersons(persons);
+            setLinks(links);
+            setPreviewToken(token);
+            console.log('Demo session created with', persons.length, 'persons - stored in AsyncStorage');
+            setLoading(false);
+            setRefreshing(false);
+            return;
+          }
+        }
+        if (token) {
+          setPreviewToken(token);
+          
+          // In preview mode, ALWAYS prioritize AsyncStorage (local data) over API
+          // This ensures user-added persons are not lost
+          const storedPersons = await AsyncStorage.getItem('preview_persons');
+          const storedLinks = await AsyncStorage.getItem('preview_links');
+          
+          if (storedPersons) {
+            const parsedPersons = JSON.parse(storedPersons);
+            const parsedLinks = storedLinks ? JSON.parse(storedLinks) : [];
+            console.log('Loading from AsyncStorage - persons:', parsedPersons.length);
+            setPersons(parsedPersons);
+            setLinks(parsedLinks);
+          } else {
+            // No local data - try API first, then create new session if needed
+            try {
+              const sessionData = await previewAPI.getSession(token);
+              const persons = sessionData.data.persons || [];
+              const links = sessionData.data.links || [];
+              
+              if (persons.length > 0) {
+                await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+                await AsyncStorage.setItem('preview_links', JSON.stringify(links));
+                setPersons(persons);
+                setLinks(links);
+              } else {
+                // API returned empty and no local data - create new demo session
+                console.log('No data found, creating new demo session...');
+                const response = await previewAPI.createDemoSession();
+                token = response.data.session_token;
+                if (token) {
+                  await AsyncStorage.setItem('preview_token', token);
+                  const newPersons = response.data.persons || [];
+                  const newLinks = response.data.links || [];
+                  await AsyncStorage.setItem('preview_persons', JSON.stringify(newPersons));
+                  await AsyncStorage.setItem('preview_links', JSON.stringify(newLinks));
+                  setPreviewToken(token);
+                  setPersons(newPersons);
+                  setLinks(newLinks);
+                }
+              }
+            } catch (e: any) {
+              if (e.response?.status === 404 || e.response?.status === 410) {
+                // Session expirée - créer une nouvelle session DEMO
+                console.log('Session expired, creating new demo session...');
+                const response = await previewAPI.createDemoSession();
+                token = response.data.session_token;
+                if (token) {
+                  await AsyncStorage.setItem('preview_token', token);
+                  const persons = response.data.persons || [];
+                  const links = response.data.links || [];
+                  await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+                  await AsyncStorage.setItem('preview_links', JSON.stringify(links));
+                  setPreviewToken(token);
+                  setPersons(persons);
+                  setLinks(links);
+                }
+              }
+            }
+          }
+        }
+      } else if (user) {
         log('[LOAD] Fetching fresh data from server...');
         const response = await treeAPI.getTree();
         const freshPersons = response.data.persons || [];
         const freshLinks = response.data.links || [];
         
-        setUserPersons(freshPersons);
-        setUserLinks(freshLinks);
+        // Update state with fresh data
+        setPersons(freshPersons);
+        setLinks(freshLinks);
         setIsFromCache(false);
         
+        // Save to cache for next time
         await saveToCache({ persons: freshPersons, links: freshLinks });
         log('[LOAD] Fresh data loaded and cached');
       }
     } catch (error) {
       console.error('Error loading tree:', error);
+      // If we have cached data, keep showing it
+      if (persons.length === 0) {
+        const cachedData = await loadFromCache();
+        if (cachedData) {
+          setPersons(cachedData.persons);
+          setLinks(cachedData.links);
+          setIsFromCache(true);
+        }
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -556,23 +587,18 @@ export default function TreeScreen() {
     setIsFromCache(false);
     try {
       if (isPreviewMode) {
-        // SECURITY: On refresh in preview mode, create fresh demo session
-        console.log('[SECURITY] Refresh: Creating fresh demo session...');
-        
-        const response = await previewAPI.createDemoSession();
-        const token = response.data.session_token;
+        let token: string | null = await AsyncStorage.getItem('preview_token');
         if (token) {
-          const demoPersons = response.data.persons || [];
-          const demoLinks = response.data.links || [];
-          await setPreviewData(demoPersons, demoLinks, token);
-          setPreviewToken(token);
+          const sessionData = await previewAPI.getSession(token);
+          setPersons(sessionData.data.persons || []);
+          setLinks(sessionData.data.links || []);
         }
       } else if (user) {
         const response = await treeAPI.getTree();
         const freshPersons = response.data.persons || [];
         const freshLinks = response.data.links || [];
-        setUserPersons(freshPersons);
-        setUserLinks(freshLinks);
+        setPersons(freshPersons);
+        setLinks(freshLinks);
         // Update cache
         await saveToCache({ persons: freshPersons, links: freshLinks });
       }
@@ -584,14 +610,14 @@ export default function TreeScreen() {
   }, [isPreviewMode, user]);
 
   // ============================================================================
-  // AUTO-SAVE CACHE: When persons or links change, save to cache (USER MODE ONLY)
+  // AUTO-SAVE CACHE: When persons or links change, save to cache
   // ============================================================================
   useEffect(() => {
     // Only save if we have data and it's not from cache (to avoid loop)
-    if (!isFromCache && !isPreviewMode && user && userPersons.length > 0) {
-      saveToCache({ persons: userPersons, links: userLinks });
+    if (!isFromCache && !isPreviewMode && user && persons.length > 0) {
+      saveToCache({ persons, links });
     }
-  }, [userPersons, userLinks, isFromCache, isPreviewMode, user]);
+  }, [persons, links, isFromCache, isPreviewMode, user]);
 
   const handleAddPerson = () => {
     if (isPreviewMode && persons.length >= 10) {
