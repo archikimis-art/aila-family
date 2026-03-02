@@ -34,7 +34,9 @@ export default function MembersScreen() {
   const params = useLocalSearchParams();
   const { user } = useAuth();
   const { t } = useTranslation();
-  const isPreviewMode = !user;
+  // SECURITY FIX: Check URL parameter, not just user login state
+  // A logged-in user can still be in preview mode via "Try Now" button
+  const isPreviewMode = params.preview === 'true';
 
   const [persons, setPersons] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
