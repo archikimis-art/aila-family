@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Stack, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useFonts } from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
+import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider } from '@/context/AuthContext';
 import { AdsProvider } from '@/context/AdsContext';
 import { ConversionProvider } from '@/context/ConversionContext';
@@ -9,6 +12,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
+
+// Empêcher la fermeture automatique du splash screen (Android/iOS)
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 // Lazy import AdMob only on native platforms - wrapped in try-catch to prevent crashes
 let initializeAds: () => Promise<void> = async () => {};
@@ -440,6 +446,7 @@ const initGoogleAdSense = () => {
 
 export default function RootLayout() {
   const pathname = usePathname();
+  const [fontsLoaded, fontError] = useFonts(Ionicons.font);
 
   useEffect(() => {
     // Performance: Preconnect first (fastest)
@@ -463,12 +470,24 @@ export default function RootLayout() {
     }
   }, []);
 
+  // Masquer le splash screen une fois les polices chargées (Android/iOS)
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync().catch(() => {});
+    }
+  }, [fontsLoaded, fontError]);
+
   // Track page changes for interstitial ads
   useEffect(() => {
     if (Platform.OS !== 'web' && pathname) {
       onPageChange(pathname);
     }
   }, [pathname]);
+
+  // Attendre le chargement des polices sur Android/iOS pour éviter crash ou icônes vides
+  if (Platform.OS !== 'web' && !fontsLoaded && !fontError) {
+    return null;
+  }
 
   return (
     <I18nextProvider i18n={i18n}>

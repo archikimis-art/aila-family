@@ -10,6 +10,7 @@ import LanguageSelector from '@/components/LanguageSelector';
 import DailyChallengeBanner from '@/components/DailyChallengeBanner';
 import SocialProofBanner from '@/components/SocialProofBanner';
 import { captureUTMParams, isFromTikTok } from '@/services/analytics';
+import { API_URL } from '@/services/api';
 
 // Lazy load the animated background for better LCP
 const AnimatedTreeBackground = lazy(() => import('@/components/AnimatedTreeBackground').then(m => ({ default: m.AnimatedTreeBackground })));
@@ -358,6 +359,13 @@ export default function WelcomeScreen() {
                 <Text style={styles.legalLink}>{t('footer.admin')}</Text>
               </TouchableOpacity>
             </View>
+            
+            {/* Debug localhost - confirmer que le nouveau code est chargé */}
+            {isWeb && typeof window !== 'undefined' && /localhost|127\.0\.0\.1/.test(window.location?.hostname || '') && (
+              <View style={{ marginTop: 16, padding: 8, backgroundColor: 'rgba(212,175,55,0.2)', borderRadius: 8 }}>
+                <Text style={{ color: '#D4AF37', fontSize: 11 }}>Debug: API = {API_URL} • Build 2026-03-02</Text>
+              </View>
+            )}
             
             {/* Spacer for bottom bar */}
             <View style={styles.bottomSpacer} />

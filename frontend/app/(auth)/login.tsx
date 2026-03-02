@@ -259,12 +259,17 @@ export default function LoginScreen() {
       router.replace('/(tabs)/tree');
     } catch (error: any) {
       const detail = error.response?.data?.detail || '';
-      if (detail.includes('Invalid credentials') || detail.includes('Identifiants invalides')) {
+      const isNetwork = !error.response && (error.message?.includes('Network') || error.code === 'ERR_NETWORK');
+      if (isNetwork) {
+        showError('Pas de connexion. Vérifiez votre réseau ou réessayez.');
+      } else if (detail.includes('Invalid') || detail.includes('credentials') || detail.includes('Identifiants')) {
         showError('Email ou mot de passe incorrect.');
       } else if (detail.includes('User not found')) {
         showError('Aucun compte trouvé avec cet email.');
+      } else if (detail) {
+        showError(detail);
       } else {
-        showError(detail || 'Erreur de connexion. Veuillez réessayer.');
+        showError('Erreur de connexion. Veuillez réessayer.');
       }
     } finally {
       setLoading(false);

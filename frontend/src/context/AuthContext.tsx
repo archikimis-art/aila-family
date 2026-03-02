@@ -45,11 +45,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const checkAuth = async () => {
     try {
       const token = await AsyncStorage.getItem('auth_token');
-      if (token) {
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        const response = await api.get('/auth/me');
-        setUser(response.data);
+      if (!token) {
+        setLoading(false);
+        return;
       }
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      // Timeout 8s : ne pas bloquer l'app si le backend est en veille (Render)
+      const response = await Promise.race([
+        api.get('/auth/me'),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000)),
+      ]) as any;
+      setUser(response.data);
     } catch (error) {
       await AsyncStorage.removeItem('auth_token');
       delete api.defaults.headers.common['Authorization'];
