@@ -65,6 +65,12 @@ export default function MembersScreen() {
 
   const loadData = async () => {
     try {
+      // SECURITY: Reset state immediately when entering preview mode
+      if (isPreviewMode) {
+        console.log('[SECURITY] Members: Preview mode - resetting state');
+        setPersons([]);
+      }
+      
       if (isPreviewMode) {
         // ============================================================================
         // SECURITY FIX: Read demo data from AsyncStorage (set by tree.tsx)

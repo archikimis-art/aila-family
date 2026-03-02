@@ -451,7 +451,18 @@ export default function TreeScreen() {
   const loadData = async () => {
     try {
       // ============================================================================
-      // STEP 1: Load from cache IMMEDIATELY for instant display
+      // SECURITY: Reset state immediately when entering preview mode
+      // This prevents any flash of user data before demo data loads
+      // ============================================================================
+      if (isPreviewMode) {
+        console.log('[SECURITY] Preview mode detected - resetting state immediately');
+        setPersons([]);
+        setLinks([]);
+        setIsFromCache(false);
+      }
+      
+      // ============================================================================
+      // STEP 1: Load from cache IMMEDIATELY for instant display (USER MODE ONLY)
       // ============================================================================
       if (!isPreviewMode && user) {
         const cachedData = await loadFromCache();
