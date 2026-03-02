@@ -84,6 +84,11 @@ export default function LoginScreen() {
 
       if (result.data.access_token) {
         await AsyncStorage.setItem('auth_token', result.data.access_token);
+        // SECURITY: Clear preview mode flag on login
+        await AsyncStorage.removeItem('preview_mode_active');
+        await AsyncStorage.removeItem('preview_token');
+        await AsyncStorage.removeItem('preview_persons');
+        await AsyncStorage.removeItem('preview_links');
         api.defaults.headers.common['Authorization'] = `Bearer ${result.data.access_token}`;
         await refreshUser();
         router.replace('/(tabs)/tree');

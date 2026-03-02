@@ -14,6 +14,9 @@ const CACHE_KEYS = {
   LAST_PING: 'last_backend_ping',
 };
 
+// SECURITY: Global preview mode flag key (must match _layout.tsx and members.tsx)
+const PREVIEW_MODE_ACTIVE_KEY = 'preview_mode_active';
+
 // Cache duration: 5 minutes (data is still fresh)
 const CACHE_DURATION = 5 * 60 * 1000;
 
@@ -470,7 +473,12 @@ export default function TreeScreen() {
         // This ensures no user data can ever appear in preview mode
         // We MUST clear the cache BEFORE loading any data
         // ============================================================================
-        console.log('[SECURITY] Preview mode: Clearing cache to prevent data leaks...');
+        console.log('[SECURITY] Preview mode: Setting global flag and clearing cache...');
+        
+        // SET GLOBAL PREVIEW FLAG - This is read by other tabs (members, etc.)
+        await AsyncStorage.setItem(PREVIEW_MODE_ACTIVE_KEY, 'true');
+        
+        // Clear all preview data to prevent contamination
         await AsyncStorage.removeItem('preview_token');
         await AsyncStorage.removeItem('preview_persons');
         await AsyncStorage.removeItem('preview_links');
@@ -501,6 +509,9 @@ export default function TreeScreen() {
           setLinks([]);
         }
       } else if (user) {
+        // SECURITY: Clear preview mode flag when loading user data
+        await AsyncStorage.removeItem(PREVIEW_MODE_ACTIVE_KEY);
+        
         log('[LOAD] Fetching fresh data from server...');
         const response = await treeAPI.getTree();
         const freshPersons = response.data.persons || [];

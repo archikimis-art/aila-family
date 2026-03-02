@@ -63,6 +63,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const { access_token, user: userData } = response.data;
     
     await AsyncStorage.setItem('auth_token', access_token);
+    // SECURITY: Clear preview mode on login to prevent data leaks
+    await AsyncStorage.removeItem('preview_mode_active');
+    await AsyncStorage.removeItem('preview_token');
+    await AsyncStorage.removeItem('preview_persons');
+    await AsyncStorage.removeItem('preview_links');
     api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
     setUser(userData);
   };
@@ -72,6 +77,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const { access_token, user: userData } = response.data;
     
     await AsyncStorage.setItem('auth_token', access_token);
+    // SECURITY: Clear preview mode on login to prevent data leaks
+    await AsyncStorage.removeItem('preview_mode_active');
+    await AsyncStorage.removeItem('preview_token');
+    await AsyncStorage.removeItem('preview_persons');
+    await AsyncStorage.removeItem('preview_links');
     api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
     setUser(userData);
   };
@@ -81,6 +91,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const { access_token, user: userData } = response.data;
     
     await AsyncStorage.setItem('auth_token', access_token);
+    // SECURITY: Clear preview mode on register to prevent data leaks
+    await AsyncStorage.removeItem('preview_mode_active');
+    await AsyncStorage.removeItem('preview_token');
+    await AsyncStorage.removeItem('preview_persons');
+    await AsyncStorage.removeItem('preview_links');
     api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
     setUser(userData);
   };

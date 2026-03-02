@@ -19,6 +19,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdBanner from '@/components/AdBanner';
 import { useTranslation } from 'react-i18next';
 
+// SECURITY: Global preview mode flag key (must match _layout.tsx)
+const PREVIEW_MODE_ACTIVE_KEY = 'preview_mode_active';
+
 interface Person {
   id: string;
   first_name: string;
@@ -34,19 +37,31 @@ export default function MembersScreen() {
   const params = useLocalSearchParams();
   const { user } = useAuth();
   const { t } = useTranslation();
-  // SECURITY FIX: Check URL parameter, not just user login state
-  // A logged-in user can still be in preview mode via "Try Now" button
-  const isPreviewMode = params.preview === 'true';
-
+  
   const [persons, setPersons] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [previewToken, setPreviewToken] = useState<string | null>(null);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
+
+  // SECURITY: Check preview mode from BOTH URL param AND global flag
+  useEffect(() => {
+    const checkPreviewMode = async () => {
+      const urlPreview = params.preview === 'true';
+      const globalPreview = await AsyncStorage.getItem(PREVIEW_MODE_ACTIVE_KEY);
+      const isPreview = urlPreview || globalPreview === 'true';
+      console.log('[SECURITY] Members: URL preview:', urlPreview, 'Global flag:', globalPreview, '→ isPreviewMode:', isPreview);
+      setIsPreviewMode(isPreview);
+    };
+    checkPreviewMode();
+  }, [params.preview]);
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isPreviewMode !== undefined) {
+      loadData();
+    }
+  }, [isPreviewMode]);
 
   const loadData = async () => {
     try {
