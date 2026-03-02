@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { personsAPI, previewAPI } from '@/services/api';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { usePreview } from '@/context/PreviewContext';
 
 // Keys for AsyncStorage - must match tree.tsx exactly
 const PREVIEW_TOKEN_KEY = 'preview_token';
@@ -150,8 +151,16 @@ export default function AddPersonScreen() {
   const editPersonId = params.editId as string | undefined;
   const isEditMode = !!editPersonId;
   
+  // SECURITY: Use PreviewContext for preview mode data
+  const { 
+    previewPersons, 
+    previewLinks, 
+    previewToken: contextPreviewToken,
+    setPreviewData 
+  } = usePreview();
+  
   // State to hold the actual preview token
-  const [previewToken, setPreviewToken] = useState<string | null>(null);
+  const [previewToken, setPreviewToken] = useState<string | null>(contextPreviewToken);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -169,6 +178,10 @@ export default function AddPersonScreen() {
   // Pour le mode édition - liens familiaux
   const [familyLinks, setFamilyLinks] = useState<any[]>([]);
   const [allPersons, setAllPersons] = useState<any[]>([]);
+  
+  // Use preview data from context when in preview mode
+  const persons = isPreviewMode ? previewPersons : allPersons;
+  const links = isPreviewMode ? previewLinks : familyLinks;
   
   // Initialize on mount
   useEffect(() => {
@@ -369,7 +382,7 @@ export default function AddPersonScreen() {
     try {
       // Get preview data from AsyncStorage
       const { persons, links, token } = await getPreviewData();
-      let tokenToUse = previewToken || token;
+      let tokenToUse = previewToken || contextPreviewToken || token;
       
       console.log('[AddPerson] handleSave - isPreviewMode:', isPreviewMode, 'token:', tokenToUse ? 'YES' : 'NULL');
       
@@ -390,18 +403,18 @@ export default function AddPersonScreen() {
       if (isEditMode && editPersonId) {
         // Edit mode
         if (isPreviewMode) {
-          console.log('[AddPerson] Updating preview person locally...');
-          // Update in local storage
-          const updatedPersons = persons.map(p => 
+          console.log('[AddPerson] Updating preview person via PreviewContext...');
+          // Update via PreviewContext
+          const updatedPersons = previewPersons.map(p => 
             p.id === editPersonId ? { ...p, ...personData } : p
           );
-          await updatePreviewData(updatedPersons, links);
+          await setPreviewData(updatedPersons, previewLinks, contextPreviewToken || '');
           // Also try API (may fail but that's ok)
           if (tokenToUse) {
             try {
               await previewAPI.updatePerson(tokenToUse, editPersonId, personData);
             } catch (e) {
-              console.log('[AddPerson] API update failed (expected), using local storage');
+              console.log('[AddPerson] API update failed (expected), using context');
             }
           }
         } else if (!isPreviewMode) {
@@ -413,22 +426,25 @@ export default function AddPersonScreen() {
           window.alert(t('personForm.personUpdated', { name: personName }));
         }
       } else if (isPreviewMode) {
-        // Add new person in preview mode - save locally
-        console.log('[AddPerson] Adding preview person locally...');
+        // Add new person in preview mode - update PreviewContext
+        console.log('[AddPerson] Adding preview person via PreviewContext...');
         const newPerson = {
           id: 'local-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
           ...personData,
           created_at: new Date().toISOString(),
         };
-        const updatedPersons = [...persons, newPerson];
-        await updatePreviewData(updatedPersons, links);
+        const updatedPersons = [...previewPersons, newPerson];
+        
+        // Update PreviewContext (this updates all components)
+        await setPreviewData(updatedPersons, previewLinks, contextPreviewToken || '');
+        console.log('[AddPerson] PreviewContext updated with', updatedPersons.length, 'persons');
         
         // Also try API (may fail but that's ok)
-        if (tokenToUse) {
+        if (contextPreviewToken) {
           try {
-            await previewAPI.addPerson(tokenToUse, personData);
+            await previewAPI.addPerson(contextPreviewToken, personData);
           } catch (e) {
-            console.log('[AddPerson] API add failed (expected), using local storage');
+            console.log('[AddPerson] API add failed (expected), using context');
           }
         }
         if (typeof window !== 'undefined') {
