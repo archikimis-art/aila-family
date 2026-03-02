@@ -17,7 +17,6 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { personsAPI, previewAPI } from '@/services/api';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Keys for AsyncStorage - must match tree.tsx exactly
@@ -33,69 +32,41 @@ const getPreviewData = async (): Promise<{ persons: any[], links: any[], token: 
     const storedLinks = await AsyncStorage.getItem(PREVIEW_LINKS_KEY);
     
     if (storedPersons) {
-      const persons = JSON.parse(storedPersons);
-      if (Array.isArray(persons) && persons.length > 0) {
-        console.log('[AddPerson] Using AsyncStorage data:', persons.length, 'persons');
-        return {
-          persons,
-          links: storedLinks ? JSON.parse(storedLinks) : [],
-          token
-        };
-      }
+      console.log('[AddPerson] Using AsyncStorage data');
+      return {
+        persons: JSON.parse(storedPersons),
+        links: storedLinks ? JSON.parse(storedLinks) : [],
+        token
+      };
     }
     
-    // Fallback to API if AsyncStorage is empty or invalid
+    // Fallback to API if AsyncStorage is empty
     if (token) {
-      try {
-        const response = await previewAPI.getSession(token);
-        const persons = response.data.persons || [];
-        const links = response.data.links || [];
-        if (persons.length > 0) {
-          await AsyncStorage.setItem(PREVIEW_PERSONS_KEY, JSON.stringify(persons));
-          await AsyncStorage.setItem(PREVIEW_LINKS_KEY, JSON.stringify(links));
-          return { persons, links, token };
-        }
-      } catch (apiError) {
-        console.log('[AddPerson] API session expired, creating new session');
-      }
+      console.log('[AddPerson] Trying API fallback...');
+      const response = await previewAPI.getSession(token);
+      return {
+        persons: response.data.persons || [],
+        links: response.data.links || [],
+        token
+      };
     }
     
-    // Session expirée ou inexistante : créer une nouvelle session DEMO
-    console.log('[AddPerson] Creating new demo session...');
-    try {
-      const response = await previewAPI.createDemoSession();
-      const newToken = response.data.session_token;
-      const newPersons = response.data.persons || [];
-      const newLinks = response.data.links || [];
-      if (newToken) {
-        await AsyncStorage.setItem(PREVIEW_TOKEN_KEY, newToken);
-        await AsyncStorage.setItem(PREVIEW_PERSONS_KEY, JSON.stringify(newPersons));
-        await AsyncStorage.setItem(PREVIEW_LINKS_KEY, JSON.stringify(newLinks));
-        return { persons: newPersons, links: newLinks, token: newToken };
-      }
-    } catch (apiErr) {
-      console.warn('[AddPerson] API failed, using local session', apiErr);
-    }
-    // Fallback : session locale quand l'API est indisponible
-    const localToken = 'local-' + Date.now();
-    await AsyncStorage.setItem(PREVIEW_TOKEN_KEY, localToken);
-    await AsyncStorage.setItem(PREVIEW_PERSONS_KEY, JSON.stringify([]));
-    await AsyncStorage.setItem(PREVIEW_LINKS_KEY, JSON.stringify([]));
-    return { persons: [], links: [], token: localToken };
+    return { persons: [], links: [], token: null };
   } catch (error) {
     console.error('[AddPerson] Error getting preview data:', error);
-    const localToken = 'local-' + Date.now();
-    await AsyncStorage.setItem(PREVIEW_TOKEN_KEY, localToken).catch(() => {});
-    return { persons: [], links: [], token: localToken };
+    return { persons: [], links: [], token: null };
   }
 };
 
 // Helper to update preview data in AsyncStorage
 const updatePreviewData = async (persons: any[], links: any[]) => {
-  const toStore = links ?? [];
-  await AsyncStorage.setItem(PREVIEW_PERSONS_KEY, JSON.stringify(persons));
-  await AsyncStorage.setItem(PREVIEW_LINKS_KEY, JSON.stringify(toStore));
-  console.log('[AddPerson] Updated AsyncStorage with new data');
+  try {
+    await AsyncStorage.setItem(PREVIEW_PERSONS_KEY, JSON.stringify(persons));
+    await AsyncStorage.setItem(PREVIEW_LINKS_KEY, JSON.stringify(links));
+    console.log('[AddPerson] Updated AsyncStorage with new data');
+  } catch (error) {
+    console.error('[AddPerson] Error updating AsyncStorage:', error);
+  }
 };
 
 // ===================== DONNÉES GÉOGRAPHIQUES MONDIALES =====================
@@ -199,17 +170,11 @@ export default function AddPersonScreen() {
   const [familyLinks, setFamilyLinks] = useState<any[]>([]);
   const [allPersons, setAllPersons] = useState<any[]>([]);
   
-  // Vérifier preview_token au montage (fallback si params manquants sur web)
+  // Initialize on mount
   useEffect(() => {
-    AsyncStorage.getItem(PREVIEW_TOKEN_KEY).then((t) => setHasPreviewToken(!!t));
-  }, []);
-
-  // Initialize on mount - lancer si params.preview OU une fois hasPreviewToken connu
-  useEffect(() => {
-    if (params.preview !== 'true' && hasPreviewToken === null) return; // Attendre le check AsyncStorage
     console.log('[AddPerson] Component mounted - isPreviewMode:', isPreviewMode, 'isEditMode:', isEditMode);
     initializeScreen();
-  }, [hasPreviewToken, params.preview]);
+  }, []);
 
   const initializeScreen = async () => {
     try {
@@ -491,22 +456,23 @@ export default function AddPersonScreen() {
     } catch (error: any) {
       console.error('Save person error:', error);
       
-      const isNetworkError = !error.response && (error.message?.includes('Network') || error.code === 'ERR_NETWORK');
-      const isCorsError = error.message?.includes('CORS');
+      // If it's a network error (CORS), the data might still be saved
+      // Don't show error popup for network errors, just navigate back
+      const isNetworkError = !error.response && error.message?.includes('Network');
+      const isCorsError = error.message?.includes('CORS') || error.code === 'ERR_NETWORK';
       
       if (isNetworkError || isCorsError) {
-        // En mode aperçu : données sauvegardées en local, naviguer quand même
+        // Data likely saved, navigate to tree
+        console.log('Network/CORS error but data may be saved, navigating...');
         if (isPreviewMode) {
           router.replace('/(tabs)/tree?preview=true');
         } else {
-          const msg = error.response?.data?.detail || 'Vérifiez votre connexion.';
-          if (typeof window !== 'undefined') window.alert(t('personForm.saveError', { message: msg }));
+          router.replace('/(tabs)/tree');
         }
       } else {
-        let msg = error.response?.data?.detail || error.message || t('common.error');
-        if (msg === '[object Object]') msg = t('common.error');
+        const message = error.response?.data?.detail || t('common.error');
         if (typeof window !== 'undefined') {
-          window.alert(t('personForm.saveError', { message: msg }));
+          window.alert(t('personForm.saveError', { message }));
         }
       }
     } finally {

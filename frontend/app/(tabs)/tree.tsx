@@ -26,7 +26,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
-  useWindowDimensions,
   Alert,
   RefreshControl,
   ActivityIndicator,
@@ -35,7 +34,7 @@ import {
   TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Line, Circle, G, Text as SvgText, Rect, Defs, LinearGradient, Stop, Path } from 'react-native-svg';
 import { useAuth } from '@/context/AuthContext';
@@ -47,10 +46,9 @@ import AdBanner from '@/components/AdBanner';
 import ExcelImport from '@/components/ExcelImport';
 import { useTranslation } from 'react-i18next';
 
-// Import conditionnel : web = react-zoom-pan-pinch, natif = ReactNativeZoomableView
+// Import conditionnel pour le web
 let TransformWrapper: any = null;
 let TransformComponent: any = null;
-let ReactNativeZoomableView: any = null;
 if (Platform.OS === 'web') {
   try {
     const zoomPanPinch = require('react-zoom-pan-pinch');
@@ -59,16 +57,9 @@ if (Platform.OS === 'web') {
   } catch (e) {
     console.log('react-zoom-pan-pinch not available');
   }
-} else {
-  try {
-    ReactNativeZoomableView = require('@openspacelabs/react-native-zoomable-view').ReactNativeZoomableView;
-  } catch (e) {
-    console.log('ReactNativeZoomableView not available');
-  }
 }
 
-// Fallback pour le chargement initial (useWindowDimensions dans le composant)
-const DEFAULT_SCREEN_WIDTH = 400;
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface Person {
   id: string;
@@ -100,21 +91,6 @@ const LEVEL_HEIGHT = 140;
 const NODE_SPACING = 30;
 const COUPLE_SPACING = 15;
 
-// Normalise les données API (id/_id, person_id_1/2 ou person_1/2) pour compatibilité Android/backend
-function normalizeTreeData(persons: Person[], links: FamilyLink[]): { persons: Person[]; links: FamilyLink[] } {
-  const normPersons = persons.map(p => ({
-    ...p,
-    id: String((p as any).id ?? (p as any)._id ?? ''),
-  })).filter(p => p.id);
-  const normLinks = links.map((link: any) => {
-    const p1 = link.person_id_1 ?? link.person_1 ?? link.personId1;
-    const p2 = link.person_id_2 ?? link.person_2 ?? link.personId2;
-    const type = link.link_type ?? link.type;
-    return p1 && p2 && type ? { id: link.id, person_id_1: String(p1), person_id_2: String(p2), link_type: String(type) } : null;
-  }).filter(Boolean) as FamilyLink[];
-  return { persons: normPersons, links: normLinks };
-}
-
 // Composant réutilisable pour le contenu SVG de l'arbre
 interface TreeSvgContentProps {
   svgWidth: number;
@@ -134,7 +110,7 @@ const TreeSvgContent: React.FC<TreeSvgContentProps> = ({
   handlePersonPress,
 }) => (
   <View style={{ width: svgWidth, height: svgHeight, position: 'relative' }}>
-    <Svg width={svgWidth} height={svgHeight} viewBox={`0 0 ${svgWidth} ${svgHeight}`} preserveAspectRatio="xMidYMid meet">
+    <Svg width={svgWidth} height={svgHeight}>
       <Defs>
         <LinearGradient id="maleGrad" x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0" stopColor="#4A90D9" stopOpacity="0.3" />
@@ -162,16 +138,6 @@ const TreeSvgContent: React.FC<TreeSvgContentProps> = ({
               stroke="#D4AF37"
               strokeWidth="2"
               strokeDasharray="5,5"
-            />
-          ) : conn.type === 'sibling' ? (
-            <Line
-              x1={conn.from.x}
-              y1={conn.from.y}
-              x2={conn.to.x}
-              y2={conn.to.y}
-              stroke="#4CAF50"
-              strokeWidth="2"
-              strokeDasharray="3,3"
             />
           ) : (
             <>
@@ -229,7 +195,6 @@ const TreeSvgContent: React.FC<TreeSvgContentProps> = ({
               fill="#FFFFFF"
               fontSize="12"
               fontWeight="bold"
-              fontFamily={Platform.OS === 'android' ? 'sans-serif' : undefined}
             >
               {node.person.first_name}
             </SvgText>
@@ -239,7 +204,6 @@ const TreeSvgContent: React.FC<TreeSvgContentProps> = ({
               textAnchor="middle"
               fill="#B8C5D6"
               fontSize="10"
-              fontFamily={Platform.OS === 'android' ? 'sans-serif' : undefined}
             >
               {node.person.last_name}
             </SvgText>
@@ -267,30 +231,9 @@ const TreeSvgContent: React.FC<TreeSvgContentProps> = ({
   </View>
 );
 
-// Fallback demo quand l'API est indisponible (cold start, réseau)
-function getLocalDemoFallback(): { session_token: string; persons: Person[]; links: FamilyLink[] } {
-  const token = 'local-demo-' + Date.now();
-  const p1 = { id: 'p1', first_name: 'Jean', last_name: 'DUPONT', gender: 'male', birth_date: '1940-05-15' };
-  const p2 = { id: 'p2', first_name: 'Marie', last_name: 'DUPONT', gender: 'female', birth_date: '1942-08-22' };
-  const p3 = { id: 'p3', first_name: 'Pierre', last_name: 'DUPONT', gender: 'male', birth_date: '1965-03-10' };
-  const p4 = { id: 'p4', first_name: 'Sophie', last_name: 'MARTIN', gender: 'female', birth_date: '1968-11-28' };
-  const p5 = { id: 'p5', first_name: 'Lucas', last_name: 'DUPONT', gender: 'male', birth_date: '1995-07-04' };
-  const persons = [p1, p2, p3, p4, p5];
-  const links: FamilyLink[] = [
-    { id: 'l1', person_id_1: p1.id, person_id_2: p2.id, link_type: 'spouse' },
-    { id: 'l2', person_id_1: p1.id, person_id_2: p3.id, link_type: 'parent' },
-    { id: 'l3', person_id_1: p2.id, person_id_2: p3.id, link_type: 'parent' },
-    { id: 'l4', person_id_1: p3.id, person_id_2: p4.id, link_type: 'spouse' },
-    { id: 'l5', person_id_1: p3.id, person_id_2: p5.id, link_type: 'parent' },
-    { id: 'l6', person_id_1: p4.id, person_id_2: p5.id, link_type: 'parent' },
-  ];
-  return { session_token: token, persons, links };
-}
-
 export default function TreeScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { width: screenWidth } = useWindowDimensions();
   const { user, refreshUser } = useAuth();
   const { t } = useTranslation();
   const isPreviewMode = params.preview === 'true';
@@ -431,9 +374,8 @@ export default function TreeScreen() {
         try {
           const { collaboratorsAPI } = await import('@/services/api');
           const treeResponse = await collaboratorsAPI.getSharedTree(sharedOwnerId);
-          const { persons: np, links: nl } = normalizeTreeData(treeResponse.data.persons || [], treeResponse.data.links || []);
-          setPersons(np);
-          setLinks(nl);
+          setPersons(treeResponse.data.persons || []);
+          setLinks(treeResponse.data.links || []);
           setSharedTreeOwner({
             id: sharedOwnerId,
             name: sharedOwnerName,
@@ -474,9 +416,8 @@ export default function TreeScreen() {
           
           // Load the shared tree
           const treeResponse = await collaboratorsAPI.getSharedTree(data.tree_owner_id);
-          const { persons: np, links: nl } = normalizeTreeData(treeResponse.data.persons || [], treeResponse.data.links || []);
-          setPersons(np);
-          setLinks(nl);
+          setPersons(treeResponse.data.persons || []);
+          setLinks(treeResponse.data.links || []);
           setLoading(false);
           
           // Clear the invite message after 5 seconds
@@ -513,9 +454,8 @@ export default function TreeScreen() {
         const cachedData = await loadFromCache();
         if (cachedData && cachedData.persons.length > 0) {
           log('[LOAD] Displaying cached data instantly');
-          const { persons: np, links: nl } = normalizeTreeData(cachedData.persons, cachedData.links);
-          setPersons(np);
-          setLinks(nl);
+          setPersons(cachedData.persons);
+          setLinks(cachedData.links);
           setIsFromCache(true);
           setLoading(false); // Stop loading immediately
         }
@@ -525,86 +465,116 @@ export default function TreeScreen() {
       // STEP 2: Fetch fresh data from server in background
       // ============================================================================
       if (isPreviewMode) {
-        // =====================================================================
-        // SECURITY FIX: ALWAYS create fresh demo session to prevent data leaks
-        // This ensures real user data NEVER appears in preview mode
-        // =====================================================================
-        console.log('[SECURITY] Clearing all preview data before creating new session...');
-        await AsyncStorage.removeItem('preview_token');
-        await AsyncStorage.removeItem('preview_persons');
-        await AsyncStorage.removeItem('preview_links');
-        
-        // Create a brand new demo session with GENERIC sample family only
-        console.log('[PREVIEW] Creating fresh demo session with generic sample family...');
-        let response;
-        let token: string | null = null;
-        
-        try {
-          response = await previewAPI.createDemoSession();
-        } catch (firstErr) {
-          console.warn('Demo API first attempt failed, retrying in 3s...', firstErr);
-          await new Promise((r) => setTimeout(r, 3000));
-          try {
-            response = await previewAPI.createDemoSession();
-          } catch (retryErr) {
-            console.error('Demo API failed, using local fallback', retryErr);
-            const fallback = getLocalDemoFallback();
-            token = fallback.session_token;
+        let token: string | null = await AsyncStorage.getItem('preview_token');
+        if (!token) {
+          // Créer une session DEMO avec une famille exemple pré-remplie
+          console.log('Creating demo session with sample family...');
+          const response = await previewAPI.createDemoSession();
+          token = response.data.session_token;
+          if (token) {
             await AsyncStorage.setItem('preview_token', token);
-            await AsyncStorage.setItem('preview_persons', JSON.stringify(fallback.persons));
-            await AsyncStorage.setItem('preview_links', JSON.stringify(fallback.links));
-            const { persons: np, links: nl } = normalizeTreeData(fallback.persons, fallback.links);
-            setPersons(np);
-            setLinks(nl);
+            // Store persons and links in AsyncStorage for child pages to access
+            const persons = response.data.persons || [];
+            const links = response.data.links || [];
+            await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+            await AsyncStorage.setItem('preview_links', JSON.stringify(links));
+            // Utiliser directement les données de la réponse (famille exemple)
+            setPersons(persons);
+            setLinks(links);
             setPreviewToken(token);
+            console.log('Demo session created with', persons.length, 'persons - stored in AsyncStorage');
             setLoading(false);
             setRefreshing(false);
             return;
           }
         }
-        
-        token = response!.data.session_token;
         if (token) {
-          await AsyncStorage.setItem('preview_token', token);
-          const demoPersons = response!.data.persons || [];
-          const demoLinks = response!.data.links || [];
-          await AsyncStorage.setItem('preview_persons', JSON.stringify(demoPersons));
-          await AsyncStorage.setItem('preview_links', JSON.stringify(demoLinks));
-          const { persons: np, links: nl } = normalizeTreeData(demoPersons, demoLinks);
-          setPersons(np);
-          setLinks(nl);
           setPreviewToken(token);
-          console.log('[PREVIEW] Demo session created with', demoPersons.length, 'generic demo persons');
+          
+          // In preview mode, ALWAYS prioritize AsyncStorage (local data) over API
+          // This ensures user-added persons are not lost
+          const storedPersons = await AsyncStorage.getItem('preview_persons');
+          const storedLinks = await AsyncStorage.getItem('preview_links');
+          
+          if (storedPersons) {
+            const parsedPersons = JSON.parse(storedPersons);
+            const parsedLinks = storedLinks ? JSON.parse(storedLinks) : [];
+            console.log('Loading from AsyncStorage - persons:', parsedPersons.length);
+            setPersons(parsedPersons);
+            setLinks(parsedLinks);
+          } else {
+            // No local data - try API first, then create new session if needed
+            try {
+              const sessionData = await previewAPI.getSession(token);
+              const persons = sessionData.data.persons || [];
+              const links = sessionData.data.links || [];
+              
+              if (persons.length > 0) {
+                await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+                await AsyncStorage.setItem('preview_links', JSON.stringify(links));
+                setPersons(persons);
+                setLinks(links);
+              } else {
+                // API returned empty and no local data - create new demo session
+                console.log('No data found, creating new demo session...');
+                const response = await previewAPI.createDemoSession();
+                token = response.data.session_token;
+                if (token) {
+                  await AsyncStorage.setItem('preview_token', token);
+                  const newPersons = response.data.persons || [];
+                  const newLinks = response.data.links || [];
+                  await AsyncStorage.setItem('preview_persons', JSON.stringify(newPersons));
+                  await AsyncStorage.setItem('preview_links', JSON.stringify(newLinks));
+                  setPreviewToken(token);
+                  setPersons(newPersons);
+                  setLinks(newLinks);
+                }
+              }
+            } catch (e: any) {
+              if (e.response?.status === 404 || e.response?.status === 410) {
+                // Session expirée - créer une nouvelle session DEMO
+                console.log('Session expired, creating new demo session...');
+                const response = await previewAPI.createDemoSession();
+                token = response.data.session_token;
+                if (token) {
+                  await AsyncStorage.setItem('preview_token', token);
+                  const persons = response.data.persons || [];
+                  const links = response.data.links || [];
+                  await AsyncStorage.setItem('preview_persons', JSON.stringify(persons));
+                  await AsyncStorage.setItem('preview_links', JSON.stringify(links));
+                  setPreviewToken(token);
+                  setPersons(persons);
+                  setLinks(links);
+                }
+              }
+            }
+          }
         }
-        
-        setLoading(false);
-        setRefreshing(false);
-        return;
       } else if (user) {
         log('[LOAD] Fetching fresh data from server...');
         const response = await treeAPI.getTree();
         const freshPersons = response.data.persons || [];
         const freshLinks = response.data.links || [];
         
-        // Update state with fresh data - normalisées pour compatibilité Android/API
-        const { persons: np, links: nl } = normalizeTreeData(freshPersons, freshLinks);
-        setPersons(np);
-        setLinks(nl);
+        // Update state with fresh data
+        setPersons(freshPersons);
+        setLinks(freshLinks);
         setIsFromCache(false);
         
         // Save to cache for next time
-        await saveToCache({ persons: np, links: nl });
+        await saveToCache({ persons: freshPersons, links: freshLinks });
         log('[LOAD] Fresh data loaded and cached');
       }
     } catch (error) {
       console.error('Error loading tree:', error);
       // If we have cached data, keep showing it
-      const cachedData = await loadFromCache();
-      if (cachedData && cachedData.persons.length > 0) {
-        const { persons: np, links: nl } = normalizeTreeData(cachedData.persons, cachedData.links);
-        setPersons(np);
-        setLinks(nl);
-        setIsFromCache(true);
+      if (persons.length === 0) {
+        const cachedData = await loadFromCache();
+        if (cachedData) {
+          setPersons(cachedData.persons);
+          setLinks(cachedData.links);
+          setIsFromCache(true);
+        }
       }
     } finally {
       setLoading(false);
@@ -617,42 +587,20 @@ export default function TreeScreen() {
     setIsFromCache(false);
     try {
       if (isPreviewMode) {
-        // SECURITY: On refresh in preview mode, create fresh demo session
-        console.log('[SECURITY] Refresh: Creating fresh demo session...');
-        await AsyncStorage.removeItem('preview_token');
-        await AsyncStorage.removeItem('preview_persons');
-        await AsyncStorage.removeItem('preview_links');
-        
-        let response;
-        let token: string | null = null;
-        
-        try {
-          response = await previewAPI.createDemoSession();
-        } catch (firstErr) {
-          console.warn('Demo API refresh failed, retrying...', firstErr);
-          await new Promise((r) => setTimeout(r, 3000));
-          response = await previewAPI.createDemoSession();
-        }
-        
-        token = response.data.session_token;
+        let token: string | null = await AsyncStorage.getItem('preview_token');
         if (token) {
-          await AsyncStorage.setItem('preview_token', token);
-          const demoPersons = response.data.persons || [];
-          const demoLinks = response.data.links || [];
-          await AsyncStorage.setItem('preview_persons', JSON.stringify(demoPersons));
-          await AsyncStorage.setItem('preview_links', JSON.stringify(demoLinks));
-          const { persons: np, links: nl } = normalizeTreeData(demoPersons, demoLinks);
-          setPersons(np);
-          setLinks(nl);
-          setPreviewToken(token);
+          const sessionData = await previewAPI.getSession(token);
+          setPersons(sessionData.data.persons || []);
+          setLinks(sessionData.data.links || []);
         }
       } else if (user) {
         const response = await treeAPI.getTree();
-        const { persons: np, links: nl } = normalizeTreeData(response.data.persons || [], response.data.links || []);
-        setPersons(np);
-        setLinks(nl);
+        const freshPersons = response.data.persons || [];
+        const freshLinks = response.data.links || [];
+        setPersons(freshPersons);
+        setLinks(freshLinks);
         // Update cache
-        await saveToCache({ persons: np, links: nl });
+        await saveToCache({ persons: freshPersons, links: freshLinks });
       }
     } catch (error) {
       console.error('Error refreshing tree:', error);
@@ -773,31 +721,15 @@ export default function TreeScreen() {
 
     log('========== TREE LAYOUT v17 - REINGOLD-TILFORD ==========');
     
-    // Normaliser les personnes (API peut retourner id ou _id)
-    const normalizedPersons = persons.map(p => ({
-      ...p,
-      id: String((p as any).id ?? (p as any)._id ?? ''),
-    })).filter(p => p.id);
-    
-    // Normaliser les liens (API peut retourner person_id_1/2 ou person_1/2)
-    const normalizeLink = (link: any): { person_id_1: string; person_id_2: string; link_type: string } | null => {
-      const p1 = link.person_id_1 ?? link.person_1 ?? link.personId1;
-      const p2 = link.person_id_2 ?? link.person_2 ?? link.personId2;
-      const type = link.link_type ?? link.type;
-      if (p1 && p2 && type) return { person_id_1: String(p1), person_id_2: String(p2), link_type: String(type) };
-      return null;
-    };
-    const normalizedLinks = links.map(normalizeLink).filter(Boolean) as { person_id_1: string; person_id_2: string; link_type: string }[];
-    
     // ==================== STEP 1: BUILD RELATIONSHIP MAPS ====================
     const childToParents = new Map<string, Set<string>>();
     const parentToChildren = new Map<string, Set<string>>();
     const spouseMap = new Map<string, Set<string>>();
     const personById = new Map<string, Person>();
     
-    normalizedPersons.forEach(p => personById.set(p.id, p));
+    persons.forEach(p => personById.set(p.id, p));
     
-    normalizedLinks.forEach(link => {
+    links.forEach(link => {
       if (link.link_type === 'parent') {
         const parentId = link.person_id_1;
         const childId = link.person_id_2;
@@ -821,7 +753,7 @@ export default function TreeScreen() {
     
     // Find all roots (people with no parents)
     const roots: string[] = [];
-    normalizedPersons.forEach(p => {
+    persons.forEach(p => {
       if (!childToParents.has(p.id) || childToParents.get(p.id)!.size === 0) {
         roots.push(p.id);
       }
@@ -855,7 +787,7 @@ export default function TreeScreen() {
     }
     
     // Handle orphaned nodes (not connected to any root)
-    normalizedPersons.forEach(p => {
+    persons.forEach(p => {
       if (!personLevels.has(p.id)) {
         personLevels.set(p.id, 0);
       }
@@ -887,7 +819,7 @@ export default function TreeScreen() {
       
       // Recalculate children levels after spouse sync
       if (changed) {
-        normalizedPersons.forEach(p => {
+        persons.forEach(p => {
           const parents = childToParents.get(p.id);
           if (parents && parents.size > 0) {
             let maxParentLevel = -1;
@@ -910,7 +842,7 @@ export default function TreeScreen() {
 
     // ==================== STEP 4: GROUP BY LEVEL ====================
     const levelGroups = new Map<number, Person[]>();
-    normalizedPersons.forEach(p => {
+    persons.forEach(p => {
       const level = personLevels.get(p.id) || 0;
       if (!levelGroups.has(level)) levelGroups.set(level, []);
       levelGroups.get(level)!.push(p);
@@ -1293,7 +1225,7 @@ export default function TreeScreen() {
     };
     
     // Calculate widths for all root persons
-    normalizedPersons.forEach(p => {
+    persons.forEach(p => {
       const parents = childToParents.get(p.id);
       if (!parents || parents.size === 0) {
         calculateSubtreeWidth(p.id);
@@ -1301,7 +1233,7 @@ export default function TreeScreen() {
     });
     
     // Also calculate for any remaining persons
-    normalizedPersons.forEach(p => calculateSubtreeWidth(p.id));
+    persons.forEach(p => calculateSubtreeWidth(p.id));
     
     log('Subtree widths calculated');
     
@@ -1389,7 +1321,7 @@ export default function TreeScreen() {
     
     // Find and position all root persons (those without parents)
     const rootPersons: Person[] = [];
-    normalizedPersons.forEach(person => {
+    persons.forEach(person => {
       const parents = childToParents.get(person.id);
       if (!parents || parents.size === 0) {
         rootPersons.push(person);
@@ -1441,7 +1373,7 @@ export default function TreeScreen() {
     });
     
     // Position any remaining unpositioned persons
-    normalizedPersons.forEach(person => {
+    persons.forEach(person => {
       if (!positionedPersons.has(person.id)) {
         const level = personLevels.get(person.id) || 0;
         const y = level * LEVEL_HEIGHT + 80;
@@ -1452,7 +1384,7 @@ export default function TreeScreen() {
     });
 
     // Build final nodes array
-    normalizedPersons.forEach(person => {
+    persons.forEach(person => {
       const pos = personPositions.get(person.id);
       if (pos) {
         nodes.push({ person, x: pos.x, y: pos.y });
@@ -1489,7 +1421,7 @@ export default function TreeScreen() {
     // Parent-child connections
     const drawnParentChildLines = new Set<string>();
     
-    normalizedLinks.forEach(link => {
+    links.forEach(link => {
       if (link.link_type === 'parent') {
         const parentId = link.person_id_1;
         const childId = link.person_id_2;
@@ -1534,10 +1466,10 @@ export default function TreeScreen() {
 
     // Create debug info
     const debugInfo = {
-      totalPersons: normalizedPersons.length,
-      totalLinks: normalizedLinks.length,
-      parentLinks: normalizedLinks.filter(l => l.link_type === 'parent').length,
-      spouseLinks: normalizedLinks.filter(l => l.link_type === 'spouse').length,
+      totalPersons: persons.length,
+      totalLinks: links.length,
+      parentLinks: links.filter(l => l.link_type === 'parent').length,
+      spouseLinks: links.filter(l => l.link_type === 'spouse').length,
       personLevelsMap: [...personLevels.entries()].map(([id, level]) => {
         const p = personById.get(id);
         return { name: p ? `${p.first_name} ${p.last_name}` : 'UNKNOWN', level };
@@ -1576,15 +1508,14 @@ export default function TreeScreen() {
       to: { x: c.to.x + offsetX, y: c.to.y + offsetY }
     }));
     
-    // Recalculer les dimensions du SVG après normalisation (screenWidth réactif pour Android)
-    const baseWidth = screenWidth > 0 ? screenWidth : DEFAULT_SCREEN_WIDTH;
-    const width = Math.max(baseWidth, normalizedNodes.reduce((max, n) => Math.max(max, n.x + NODE_WIDTH + 60), 0));
+    // Recalculer les dimensions du SVG après normalisation
+    const width = Math.max(SCREEN_WIDTH, normalizedNodes.reduce((max, n) => Math.max(max, n.x + NODE_WIDTH + 60), 0));
     const height = Math.max(400, normalizedNodes.reduce((max, n) => Math.max(max, n.y + NODE_HEIGHT + 80), 0));
     
     log(`[SVG] Normalized: offset(${offsetX}, ${offsetY}), size: ${width}x${height}, nodes: ${normalizedNodes.length}`);
     
     return { nodes: normalizedNodes, connections: normalizedConnections, svgWidth: width, svgHeight: height };
-  }, [rawNodes, rawConnections, screenWidth]);
+  }, [rawNodes, rawConnections]);
   
   // State to show/hide debug panel
   const [showDebug, setShowDebug] = useState(false);
@@ -2084,25 +2015,14 @@ export default function TreeScreen() {
   // ZOOM & PAN - WEB SOLUTION avec react-zoom-pan-pinch
   // ============================================================================
   const transformRef = useRef<any>(null);
-  const nativeZoomRef = useRef<any>(null);
 
   const MIN_ZOOM = 0.1;
   const MAX_ZOOM = 5;
-
-  // Recharger les données au retour (mode aperçu - données locales AsyncStorage)
-  useFocusEffect(
-    useCallback(() => {
-      if (isPreviewMode) loadData();
-    }, [isPreviewMode])
-  );
 
   // Reset zoom
   const resetToCenter = useCallback(() => {
     if (Platform.OS === 'web' && transformRef.current) {
       transformRef.current.resetTransform();
-    } else if (nativeZoomRef.current) {
-      nativeZoomRef.current.zoomTo(1, true);
-      nativeZoomRef.current.moveTo(0, 0, true);
     }
   }, []);
 
@@ -2110,15 +2030,14 @@ export default function TreeScreen() {
   const fitToScreen = useCallback(() => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height - 250;
+    
     const scaleX = screenWidth / svgWidth;
     const scaleY = screenHeight / svgHeight;
     let optimalScale = Math.min(scaleX, scaleY) * 0.85;
     optimalScale = Math.max(MIN_ZOOM, Math.min(optimalScale, 1));
+    
     if (Platform.OS === 'web' && transformRef.current) {
       transformRef.current.setTransform(0, 0, optimalScale);
-    } else if (nativeZoomRef.current && svgWidth > 0 && svgHeight > 0) {
-      nativeZoomRef.current.zoomTo(optimalScale, true);
-      nativeZoomRef.current.moveTo(0, 0, true);
     }
   }, [svgWidth, svgHeight]);
 
@@ -2126,16 +2045,12 @@ export default function TreeScreen() {
   const zoomIn = useCallback(() => {
     if (Platform.OS === 'web' && transformRef.current) {
       transformRef.current.zoomIn(0.5);
-    } else if (nativeZoomRef.current) {
-      nativeZoomRef.current.zoomBy(0.3, true);
     }
   }, []);
 
   const zoomOut = useCallback(() => {
     if (Platform.OS === 'web' && transformRef.current) {
       transformRef.current.zoomOut(0.5);
-    } else if (nativeZoomRef.current) {
-      nativeZoomRef.current.zoomBy(-0.3, true);
     }
   }, []);
 
@@ -2354,41 +2269,20 @@ export default function TreeScreen() {
                   />
                 </TransformComponent>
               </TransformWrapper>
-            ) : ReactNativeZoomableView ? (
-              <ReactNativeZoomableView
-                ref={nativeZoomRef}
-                maxZoom={MAX_ZOOM}
-                minZoom={MIN_ZOOM}
-                initialZoom={0.8}
-                bindToBorders={false}
-                contentWidth={svgWidth}
-                contentHeight={svgHeight}
-                style={{ flex: 1, padding: 8, minHeight: 400 }}
-              >
-                <TreeSvgContent 
-                  svgWidth={svgWidth}
-                  svgHeight={svgHeight}
-                  connections={connections}
-                  nodes={nodes}
-                  getGenderColor={getGenderColor}
-                  handlePersonPress={handlePersonPress}
-                />
-              </ReactNativeZoomableView>
             ) : (
               <ScrollView 
-                style={{ flex: 1, minHeight: 400 }}
+                style={{ flex: 1 }}
                 contentContainerStyle={{ minWidth: svgWidth, minHeight: svgHeight }}
                 horizontal={true}
                 showsHorizontalScrollIndicator={true}
                 showsVerticalScrollIndicator={true}
-                nestedScrollEnabled={true}
-                {...(Platform.OS === 'ios' ? { maximumZoomScale: MAX_ZOOM, minimumZoomScale: MIN_ZOOM, bouncesZoom: true } : {})}
+                maximumZoomScale={MAX_ZOOM}
+                minimumZoomScale={MIN_ZOOM}
+                bouncesZoom={true}
               >
-                <ScrollView 
-                  nestedScrollEnabled={true} 
+                <ScrollView
+                  nestedScrollEnabled={true}
                   showsVerticalScrollIndicator={true}
-                  style={{ minHeight: svgHeight }}
-                  contentContainerStyle={{ minHeight: svgHeight }}
                 >
                   <TreeSvgContent 
                     svgWidth={svgWidth}

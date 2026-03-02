@@ -31,50 +31,34 @@ const clearTreeCache = async () => {
   }
 };
 
-// Helper to get preview data - recrée une session si expirée
+// Helper to get preview data from AsyncStorage (primary) or API (fallback)
 const getPreviewData = async (): Promise<{ persons: Person[], links: FamilyLink[], token: string | null }> => {
   try {
-    let token = await AsyncStorage.getItem(PREVIEW_TOKEN_KEY);
+    const token = await AsyncStorage.getItem(PREVIEW_TOKEN_KEY);
     const storedPersons = await AsyncStorage.getItem(PREVIEW_PERSONS_KEY);
     const storedLinks = await AsyncStorage.getItem(PREVIEW_LINKS_KEY);
     
     if (storedPersons) {
-      const persons = JSON.parse(storedPersons);
-      if (Array.isArray(persons) && persons.length > 0) {
-        return {
-          persons,
-          links: storedLinks ? JSON.parse(storedLinks) : [],
-          token
-        };
-      }
+      console.log('[PersonDetail] Using AsyncStorage data');
+      return {
+        persons: JSON.parse(storedPersons),
+        links: storedLinks ? JSON.parse(storedLinks) : [],
+        token
+      };
     }
     
+    // Fallback to API if AsyncStorage is empty
     if (token) {
-      try {
-        const response = await previewAPI.getSession(token);
-        const persons = response.data.persons || [];
-        const links = response.data.links || [];
-        if (persons.length > 0) {
-          await AsyncStorage.setItem(PREVIEW_PERSONS_KEY, JSON.stringify(persons));
-          await AsyncStorage.setItem(PREVIEW_LINKS_KEY, JSON.stringify(links));
-          return { persons, links, token };
-        }
-      } catch {
-        console.log('[PersonDetail] Session expired, creating new one');
-      }
+      console.log('[PersonDetail] Trying API fallback...');
+      const response = await previewAPI.getSession(token);
+      return {
+        persons: response.data.persons || [],
+        links: response.data.links || [],
+        token
+      };
     }
     
-    // Créer une nouvelle session
-    const response = await previewAPI.createDemoSession();
-    token = response.data.session_token;
-    const persons = response.data.persons || [];
-    const links = response.data.links || [];
-    if (token) {
-      await AsyncStorage.setItem(PREVIEW_TOKEN_KEY, token);
-      await AsyncStorage.setItem(PREVIEW_PERSONS_KEY, JSON.stringify(persons));
-      await AsyncStorage.setItem(PREVIEW_LINKS_KEY, JSON.stringify(links));
-    }
-    return { persons, links, token };
+    return { persons: [], links: [], token: null };
   } catch (error) {
     console.error('[PersonDetail] Error getting preview data:', error);
     return { persons: [], links: [], token: null };
@@ -147,9 +131,7 @@ export default function PersonDetailScreen() {
         }
         
         if (persons.length > 0) {
-          const foundPerson = persons.find((p: Person) => 
-            String((p as any).id ?? (p as any)._id) === String(personId)
-          );
+          const foundPerson = persons.find((p: Person) => p.id === personId);
           
           if (foundPerson) {
             console.log('[PersonDetail] Found person:', foundPerson.first_name, foundPerson.last_name);
@@ -168,8 +150,8 @@ export default function PersonDetailScreen() {
             Alert.alert('Erreur', 'Personne non trouvée. Retournez à l\'arbre et réessayez.');
           }
         } else {
-          // Données vides après getPreviewData - la session a été recréée mais la personne n'existe pas
-          Alert.alert('Erreur', 'Personne non trouvée. Retournez à l\'arbre pour continuer.');
+          console.error('[PersonDetail] No preview data available!');
+          Alert.alert('Erreur', 'Session de prévisualisation expirée. Retournez à l\'arbre et réessayez.');
         }
       } else {
         // Authenticated user mode
