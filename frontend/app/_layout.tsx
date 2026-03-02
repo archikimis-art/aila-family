@@ -5,6 +5,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { AdsProvider } from '@/context/AdsContext';
 import { ConversionProvider } from '@/context/ConversionContext';
 import { SoundProvider } from '@/context/SoundContext';
+import { PreviewProvider } from '@/context/PreviewContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 import { I18nextProvider } from 'react-i18next';
@@ -475,6 +476,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <SoundProvider>
         <AuthProvider>
+          <PreviewProvider>
           <AdsProvider>
             <ConversionProvider>
               <StatusBar style="light" />
@@ -512,6 +514,7 @@ export default function RootLayout() {
             </Stack>
             </ConversionProvider>
           </AdsProvider>
+          </PreviewProvider>
         </AuthProvider>
         </SoundProvider>
       </SafeAreaProvider>

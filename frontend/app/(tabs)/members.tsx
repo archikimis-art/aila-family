@@ -1,3 +1,4 @@
+// members.tsx - SECURITY REWRITE using PreviewContext
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
@@ -11,16 +12,13 @@ import {
   TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
-import { personsAPI, previewAPI } from '@/services/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { usePreview } from '@/context/PreviewContext';
+import { personsAPI } from '@/services/api';
 import AdBanner from '@/components/AdBanner';
 import { useTranslation } from 'react-i18next';
-
-// SECURITY: Global preview mode flag key (must match _layout.tsx)
-const PREVIEW_MODE_ACTIVE_KEY = 'preview_mode_active';
 
 interface Person {
   id: string;
@@ -34,76 +32,50 @@ interface Person {
 
 export default function MembersScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams();
   const { user } = useAuth();
   const { t } = useTranslation();
   
-  const [persons, setPersons] = useState<Person[]>([]);
+  // SECURITY: Use PreviewContext as single source of truth
+  const { isPreviewMode, isLoading: previewLoading, previewPersons, previewToken } = usePreview();
+
+  const [userPersons, setUserPersons] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [previewToken, setPreviewToken] = useState<string | null>(null);
-  const [isPreviewMode, setIsPreviewMode] = useState(false);
 
-  // SECURITY: Check preview mode from BOTH URL param AND global flag
-  useEffect(() => {
-    const checkPreviewMode = async () => {
-      const urlPreview = params.preview === 'true';
-      const globalPreview = await AsyncStorage.getItem(PREVIEW_MODE_ACTIVE_KEY);
-      const isPreview = urlPreview || globalPreview === 'true';
-      console.log('[SECURITY] Members: URL preview:', urlPreview, 'Global flag:', globalPreview, '→ isPreviewMode:', isPreview);
-      setIsPreviewMode(isPreview);
-    };
-    checkPreviewMode();
-  }, [params.preview]);
+  // SECURITY: The displayed persons depend ONLY on isPreviewMode
+  const persons = isPreviewMode ? previewPersons : userPersons;
 
+  // Load user data only when NOT in preview mode
   useEffect(() => {
-    if (isPreviewMode !== undefined) {
-      loadData();
+    console.log('[Members] Mode changed - isPreviewMode:', isPreviewMode, 'previewLoading:', previewLoading);
+    
+    if (previewLoading) {
+      // Wait for preview context to determine mode
+      return;
     }
-  }, [isPreviewMode]);
+    
+    if (isPreviewMode) {
+      // In preview mode - use previewPersons from context
+      console.log('[Members] PREVIEW MODE - using', previewPersons.length, 'demo persons');
+      setLoading(false);
+    } else if (user) {
+      // User mode - load their data
+      console.log('[Members] USER MODE - loading user data');
+      loadUserData();
+    } else {
+      setLoading(false);
+    }
+  }, [isPreviewMode, previewLoading, user]);
 
-  const loadData = async () => {
+  const loadUserData = async () => {
     try {
-      // SECURITY: Reset state immediately when entering preview mode
-      if (isPreviewMode) {
-        console.log('[SECURITY] Members: Preview mode - resetting state');
-        setPersons([]);
-      }
-      
-      if (isPreviewMode) {
-        // ============================================================================
-        // SECURITY FIX: Read demo data from AsyncStorage (set by tree.tsx)
-        // This ensures we show only demo data, never user data
-        // ============================================================================
-        const storedPersons = await AsyncStorage.getItem('preview_persons');
-        const token = await AsyncStorage.getItem('preview_token');
-        
-        if (storedPersons) {
-          // Use cached demo data from tree.tsx
-          setPreviewToken(token);
-          setPersons(JSON.parse(storedPersons));
-          console.log('[SECURITY] Members: Loaded demo persons from AsyncStorage');
-        } else if (token) {
-          // Fallback: try to get from API
-          setPreviewToken(token);
-          try {
-            const sessionData = await previewAPI.getSession(token);
-            setPersons(sessionData.data.persons || []);
-          } catch {
-            // On error, show empty state rather than potentially leaked data
-            setPersons([]);
-          }
-        } else {
-          // No preview data at all - show empty state
-          setPersons([]);
-        }
-      } else {
-        const response = await personsAPI.getAll();
-        setPersons(response.data || []);
-      }
+      setLoading(true);
+      const response = await personsAPI.getAll();
+      setUserPersons(response.data || []);
+      console.log('[Members] Loaded', response.data?.length || 0, 'user persons');
     } catch (error) {
-      console.error('Error loading members:', error);
+      console.error('[Members] Error loading user data:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -112,8 +84,12 @@ export default function MembersScreen() {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    loadData();
-  }, []);
+    if (!isPreviewMode && user) {
+      loadUserData();
+    } else {
+      setRefreshing(false);
+    }
+  }, [isPreviewMode, user]);
 
   const handleAddPerson = () => {
     if (isPreviewMode && persons.length >= 10) {
@@ -180,11 +156,15 @@ export default function MembersScreen() {
     );
   };
 
-  if (loading) {
+  // Show loading while preview context is determining mode
+  if (previewLoading || loading) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#D4AF37" />
+          <Text style={styles.loadingText}>
+            {isPreviewMode ? 'Chargement de la démo...' : 'Chargement...'}
+          </Text>
         </View>
       </SafeAreaView>
     );
@@ -192,6 +172,14 @@ export default function MembersScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Preview mode indicator */}
+      {isPreviewMode && (
+        <View style={styles.previewBanner}>
+          <Ionicons name="eye-outline" size={14} color="#D4AF37" />
+          <Text style={styles.previewText}>MODE APERÇU - Famille de démonstration</Text>
+        </View>
+      )}
+      
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('membersScreen.title')}</Text>
@@ -263,6 +251,26 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadingText: {
+    color: '#D4AF37',
+    marginTop: 12,
+    fontSize: 14,
+  },
+  previewBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(212, 175, 55, 0.15)',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(212, 175, 55, 0.3)',
+  },
+  previewText: {
+    color: '#D4AF37',
+    fontSize: 12,
+    fontWeight: '600',
   },
   header: {
     paddingHorizontal: 20,
