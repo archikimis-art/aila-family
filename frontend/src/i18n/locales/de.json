@@ -919,7 +919,8 @@
       "loginRequired": "Bitte melden Sie sich an, um ein Abonnement abzuschließen.",
       "loginToPurchase": "Bitte melden Sie sich an, um einen Kauf zu tätigen.",
       "paymentError": "Fehler beim Erstellen der Zahlung.",
-      "purchaseError": "Fehler beim Kauf."
+      "purchaseError": "Fehler beim Kauf.",
+      "networkError": "Keine Antwort vom Server. Prüfen Sie Ihre Verbindung oder ob das Backend erreichbar ist."
     },
     "faq": {
       "title": "Häufig gestellte Fragen",

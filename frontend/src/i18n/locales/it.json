@@ -919,7 +919,8 @@
       "loginRequired": "Accedi per abbonarti.",
       "loginToPurchase": "Accedi per effettuare un acquisto.",
       "paymentError": "Errore durante la creazione del pagamento.",
-      "purchaseError": "Errore durante l'acquisto."
+      "purchaseError": "Errore durante l'acquisto.",
+      "networkError": "Nessuna risposta dal server. Verificare la connessione o che il backend sia raggiungibile."
     },
     "faq": {
       "title": "Domande Frequenti",

@@ -919,7 +919,8 @@
       "loginRequired": "Por favor, faça login para assinar.",
       "loginToPurchase": "Por favor, faça login para fazer uma compra.",
       "paymentError": "Erro ao criar pagamento.",
-      "purchaseError": "Erro durante a compra."
+      "purchaseError": "Erro durante a compra.",
+      "networkError": "Sem resposta do servidor. Verifique a conexão ou se o backend está acessível."
     },
     "faq": {
       "title": "Perguntas Frequentes",

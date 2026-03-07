@@ -449,7 +449,8 @@
       "loginRequired": "Veuillez vous connecter pour souscrire à un abonnement.",
       "loginToPurchase": "Veuillez vous connecter pour effectuer un achat.",
       "paymentError": "Erreur lors de la création du paiement.",
-      "purchaseError": "Erreur lors de l'achat."
+      "purchaseError": "Erreur lors de l'achat.",
+      "networkError": "Pas de réponse du serveur. Vérifiez votre connexion ou que le backend est accessible."
     },
     "faq": {
       "title": "Questions fréquentes",

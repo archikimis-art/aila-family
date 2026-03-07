@@ -131,6 +131,24 @@ export default function PricingScreen() {
     }
   };
 
+  /** Extrait un message d'erreur lisible depuis la réponse backend ou le code HTTP */
+  const getPaymentErrorMessage = (error: any, fallbackKey: string): string => {
+    if (!error) return t(fallbackKey);
+    if (error.response) {
+      const status = error.response.status;
+      const data = error.response.data;
+      if (status === 0) return t('pricing.alerts.networkError');
+      if (data && typeof data === 'object') {
+        const d = data.detail;
+        if (typeof d === 'string') return d;
+        if (Array.isArray(d) && d.length) return d.map((x: any) => x?.msg || JSON.stringify(x)).join(' ');
+      }
+      if (data && typeof data === 'string') return data.length > 300 ? data.slice(0, 300) + '…' : data;
+      return `Erreur ${status}${error.response.statusText ? `: ${error.response.statusText}` : ''}`;
+    }
+    return t('pricing.alerts.networkError');
+  };
+
   const handleSelectPlan = async (planId: string) => {
     if (!user) {
       if (Platform.OS === 'web') {
@@ -159,14 +177,9 @@ export default function PricingScreen() {
       } else {
         console.error('[Pricing] No response (réseau, CORS ou backend injoignable)');
       }
-      const detail = error.response?.data?.detail;
-      const message = typeof detail === 'string'
-        ? detail
-        : Array.isArray(detail)
-          ? detail.map((d: any) => d?.msg || JSON.stringify(d)).join('\n')
-          : null;
+      const message = getPaymentErrorMessage(error, 'pricing.alerts.paymentError');
       if (Platform.OS === 'web') {
-        window.alert(message || t('pricing.alerts.paymentError'));
+        window.alert(message);
       }
     } finally {
       setLoading(null);
@@ -196,14 +209,12 @@ export default function PricingScreen() {
       }
     } catch (error: any) {
       console.error('Purchase error:', error);
-      const detail = error.response?.data?.detail;
-      const message = typeof detail === 'string'
-        ? detail
-        : Array.isArray(detail)
-          ? detail.map((d: any) => d?.msg || JSON.stringify(d)).join('\n')
-          : t('pricing.alerts.purchaseError');
+      if (error.response) {
+        console.error('[Pricing] Purchase backend response:', error.response.status, error.response.data);
+      }
+      const message = getPaymentErrorMessage(error, 'pricing.alerts.purchaseError');
       if (Platform.OS === 'web') {
-        window.alert(message || t('pricing.alerts.purchaseError'));
+        window.alert(message);
       }
     } finally {
       setLoading(null);

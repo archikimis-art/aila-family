@@ -1030,7 +1030,8 @@
       "loginRequired": "Please log in to subscribe.",
       "loginToPurchase": "Please log in to make a purchase.",
       "paymentError": "Error creating payment.",
-      "purchaseError": "Error during purchase."
+      "purchaseError": "Error during purchase.",
+      "networkError": "No response from server. Check your connection or that the backend is reachable."
     },
     "faq": {
       "title": "Frequently Asked Questions",
