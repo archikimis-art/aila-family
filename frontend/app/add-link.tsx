@@ -12,8 +12,14 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { personsAPI, linksAPI, previewAPI } from '@/services/api';
 import { useTranslation } from 'react-i18next';
+import { usePreview } from '@/context/PreviewContext';
+
+const PREVIEW_TOKEN_KEY = 'preview_token';
+const PREVIEW_PERSONS_KEY = 'preview_persons';
+const PREVIEW_LINKS_KEY = 'preview_links';
 
 interface Person {
   id: string;
@@ -26,8 +32,10 @@ export default function AddLinkScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const { t } = useTranslation();
+  const { previewToken: contextToken, setPreviewData } = usePreview();
   const isPreviewMode = params.preview === 'true';
-  const previewToken = params.token as string;
+  const tokenFromParams = (params.token as string) || '';
+  const previewToken = tokenFromParams || contextToken || '';
   const sharedOwnerId = params.sharedOwnerId as string | undefined;
 
   // Dynamic link types based on current language
@@ -49,14 +57,23 @@ export default function AddLinkScreen() {
 
   useEffect(() => {
     loadPersons();
-  }, []);
+  }, [isPreviewMode, previewToken, sharedOwnerId]);
 
   const loadPersons = async () => {
     try {
-      if (isPreviewMode && previewToken) {
-        // Mode aperçu
-        const response = await previewAPI.getSession(previewToken);
-        setPersons(response.data.persons || []);
+      if (isPreviewMode) {
+        if (previewToken) {
+          try {
+            const response = await previewAPI.getSession(previewToken);
+            setPersons(response.data.persons || []);
+          } catch (e) {
+            const stored = await AsyncStorage.getItem(PREVIEW_PERSONS_KEY);
+            if (stored) setPersons(JSON.parse(stored));
+          }
+        } else {
+          const stored = await AsyncStorage.getItem(PREVIEW_PERSONS_KEY);
+          if (stored) setPersons(JSON.parse(stored));
+        }
       } else if (sharedOwnerId) {
         // Arbre partagé - charger les personnes de l'arbre du propriétaire
         const { collaboratorsAPI } = await import('@/services/api');
@@ -118,8 +135,13 @@ export default function AddLinkScreen() {
       }
 
       if (isPreviewMode && previewToken) {
-        // Mode aperçu
         await previewAPI.addLink(previewToken, linkData);
+        try {
+          const res = await previewAPI.getSession(previewToken);
+          const persons = res.data.persons || [];
+          const links = res.data.links || [];
+          await setPreviewData(persons, links, previewToken);
+        } catch (_) {}
       } else if (sharedOwnerId) {
         // Arbre partagé - utiliser l'endpoint spécifique
         const { collaboratorsAPI } = await import('@/services/api');

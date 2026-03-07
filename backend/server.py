@@ -41,7 +41,8 @@ app.add_middleware(
     allow_credentials=True,
     allow_origins=[
         "https://www.aila.family",
-        "https://aila.family", 
+        "https://aila.family",
+        "https://aila-family.vercel.app",
         "http://localhost:3000",
         "http://localhost:8081",
         "http://localhost:19006",
