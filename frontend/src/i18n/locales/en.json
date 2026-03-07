@@ -151,6 +151,11 @@
       "subtitle": "Collaboration requires an account",
       "button": "Log in"
     },
+    "previewOnly": {
+      "title": "Preview mode",
+      "subtitle": "Collaborators and shared trees are not shown in the demo. Create an account to manage your links and share your tree.",
+      "button": "Create an account"
+    },
     "modal": {
       "title": "Invite a collaborator",
       "emailLabel": "Email address",

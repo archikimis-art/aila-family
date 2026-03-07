@@ -13,9 +13,10 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
+import { usePreview } from '@/context/PreviewContext';
 import { collaboratorsAPI, contributionsAPI } from '@/services/api';
 import { useTranslation } from 'react-i18next';
 import ShareTikTokButton from '@/components/ShareTikTokButton';
@@ -52,16 +53,19 @@ interface Contribution {
 
 export default function ShareScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
   const { user } = useAuth();
+  const { isPreviewMode: contextPreviewMode } = usePreview();
   const { t } = useTranslation();
-  
+  const isPreviewMode = params.preview === 'true' || contextPreviewMode;
+
   const [activeTab, setActiveTab] = useState<'collaborators' | 'shared' | 'contributions'>('collaborators');
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [sharedTrees, setSharedTrees] = useState<SharedTree[]>([]);
   const [pendingContributions, setPendingContributions] = useState<Contribution[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  
+
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'viewer' | 'editor'>('editor');
@@ -91,14 +95,23 @@ export default function ShareScreen() {
   };
 
   useEffect(() => {
+    if (isPreviewMode) {
+      setCollaborators([]);
+      setSharedTrees([]);
+      setPendingContributions([]);
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
     if (user) {
       loadData();
     } else {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, isPreviewMode]);
 
   const loadData = async () => {
+    if (isPreviewMode) return;
     try {
       const [collabRes, sharedRes, contribRes] = await Promise.all([
         collaboratorsAPI.getAll(),
@@ -266,6 +279,26 @@ export default function ShareScreen() {
       </View>
     </View>
   );
+
+  if (isPreviewMode) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.previewOnly}>
+          <Ionicons name="eye-outline" size={60} color="#D4AF37" />
+          <Text style={styles.previewOnlyTitle}>{t('shareScreen.previewOnly.title')}</Text>
+          <Text style={styles.previewOnlySubtitle}>
+            {t('shareScreen.previewOnly.subtitle')}
+          </Text>
+          <TouchableOpacity
+            style={styles.previewOnlyButton}
+            onPress={() => router.push('/(auth)/register')}
+          >
+            <Text style={styles.previewOnlyButtonText}>{t('shareScreen.previewOnly.button')}</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   if (!user) {
     return (
@@ -710,6 +743,39 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   loginButtonText: {
+    color: '#0A1628',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  previewOnly: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  previewOnlyTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#D4AF37',
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  previewOnlySubtitle: {
+    fontSize: 15,
+    color: '#B8C5D6',
+    marginTop: 12,
+    textAlign: 'center',
+    lineHeight: 22,
+    paddingHorizontal: 20,
+  },
+  previewOnlyButton: {
+    backgroundColor: '#D4AF37',
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 28,
+  },
+  previewOnlyButtonText: {
     color: '#0A1628',
     fontSize: 16,
     fontWeight: '600',

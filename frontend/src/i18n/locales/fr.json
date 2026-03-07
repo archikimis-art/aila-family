@@ -151,6 +151,11 @@
       "subtitle": "La collaboration nécessite un compte",
       "button": "Se connecter"
     },
+    "previewOnly": {
+      "title": "Mode Aperçu",
+      "subtitle": "Les collaborateurs et arbres partagés ne sont pas affichés en démonstration. Créez un compte pour gérer vos liens et partager votre arbre.",
+      "button": "Créer un compte"
+    },
     "modal": {
       "title": "Inviter un collaborateur",
       "emailLabel": "Adresse email",
