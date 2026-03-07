@@ -44,7 +44,9 @@ dump.rdb
 
 # System files
 .DS_Store
+desktop.ini
 *.pem
+aab-path.txt
 
 # Python
 __pycache__/
@@ -77,7 +79,8 @@ agenthub/agents/youtube/db
 .cache/
 
 # Mobile development
-android-sdk/ temp_aila/.git/objects/pack/pack-6b1f2d12a03ad575d25aad41c98befb0c8329909.pack
+android-sdk/
+**/expo-env.d.ts temp_aila/.git/objects/pack/pack-6b1f2d12a03ad575d25aad41c98befb0c8329909.pack
 temp_aila/.git/objects/pack/pack-6b1f2d12a03ad575d25aad41c98befb0c8329909.pack
 -e 
 # Environment files
