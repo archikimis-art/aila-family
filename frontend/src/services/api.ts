@@ -5,40 +5,33 @@ import { Platform } from 'react-native';
 // ============================================================
 // CONFIGURATION API - NE PAS MODIFIER CETTE SECTION
 // ============================================================
-// URL du backend de production Render - FIXE ET DÉFINITIVE
 const PRODUCTION_API_URL = 'https://aila-backend-hc1m.onrender.com';
 
 // Determine API URL based on environment
 const getApiUrl = () => {
-  // Sur le WEB : toujours utiliser la production SAUF localhost
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    
-    // Seul localhost utilise le backend local
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       const devUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
       console.log('[API] DEV MODE - localhost:', devUrl);
       return devUrl;
     }
-    
-    // TOUS les autres domaines (aila.family, vercel, preview, etc.) → PRODUCTION
-    console.log('[API] PRODUCTION MODE for domain:', hostname);
-    return PRODUCTION_API_URL;
+    // Production web : appels relatifs /api → Vercel proxy vers Render (pas de CORS, pas de timeout côté navigateur)
+    console.log('[API] PRODUCTION WEB - using relative /api (Vercel proxy) for domain:', hostname);
+    return '';
   }
-  
-  // Mobile natif : utiliser la production par défaut
   console.log('[API] MOBILE/NATIVE MODE → PRODUCTION');
   return PRODUCTION_API_URL;
 };
 
 const API_URL = getApiUrl();
-export const BACKEND_HEALTH_URL = `${API_URL}/api/health`;
+export const BACKEND_HEALTH_URL = API_URL === '' ? '/api/health' : `${API_URL}/api/health`;
 console.log('[API] ========================================');
 console.log('[API] FINAL API URL:', API_URL);
 console.log('[API] ========================================');
 
 const api = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: API_URL === '' ? '/api' : `${API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },

@@ -279,7 +279,15 @@ export default function PricingScreen() {
                   {t('pricing.backendStatus.error')}
                 </Text>
                 {Platform.OS === 'web' && (
-                  <TouchableOpacity onPress={() => Linking.openURL(BACKEND_HEALTH_URL)} style={styles.backendStatusLink}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      const url = (typeof window !== 'undefined' && BACKEND_HEALTH_URL.startsWith('/'))
+                        ? `${window.location.origin}${BACKEND_HEALTH_URL}`
+                        : BACKEND_HEALTH_URL;
+                      Linking.openURL(url);
+                    }}
+                    style={styles.backendStatusLink}
+                  >
                     <Text style={styles.backendStatusLinkText}>{t('pricing.backendStatus.openTest')}</Text>
                   </TouchableOpacity>
                 )}
