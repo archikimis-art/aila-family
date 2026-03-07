@@ -2088,8 +2088,8 @@ export default function TreeScreen() {
               <TouchableOpacity style={styles.helpButton} onPress={() => setShowGuide(true)}>
                 <Ionicons name="help-circle-outline" size={22} color="#D4AF37" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.debugButton} onPress={() => setShowDebug(!showDebug)}>
-                <Ionicons name="bug-outline" size={20} color={showDebug ? '#4CAF50' : '#6B7C93'} />
+              <TouchableOpacity style={styles.debugButton} onPress={() => setShowDebug(!showDebug)} accessibilityLabel={t('treeScreen.debug.title')}>
+                <Ionicons name="bug-outline" size={22} color={showDebug ? '#4CAF50' : '#B8C5D6'} />
               </TouchableOpacity>
             </View>
           </View>
@@ -2098,7 +2098,7 @@ export default function TreeScreen() {
           </TouchableOpacity>
         </View>
       ) : (
-        <View style={[styles.header, Platform.OS === 'web' && isPreviewMode && styles.headerRelative]}>
+        <View style={[styles.header, Platform.OS === 'web' && isPreviewMode && styles.headerRelative, windowWidth < 420 && { paddingHorizontal: 8 }]}>
           {Platform.OS === 'web' && isPreviewMode && (
             <View style={styles.headerTitleOverlay} pointerEvents="none">
               <View style={styles.headerLeft}>
@@ -2123,16 +2123,16 @@ export default function TreeScreen() {
             <View style={styles.headerTitleContainer}>
               {!(Platform.OS === 'web' && isPreviewMode) && (
                 <>
-                  <Text style={styles.headerTitle}>
+                  <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">
                     {sharedTreeOwner ? t('header.treeOf', { name: sharedTreeOwner.name }) : (isPreviewMode ? t('header.previewMode') : t('header.myTree'))}
                   </Text>
                   {user && !isPreviewMode && !sharedTreeOwner && (
-                    <Text style={styles.headerAccount}>
+                    <Text style={styles.headerAccount} numberOfLines={1} ellipsizeMode="tail">
                       {user.first_name} {user.last_name} • {user.email}
                     </Text>
                   )}
                   {isPreviewMode && !user && (
-                    <Text style={styles.headerAccount}>{t('header.previewDemoData')}</Text>
+                    <Text style={styles.headerAccount} numberOfLines={1} ellipsizeMode="tail">{t('header.previewDemoData')}</Text>
                   )}
                 </>
               )}
@@ -2169,11 +2169,12 @@ export default function TreeScreen() {
             >
               <Ionicons name="help-circle-outline" size={22} color="#D4AF37" />
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.debugButton} 
+            <TouchableOpacity
+              style={styles.debugButton}
               onPress={() => setShowDebug(!showDebug)}
+              accessibilityLabel={t('treeScreen.debug.title')}
             >
-              <Ionicons name="bug-outline" size={20} color={showDebug ? '#4CAF50' : '#6B7C93'} />
+              <Ionicons name="bug-outline" size={22} color={showDebug ? '#4CAF50' : '#B8C5D6'} />
             </TouchableOpacity>
             {isPreviewMode && (
               <TouchableOpacity style={styles.convertButton} onPress={handleConvertToAccount}>
@@ -2832,6 +2833,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#1A2F4A',
+    overflow: 'visible',
   },
   headerRelative: {
     position: 'relative',
@@ -2867,6 +2869,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    flexShrink: 0,
   },
   previewMobileSaveButton: {
     flexDirection: 'row',
@@ -2895,9 +2898,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    flex: 1,
+    minWidth: 0,
+    flexShrink: 1,
   },
   headerTitleContainer: {
     flexDirection: 'column',
+    flex: 1,
+    minWidth: 0,
   },
   headerTitle: {
     fontSize: 24,
@@ -2926,6 +2934,9 @@ const styles = StyleSheet.create({
   debugButton: {
     padding: 8,
     borderRadius: 8,
+    minWidth: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   debugPanel: {
     backgroundColor: '#1A2F4A',
@@ -3201,11 +3212,12 @@ const styles = StyleSheet.create({
   actionButtonTextCompact: {
     fontSize: 13,
   },
-  // Styles pour les boutons du header
+  // Styles pour les boutons du header (ne pas rétrécir sur mobile pour garder Guide + DEBUG visibles)
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    flexShrink: 0,
   },
   headerButtonsRight: {
     gap: 12,
