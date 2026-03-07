@@ -154,8 +154,19 @@ export default function PricingScreen() {
       }
     } catch (error: any) {
       console.error('Checkout error:', error);
+      if (error.response) {
+        console.error('[Pricing] Backend response:', error.response.status, error.response.data);
+      } else {
+        console.error('[Pricing] No response (réseau, CORS ou backend injoignable)');
+      }
+      const detail = error.response?.data?.detail;
+      const message = typeof detail === 'string'
+        ? detail
+        : Array.isArray(detail)
+          ? detail.map((d: any) => d?.msg || JSON.stringify(d)).join('\n')
+          : null;
       if (Platform.OS === 'web') {
-        window.alert(error.response?.data?.detail || t('pricing.alerts.paymentError'));
+        window.alert(message || t('pricing.alerts.paymentError'));
       }
     } finally {
       setLoading(null);
@@ -185,8 +196,14 @@ export default function PricingScreen() {
       }
     } catch (error: any) {
       console.error('Purchase error:', error);
+      const detail = error.response?.data?.detail;
+      const message = typeof detail === 'string'
+        ? detail
+        : Array.isArray(detail)
+          ? detail.map((d: any) => d?.msg || JSON.stringify(d)).join('\n')
+          : t('pricing.alerts.purchaseError');
       if (Platform.OS === 'web') {
-        window.alert(error.response?.data?.detail || t('pricing.alerts.purchaseError'));
+        window.alert(message || t('pricing.alerts.purchaseError'));
       }
     } finally {
       setLoading(null);
