@@ -43,8 +43,9 @@ const detectBrowserLanguage = (): string => {
   return 'fr'; // Français par défaut
 };
 
-// Charger la langue sauvegardée
+// Charger la langue sauvegardée (uniquement en navigateur, pas pendant l'export statique)
 export const loadSavedLanguage = async (): Promise<string> => {
+  if (typeof window === 'undefined') return detectBrowserLanguage();
   try {
     const savedLang = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
     if (savedLang && LANGUAGES.some(l => l.code === savedLang)) {
@@ -97,12 +98,14 @@ i18n
     },
   });
 
-// Initialisation asynchrone de la langue
-(async () => {
-  const savedLang = await loadSavedLanguage();
-  if (savedLang !== i18n.language) {
-    await i18n.changeLanguage(savedLang);
-  }
-})();
+// Initialisation asynchrone de la langue (uniquement en navigateur, évite "window is not defined" au build)
+if (typeof window !== 'undefined') {
+  (async () => {
+    const savedLang = await loadSavedLanguage();
+    if (savedLang !== i18n.language) {
+      await i18n.changeLanguage(savedLang);
+    }
+  })();
+}
 
 export default i18n;
