@@ -305,6 +305,11 @@
       "createAccount": "Créer un compte gratuit",
       "clearData": "Effacer données aperçu"
     },
+    "previewOnly": {
+      "title": "Mode Aperçu",
+      "subtitle": "Votre profil et vos données personnelles ne sont pas affichés en démonstration. Créez un compte pour accéder à votre profil.",
+      "button": "Créer un compte"
+    },
     "admin": {
       "title": "Administration",
       "manageUsers": "Gérer les utilisateurs"
@@ -456,6 +461,12 @@
       "paymentError": "Erreur lors de la création du paiement.",
       "purchaseError": "Erreur lors de l'achat.",
       "networkError": "Pas de réponse du serveur. Vérifiez votre connexion ou que le backend est accessible."
+    },
+    "backendStatus": {
+      "checking": "Vérification du serveur…",
+      "ok": "Connexion serveur : OK",
+      "error": "Serveur injoignable (timeout ou indisponible).",
+      "openTest": "Tester dans un nouvel onglet"
     },
     "faq": {
       "title": "Questions fréquentes",

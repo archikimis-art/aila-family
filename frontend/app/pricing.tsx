@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
-import api from '@/services/api';
+import api, { BACKEND_HEALTH_URL } from '@/services/api';
 import { useTranslation } from 'react-i18next';
 import AdBanner from '@/components/AdBanner';
 
@@ -23,6 +23,7 @@ export default function PricingScreen() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState<string | null>(null);
   const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
+  const [backendStatus, setBackendStatus] = useState<'idle' | 'checking' | 'ok' | 'error'>('idle');
 
   // Subscription Plans
   const PLANS = [
@@ -122,6 +123,15 @@ export default function PricingScreen() {
     }
   }, [user]);
 
+  useEffect(() => {
+    let cancelled = false;
+    setBackendStatus('checking');
+    api.get('/health', { timeout: 45000 })
+      .then(() => { if (!cancelled) setBackendStatus('ok'); })
+      .catch(() => { if (!cancelled) setBackendStatus('error'); });
+    return () => { cancelled = true; };
+  }, []);
+
   const loadSubscriptionStatus = async () => {
     try {
       const response = await api.get('/stripe/subscription-status');
@@ -160,7 +170,7 @@ export default function PricingScreen() {
 
     setLoading(planId);
     try {
-      await api.get('/health', { timeout: 25000 }).catch(() => {});
+      await api.get('/health', { timeout: 45000 }).catch(() => {});
       const origin = getOrigin();
       const response = await api.post(
         '/stripe/create-checkout-session',
@@ -169,7 +179,7 @@ export default function PricingScreen() {
           success_url: `${origin}/(tabs)/profile?payment=success`,
           cancel_url: `${origin}/pricing?payment=cancelled`,
         },
-        { timeout: 60000 }
+        { timeout: 90000 }
       );
 
       if (response.data.checkout_url) {
@@ -202,7 +212,7 @@ export default function PricingScreen() {
 
     setLoading(serviceId);
     try {
-      await api.get('/health', { timeout: 25000 }).catch(() => {});
+      await api.get('/health', { timeout: 45000 }).catch(() => {});
       const origin = getOrigin();
       const response = await api.post(
         '/stripe/create-checkout-session',
@@ -211,7 +221,7 @@ export default function PricingScreen() {
           success_url: `${origin}/(tabs)/profile?purchase=success&item=${serviceId}`,
           cancel_url: `${origin}/pricing?purchase=cancelled`,
         },
-        { timeout: 60000 }
+        { timeout: 90000 }
       );
 
       if (response.data.checkout_url) {
@@ -253,6 +263,30 @@ export default function PricingScreen() {
             {t('pricing.hero.subtitle')}
           </Text>
         </View>
+
+        {/* Backend status - aide au diagnostic "pas de réponse" */}
+        {backendStatus !== 'idle' && (
+          <View style={styles.backendStatusRow}>
+            {backendStatus === 'checking' && (
+              <Text style={styles.backendStatusText}>{t('pricing.backendStatus.checking')}</Text>
+            )}
+            {backendStatus === 'ok' && (
+              <Text style={[styles.backendStatusText, { color: '#48BB78' }]}>{t('pricing.backendStatus.ok')}</Text>
+            )}
+            {backendStatus === 'error' && (
+              <View style={{ alignItems: 'center' }}>
+                <Text style={[styles.backendStatusText, { color: '#FFA000' }]}>
+                  {t('pricing.backendStatus.error')}
+                </Text>
+                {Platform.OS === 'web' && (
+                  <TouchableOpacity onPress={() => Linking.openURL(BACKEND_HEALTH_URL)} style={styles.backendStatusLink}>
+                    <Text style={styles.backendStatusLinkText}>{t('pricing.backendStatus.openTest')}</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+          </View>
+        )}
 
         {/* Current Status */}
         {user && (
@@ -488,6 +522,26 @@ const styles = StyleSheet.create({
     color: '#A0AEC0',
     textAlign: 'center',
     lineHeight: 22,
+  },
+  backendStatusRow: {
+    marginBottom: 16,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+  },
+  backendStatusText: {
+    fontSize: 13,
+    color: '#B8C5D6',
+    textAlign: 'center',
+  },
+  backendStatusLink: {
+    marginTop: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  backendStatusLinkText: {
+    fontSize: 13,
+    color: '#D4AF37',
+    textDecorationLine: 'underline',
   },
   statusCard: {
     flexDirection: 'row',

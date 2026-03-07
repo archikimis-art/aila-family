@@ -305,6 +305,11 @@
       "createAccount": "Create free account",
       "clearData": "Clear preview data"
     },
+    "previewOnly": {
+      "title": "Preview mode",
+      "subtitle": "Your profile and personal data are not shown in the demo. Create an account to access your profile.",
+      "button": "Create an account"
+    },
     "admin": {
       "title": "Administration",
       "manageUsers": "Manage users"
@@ -1037,6 +1042,12 @@
       "paymentError": "Error creating payment.",
       "purchaseError": "Error during purchase.",
       "networkError": "No response from server. Check your connection or that the backend is reachable."
+    },
+    "backendStatus": {
+      "checking": "Checking server…",
+      "ok": "Server connection: OK",
+      "error": "Server unreachable (timeout or unavailable).",
+      "openTest": "Open test in new tab"
     },
     "faq": {
       "title": "Frequently Asked Questions",

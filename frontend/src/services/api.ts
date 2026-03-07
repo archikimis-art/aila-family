@@ -32,6 +32,7 @@ const getApiUrl = () => {
 };
 
 const API_URL = getApiUrl();
+export const BACKEND_HEALTH_URL = `${API_URL}/api/health`;
 console.log('[API] ========================================');
 console.log('[API] FINAL API URL:', API_URL);
 console.log('[API] ========================================');

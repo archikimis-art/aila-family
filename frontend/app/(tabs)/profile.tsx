@@ -10,9 +10,10 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
+import { usePreview } from '@/context/PreviewContext';
 import api, { gdprAPI, treeAPI, exportAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AdBanner from '@/components/AdBanner';
@@ -20,8 +21,11 @@ import { useTranslation } from 'react-i18next';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
   const { user, logout, isAdmin } = useAuth();
+  const { isPreviewMode: contextPreviewMode } = usePreview();
   const { t } = useTranslation();
+  const isPreviewMode = params.preview === 'true' || contextPreviewMode;
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -794,6 +798,26 @@ export default function ProfileScreen() {
     return `${user.first_name[0]}${user.last_name[0]}`.toUpperCase();
   };
 
+  if (isPreviewMode) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.previewOnly}>
+          <Ionicons name="eye-outline" size={60} color="#D4AF37" />
+          <Text style={styles.previewOnlyTitle}>{t('profileScreen.previewOnly.title')}</Text>
+          <Text style={styles.previewOnlySubtitle}>
+            {t('profileScreen.previewOnly.subtitle')}
+          </Text>
+          <TouchableOpacity
+            style={styles.previewOnlyButton}
+            onPress={() => router.push('/(auth)/register')}
+          >
+            <Text style={styles.previewOnlyButtonText}>{t('profileScreen.previewOnly.button')}</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView 
@@ -1125,6 +1149,39 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0A1628',
+  },
+  previewOnly: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  previewOnlyTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#D4AF37',
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  previewOnlySubtitle: {
+    fontSize: 15,
+    color: '#B8C5D6',
+    marginTop: 12,
+    textAlign: 'center',
+    lineHeight: 22,
+    paddingHorizontal: 20,
+  },
+  previewOnlyButton: {
+    backgroundColor: '#D4AF37',
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 28,
+  },
+  previewOnlyButtonText: {
+    color: '#0A1628',
+    fontSize: 16,
+    fontWeight: '600',
   },
   content: {
     paddingBottom: 180, // Plus de marge pour le scroll complet sur mobile (bannière pub + tab bar)
