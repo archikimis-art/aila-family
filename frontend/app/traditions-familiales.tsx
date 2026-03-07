@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SEOFooter } from '@/components/SEOFooter';
 import { SEOBreadcrumbs, BREADCRUMB_CONFIGS } from '@/components/SEOBreadcrumbs';
 import { RelatedArticles } from '@/components/RelatedArticles';
+import AdBanner from '@/components/AdBanner';
 
 const SEOHead = () => {
   useEffect(() => {
@@ -424,7 +425,7 @@ export default function TraditionsFamiliales() {
         {/* Related Articles - Internal Linking */}
         <RelatedArticles silo="famille" currentPage="/traditions-familiales" />
 
-        {/* SEO Footer */}
+        <AdBanner />
         <SEOFooter currentPage="/traditions-familiales" />
       </ScrollView>
     </SafeAreaView>

@@ -28,7 +28,8 @@
   "header": {
     "myTree": "Mon Arbre",
     "treeOf": "Arbre de {{name}}",
-    "previewMode": "Mode Aperçu"
+    "previewMode": "Mode Aperçu",
+    "previewDemoData": "Données de démonstration"
   },
   "chatScreen": {
     "title": "Discussion",

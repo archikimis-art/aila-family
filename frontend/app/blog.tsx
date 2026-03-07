@@ -14,6 +14,7 @@ import BlogComments from '../src/components/BlogComments';
 import ShareButtons from '../src/components/ShareButtons';
 import ArticleChallengeCta from '../src/components/ArticleChallengeCta';
 import { useTranslation } from 'react-i18next';
+import AdBanner from '@/components/AdBanner';
 
 interface ArticleKey {
   id: string;
@@ -290,6 +291,7 @@ export default function BlogScreen() {
           <Text style={styles.homeButtonText}>{t('blog.backHome')}</Text>
         </Pressable>
 
+        <AdBanner />
         <View style={styles.footer}>
           <Text style={styles.footerText}>{t('blog.copyright')}</Text>
         </View>

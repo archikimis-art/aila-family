@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import AdBanner from '@/components/AdBanner';
 
 export default function PrivacyScreen() {
   const router = useRouter();
@@ -48,6 +49,7 @@ export default function PrivacyScreen() {
           </View>
         ))}
 
+        <AdBanner />
         <View style={styles.footer}>
           <TouchableOpacity 
             style={styles.homeButton}

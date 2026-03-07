@@ -7,6 +7,7 @@ import { SEOFooter } from '@/components/SEOFooter';
 import { SEOBreadcrumbs, BREADCRUMB_CONFIGS } from '@/components/SEOBreadcrumbs';
 import { RelatedArticles } from '@/components/RelatedArticles';
 import { useTranslation } from 'react-i18next';
+import AdBanner from '@/components/AdBanner';
 
 const SEOHead = ({ t }: { t: any }) => {
   useEffect(() => {
@@ -126,6 +127,7 @@ export default function GenealogieDebutant() {
           </Pressable>
         </View>
 
+        <AdBanner />
         <RelatedArticles silo="genealogie" currentPage="/genealogie-debutant-guide" />
         <SEOFooter currentPage="/genealogie-debutant-guide" />
       </ScrollView>

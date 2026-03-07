@@ -7,6 +7,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Platform,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -14,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/services/api';
 import { useTranslation } from 'react-i18next';
+import AdBanner from '@/components/AdBanner';
 
 export default function PricingScreen() {
   const router = useRouter();
@@ -140,14 +142,15 @@ export default function PricingScreen() {
 
     setLoading(planId);
     try {
+      const origin = getOrigin();
       const response = await api.post('/stripe/create-checkout-session', {
         plan: planId,
-        success_url: `${window.location.origin}/(tabs)/profile?payment=success`,
-        cancel_url: `${window.location.origin}/pricing?payment=cancelled`,
+        success_url: `${origin}/(tabs)/profile?payment=success`,
+        cancel_url: `${origin}/pricing?payment=cancelled`,
       });
 
       if (response.data.checkout_url) {
-        window.location.href = response.data.checkout_url;
+        openCheckoutUrl(response.data.checkout_url);
       }
     } catch (error: any) {
       console.error('Checkout error:', error);
@@ -170,14 +173,15 @@ export default function PricingScreen() {
 
     setLoading(serviceId);
     try {
+      const origin = getOrigin();
       const response = await api.post('/stripe/create-checkout-session', {
         plan: serviceId,
-        success_url: `${window.location.origin}/(tabs)/profile?purchase=success&item=${serviceId}`,
-        cancel_url: `${window.location.origin}/pricing?purchase=cancelled`,
+        success_url: `${origin}/(tabs)/profile?purchase=success&item=${serviceId}`,
+        cancel_url: `${origin}/pricing?purchase=cancelled`,
       });
 
       if (response.data.checkout_url) {
-        window.location.href = response.data.checkout_url;
+        openCheckoutUrl(response.data.checkout_url);
       }
     } catch (error: any) {
       console.error('Purchase error:', error);
@@ -386,6 +390,7 @@ export default function PricingScreen() {
           </View>
         </View>
 
+        <AdBanner />
         {/* Footer spacing */}
         <View style={{ height: 40 }} />
       </ScrollView>

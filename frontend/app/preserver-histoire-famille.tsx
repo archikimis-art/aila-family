@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SEOFooter } from '@/components/SEOFooter';
+import AdBanner from '@/components/AdBanner';
 import { SEOBreadcrumbs, BREADCRUMB_CONFIGS } from '@/components/SEOBreadcrumbs';
 import { RelatedArticles } from '@/components/RelatedArticles';
 
@@ -185,6 +186,7 @@ export default function PreserverHistoire() {
         <RelatedArticles silo="famille" currentPage="/preserver-histoire-famille" />
 
         {/* SEO Footer */}
+        <AdBanner />
         <SEOFooter currentPage="/preserver-histoire-famille" />
       </ScrollView>
     </SafeAreaView>

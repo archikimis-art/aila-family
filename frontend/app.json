@@ -9,7 +9,9 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,
     "extra": {
-      "eas": {}
+      "eas": {
+        "projectId": "14a6a90d-81bd-47b3-852f-bd23b17a873a"
+      }
     },
     "ios": {
       "supportsTablet": true,
@@ -40,7 +42,7 @@
       "edgeToEdgeEnabled": true,
       "jsEngine": "hermes",
       "package": "com.kimi.aila",
-      "versionCode": 3,
+      "versionCode": 11,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.ACCESS_NETWORK_STATE"

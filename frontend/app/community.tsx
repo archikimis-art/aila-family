@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
+import AdBanner from '@/components/AdBanner';
 
 interface Message {
   id: string;
@@ -391,6 +392,7 @@ export default function CommunityScreen() {
           <Text style={styles.blogLinkText}>{t('community.readArticles')}</Text>
         </Pressable>
         
+        <AdBanner />
         <View style={styles.bottomPadding} />
       </ScrollView>
     </SafeAreaView>

@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SEOFooter } from '@/components/SEOFooter';
 import { SEOBreadcrumbs, BREADCRUMB_CONFIGS } from '@/components/SEOBreadcrumbs';
 import { RelatedArticles } from '@/components/RelatedArticles';
+import AdBanner from '@/components/AdBanner';
 import { useTranslation } from 'react-i18next';
 
 const SEOHead = ({ t }: { t: any }) => {
@@ -307,6 +308,7 @@ export default function RetrouverAncetres() {
           </Pressable>
         </View>
 
+        <AdBanner />
         <RelatedArticles silo="genealogie" currentPage="/retrouver-ancetres-gratuitement" />
         <SEOFooter currentPage="/retrouver-ancetres-gratuitement" />
       </ScrollView>

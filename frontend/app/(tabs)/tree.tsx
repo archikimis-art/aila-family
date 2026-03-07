@@ -29,6 +29,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  useWindowDimensions,
   Alert,
   RefreshControl,
   ActivityIndicator,
@@ -239,6 +240,7 @@ export default function TreeScreen() {
   const params = useLocalSearchParams();
   const { user, refreshUser } = useAuth();
   const { t } = useTranslation();
+  const { width: windowWidth } = useWindowDimensions();
   
   // SECURITY: Import preview context
   const { 
@@ -254,6 +256,7 @@ export default function TreeScreen() {
   
   // URL param is the ONLY source of truth for preview mode
   const isPreviewMode = params.preview === 'true';
+  const isPreviewMobileWeb = Platform.OS === 'web' && isPreviewMode && windowWidth < 768;
   
   const inviteToken = params.invite as string | undefined;
   const sharedOwnerId = params.sharedOwnerId as string | undefined;
@@ -281,7 +284,6 @@ export default function TreeScreen() {
   const [sharedTreeOwner, setSharedTreeOwner] = useState<{id: string, name: string, role: string} | null>(null);
   const [inviteMessage, setInviteMessage] = useState<string | null>(null);
   const [googleAuthHandled, setGoogleAuthHandled] = useState(false);
-
   // ============================================================================
   // KEEP-ALIVE: Ping backend every 10 minutes to prevent cold start
   // ============================================================================
@@ -2041,7 +2043,7 @@ export default function TreeScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#D4AF37" />
           <Text style={styles.loadingText}>Chargement de l'arbre...</Text>
@@ -2051,73 +2053,137 @@ export default function TreeScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => {
-          // Clear any preview mode params and go to root
-          router.replace('/');
-        }} style={styles.homeButton}>
-          <Ionicons name="home-outline" size={24} color="#D4AF37" />
-        </TouchableOpacity>
-        <View style={styles.headerLeft}>
-          <Ionicons name="leaf" size={28} color="#D4AF37" />
-          <View style={styles.headerTitleContainer}>
-            <Text style={styles.headerTitle}>
-                            {sharedTreeOwner ? t('header.treeOf', { name: sharedTreeOwner.name }) : (isPreviewMode ? t('header.previewMode') : t('header.myTree'))}
-            </Text>
-            {user && !isPreviewMode && !sharedTreeOwner && (
-              <Text style={styles.headerAccount}>
-                {user.first_name} {user.last_name} • {user.email}
-              </Text>
+      {isPreviewMobileWeb ? (
+        <View style={styles.previewMobileHeader}>
+          {/* Même configuration que "Mon Arbre" : home + headerLeft (feuille + titre) + boutons, sans ligne compte */}
+          <View style={styles.previewMobileHeaderRow}>
+            <TouchableOpacity
+              onPress={() => router.replace('/')}
+              style={styles.homeButton}
+            >
+              <Ionicons name="home-outline" size={24} color="#D4AF37" />
+            </TouchableOpacity>
+            <View style={styles.headerLeft}>
+              <Ionicons name="leaf" size={28} color="#D4AF37" />
+              <View style={styles.headerTitleContainer}>
+                <Text style={styles.headerTitle} numberOfLines={1}>
+                  {t('header.previewMode')}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.previewMobileHeaderRight}>
+              <TouchableOpacity
+                style={[styles.helpButton, upcomingBirthdays.length > 0 && styles.eventButtonActive]}
+                onPress={() => setShowEventsPanel(true)}
+              >
+                <Text style={{ fontSize: 18 }}>🎉</Text>
+                {upcomingBirthdays.length > 0 && (
+                  <View style={styles.eventBadge}>
+                    <Text style={styles.eventBadgeText}>{upcomingBirthdays.length}</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.helpButton} onPress={() => setShowGuide(true)}>
+                <Ionicons name="help-circle-outline" size={22} color="#D4AF37" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.debugButton} onPress={() => setShowDebug(!showDebug)}>
+                <Ionicons name="bug-outline" size={20} color={showDebug ? '#4CAF50' : '#6B7C93'} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.previewMobileSaveLink} onPress={handleConvertToAccount}>
+            <Text style={styles.previewMobileSaveLinkText}>{t('profileScreen.account.register')}</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={[styles.header, Platform.OS === 'web' && isPreviewMode && styles.headerRelative]}>
+          {Platform.OS === 'web' && isPreviewMode && (
+            <View style={styles.headerTitleOverlay} pointerEvents="none">
+              <View style={styles.headerLeft}>
+                <Ionicons name="leaf" size={28} color="#D4AF37" />
+                <View style={styles.headerTitleContainer}>
+                  <Text style={styles.headerTitle}>{t('header.previewMode')}</Text>
+                  <Text style={styles.headerAccount}>{t('header.previewDemoData')}</Text>
+                </View>
+              </View>
+            </View>
+          )}
+          <TouchableOpacity onPress={() => {
+            // Clear any preview mode params and go to root
+            router.replace('/');
+          }} style={styles.homeButton}>
+            <Ionicons name="home-outline" size={24} color="#D4AF37" />
+          </TouchableOpacity>
+          <View style={styles.headerLeft}>
+            {!(Platform.OS === 'web' && isPreviewMode) && (
+              <Ionicons name="leaf" size={28} color="#D4AF37" />
+            )}
+            <View style={styles.headerTitleContainer}>
+              {!(Platform.OS === 'web' && isPreviewMode) && (
+                <>
+                  <Text style={styles.headerTitle}>
+                    {sharedTreeOwner ? t('header.treeOf', { name: sharedTreeOwner.name }) : (isPreviewMode ? t('header.previewMode') : t('header.myTree'))}
+                  </Text>
+                  {user && !isPreviewMode && !sharedTreeOwner && (
+                    <Text style={styles.headerAccount}>
+                      {user.first_name} {user.last_name} • {user.email}
+                    </Text>
+                  )}
+                  {isPreviewMode && !user && (
+                    <Text style={styles.headerAccount}>{t('header.previewDemoData')}</Text>
+                  )}
+                </>
+              )}
+            </View>
+          </View>
+          <View style={[styles.headerButtons, isPreviewMode && styles.headerButtonsRight]}>
+            {/* Shared trees button - show badge if there are shared trees */}
+            {user && !isPreviewMode && sharedTrees.length > 0 && (
+              <TouchableOpacity 
+                style={[styles.helpButton, styles.sharedTreesButton]} 
+                onPress={() => setShowSharedTrees(true)}
+              >
+                <Ionicons name="people" size={20} color="#4A90D9" />
+                <View style={styles.sharedBadge}>
+                  <Text style={styles.sharedBadgeText}>{sharedTrees.length}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+            {/* Events button - visible for all users */}
+            <TouchableOpacity 
+              style={[styles.helpButton, upcomingBirthdays.length > 0 && styles.eventButtonActive]} 
+              onPress={() => setShowEventsPanel(true)}
+            >
+              <Text style={{ fontSize: 18 }}>🎉</Text>
+              {upcomingBirthdays.length > 0 && (
+                <View style={styles.eventBadge}>
+                  <Text style={styles.eventBadgeText}>{upcomingBirthdays.length}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.helpButton} 
+              onPress={() => setShowGuide(true)}
+            >
+              <Ionicons name="help-circle-outline" size={22} color="#D4AF37" />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.debugButton} 
+              onPress={() => setShowDebug(!showDebug)}
+            >
+              <Ionicons name="bug-outline" size={20} color={showDebug ? '#4CAF50' : '#6B7C93'} />
+            </TouchableOpacity>
+            {isPreviewMode && (
+              <TouchableOpacity style={styles.convertButton} onPress={handleConvertToAccount}>
+                <Ionicons name="save-outline" size={18} color="#0A1628" />
+                <Text style={styles.convertButtonText}>{t('treeScreen.actions.save')}</Text>
+              </TouchableOpacity>
             )}
           </View>
         </View>
-        <View style={styles.headerButtons}>
-          {/* Shared trees button - show badge if there are shared trees */}
-          {user && !isPreviewMode && sharedTrees.length > 0 && (
-            <TouchableOpacity 
-              style={[styles.helpButton, styles.sharedTreesButton]} 
-              onPress={() => setShowSharedTrees(true)}
-            >
-              <Ionicons name="people" size={20} color="#4A90D9" />
-              <View style={styles.sharedBadge}>
-                <Text style={styles.sharedBadgeText}>{sharedTrees.length}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          {/* Events button - visible for all users */}
-          <TouchableOpacity 
-            style={[styles.helpButton, upcomingBirthdays.length > 0 && styles.eventButtonActive]} 
-            onPress={() => setShowEventsPanel(true)}
-          >
-            <Text style={{ fontSize: 18 }}>🎉</Text>
-            {upcomingBirthdays.length > 0 && (
-              <View style={styles.eventBadge}>
-                <Text style={styles.eventBadgeText}>{upcomingBirthdays.length}</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.helpButton} 
-            onPress={() => setShowGuide(true)}
-          >
-            <Ionicons name="help-circle-outline" size={22} color="#D4AF37" />
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.debugButton} 
-            onPress={() => setShowDebug(!showDebug)}
-          >
-            <Ionicons name="bug-outline" size={20} color={showDebug ? '#4CAF50' : '#6B7C93'} />
-          </TouchableOpacity>
-        </View>
-        {isPreviewMode && (
-          <TouchableOpacity style={styles.convertButton} onPress={handleConvertToAccount}>
-            <Ionicons name="save-outline" size={18} color="#0A1628" />
-            <Text style={styles.convertButtonText}>{t('treeScreen.actions.save')}</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      )}
 
       {/* Debug Panel */}
       {showDebug && debugInfo && (
@@ -2166,19 +2232,19 @@ export default function TreeScreen() {
 
       {/* Preview Banner */}
       {isPreviewMode && (
-        <View style={styles.demoBanner}>
-          <View style={styles.demoBannerContent}>
+        <View style={[styles.demoBanner, isPreviewMobileWeb && styles.demoBannerCompact]}>
+          <View style={[styles.demoBannerContent, isPreviewMobileWeb && styles.demoBannerContentCompact]}>
             <View style={styles.demoBannerLeft}>
               <Ionicons name="sparkles" size={20} color="#D4AF37" />
               <View style={styles.demoBannerTextContainer}>
                 <Text style={styles.demoBannerTitle}>{t('treeScreen.preview.title')}</Text>
-                <Text style={styles.demoBannerSubtitle}>
+                <Text style={styles.demoBannerSubtitle} numberOfLines={isPreviewMobileWeb ? 1 : undefined}>
                   {t('treeScreen.preview.subtitle')}
                 </Text>
               </View>
             </View>
             <TouchableOpacity 
-              style={styles.demoBannerButton} 
+              style={[styles.demoBannerButton, isPreviewMobileWeb && styles.demoBannerButtonCompact]} 
               onPress={handleConvertToAccount}
               activeOpacity={0.8}
             >
@@ -2271,34 +2337,36 @@ export default function TreeScreen() {
             )}
 
             {/* Zoom Controls - Compact for mobile */}
-            <View style={styles.zoomControls}>
-              <TouchableOpacity style={styles.zoomButton} onPress={zoomIn}>
+            <View style={[styles.zoomControls, isPreviewMobileWeb && styles.zoomControlsCompact]}>
+              <TouchableOpacity style={[styles.zoomButton, isPreviewMobileWeb && styles.zoomButtonCompact]} onPress={zoomIn}>
                 <Ionicons name="add" size={18} color="#FFFFFF" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.zoomButton} onPress={zoomOut}>
+              <TouchableOpacity style={[styles.zoomButton, isPreviewMobileWeb && styles.zoomButtonCompact]} onPress={zoomOut}>
                 <Ionicons name="remove" size={18} color="#FFFFFF" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.zoomButton} onPress={resetToCenter}>
+              <TouchableOpacity style={[styles.zoomButton, isPreviewMobileWeb && styles.zoomButtonCompact]} onPress={resetToCenter}>
                 <Ionicons name="locate-outline" size={16} color="#FFFFFF" />
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.zoomButton, styles.fitButton]} onPress={fitToScreen}>
+              <TouchableOpacity style={[styles.zoomButton, styles.fitButton, isPreviewMobileWeb && styles.zoomButtonCompact]} onPress={fitToScreen}>
                 <Ionicons name="scan-outline" size={16} color="#D4AF37" />
               </TouchableOpacity>
-              {Platform.OS === 'web' && (
+              {Platform.OS === 'web' && !isPreviewMobileWeb && (
                 <TouchableOpacity style={[styles.zoomButton, styles.printButton]} onPress={handlePrintTree}>
                   <Ionicons name="print-outline" size={16} color="#4CAF50" />
                 </TouchableOpacity>
               )}
-              <ExcelImport 
-                onImportSuccess={(count) => {
-                  Alert.alert(t('common.success'), t('treeScreen.importSuccess', { count }));
-                  onRefresh();
-                }}
-              />
+              {!isPreviewMobileWeb && (
+                <ExcelImport 
+                  onImportSuccess={(count) => {
+                    Alert.alert(t('common.success'), t('treeScreen.importSuccess', { count }));
+                    onRefresh();
+                  }}
+                />
+              )}
             </View>
 
             {/* Zoom hint */}
-            <View style={styles.zoomHint}>
+            <View style={[styles.zoomHint, isPreviewMobileWeb && styles.zoomHintCompact]}>
               <Text style={styles.zoomHintText}>{t('treeScreen.zoomHint')}</Text>
             </View>
           </>
@@ -2306,18 +2374,18 @@ export default function TreeScreen() {
       </View>
 
       {/* Action Buttons */}
-      <View style={styles.actionsContainer}>
-        <TouchableOpacity style={styles.actionButton} onPress={handleAddPerson}>
-          <Ionicons name="person-add" size={22} color="#FFFFFF" />
-          <Text style={styles.actionButtonText}>{t('treeScreen.actions.add')}</Text>
+      <View style={[styles.actionsContainer, isPreviewMobileWeb && styles.actionsContainerCompact]}>
+        <TouchableOpacity style={[styles.actionButton, isPreviewMobileWeb && styles.actionButtonCompact]} onPress={handleAddPerson}>
+          <Ionicons name="person-add" size={isPreviewMobileWeb ? 18 : 22} color="#FFFFFF" />
+          <Text style={[styles.actionButtonText, isPreviewMobileWeb && styles.actionButtonTextCompact]}>{t('treeScreen.actions.add')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButtonSecondary} onPress={handleAddLink}>
-          <Ionicons name="git-merge" size={22} color="#D4AF37" />
-          <Text style={styles.actionButtonTextSecondary}>{t('treeScreen.actions.link')}</Text>
+        <TouchableOpacity style={[styles.actionButtonSecondary, isPreviewMobileWeb && styles.actionButtonCompact]} onPress={handleAddLink}>
+          <Ionicons name="git-merge" size={isPreviewMobileWeb ? 18 : 22} color="#D4AF37" />
+          <Text style={[styles.actionButtonTextSecondary, isPreviewMobileWeb && styles.actionButtonTextCompact]}>{t('treeScreen.actions.link')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButtonSecondary} onPress={onRefresh}>
-          <Ionicons name="refresh" size={22} color="#D4AF37" />
-          <Text style={styles.actionButtonTextSecondary}>{t('treeScreen.actions.refresh')}</Text>
+        <TouchableOpacity style={[styles.actionButtonSecondary, isPreviewMobileWeb && styles.actionButtonCompact]} onPress={onRefresh}>
+          <Ionicons name="refresh" size={isPreviewMobileWeb ? 18 : 22} color="#D4AF37" />
+          <Text style={[styles.actionButtonTextSecondary, isPreviewMobileWeb && styles.actionButtonTextCompact]}>{t('treeScreen.actions.refresh')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -2765,9 +2833,63 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#1A2F4A',
   },
+  headerRelative: {
+    position: 'relative',
+  },
+  headerTitleOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   homeButton: {
     padding: 8,
     borderRadius: 8,
+  },
+  previewMobileHeader: {
+    width: '100%',
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    paddingBottom: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1A2F4A',
+  },
+  previewMobileHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    minHeight: 40,
+  },
+  previewMobileHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  previewMobileSaveButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    backgroundColor: '#D4AF37',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 6,
+    marginTop: 8,
+  },
+  previewMobileSaveLink: {
+    alignSelf: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    marginTop: 4,
+  },
+  previewMobileSaveLinkText: {
+    color: '#8BA1B7',
+    fontSize: 11,
+    textDecorationLine: 'underline',
   },
   headerLeft: {
     flexDirection: 'row',
@@ -2851,12 +2973,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(212, 175, 55, 0.3)',
   },
+  demoBannerCompact: {
+    minHeight: 0,
+  },
   demoBannerContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
+  },
+  demoBannerContentCompact: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   demoBannerLeft: {
     flexDirection: 'row',
@@ -2883,6 +3012,11 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 8,
     marginLeft: 12,
+  },
+  demoBannerButtonCompact: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginLeft: 8,
   },
   demoBannerButtonText: {
     color: '#0A1628',
@@ -2922,6 +3056,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(212, 175, 55, 0.5)',
   },
+  zoomControlsCompact: {
+    right: 4,
+    top: 4,
+    padding: 3,
+    gap: 3,
+  },
   zoomButton: {
     width: 32,
     height: 32,
@@ -2929,6 +3069,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(42, 63, 90, 0.9)',
     borderRadius: 16,
+  },
+  zoomButtonCompact: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
   },
   fitButton: {
     backgroundColor: 'rgba(212, 175, 55, 0.3)',
@@ -2946,6 +3091,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
+  },
+  zoomHintCompact: {
+    bottom: 4,
   },
   zoomHintText: {
     color: '#6B7C93',
@@ -3008,6 +3156,11 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#1A2F4A',
   },
+  actionsContainerCompact: {
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    gap: 8,
+  },
   actionButton: {
     flex: 1,
     flexDirection: 'row',
@@ -3017,6 +3170,11 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 12,
     gap: 8,
+  },
+  actionButtonCompact: {
+    paddingVertical: 10,
+    borderRadius: 10,
+    gap: 6,
   },
   actionButtonText: {
     color: '#0A1628',
@@ -3040,11 +3198,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
   },
+  actionButtonTextCompact: {
+    fontSize: 13,
+  },
   // Styles pour les boutons du header
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  headerButtonsRight: {
+    gap: 12,
   },
   helpButton: {
     padding: 8,

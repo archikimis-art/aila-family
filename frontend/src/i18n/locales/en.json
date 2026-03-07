@@ -28,7 +28,8 @@
   "header": {
     "myTree": "My Tree",
     "treeOf": "{{name}}'s Tree",
-    "previewMode": "Preview Mode"
+    "previewMode": "Preview Mode",
+    "previewDemoData": "Demonstration data"
   },
   "chatScreen": {
     "title": "Chat",

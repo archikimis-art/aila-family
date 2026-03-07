@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Header
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Header, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -1011,10 +1011,127 @@ async def health_check():
 # STUB ENDPOINTS (to prevent 404 errors)
 # ============================================================================
 
+# ============================================================================
+# STRIPE (Premium)
+# ============================================================================
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
+STRIPE_PRICE_MONTHLY = os.environ.get("STRIPE_PRICE_MONTHLY", "")  # price_xxx
+STRIPE_PRICE_YEARLY = os.environ.get("STRIPE_PRICE_YEARLY", "")    # price_xxx
+
 @api_router.get("/stripe/subscription-status")
 async def get_subscription_status(current_user: dict = Depends(get_current_user)):
-    """Get subscription status (stub - premium not implemented)"""
-    return {"status": "free", "plan": "free", "features": []}
+    """Return subscription status from user document (is_premium, plan, subscription_status)."""
+    user = await db.users.find_one(
+        {"id": current_user["id"]},
+        {"_id": 0, "is_premium": 1, "subscription_status": 1, "stripe_customer_id": 1, "plan": 1}
+    )
+    if not user:
+        return {"status": "free", "plan": "free", "is_premium": False, "features": []}
+    is_premium = user.get("is_premium", False)
+    status = user.get("subscription_status", "free")
+    plan = user.get("plan", "free")
+    if status in ("active", "trialing", "lifetime") or is_premium:
+        is_premium = True
+    features = [] if not is_premium else ["no_ads", "unlimited_tree", "export", "priority_support"]
+    return {
+        "status": status if is_premium else "free",
+        "plan": plan,
+        "is_premium": is_premium,
+        "subscription_status": status,
+        "features": features,
+    }
+
+
+class CheckoutSessionCreate(BaseModel):
+    plan: str  # 'monthly' | 'yearly' | service id
+    success_url: str
+    cancel_url: str
+
+
+@api_router.post("/stripe/create-checkout-session")
+async def create_checkout_session(
+    body: CheckoutSessionCreate,
+    current_user: dict = Depends(get_current_user),
+):
+    """Create Stripe Checkout session; returns checkout_url. Requires STRIPE_SECRET_KEY and price IDs."""
+    if not STRIPE_SECRET_KEY:
+        raise HTTPException(
+            status_code=501,
+            detail="Paiement non configuré (STRIPE_SECRET_KEY manquant). Contact: contact@aila.family",
+        )
+    import stripe
+    stripe.api_key = STRIPE_SECRET_KEY
+    price_id = None
+    if body.plan == "monthly" and STRIPE_PRICE_MONTHLY:
+        price_id = STRIPE_PRICE_MONTHLY
+    elif body.plan == "yearly" and STRIPE_PRICE_YEARLY:
+        price_id = STRIPE_PRICE_YEARLY
+    if not price_id:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Plan '{body.plan}' non configuré (STRIPE_PRICE_MONTHLY / STRIPE_PRICE_YEARLY).",
+        )
+    try:
+        customer = await db.users.find_one(
+            {"id": current_user["id"]},
+            {"stripe_customer_id": 1, "email": 1},
+        )
+        customer_id = (customer or {}).get("stripe_customer_id")
+        email = (current_user or {}).get("email")
+        session_params = {
+            "mode": "subscription",
+            "line_items": [{"price": price_id, "quantity": 1}],
+            "success_url": body.success_url,
+            "cancel_url": body.cancel_url,
+            "metadata": {"user_id": current_user["id"], "plan": body.plan},
+        }
+        if customer_id:
+            session_params["customer"] = customer_id
+        elif email:
+            session_params["customer_email"] = email
+        session = stripe.checkout.Session.create(**session_params)
+        return {"checkout_url": session.url, "session_id": session.id}
+    except Exception as e:
+        logger.exception("Stripe checkout error: %s", e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@api_router.post("/stripe/webhook")
+async def stripe_webhook(request: Request):
+    """Stripe webhook: on checkout.session.completed, set user is_premium and plan."""
+    if not STRIPE_WEBHOOK_SECRET:
+        raise HTTPException(status_code=501, detail="Webhook non configuré")
+    import stripe
+    stripe.api_key = STRIPE_SECRET_KEY
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature", "")
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail="Payload invalide")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Signature invalide: {e}")
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+        user_id = session.get("metadata", {}).get("user_id")
+        plan = session.get("metadata", {}).get("plan", "monthly")
+        customer_id = session.get("customer")
+        if user_id:
+            await db.users.update_one(
+                {"id": user_id},
+                {
+                    "$set": {
+                        "is_premium": True,
+                        "subscription_status": "active",
+                        "plan": plan,
+                        "stripe_customer_id": customer_id or "",
+                    }
+                },
+            )
+            logger.info("Premium activé pour user_id=%s plan=%s", user_id, plan)
+    return {"received": True}
+
 
 @api_router.get("/collaborators")
 async def get_collaborators(current_user: dict = Depends(get_current_user)):

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import AdBanner from '@/components/AdBanner';
 
 // SEO Component for setting page metadata
 const SEOHead = () => {
@@ -226,6 +227,7 @@ export default function ArbreGenealogiquGratuit() {
             </TouchableOpacity>
           </View>
         </View>
+        <AdBanner />
       </ScrollView>
     </SafeAreaView>
   );

@@ -29,3 +29,4 @@ yarn-error.log*
 # Native builds (generated - should not be committed)
 android/
 ios/
+.vercel

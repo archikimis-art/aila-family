@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import AdBanner from '@/components/AdBanner';
 
 // FAQ item keys for translation
 const faqKeys = [
@@ -150,6 +151,7 @@ export default function FAQScreen() {
           <Text style={styles.homeButtonText}>{t('faq.backHome')}</Text>
         </TouchableOpacity>
 
+        <AdBanner />
         <View style={styles.footer}>
           <Text style={styles.footerText}>{t('faq.footer')}</Text>
         </View>

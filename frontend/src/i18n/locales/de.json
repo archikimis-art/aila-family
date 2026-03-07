@@ -28,7 +28,8 @@
   "header": {
     "myTree": "Mein Stammbaum",
     "treeOf": "Stammbaum von {{name}}",
-    "previewMode": "Vorschaumodus"
+    "previewMode": "Vorschaumodus",
+    "previewDemoData": "Demonstrationsdaten"
   },
   "chatScreen": {
     "title": "Chat",

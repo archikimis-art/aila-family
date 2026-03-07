@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from '
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import AdBanner from '@/components/AdBanner';
 
 const SEOHead = () => {
   useEffect(() => {
@@ -336,6 +337,7 @@ export default function FamilleRecomposee() {
           </View>
         </View>
 
+        <AdBanner />
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>© 2024 AILA Famille - Pour toutes les familles</Text>

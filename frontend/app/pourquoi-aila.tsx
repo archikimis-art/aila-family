@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import AdBanner from '@/components/AdBanner';
 
 export default function PourquoiAilaScreen() {
   const router = useRouter();
@@ -120,6 +121,7 @@ export default function PourquoiAilaScreen() {
           </TouchableOpacity>
         </View>
 
+        <AdBanner />
         {/* Footer */}
         <View style={styles.footer}>
           <TouchableOpacity onPress={() => router.push('/')}>

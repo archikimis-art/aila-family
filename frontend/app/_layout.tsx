@@ -5,6 +5,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { AdsProvider } from '@/context/AdsContext';
 import { ConversionProvider } from '@/context/ConversionContext';
 import { SoundProvider } from '@/context/SoundContext';
+import PremiumInterstitialTrigger from '@/components/PremiumInterstitialTrigger';
 import { PreviewProvider } from '@/context/PreviewContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
@@ -479,6 +480,7 @@ export default function RootLayout() {
           <PreviewProvider>
           <AdsProvider>
             <ConversionProvider>
+              <PremiumInterstitialTrigger />
               <StatusBar style="light" />
               <Stack
                 screenOptions={{

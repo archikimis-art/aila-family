@@ -16,10 +16,15 @@ const BANNER_AD_UNIT_ID = Platform.select({
   default: 'ca-app-pub-8309745338282834/9092823082',
 });
 
+// Interstitielles : définir EXPO_PUBLIC_ADMOB_INTERSTITIAL_ID_IOS / _ANDROID en prod, sinon IDs de test
+const INTERSTITIAL_ID_IOS =
+  process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_ID_IOS ?? 'ca-app-pub-3940256099942544/4411468910';
+const INTERSTITIAL_ID_ANDROID =
+  process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_ID_ANDROID ?? 'ca-app-pub-3940256099942544/1033173712';
 const INTERSTITIAL_AD_UNIT_ID = Platform.select({
-  ios: 'ca-app-pub-3940256099942544/4411468910', // Test ID for iOS (create interstitial ad unit in AdMob if needed)
-  android: 'ca-app-pub-3940256099942544/1033173712', // Test ID for Android (create interstitial ad unit in AdMob if needed)
-  default: 'ca-app-pub-3940256099942544/1033173712',
+  ios: INTERSTITIAL_ID_IOS,
+  android: INTERSTITIAL_ID_ANDROID,
+  default: INTERSTITIAL_ID_ANDROID,
 });
 
 interface AdsContextType {

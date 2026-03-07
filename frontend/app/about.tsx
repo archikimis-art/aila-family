@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import AdBanner from '@/components/AdBanner';
 
 export default function AboutScreen() {
   const router = useRouter();
@@ -128,6 +129,7 @@ export default function AboutScreen() {
           <Text style={styles.homeButtonText}>{t('about.backHome')}</Text>
         </TouchableOpacity>
 
+        <AdBanner />
         <View style={{ height: 40 }} />
       </ScrollView>
     </SafeAreaView>
