@@ -2100,7 +2100,8 @@ export default function TreeScreen() {
       ) : (
         <View style={[styles.header, Platform.OS === 'web' && isPreviewMode && styles.headerRelative, windowWidth < 420 && { paddingHorizontal: 8 }]}>
           {Platform.OS === 'web' && isPreviewMode && (
-            <View style={styles.headerTitleOverlay} pointerEvents="none">
+            <View style={[styles.headerTitleOverlay, { paddingLeft: windowWidth < 420 ? 8 : 20 }]} pointerEvents="none">
+              <View style={{ width: 40 }} />
               <View style={styles.headerLeft}>
                 <Ionicons name="leaf" size={28} color="#D4AF37" />
                 <View style={styles.headerTitleContainer}>
@@ -2138,14 +2139,14 @@ export default function TreeScreen() {
               )}
             </View>
           </View>
-          <View style={[styles.headerButtons, isPreviewMode && styles.headerButtonsRight]}>
+          <View style={[styles.headerButtons, isPreviewMode && styles.headerButtonsRight, windowWidth < 420 && styles.headerButtonsMobile]}>
             {/* Shared trees button - show badge if there are shared trees */}
             {user && !isPreviewMode && sharedTrees.length > 0 && (
               <TouchableOpacity 
                 style={[styles.helpButton, styles.sharedTreesButton]} 
                 onPress={() => setShowSharedTrees(true)}
               >
-                <Ionicons name="people" size={20} color="#4A90D9" />
+                <Ionicons name="people" size={18} color="#4A90D9" />
                 <View style={styles.sharedBadge}>
                   <Text style={styles.sharedBadgeText}>{sharedTrees.length}</Text>
                 </View>
@@ -2844,8 +2845,9 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   homeButton: {
     padding: 8,
@@ -3221,6 +3223,10 @@ const styles = StyleSheet.create({
   },
   headerButtonsRight: {
     gap: 12,
+  },
+  headerButtonsMobile: {
+    marginLeft: 10,
+    gap: 6,
   },
   helpButton: {
     padding: 8,
