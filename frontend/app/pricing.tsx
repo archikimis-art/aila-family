@@ -160,12 +160,17 @@ export default function PricingScreen() {
 
     setLoading(planId);
     try {
+      await api.get('/health', { timeout: 25000 }).catch(() => {});
       const origin = getOrigin();
-      const response = await api.post('/stripe/create-checkout-session', {
-        plan: planId,
-        success_url: `${origin}/(tabs)/profile?payment=success`,
-        cancel_url: `${origin}/pricing?payment=cancelled`,
-      });
+      const response = await api.post(
+        '/stripe/create-checkout-session',
+        {
+          plan: planId,
+          success_url: `${origin}/(tabs)/profile?payment=success`,
+          cancel_url: `${origin}/pricing?payment=cancelled`,
+        },
+        { timeout: 60000 }
+      );
 
       if (response.data.checkout_url) {
         openCheckoutUrl(response.data.checkout_url);
@@ -197,12 +202,17 @@ export default function PricingScreen() {
 
     setLoading(serviceId);
     try {
+      await api.get('/health', { timeout: 25000 }).catch(() => {});
       const origin = getOrigin();
-      const response = await api.post('/stripe/create-checkout-session', {
-        plan: serviceId,
-        success_url: `${origin}/(tabs)/profile?purchase=success&item=${serviceId}`,
-        cancel_url: `${origin}/pricing?purchase=cancelled`,
-      });
+      const response = await api.post(
+        '/stripe/create-checkout-session',
+        {
+          plan: serviceId,
+          success_url: `${origin}/(tabs)/profile?purchase=success&item=${serviceId}`,
+          cancel_url: `${origin}/pricing?purchase=cancelled`,
+        },
+        { timeout: 60000 }
+      );
 
       if (response.data.checkout_url) {
         openCheckoutUrl(response.data.checkout_url);
