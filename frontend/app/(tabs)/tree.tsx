@@ -2117,14 +2117,14 @@ export default function TreeScreen() {
           }} style={styles.homeButton}>
             <Ionicons name="home-outline" size={24} color="#D4AF37" />
           </TouchableOpacity>
-          <View style={styles.headerLeft}>
+          <View style={[styles.headerLeft, windowWidth < 480 && styles.headerLeftNarrow]}>
             {!(Platform.OS === 'web' && isPreviewMode) && (
-              <Ionicons name="leaf" size={28} color="#D4AF37" />
+              <Ionicons name="leaf" size={windowWidth < 480 ? 22 : 28} color="#D4AF37" />
             )}
-            <View style={styles.headerTitleContainer}>
+            <View style={[styles.headerTitleContainer, windowWidth < 480 && styles.headerTitleContainerNarrow]}>
               {!(Platform.OS === 'web' && isPreviewMode) && (
                 <>
-                  <Text style={styles.headerTitle} numberOfLines={1} ellipsizeMode="tail">
+                  <Text style={[styles.headerTitle, windowWidth < 480 && styles.headerTitleNarrow]} numberOfLines={1} ellipsizeMode="tail">
                     {sharedTreeOwner ? t('header.treeOf', { name: sharedTreeOwner.name }) : (isPreviewMode ? t('header.previewMode') : t('header.myTree'))}
                   </Text>
                   {user && !isPreviewMode && !sharedTreeOwner && (
@@ -2139,14 +2139,14 @@ export default function TreeScreen() {
               )}
             </View>
           </View>
-          <View style={[styles.headerButtons, isPreviewMode && styles.headerButtonsRight, windowWidth < 420 && styles.headerButtonsMobile]}>
+          <View style={[styles.headerButtons, isPreviewMode && styles.headerButtonsRight, windowWidth < 480 && styles.headerButtonsNarrow, windowWidth < 420 && styles.headerButtonsMobile]}>
             {/* Shared trees button - show badge if there are shared trees */}
             {user && !isPreviewMode && sharedTrees.length > 0 && (
               <TouchableOpacity 
-                style={[styles.helpButton, styles.sharedTreesButton]} 
+                style={[styles.helpButton, windowWidth < 480 && styles.helpButtonCompact, styles.sharedTreesButton]} 
                 onPress={() => setShowSharedTrees(true)}
               >
-                <Ionicons name="people" size={18} color="#4A90D9" />
+                <Ionicons name="people" size={windowWidth < 480 ? 16 : 18} color="#4A90D9" />
                 <View style={styles.sharedBadge}>
                   <Text style={styles.sharedBadgeText}>{sharedTrees.length}</Text>
                 </View>
@@ -2154,10 +2154,10 @@ export default function TreeScreen() {
             )}
             {/* Events button - visible for all users */}
             <TouchableOpacity 
-              style={[styles.helpButton, upcomingBirthdays.length > 0 && styles.eventButtonActive]} 
+              style={[styles.helpButton, windowWidth < 480 && styles.helpButtonCompact, upcomingBirthdays.length > 0 && styles.eventButtonActive]} 
               onPress={() => setShowEventsPanel(true)}
             >
-              <Text style={{ fontSize: 18 }}>🎉</Text>
+              <Text style={{ fontSize: windowWidth < 480 ? 16 : 18 }}>🎉</Text>
               {upcomingBirthdays.length > 0 && (
                 <View style={styles.eventBadge}>
                   <Text style={styles.eventBadgeText}>{upcomingBirthdays.length}</Text>
@@ -2165,17 +2165,17 @@ export default function TreeScreen() {
               )}
             </TouchableOpacity>
             <TouchableOpacity 
-              style={styles.helpButton} 
+              style={[styles.helpButton, windowWidth < 480 && styles.helpButtonCompact]} 
               onPress={() => setShowGuide(true)}
             >
-              <Ionicons name="help-circle-outline" size={22} color="#D4AF37" />
+              <Ionicons name="help-circle-outline" size={windowWidth < 480 ? 20 : 22} color="#D4AF37" />
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.debugButton}
+              style={[styles.debugButton, windowWidth < 480 && styles.debugButtonCompact]}
               onPress={() => setShowDebug(!showDebug)}
               accessibilityLabel={t('treeScreen.debug.title')}
             >
-              <Ionicons name="bug-outline" size={22} color={showDebug ? '#4CAF50' : '#B8C5D6'} />
+              <Ionicons name="bug-outline" size={windowWidth < 480 ? 20 : 22} color={showDebug ? '#4CAF50' : '#B8C5D6'} />
             </TouchableOpacity>
             {isPreviewMode && (
               <TouchableOpacity style={styles.convertButton} onPress={handleConvertToAccount}>
@@ -2904,15 +2904,25 @@ const styles = StyleSheet.create({
     minWidth: 0,
     flexShrink: 1,
   },
+  headerLeftNarrow: {
+    minWidth: 115,
+    flexShrink: 0,
+  },
   headerTitleContainer: {
     flexDirection: 'column',
     flex: 1,
     minWidth: 0,
   },
+  headerTitleContainerNarrow: {
+    minWidth: 100,
+  },
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: '#FFFFFF',
+  },
+  headerTitleNarrow: {
+    fontSize: 17,
   },
   headerAccount: {
     fontSize: 11,
@@ -3214,23 +3224,36 @@ const styles = StyleSheet.create({
   actionButtonTextCompact: {
     fontSize: 13,
   },
-  // Styles pour les boutons du header (ne pas rétrécir sur mobile pour garder Guide + DEBUG visibles)
+  // Styles pour les boutons du header (bloc peut rétrécir sur mobile pour laisser "Mon Arbre" visible)
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     flexShrink: 0,
   },
+  headerButtonsNarrow: {
+    flexShrink: 1,
+    minWidth: 0,
+  },
   headerButtonsRight: {
     gap: 12,
   },
   headerButtonsMobile: {
-    marginLeft: 10,
-    gap: 6,
+    marginLeft: 6,
+    gap: 3,
+    paddingLeft: 2,
   },
   helpButton: {
     padding: 8,
     borderRadius: 8,
+  },
+  helpButtonCompact: {
+    padding: 6,
+    borderRadius: 6,
+  },
+  debugButtonCompact: {
+    padding: 6,
+    minWidth: 32,
   },
   // Styles pour le Guide d'utilisation
   guideOverlay: {

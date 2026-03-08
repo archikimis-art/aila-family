@@ -19,6 +19,7 @@ import { personsAPI, previewAPI } from '@/services/api';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { usePreview } from '@/context/PreviewContext';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
 // Keys for AsyncStorage - must match tree.tsx exactly
 const PREVIEW_TOKEN_KEY = 'preview_token';
@@ -278,11 +279,14 @@ export default function AddPersonScreen() {
     return link.link_type;
   };
 
-  // Supprimer un lien
+  // Demander confirmation avant de supprimer un lien
+  const handleDeleteLinkRequest = (linkId: string) => {
+    setLinkToDeleteId(linkId);
+  };
+
+  // Supprimer un lien (après confirmation)
   const handleDeleteLink = async (linkId: string) => {
-    if (typeof window !== 'undefined' && !window.confirm('Supprimer ce lien familial ?')) {
-      return;
-    }
+    setLinkToDeleteId(null);
     try {
       if (isPreviewMode && previewToken) {
         await previewAPI.deleteLink(previewToken, linkId);
@@ -291,18 +295,15 @@ export default function AddPersonScreen() {
         await linksAPI.delete(linkId);
       }
       setFamilyLinks(familyLinks.filter((l: any) => l.id !== linkId));
-      if (typeof window !== 'undefined') {
-        window.alert(t('personForm.linkDeleted'));
-      }
+      Alert.alert(t('common.success'), t('personForm.linkDeleted'));
     } catch (error) {
       console.error('Error deleting link:', error);
-      if (typeof window !== 'undefined') {
-        window.alert(t('personForm.linkDeleteError'));
-      }
+      Alert.alert(t('common.error'), t('personForm.linkDeleteError'));
     }
   };
   
   // États pour la sélection géographique
+  const [linkToDeleteId, setLinkToDeleteId] = useState<string | null>(null);
   const [showLocationPicker, setShowLocationPicker] = useState(false);
   const [locationPickerMode, setLocationPickerMode] = useState<'birth' | 'death' | 'branch'>('birth');
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
@@ -509,6 +510,15 @@ export default function AddPersonScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ConfirmDialog
+        visible={linkToDeleteId !== null}
+        message={t('personForm.confirmDeleteLink')}
+        confirmLabel={t('common.delete')}
+        cancelLabel={t('common.cancel')}
+        variant="danger"
+        onConfirm={() => linkToDeleteId && handleDeleteLink(linkToDeleteId)}
+        onCancel={() => setLinkToDeleteId(null)}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -715,7 +725,7 @@ export default function AddPersonScreen() {
                     </View>
                     <TouchableOpacity
                       style={styles.deleteLinkButton}
-                      onPress={() => handleDeleteLink(link.id)}
+                      onPress={() => handleDeleteLinkRequest(link.id)}
                     >
                       <Ionicons name="trash-outline" size={20} color="#E53E3E" />
                     </TouchableOpacity>

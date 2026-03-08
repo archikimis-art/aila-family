@@ -8,12 +8,15 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { personsAPI, linksAPI, previewAPI } from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
 // Keys for AsyncStorage - must match tree.tsx exactly
 const PREVIEW_TOKEN_KEY = 'preview_token';
@@ -102,6 +105,8 @@ export default function PersonDetailScreen() {
   const [editing, setEditing] = useState(startInEditMode);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const { t } = useTranslation();
 
   // Edit fields
   const [firstName, setFirstName] = useState('');
@@ -259,9 +264,11 @@ export default function PersonDetailScreen() {
       // IMPORTANT: Clear tree cache to prevent ghost data
       await clearTreeCache();
       
-      // Show success and navigate back
-      if (typeof window !== 'undefined') {
-        window.alert('La personne a été supprimée avec succès.');
+      const successMsg = t('treeScreen.personDeleted', { name: `${person?.first_name} ${person?.last_name}` });
+      if (Platform.OS === 'web') {
+        Alert.alert(t('common.success'), successMsg);
+      } else {
+        Alert.alert(t('common.success'), successMsg);
       }
       
       // Navigate back to tree
@@ -272,9 +279,7 @@ export default function PersonDetailScreen() {
       }
     } catch (error) {
       console.error('Delete error:', error);
-      if (typeof window !== 'undefined') {
-        window.alert('Erreur: Impossible de supprimer la personne.');
-      }
+      Alert.alert(t('common.error'), t('treeScreen.errorDelete'));
     } finally {
       setDeleting(false);
     }
@@ -539,10 +544,21 @@ export default function PersonDetailScreen() {
           )}
         </View>
 
+        {/* Delete confirmation dialog */}
+        <ConfirmDialog
+          visible={showDeleteConfirm}
+          message={`${t('treeScreen.confirmDeletePersonWithName', { name: person ? `${person.first_name} ${person.last_name}` : '' })}\n\n${t('treeScreen.deleteWarningLinks')}`}
+          confirmLabel={t('common.delete')}
+          cancelLabel={t('common.cancel')}
+          variant="danger"
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteConfirm(false)}
+        />
+
         {/* Delete Button */}
         <TouchableOpacity
           style={styles.deleteButton}
-          onPress={handleDelete}
+          onPress={handleDeleteRequest}
           disabled={deleting}
         >
           {deleting ? (

@@ -47,6 +47,7 @@
   },
   "personForm": {
     "loadError": "Erreur lors du chargement des données.",
+    "confirmDeleteLink": "Supprimer ce lien familial ?",
     "linkDeleted": "Lien supprimé.",
     "linkDeleteError": "Erreur lors de la suppression du lien.",
     "requiredFields": "Le prénom et le nom sont requis.",
@@ -264,7 +265,9 @@
       "sibling": "Frère/Sœur"
     },
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette personne ?",
+    "confirmDeletePersonWithName": "Êtes-vous sûr de vouloir supprimer {{name}} ?",
     "deleteWarning": "Cette action est irréversible.",
+    "deleteWarningLinks": "Cette action supprimera également tous les liens familiaux associés.",
     "personDeleted": "{{name}} a été supprimé(e)",
     "errorDelete": "Erreur lors de la suppression"
   },

@@ -47,6 +47,7 @@
   },
   "personForm": {
     "loadError": "Error loading data.",
+    "confirmDeleteLink": "Delete this family link?",
     "linkDeleted": "Link deleted.",
     "linkDeleteError": "Error deleting link.",
     "requiredFields": "First name and last name are required.",
@@ -264,7 +265,9 @@
       "sibling": "Sibling"
     },
     "confirmDelete": "Are you sure you want to delete this person?",
+    "confirmDeletePersonWithName": "Are you sure you want to delete {{name}}?",
     "deleteWarning": "This action cannot be undone.",
+    "deleteWarningLinks": "This will also delete all associated family links.",
     "personDeleted": "{{name}} has been deleted",
     "errorDelete": "Error deleting"
   },

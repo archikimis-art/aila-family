@@ -247,7 +247,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 40, // Hauteur fixe compacte pour mobile
+    height: 40,
+    marginBottom: 0,
   },
   adContent: {
     flexDirection: 'row',
