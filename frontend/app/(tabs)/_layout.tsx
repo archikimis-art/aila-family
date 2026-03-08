@@ -45,13 +45,17 @@ export default function TabsLayout() {
           headerShown: false,
           // Fond sombre pour toute la zone contenu (évite la bande grise sous la pub)
           sceneStyle: { backgroundColor: '#0A1628' },
+          // Web/WebView : pas d'inset bas (évite la grande zone vide sous la bande pub sur l'app Google Play)
+          ...(Platform.OS === 'web' && { safeAreaInsets: { top: 0, bottom: 0, left: 0, right: 0 } }),
           tabBarStyle: {
             backgroundColor: '#0A1628',
             borderTopColor: '#1A2F4A',
             borderTopWidth: 1,
             height: Platform.OS === 'ios' ? 88 : 52,
+            minHeight: Platform.OS === 'web' ? 52 : undefined,
+            maxHeight: Platform.OS === 'web' ? 52 : undefined,
             paddingBottom: Platform.OS === 'ios' ? 28 : 0,
-            paddingTop: 4,
+            paddingTop: Platform.OS === 'ios' ? 0 : 4,
           },
           tabBarActiveTintColor: '#D4AF37',
           tabBarInactiveTintColor: '#6B7C93',
