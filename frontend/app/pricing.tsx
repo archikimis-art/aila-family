@@ -170,7 +170,10 @@ export default function PricingScreen() {
 
     setLoading(planId);
     try {
-      await api.get('/health', { timeout: 45000 }).catch(() => {});
+      await Promise.race([
+        api.get('/health', { timeout: 8000 }).catch(() => {}),
+        new Promise((r) => setTimeout(r, 8000)),
+      ]);
       const origin = getOrigin();
       const response = await api.post(
         '/stripe/create-checkout-session',
@@ -179,7 +182,7 @@ export default function PricingScreen() {
           success_url: `${origin}/(tabs)/profile?payment=success`,
           cancel_url: `${origin}/pricing?payment=cancelled`,
         },
-        { timeout: 90000 }
+        { timeout: 120000 }
       );
 
       if (response.data.checkout_url) {
@@ -212,7 +215,10 @@ export default function PricingScreen() {
 
     setLoading(serviceId);
     try {
-      await api.get('/health', { timeout: 45000 }).catch(() => {});
+      await Promise.race([
+        api.get('/health', { timeout: 8000 }).catch(() => {}),
+        new Promise((r) => setTimeout(r, 8000)),
+      ]);
       const origin = getOrigin();
       const response = await api.post(
         '/stripe/create-checkout-session',
@@ -221,7 +227,7 @@ export default function PricingScreen() {
           success_url: `${origin}/(tabs)/profile?purchase=success&item=${serviceId}`,
           cancel_url: `${origin}/pricing?purchase=cancelled`,
         },
-        { timeout: 90000 }
+        { timeout: 120000 }
       );
 
       if (response.data.checkout_url) {
