@@ -2,7 +2,7 @@
   "expo": {
     "name": "aila.Family",
     "slug": "aila-family",
-    "version": "1.0.2",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "aila",
@@ -42,7 +42,7 @@
       "edgeToEdgeEnabled": true,
       "jsEngine": "hermes",
       "package": "com.kimi.aila",
-      "versionCode": 11,
+      "versionCode": 12,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.ACCESS_NETWORK_STATE"

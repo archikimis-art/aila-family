@@ -1,46 +1,48 @@
 # AÏLA - Version Stable
 
-## Version Actuelle (16 février 2026)
+## Version actuelle : 2.0.0 (8 mars 2026)
 
 ### Commit de référence
-- **Hash complet**: `59a272fc7ce41058a844e20b7714eb368ac5b37a`
-- **Hash court**: `59a272fc7`
-- **Message**: fix: Add full button variant for ExcelImport in empty tree state
-- **Date**: 2026-02-16 13:20:50 UTC
+- **Hash complet**: `10050073f8b77efb2e7eb0fe39ca4a2ec39b6862`
+- **Hash court**: `10050073f`
+- **Message**: fix(pricing): ajout openCheckoutUrl manquant pour redirection Stripe
+- **Date**: 2026-03-08
 
-### Pour revenir à cette version
+### Tag Git
 ```bash
-git checkout 59a272fc7ce41058a844e20b7714eb368ac5b37a
+git checkout v2.0.0
+# ou
+git checkout 10050073f
 ```
 
-### URLs de Production
+### URLs de production
 - **Frontend (Vercel)**: https://www.aila.family
 - **Backend (Render)**: https://aila-backend-hc1m.onrender.com
 - **Repository GitHub**: https://github.com/archikimis-art/aila-family
 
-### Fonctionnalités validées dans cette version
-- ✅ Authentification (email/password + Google OAuth)
-- ✅ Création/modification/suppression de personnes
-- ✅ Création/suppression de liens familiaux
-- ✅ Affichage de l'arbre généalogique
-- ✅ Export JSON / GEDCOM / GDPR
-- ✅ Mode aperçu avec famille générique DUPONT
-- ✅ Système de rappels admin (manuel + automatique)
-- ✅ Collaboration et invitations
-- ✅ Import Excel (bouton visible même avec arbre vide)
-- ✅ Notifications et événements
-- ✅ Panel d'administration complet
+### Fonctionnalités validées (v2.0.0)
+- ✅ Tout de la v1.0 (auth, arbre, export, mode aperçu, collaboration, admin…)
+- ✅ **Paiement Stripe** : abonnements Premium (mensuel 2,99 € / annuel 24,99 €), checkout opérationnel
+- ✅ **Sécurité mode Aperçu** : onglets Liens et Profil n’affichent plus les données utilisateur réelles
+- ✅ **Proxy API Vercel** : appels /api via même origine (pas de CORS), timeouts adaptés au cold start Render
+- ✅ Bouton « Lien » fonctionnel en mode Aperçu (PreviewContext + AsyncStorage)
+- ✅ Indicateur connexion backend sur la page Tarifs
 
-### Corrections majeures incluses
-1. Bug "fantôme" - personnes sans ID corrigées
-2. Mode aperçu - ne montre plus les données utilisateur réelles
-3. Rappels admin - endpoints send-auto et analyze-trees fonctionnels
-4. Import Excel - bouton visible dans l'état vide de l'arbre
-5. Modals - se ferment correctement avec confirmation
+### Build Android (AAB) pour Google Play
+L’app est en **Expo / React Native** (pas Flutter). Pour générer l’AAB :
 
-### Base de données
-- **MongoDB Atlas**: database `aila_db`
-- **Collections**: users, persons, links, reminders, user_reminders, collaborators, etc.
+```bash
+cd frontend
+npx eas-cli build --platform android --profile production
+```
+
+- Connexion EAS : `eas login` si besoin.
+- Le profil `production` dans `eas.json` produit un **app-bundle** (AAB).
+- Après le build, télécharger l’AAB depuis [expo.dev](https://expo.dev) → projet → Builds, puis l’uploader dans Google Play Console.
+
+### Versions
+- **App** : 2.0.0 (Expo `app.json`)
+- **Android versionCode** : 12
 
 ---
-*Dernière mise à jour: 16 février 2026*
+*Dernière mise à jour : 8 mars 2026*
