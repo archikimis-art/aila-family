@@ -17,6 +17,13 @@ import api, { BACKEND_HEALTH_URL } from '@/services/api';
 import { useTranslation } from 'react-i18next';
 import AdBanner from '@/components/AdBanner';
 
+function getOrigin(): string {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  return 'https://www.aila.family';
+}
+
 export default function PricingScreen() {
   const router = useRouter();
   const { user } = useAuth();
