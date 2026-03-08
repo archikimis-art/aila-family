@@ -24,6 +24,14 @@ function getOrigin(): string {
   return 'https://www.aila.family';
 }
 
+function openCheckoutUrl(url: string): void {
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    window.open(url, '_self');
+  } else {
+    Linking.openURL(url);
+  }
+}
+
 export default function PricingScreen() {
   const router = useRouter();
   const { user } = useAuth();
