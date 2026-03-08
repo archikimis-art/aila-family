@@ -43,15 +43,15 @@ export default function TabsLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          // Contenu des onglets : padding bas = hauteur barre d'onglets pour éviter le vide sous la bande pub
-          sceneStyle: { paddingBottom: Platform.OS === 'ios' ? 88 : 48 },
+          // Fond sombre pour toute la zone contenu (évite la bande grise sous la pub)
+          sceneStyle: { backgroundColor: '#0A1628' },
           tabBarStyle: {
             backgroundColor: '#0A1628',
             borderTopColor: '#1A2F4A',
             borderTopWidth: 1,
-            height: Platform.OS === 'ios' ? 88 : 48,
+            height: Platform.OS === 'ios' ? 88 : 52,
             paddingBottom: Platform.OS === 'ios' ? 28 : 0,
-            paddingTop: 2,
+            paddingTop: 4,
           },
           tabBarActiveTintColor: '#D4AF37',
           tabBarInactiveTintColor: '#6B7C93',
