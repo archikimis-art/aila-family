@@ -2041,9 +2041,10 @@ export default function TreeScreen() {
     }
   };
 
+  const safeAreaEdges = Platform.OS === 'web' ? (['left', 'right'] as const) : (['top', 'left', 'right'] as const);
   if (loading) {
     return (
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={styles.container} edges={safeAreaEdges}>
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#D4AF37" />
           <Text style={styles.loadingText}>Chargement de l'arbre...</Text>
@@ -2053,7 +2054,7 @@ export default function TreeScreen() {
   }
 
   return (
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      <SafeAreaView style={styles.container} edges={safeAreaEdges}>
       {/* Header */}
       {isPreviewMobileWeb ? (
         <View style={styles.previewMobileHeader}>
@@ -2831,7 +2832,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#1A2F4A',
     overflow: 'visible',
@@ -2856,8 +2857,8 @@ const styles = StyleSheet.create({
   previewMobileHeader: {
     width: '100%',
     paddingHorizontal: 12,
-    paddingTop: 8,
-    paddingBottom: 4,
+    paddingTop: 6,
+    paddingBottom: 2,
     borderBottomWidth: 1,
     borderBottomColor: '#1A2F4A',
   },
