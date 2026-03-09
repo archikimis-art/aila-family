@@ -35,7 +35,10 @@ export default function TabsLayout() {
   }, [params.preview]);
   
   return (
-    <View style={{ flex: 1 }}>
+    <View style={[
+      { flex: 1 },
+      isAndroidWebView && { paddingTop: 28, paddingBottom: 0 },
+    ]}>
       {/* Preview mode banner - always visible when in preview */}
       {isPreviewMode && (
         <View style={styles.previewBanner}>
@@ -56,7 +59,7 @@ export default function TabsLayout() {
             height: Platform.OS === 'ios' ? 88 : 52,
             minHeight: Platform.OS === 'web' ? 52 : undefined,
             maxHeight: Platform.OS === 'web' ? 52 : undefined,
-            paddingBottom: isAndroidWebView ? 40 : Platform.OS === 'ios' ? 28 : 0,
+            paddingBottom: isAndroidWebView ? 48 : Platform.OS === 'ios' ? 28 : 0,
             paddingTop: Platform.OS === 'ios' ? 0 : 2,
           },
           tabBarActiveTintColor: '#D4AF37',
