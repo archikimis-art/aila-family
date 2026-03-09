@@ -9,6 +9,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // SECURITY: Global preview mode flag key
 const PREVIEW_MODE_ACTIVE_KEY = 'preview_mode_active';
 
+// WebView Android : padding minimal pour que les boutons restent visibles au-dessus de la barre système
+const isAndroidWebView = Platform.OS === 'web' && typeof navigator !== 'undefined' && /\bwv\b/.test(navigator.userAgent);
+
 export default function TabsLayout() {
   const { t } = useTranslation();
   const params = useLocalSearchParams();
@@ -53,7 +56,7 @@ export default function TabsLayout() {
             height: Platform.OS === 'ios' ? 88 : 52,
             minHeight: Platform.OS === 'web' ? 52 : undefined,
             maxHeight: Platform.OS === 'web' ? 52 : undefined,
-            paddingBottom: Platform.OS === 'ios' ? 28 : 0,
+            paddingBottom: isAndroidWebView ? 40 : Platform.OS === 'ios' ? 28 : 0,
             paddingTop: Platform.OS === 'ios' ? 0 : 4,
           },
           tabBarActiveTintColor: '#D4AF37',
