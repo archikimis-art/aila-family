@@ -9,6 +9,12 @@ import PremiumInterstitialTrigger from '@/components/PremiumInterstitialTrigger'
 import { PreviewProvider } from '@/context/PreviewContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
+
+// Sur web/WebView : forcer les insets à 0 pour supprimer l'écart sous la bande pub (tab bar)
+const WEB_ZERO_INSETS = Platform.OS === 'web' ? {
+  frame: { x: 0, y: 0, width: 390, height: 844 },
+  insets: { top: 0, left: 0, right: 0, bottom: 0 },
+} : null;
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
 
@@ -474,7 +480,7 @@ export default function RootLayout() {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <SafeAreaProvider>
+      <SafeAreaProvider initialMetrics={WEB_ZERO_INSETS ?? undefined}>
         <SoundProvider>
         <AuthProvider>
           <PreviewProvider>

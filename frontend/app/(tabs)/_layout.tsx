@@ -9,9 +9,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // SECURITY: Global preview mode flag key
 const PREVIEW_MODE_ACTIVE_KEY = 'preview_mode_active';
 
-// Détecte si on est dans l'app Android (WebView) pour ajouter un padding bas à la tab bar
-const isAndroidWebView = Platform.OS === 'web' && typeof navigator !== 'undefined' && /\bwv\b/.test(navigator.userAgent);
-
 export default function TabsLayout() {
   const { t } = useTranslation();
   const params = useLocalSearchParams();
@@ -44,12 +41,11 @@ export default function TabsLayout() {
         </View>
       )}
       <Tabs
+        {...(Platform.OS === 'web' && { safeAreaInsets: { top: 0, bottom: 0, left: 0, right: 0 } })}
         screenOptions={{
           headerShown: false,
           // Fond sombre pour toute la zone contenu (évite la bande grise sous la pub)
           sceneStyle: { backgroundColor: '#0A1628' },
-          // Web/WebView : pas d'inset bas (évite la grande zone vide sous la bande pub sur l'app Google Play)
-          ...(Platform.OS === 'web' && { safeAreaInsets: { top: 0, bottom: 0, left: 0, right: 0 } }),
           tabBarStyle: {
             backgroundColor: '#0A1628',
             borderTopColor: '#1A2F4A',
@@ -57,8 +53,7 @@ export default function TabsLayout() {
             height: Platform.OS === 'ios' ? 88 : 52,
             minHeight: Platform.OS === 'web' ? 52 : undefined,
             maxHeight: Platform.OS === 'web' ? 52 : undefined,
-            // En WebView Android : petit padding pour que la tab bar ne soit pas sous la barre système
-            paddingBottom: isAndroidWebView ? 48 : Platform.OS === 'ios' ? 28 : 0,
+            paddingBottom: Platform.OS === 'ios' ? 28 : 0,
             paddingTop: Platform.OS === 'ios' ? 0 : 4,
           },
           tabBarActiveTintColor: '#D4AF37',
